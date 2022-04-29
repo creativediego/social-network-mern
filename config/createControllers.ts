@@ -27,7 +27,6 @@ import {
 import PassportLocalStrategy from '../controllers/auth/PassportLocalStrategy';
 import BcryptHasher from '../controllers/auth/BcryptHasher';
 import { handleCentralError } from '../errors/handleCentralError';
-import { app } from './configExpress';
 import { socketServer } from './configSocketIo';
 
 let alreadyCreated = false;
@@ -39,7 +38,7 @@ const passportAuthStrategies: Array<IPassPortStrategy> = [
   new PassportLocalStrategy(hasher),
 ];
 
-const createControllers = (): void => {
+const createControllers = (app: Express): void => {
   if (alreadyCreated) {
     return;
   }
@@ -85,12 +84,8 @@ const createControllers = (): void => {
   );
 
   const notificationController: NotificationController =
-    new NotificationController(
-      '/api/v1',
-      app, 
-      notificationDao,
-      socketServer);
-      
+    new NotificationController('/api/v1', app, notificationDao, socketServer);
+
   app.use(handleCentralError);
   alreadyCreated = true;
 };
