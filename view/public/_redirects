@@ -1,0 +1,2 @@
+/api/*  https://tuiter-api.herokuapp.com/api/v1/:splat 200
+
