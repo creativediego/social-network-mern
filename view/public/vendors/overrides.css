@@ -1,0 +1,25 @@
+.list-group-item {
+  background-color: black !important;
+}
+
+textarea,
+input {
+  background-color: black !important;
+  color: white !important;
+}
+
+input {
+  border: 1px solid white !important;
+  padding: 1rem !important;
+}
+::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+.ttr-navigation li,
+.ttr-navigation a {
+  color: white !important;
+}
+
+.border {
+  border: 1px solid #282828 !important;
+}
