@@ -1,0 +1,25 @@
+.ttr-tuits .ttr-tuit-avatar-logo {
+  width: 48px;
+}
+
+.ttr-tuits .ttr-tuit-image-overlay {
+  left: 10px;
+}
+
+.ttr-tuits .ttr-responsive-video::after {
+  display: block;
+  content: '';
+  padding-top: 56.25%;
+}
+
+.ttr-heart {
+  transition: color 0.4s ease-in-out;
+  transition: font 0.4s ease-in-out;
+}
+.ttr-heart-animated {
+  font-size: 1.5rem !important;
+}
+
+.ttr-stat-icon {
+  font-size: 0.85rem;
+}
