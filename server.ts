@@ -17,7 +17,7 @@ if (process.env.NODE_ENV! === 'PRODUCTION') {
   app.set('trust proxy', 1); // trust first proxy
   app.use(express.static(path.join(__dirname, 'view/build')));
   app.get('*', (req: Request, res: Response) => {
-    res.sendFile(path.resolve(__dirname, 'view', 'build', 'index.html'));
+    res.sendFile(path.resolve(__dirname, '../view/build', 'index.html'));
   });
 }
 
