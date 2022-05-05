@@ -1,10 +1,19 @@
 import axios from 'axios';
 import { processError } from './helpers';
-
+import { setHeaders } from './helpers';
 const TUITS_API = `${process.env.REACT_APP_API_URL}/tuits`;
 const USERS_API = `${process.env.REACT_APP_API_URL}/users`;
 
-export const api = axios.create({ withCredentials: true });
+const api = axios.create();
+// api.defaults.headers.common['authorization'] = localStorage.getItem('token');
+api.interceptors.request.use(setHeaders);
+
+// let token = localStorage.getItem('tuiterToken');
+// const config = {
+//   headers: {
+//     Authorization: 'Bearer ' + token,
+//   },
+// };
 
 export const findAllTuits = () =>
   api
@@ -18,11 +27,13 @@ export const findTuitById = (tuitId) =>
     .then((response) => response.data)
     .catch((err) => processError(err));
 
-export const findTuitsByUser = (userId) =>
-  api
+export const findTuitsByUser = (userId) => {
+  console.log(api.defaults.headers.common['authorization']);
+  return api
     .get(`${USERS_API}/${userId}/tuits`)
     .then((response) => response.data)
     .catch((err) => processError(err));
+};
 
 export const createTuit = (userId, tuit) =>
   api

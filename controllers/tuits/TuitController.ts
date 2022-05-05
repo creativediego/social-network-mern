@@ -10,18 +10,26 @@ import { validateTuit } from '../middleware/validateTuit';
 import { validateResults } from '../middleware/validateResults';
 import AuthException from '../auth/AuthException';
 import { okResponse } from '../shared/createResponse';
+import ISocketService from '../../services/ISocketService';
 
 /**
  * Handles CRUD requests and responses for the Tuit resource.  Implements {@link ITuitController}.
  */
 export default class TuitController implements ITuitController {
   private readonly tuitDao: IDao<ITuit>;
+  private readonly socketService: ISocketService;
   /**
    * Constructs the controller by calling the super abstract, setting the dao, and configuring the endpoint paths.
    * @param tuitDao a tuit dao that implements {@link ITuitDao}
    */
-  public constructor(path: string, app: Express, dao: IDao<ITuit>) {
+  public constructor(
+    path: string,
+    app: Express,
+    dao: IDao<ITuit>,
+    socketService: ISocketService
+  ) {
     this.tuitDao = dao;
+    this.socketService = socketService;
     const router: Router = Router();
     // router.use(isAuthenticated);
     router.get('/tuits', isAuthenticated, adaptRequest(this.findAll));
@@ -42,6 +50,9 @@ export default class TuitController implements ITuitController {
     router.delete('/tuits/:tuitId', isAuthenticated, adaptRequest(this.delete));
     app.use(path, router);
     Object.freeze(this); // Make this object immutable.
+  }
+  findByField(req: HttpRequest): Promise<HttpResponse> {
+    throw new Error('Method not implemented.');
   }
 
   /**
@@ -80,12 +91,12 @@ export default class TuitController implements ITuitController {
    * @returns {HttpResponse} the response data to be sent to the client
    */
   create = async (req: HttpRequest): Promise<HttpResponse> => {
-    return {
-      body: await this.tuitDao.create({
-        tuit: req.body.tuit,
-        author: req.user.id,
-      }),
-    };
+    const tuit = await this.tuitDao.create({
+      tuit: req.body.tuit,
+      author: req.user.id,
+    });
+    this.socketService.emitToAll('NEW_TUIT', tuit);
+    return okResponse(tuit);
   };
 
   /**

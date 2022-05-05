@@ -1,14 +1,14 @@
 import axios from 'axios';
 import { processError } from './helpers';
+import { setHeaders } from './helpers';
 const BASE_URL = process.env.REACT_APP_API_URL;
 
 const LOGIN_API = `${BASE_URL}/login`;
 const USERS_API = `${BASE_URL}/users`;
 
-export const api = axios.create({
-  withCredentials: true,
-});
-
+const api = axios.create();
+// api.defaults.headers.common['authorization'] = localStorage.getItem('token');
+api.interceptors.request.use(setHeaders);
 /*
  * This service will expose functions which can create, retrieve, update and delete objects of the the users resource by hitting API endpoints in the backend server.
  */
@@ -39,7 +39,16 @@ export const findAllByName = (nameOrUsername) =>
 
 // Find a user by the given id.
 export const findUserById = (uid) =>
-  api.get(`${USERS_API}/${uid}`).then((response) => response.data);
+  api
+    .get(`${USERS_API}/${uid}`)
+    .then((response) => response.data)
+    .catch((err) => processError(err));
+
+export const findUserByUsername = (username) =>
+  api
+    .get(`${USERS_API}/profile/${username}`)
+    .then((response) => response.data)
+    .catch((err) => processError(err));
 
 // Delete a user by the given id
 export const deleteUser = (uid) =>

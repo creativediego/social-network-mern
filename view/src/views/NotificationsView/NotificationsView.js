@@ -1,56 +1,48 @@
-import {
-    findNotificationsForUser
-} from '../../services/notifications-service';
-import React, {useEffect, useState, useCallback} from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import Notifications from '../../components/Notifications/index.js';
-import {useSelector, useDispatch} from 'react-redux';
-import {socket} from '../../services/socket-config';
-import {setNotifications} from '../../redux/userSlice';
-import {AlertBox} from "../../components";
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  findNotificationsThunk,
+  findUnreadNotificationsThunk,
+} from '../../redux/notificationSlice';
+import { Routes, Route } from 'react-router-dom';
+import ProfileView from '../ProfileView/index.js';
+import Notification from '../../components/Notifications/notification.js';
 
 /**
  * Creates a page that displays all of the notifications for a given user
  */
 const NotificationsView = () => {
-  const notifications = useSelector((state) => state.user.notifications);
-  const [error, setError] = useState();
+  const notifications = useSelector((state) => state.notifications.all);
   const dispatch = useDispatch();
 
-  const authUser = useSelector((state) => state.user.data);
-
-  // find all the notifications for a given user
-  const findMyNotifications = useCallback(
-    async () => {
-      const res = await findNotificationsForUser(authUser.id);
-      if (res.error) {
-        return setError(
-          'We ran into an issue showing your notifications. Please try again later.'
-        );
-      }
-      dispatch(setNotifications(res));
-    },
-  [dispatch, authUser.id]);
-
-  const listenForNewNotificationsOnSocket = useCallback(
-    async () => {
-      socket.emit('JOIN_ROOM'); // Server will assign room for user based on session.
-      socket.on('NEW_NOTIFICATION', () => {
-        // when a new notification is emitted to the room, find all of our notifications and refresh the state of our page
-        findMyNotifications();
-      });
-    },
-  [findMyNotifications]);
+  // let notificationRoute = {
+  //   MESSAGES: '/messages',
+  //   LIKES: `${notification.userActing.username}/${notification.resourceId}/tuits`,
+  //   FOLLOWS: `/${notification.userActing.username}`,
+  // };
 
   useEffect(() => {
-    listenForNewNotificationsOnSocket();
-    findMyNotifications();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listenForNewNotificationsOnSocket, findMyNotifications]);
+    dispatch(findNotificationsThunk());
+  }, []);
+
+  useLayoutEffect(() => {}, []);
   return (
     <div>
+      {/* <Routes>
+        <Route
+          path={'/me'}
+          element={<ProfileView user={notification.userActing} />}
+        /> */}
       <h1>Notifications</h1>
-      <Notifications notifications={notifications} />
-        {error && <AlertBox message={error}/>}
+      <ul className='ttr-tuits list-group'>
+        {notifications &&
+          notifications.map((notification) => {
+            return (
+              <Notification key={notification.id} notification={notification} />
+            );
+          })}
+      </ul>
     </div>
   );
 };

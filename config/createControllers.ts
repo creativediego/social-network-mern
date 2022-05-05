@@ -1,7 +1,4 @@
 import { Express } from 'express';
-import IPassPortStrategy from '../controllers/auth/IPassPortStrategy';
-import PassportAuthController from '../controllers/auth/PassportAuthController';
-import PassportGoogleStrategy from '../controllers/auth/PassportGoogleStrategy';
 import BookMarkController from '../controllers/bookmarks/BookmarkController';
 import IBookMarkController from '../controllers/bookmarks/IBookmarkController';
 import FollowController from '../controllers/follows/FollowController';
@@ -24,20 +21,19 @@ import {
   messageDao,
   notificationDao,
 } from './configDaos';
-import PassportLocalStrategy from '../controllers/auth/PassportLocalStrategy';
 import BcryptHasher from '../controllers/auth/BcryptHasher';
 import { handleCentralError } from '../errors/handleCentralError';
-import { socketServer } from './configSocketIo';
+import AuthController from '../controllers/auth/AuthController';
+import IAuthController from '../controllers/auth/IAuthController';
+import { jwtService, socketService } from './configServices';
 
 let alreadyCreated = false;
-
 const hasher = new BcryptHasher(10);
 
-const passportAuthStrategies: Array<IPassPortStrategy> = [
-  new PassportGoogleStrategy(),
-  new PassportLocalStrategy(hasher),
-];
-
+/**
+ * Instantiates all controllers.
+ * @param app the express app to pass as dependency to controllers to declare routes.
+ */
 const createControllers = (app: Express): void => {
   if (alreadyCreated) {
     return;
@@ -47,12 +43,17 @@ const createControllers = (app: Express): void => {
     app,
     userDao
   );
-  const passportAuthController: PassportAuthController =
-    new PassportAuthController(app, userDao, passportAuthStrategies, hasher);
+  const authController: IAuthController = new AuthController(
+    app,
+    userDao,
+    hasher,
+    jwtService
+  );
   const tuitController: ITuitController = new TuitController(
     '/api/v1',
     app,
-    tuitDao
+    tuitDao,
+    socketService
   );
   const bookmarkController: IBookMarkController = new BookMarkController(
     '/api/v1/users',
@@ -65,26 +66,24 @@ const createControllers = (app: Express): void => {
     followDao,
     userDao,
     notificationDao,
-    socketServer
+    socketService
   );
   const likeController: ILikeController = new LikeController(
     '/api/v1/',
     app,
     likeDao,
-    tuitDao,
     notificationDao,
-    socketServer
+    socketService
   );
   const messageController: IMessageController = new MessageController(
     '/api/v1/users',
     app,
     messageDao,
-    notificationDao,
-    socketServer
+    socketService
   );
 
   const notificationController: NotificationController =
-    new NotificationController('/api/v1', app, notificationDao, socketServer);
+    new NotificationController('/api/v1', app, notificationDao, socketService);
 
   app.use(handleCentralError);
   alreadyCreated = true;

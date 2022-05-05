@@ -1,13 +1,13 @@
 import axios from 'axios';
-import {processError} from './helpers';
+import { setHeaders } from './helpers';
+import { processError } from './helpers';
 
 const BASE_URL = process.env.REACT_APP_API_URL;
 const MESSAGES_API = `${BASE_URL}/users`;
 
-export const api = axios.create({
-    withCredentials: true,
-});
-
+const api = axios.create();
+// api.defaults.headers.common['authorization'] = localStorage.getItem('token');
+api.interceptors.request.use(setHeaders);
 /**
  * Create a new message for an existing conversation by using the existing
  * id of the conversation this message belongs to. Also interact with the
@@ -19,15 +19,15 @@ export const api = axios.create({
  * @returns {Promise<{message}>} the message object or error
  */
 export const sendMessage = async (userId, conversationId, message) => {
-    try {
-        const res = await api.post(
-            `${MESSAGES_API}/${userId}/conversations/${conversationId}/messages`,
-            {message}
-        );
-        return res.data;
-    } catch (err) {
-        return processError(err);
-    }
+  try {
+    const res = await api.post(
+      `${MESSAGES_API}/${userId}/conversations/${conversationId}/messages`,
+      { message }
+    );
+    return res.data;
+  } catch (err) {
+    return processError(err);
+  }
 };
 
 /**
@@ -38,15 +38,15 @@ export const sendMessage = async (userId, conversationId, message) => {
  * @returns {Promise<{conversation}>} the conversation object or error
  */
 export const createConversation = async (userId, conversation) => {
-    try {
-        const res = await api.post(
-            `${MESSAGES_API}/${userId}/conversations`,
-            conversation
-        );
-        return res.data;
-    } catch (err) {
-        return processError(err);
-    }
+  try {
+    const res = await api.post(
+      `${MESSAGES_API}/${userId}/conversations`,
+      conversation
+    );
+    return res.data;
+  } catch (err) {
+    return processError(err);
+  }
 };
 
 /**
@@ -58,22 +58,22 @@ export const createConversation = async (userId, conversation) => {
  * @param userId id of the user requesting the latest messages
  * @returns {Promise<[{message}]>} an array of message objects */
 export const findInboxMessages = async (userId, ThunkAPI) => {
-    try {
-        const res = await api.get(`${MESSAGES_API}/${userId}/messages/`);
-        return res.data;
-    } catch (err) {
-        return processError(err);
-    }
+  try {
+    const res = await api.get(`${MESSAGES_API}/${userId}/messages/`);
+    return res.data;
+  } catch (err) {
+    return processError(err);
+  }
 };
 export const findConversation = async (userId, conversationId) => {
-    try {
-        const res = await api.get(
-            `${MESSAGES_API}/${userId}/conversations/${conversationId}`
-        );
-        return res.data;
-    } catch (err) {
-        return processError(err);
-    }
+  try {
+    const res = await api.get(
+      `${MESSAGES_API}/${userId}/conversations/${conversationId}`
+    );
+    return res.data;
+  } catch (err) {
+    return processError(err);
+  }
 };
 
 /**
@@ -84,14 +84,14 @@ export const findConversation = async (userId, conversationId) => {
  * @returns {Promise<[{message}]>} an array of message objects */
 
 export const findMessagesByConversation = async (userId, conversationId) => {
-    try {
-        const res = await api.get(
-            `${MESSAGES_API}/${userId}/conversations/${conversationId}/messages`
-        );
-        return res.data;
-    } catch (err) {
-        return processError(err);
-    }
+  try {
+    const res = await api.get(
+      `${MESSAGES_API}/${userId}/conversations/${conversationId}/messages`
+    );
+    return res.data;
+  } catch (err) {
+    return processError(err);
+  }
 };
 
 /**
@@ -99,12 +99,12 @@ export const findMessagesByConversation = async (userId, conversationId) => {
  * @param userId id of the user requesting the latest messages
  * @returns {Promise<[{message}]>} an array of message objects */
 export const findAllMessagesSentByUser = async (userId) => {
-    try {
-        const res = await api.get(`${MESSAGES_API}/${userId}/messages/sent`);
-        return res.data;
-    } catch (err) {
-        return processError(err);
-    }
+  try {
+    const res = await api.get(`${MESSAGES_API}/${userId}/messages/sent`);
+    return res.data;
+  } catch (err) {
+    return processError(err);
+  }
 };
 
 /**
@@ -116,14 +116,14 @@ export const findAllMessagesSentByUser = async (userId) => {
  * @returns {Promise<{message}>} the deleted message
  */
 export const deleteMessage = async (userId, messageId) => {
-    try {
-        const res = await api.delete(
-            `${MESSAGES_API}/${userId}/messages/${messageId}`
-        );
-        return res.data;
-    } catch (err) {
-        return processError(err);
-    }
+  try {
+    const res = await api.delete(
+      `${MESSAGES_API}/${userId}/messages/${messageId}`
+    );
+    return res.data;
+  } catch (err) {
+    return processError(err);
+  }
 };
 
 /**
@@ -133,12 +133,12 @@ export const deleteMessage = async (userId, messageId) => {
  * @returns {Promise<{message}>} the deleted conversation
  */
 export const deleteConversation = async (userId, conversationId) => {
-    try {
-        const res = await api.delete(
-            `${MESSAGES_API}/${userId}/conversations/${conversationId}`
-        );
-        return res.data;
-    } catch (err) {
-        return processError(err);
-    }
+  try {
+    const res = await api.delete(
+      `${MESSAGES_API}/${userId}/conversations/${conversationId}`
+    );
+    return res.data;
+  } catch (err) {
+    return processError(err);
+  }
 };

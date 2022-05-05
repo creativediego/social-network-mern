@@ -59,7 +59,8 @@ export default class MessageDao implements IMessageDao {
             cid: conversationId,
             type,
             participants,
-            $pull: { removeFor: { $in: [conversation.createdBy] } },
+            removeFor: [],
+            // $pull: { removeFor: { $in: [conversation.createdBy] } },
           },
           { upsert: true, new: true }
         )
@@ -85,10 +86,14 @@ export default class MessageDao implements IMessageDao {
   ): Promise<IMessage> => {
     // Check if conversation for this message exists, and if sender is a participant in it.
     try {
-      const existingConvo = await this.conversationModel.exists({
-        _id: message.conversation,
-        participants: { $in: [sender] },
-      });
+      const existingConvo = await this.conversationModel.findOneAndUpdate(
+        {
+          _id: message.conversation,
+          participants: { $in: [sender] },
+        },
+        { removeFor: [] },
+        { new: true }
+      );
       this.errorHandler.objectOrNullException(
         existingConvo,
         MessageDaoErrors.INVALID_CONVERSATION

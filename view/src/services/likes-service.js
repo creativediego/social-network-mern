@@ -1,13 +1,13 @@
 import axios from 'axios';
+import { setHeaders } from './helpers';
 
 const BASE_URL = process.env.REACT_APP_API_URL;
 const USERS_API = `${BASE_URL}/users`;
 const TUITS_API = `${BASE_URL}/tuits`;
 
-export const api = axios.create({
-  withCredentials: true,
-});
-
+const api = axios.create();
+// api.defaults.headers.common['Authorization'] = localStorage.getItem('token');
+api.interceptors.request.use(setHeaders);
 export const findAllTuitsLikedByUser = (userId) =>
   api
     .get(`${USERS_API}/${userId}/likes`)

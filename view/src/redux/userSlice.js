@@ -3,19 +3,20 @@
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { register, getProfile, login, logout } from '../services/auth-service';
-import {
-  updateUser,
-  findAllByName,
-} from '../services/users-service';
+import { findUserByUsername, updateUser } from '../services/users-service';
 import { dataOrStateError } from './helpers';
+import * as socketService from '../services/socket-service';
 
 /**
  * Updates redux state with user profile after calling getProfile from user service.
  */
-export const getProfileThunk = createAsyncThunk(
+export const fetchProfileThunk = createAsyncThunk(
   'users/getProfile',
   async (data, ThunkAPI) => {
     const profile = await getProfile();
+    if (!profile.error) {
+      socketService.enableListeners(ThunkAPI);
+    }
     return dataOrStateError(profile, ThunkAPI);
   }
 );
@@ -33,11 +34,17 @@ export const registerThunk = createAsyncThunk(
 
 /**
  * Calls the login service and updates state with logged in user.
+ * Sets auth token in local storage, and calls sockets listeners.
  */
 export const loginThunk = createAsyncThunk(
   'users/login',
   async (user, ThunkAPI) => {
     const res = await login(user);
+    localStorage.setItem('token', res.token);
+    if (!res.error) {
+      socketService.enableListeners(ThunkAPI);
+    }
+
     return dataOrStateError(res, ThunkAPI);
   }
 );
@@ -48,8 +55,9 @@ export const loginThunk = createAsyncThunk(
 export const logoutThunk = createAsyncThunk(
   'users/logout',
   async (user, ThunkAPI) => {
-    const res = await logout(user);
-    return dataOrStateError(res, ThunkAPI);
+    localStorage.removeItem('token');
+    socketService.disconnect();
+    return;
   }
 );
 
@@ -60,17 +68,7 @@ export const updateUserThunk = createAsyncThunk(
   'users/update',
   async (user, ThunkAPI) => {
     const res = await updateUser(user);
-
     return dataOrStateError(res, ThunkAPI);
-  }
-);
-
-export const findUsersByNameThunk = createAsyncThunk(
-  'users/findAllByName',
-  async (nameOrUsername, ThunkAPI) => {
-    console.log('find all by name thunk function', nameOrUsername);
-    const users = await findAllByName(nameOrUsername);
-    return dataOrStateError(users, ThunkAPI);
   }
 );
 
@@ -90,43 +88,33 @@ const userSlice = createSlice({
   name: 'user',
   initialState: {
     data: null,
+    token: localStorage.getItem('token'),
     loading: false,
     profileComplete: false,
     loggedIn: false,
     notifications: [],
     unreadNotifications: [],
-    foundUsers: [],
   },
   reducers: {
-    clearFoundUsers: (state) => {
-      state.foundUsers = [];
-    },
     setNotifications: (state, action) => {
       state.notifications = action.payload;
     },
     setUnreadNotifications: (state, action) => {
       state.unreadNotifications = action.payload;
     },
+    clearUser(state) {
+      state.data = null;
+      state.profileComplete = null;
+      state.token = null;
+    },
   },
   extraReducers: {
-    [findUsersByNameThunk.pending]: (state, action) => {
-      state.loading = false;
-    },
-    [findUsersByNameThunk.rejected]: (state) => {
-      state.loading = false;
-      console.log('find all by all users rejected');
-    },
-    [findUsersByNameThunk.fulfilled]: (state, action) => {
-      state.loading = false;
-      state.foundUsers = action.payload;
-      console.log('find all by name fulfilled', state.foundUsers);
-    },
-    [getProfileThunk.fulfilled]: (state, action) => {
+    [fetchProfileThunk.fulfilled]: (state, action) => {
       state.loading = false;
       if (action.payload.error) return;
       checkProfileComplete(state, action.payload);
     },
-    [getProfileThunk.rejected]: (state) => {
+    [fetchProfileThunk.rejected]: (state) => {
       state.loading = false;
     },
     [updateUserThunk.pending]: (state) => {
@@ -148,7 +136,8 @@ const userSlice = createSlice({
     },
     [loginThunk.fulfilled]: (state, action) => {
       state.loading = false;
-      checkProfileComplete(state, action.payload);
+      state.token = action.payload.token;
+      checkProfileComplete(state, action.payload.user);
     },
     [loginThunk.rejected]: (state, action) => {
       state.loading = false;
@@ -168,5 +157,10 @@ const userSlice = createSlice({
     },
   },
 });
-export const { clearFoundUsers, setNotifications, setUnreadNotifications } = userSlice.actions;
+export const {
+  clearFoundUsers,
+  setNotifications,
+  setUnreadNotifications,
+  clearUser,
+} = userSlice.actions;
 export default userSlice.reducer;

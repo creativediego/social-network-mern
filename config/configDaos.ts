@@ -8,7 +8,6 @@ import IMessageDao from '../daos/messages/IMessageDao';
 import MessageDao from '../daos/messages/MessageDao';
 import NotificationDao from '../daos/notifications/NotificationsDao';
 import IDao from '../daos/shared/IDao';
-import ITuitDao from '../daos/tuits/ITuitDao';
 import TuitDao from '../daos/tuits/TuitDao';
 import UserDao from '../daos/users/UserDao';
 import DaoErrorHandler from '../errors/DaoErrorHandler';
@@ -22,7 +21,10 @@ import ConversationModel from '../mongoose/messages/ConversationModel';
 import MessageModel from '../mongoose/messages/MessageModel';
 import TuitModel from '../mongoose/tuits/TuitModel';
 import UserModel from '../mongoose/users/UserModel';
-
+/**
+ * @file
+ * Container that instantiates all Daos and their dependencies.
+ */
 const daoErrorHandler = new DaoErrorHandler();
 export const userDao: IDao<IUser> = new UserDao(UserModel, daoErrorHandler);
 export const bookmarkDao: IBookMarkDao = new BookmarkDao(

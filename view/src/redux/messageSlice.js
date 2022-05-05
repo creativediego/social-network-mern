@@ -4,6 +4,7 @@ import {
   findMessagesByConversationThunk,
   sendMessageThunk,
   createConversationThunk,
+  findUsersByNameThunk,
 } from './messageThunks';
 
 /**
@@ -13,11 +14,13 @@ const messageSlice = createSlice({
   name: 'messages',
   initialState: {
     inbox: [],
+    loading: false,
     activeChat: {
       id: undefined,
       messages: [],
       participants: [],
     },
+    foundUsersForNewChat: [],
   },
   reducers: {
     // Sets the state of the current active chat/conversation.
@@ -25,6 +28,15 @@ const messageSlice = createSlice({
       const conversation = action.payload;
       state.activeChat.id = conversation.id;
       state.activeChat.participants = conversation.participants;
+    },
+    updateChat: (state, action) => {
+      const conversation = action.payload.conversation.id;
+      if (conversation === state.activeChat.id) {
+        state.activeChat.messages.push(action.payload);
+      }
+    },
+    clearFoundUsers: (state) => {
+      state.foundUsersForNewChat = [];
     },
   },
   // Manages the async call states for creating conversations.
@@ -53,6 +65,7 @@ const messageSlice = createSlice({
     // States for fetching all conversations of a chat.
     [findMessagesByConversationThunk.pending]: (state) => {
       state.loading = true;
+      state.activeChat.messages = [];
     },
     [findMessagesByConversationThunk.fulfilled]: (state, action) => {
       state.loading = false;
@@ -73,7 +86,18 @@ const messageSlice = createSlice({
     [sendMessageThunk.rejected]: (state, action) => {
       state.loading = false;
     },
+    [findUsersByNameThunk.pending]: (state, action) => {
+      state.loading = false;
+    },
+    [findUsersByNameThunk.rejected]: (state) => {
+      state.loading = false;
+    },
+    [findUsersByNameThunk.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.foundUsersForNewChat = action.payload;
+    },
   },
 });
-export const { setActiveChat } = messageSlice.actions;
+export const { setActiveChat, updateChat, clearFoundUsers } =
+  messageSlice.actions;
 export default messageSlice.reducer;

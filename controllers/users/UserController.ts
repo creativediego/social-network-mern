@@ -3,7 +3,6 @@ import IDao from '../../daos/shared/IDao';
 import IUser from '../../models/users/IUser';
 import HttpRequest from '../shared/HttpRequest';
 import HttpResponse from '../shared/HttpResponse';
-import User from '../../models/users/User';
 import { okResponse } from '../shared/createResponse';
 import { Express, Router } from 'express';
 import { adaptRequest } from '../shared/adaptRequest';
@@ -15,7 +14,7 @@ import { validateResults } from '../middleware/validateResults';
 /**
  * Processes the requests and responses dealing with the user resource. Implements {@link IController}.
  */
-export class UserController {
+export class UserController implements IGenericController {
   private readonly dao: IDao<IUser>;
 
   /**
@@ -30,6 +29,7 @@ export class UserController {
     router.post('/:nameOrUsername', adaptRequest(this.findAllByField));
     router.post('/', validateProfile, adaptRequest(this.create));
     router.get('/:userId', adaptRequest(this.findById));
+    router.get('/profile/:username', adaptRequest(this.findByField));
     router.put(
       '/:userId',
       isAuthenticated,
@@ -59,6 +59,11 @@ export class UserController {
    */
   findById = async (req: HttpRequest): Promise<HttpResponse> => {
     const dbUser: IUser = await this.dao.findById(req.params.userId);
+    return okResponse(dbUser);
+  };
+
+  findByField = async (req: HttpRequest): Promise<HttpResponse> => {
+    const dbUser: IUser = await this.dao.findByField(req.params.username);
     return okResponse(dbUser);
   };
 

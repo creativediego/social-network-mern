@@ -1,25 +1,38 @@
 /**
- * @file Middle tier for notifictions resource. 
+ * @file Middle tier for notifictions resource.
  * Provides a service to communicate with the restful API of the server.
  */
 
 import axios from 'axios';
+import { setHeaders } from './helpers';
 import { processError } from './helpers';
 
 const NOTIFICATIONS_API = `${process.env.REACT_APP_API_URL}/notifications`;
 const USERS_API = `${process.env.REACT_APP_API_URL}/users`;
 
-export const api = axios.create({ withCredentials: true });
-
+const api = axios.create();
+// api.defaults.headers.common['authorization'] = localStorage.getItem('token');
+api.interceptors.request.use(setHeaders);
 /**
  * Find all the notifications for a particular user.
  * @param userId id of the user requesting the latest notifications
  * @returns {Promise<{[Notification]}>} the array of notification objects or error
  */
-export const findNotificationsForUser = async (userId) => {
-
+export const findNotifications = async (userId) => {
   try {
     const res = await api.get(`${USERS_API}/${userId}/notifications`);
+    return res.data;
+  } catch (err) {
+    return processError(err);
+  }
+};
+
+export const createNotification = async (userId, notification) => {
+  try {
+    const res = await api.post(
+      `${USERS_API}/${userId}/notifications`,
+      notification
+    );
     return res.data;
   } catch (err) {
     return processError(err);
@@ -31,9 +44,9 @@ export const findNotificationsForUser = async (userId) => {
  * @param nid id of the notification being read
  * @returns {Promise<{Notification}>} the notification object or error
  */
- export const markNotificationAsRead = async (nid) => {
-    const res = await api.put(`${NOTIFICATIONS_API}/${nid}/read`);
-    return res.data;
+export const markNotificationAsRead = async (nid) => {
+  const res = await api.put(`${NOTIFICATIONS_API}/${nid}/read`);
+  return res.data;
 };
 
 /**
@@ -41,8 +54,7 @@ export const findNotificationsForUser = async (userId) => {
  * @param userId id of the user getting their unread notifications
  * @returns {Promise<{[Notification]}>} the list of notification objects or error
  */
- export const findUnreadNotificationsForUser = async (userId) => {
-
+export const findUnreadNotifications = async (userId) => {
   try {
     const res = await api.get(`${USERS_API}/${userId}/notifications/unread`);
     return res.data;

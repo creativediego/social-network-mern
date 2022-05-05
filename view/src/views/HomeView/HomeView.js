@@ -31,7 +31,7 @@ const HomeView = () => {
         </div>
 
         {/* {error && <ErrorBox message={error} />} */}
-        <Loader loading={loading} loadingMessage={'Loading Tuits'} />
+        <Loader loading={loading} message={'Loading Tuits'} />
         {tuits && <Tuits tuits={tuits} />}
       </div>
     )

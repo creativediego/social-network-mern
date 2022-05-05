@@ -1,6 +1,9 @@
 import IHasher from './IHasher';
 import bcrypt from 'bcrypt';
 
+/**
+ * Hasher wrapper that implements bcrypt library.
+ */
 export default class BcryptHasher implements IHasher {
   private readonly saltRounds: number;
   public constructor(saltRounds: number) {

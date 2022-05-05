@@ -1,11 +1,11 @@
 import mongoose, { Schema } from 'mongoose';
 import MongooseException from '../../errors/MongooseException';
 import { NotificationType } from '../../models/notifications/NotificationType';
-import INotification from "../../models/notifications/INotification";
+import INotification from '../../models/notifications/INotification';
 import { formatJSON } from '../util/formatJSON';
 
 /**
- * Mongoose schema for the notifications resource that takes an {@link INotifications} object. 
+ * Mongoose schema for the notifications resource that takes an {@link INotifications} object.
  * The schema contains a user foreign key reference. All fields are required, and created/updated time stamps are added.
  * @constructor LikeSchema
  * @param {String} type type of notification a user is receiving
@@ -16,18 +16,25 @@ import { formatJSON } from '../util/formatJSON';
  */
 const NotificationSchema = new mongoose.Schema<INotification>(
   {
-    type: { type: String, enum: NotificationType, required: true},
-    notificationString: {type: String},
-    userNotified: { type: Schema.Types.ObjectId, ref: 'UserModel', required: true },
-    userActing: {type: Schema.Types.ObjectId, ref: 'UserModel', required: true},
-    read: {type: Boolean}
+    type: { type: String, enum: NotificationType, required: true },
+    content: { type: String },
+    userNotified: {
+      type: Schema.Types.ObjectId,
+      ref: 'UserModel',
+      required: true,
+    },
+    userActing: {
+      type: Schema.Types.ObjectId,
+      ref: 'UserModel',
+      required: true,
+    },
+    read: { type: Boolean, default: false },
   },
   {
     timestamps: true,
     collection: 'notifications',
   }
 );
-
 
 formatJSON(NotificationSchema);
 export default NotificationSchema;

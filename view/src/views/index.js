@@ -5,7 +5,6 @@ import MessagesView from './MessagesView/MessagesView';
 
 import WhatsHappeningView from './WhatsHappeningView/WhatsHappeningView';
 import ProfileView from './ProfileView';
-import OtherUserProfileView from './OtherUserProfileView';
 import ExploreView from './ExploreView/ExploreView';
 import BookmarksView from './BookmarksView/BookmarksView';
 import NotificationsView from './NotificationsView/NotificationsView';
@@ -24,5 +23,4 @@ export {
   NotificationsView,
   MoreView,
   ListsView,
-  OtherUserProfileView,
 };

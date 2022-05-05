@@ -18,6 +18,7 @@ export default interface IUser {
   accountStatus?: AccountStatus;
   followerCount?: number;
   followeeCount?: number;
+  tuitCount?: number;
 
   // passwordEquals(password: string): boolean;
 }

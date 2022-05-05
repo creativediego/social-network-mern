@@ -1,6 +1,8 @@
 import BaseError from '../../errors/BaseError';
 import { StatusCode } from '../shared/HttpStatusCode';
-
+/**
+ * Generic Auth exception
+ */
 export default class AuthException extends BaseError {
   public code = StatusCode.badRequest;
   constructor(message: string, error?: unknown) {

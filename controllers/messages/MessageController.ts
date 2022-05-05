@@ -8,18 +8,14 @@ import { adaptRequest } from '../shared/adaptRequest';
 import { Server } from 'socket.io';
 import { okResponse } from '../shared/createResponse';
 import { isAuthenticated } from '../auth/isAuthenticated';
-import { addUserToSocketRoom } from '../../config/configSocketIo';
-import NotificationDao from '../../daos/notifications/NotificationsDao';
-import Notification from '../../models/notifications/INotification';
-import IUser from '../../models/users/IUser';
+import ISocketService from '../../services/ISocketService';
 
 /**
  * Represents an implementation of an {@link IMessageController}
  */
 export default class MessageController implements IMessageController {
   private readonly messageDao: IMessageDao;
-  private readonly socketServer: Server;
-  private readonly notificationDao: NotificationDao;
+  private readonly socketService: ISocketService;
 
   /**
    * Constructs the message controller with a message dao dependency that implements {@link IMessageDao}.
@@ -29,17 +25,15 @@ export default class MessageController implements IMessageController {
     path: string,
     app: Express,
     messageDao: IMessageDao,
-    notificationDao: NotificationDao,
-    socketServer: Server
+    socketService: ISocketService
   ) {
     this.messageDao = messageDao;
-    this.notificationDao = notificationDao;
-    this.socketServer = socketServer;
+    this.socketService = socketService;
     const router: Router = Router();
     router.get(
       '/:userId/messages',
       isAuthenticated,
-      addUserToSocketRoom,
+
       adaptRequest(this.findLatestMessagesByUser)
     );
     router.get(
@@ -50,7 +44,7 @@ export default class MessageController implements IMessageController {
     router.get(
       '/:userId/conversations/:conversationId/messages',
       isAuthenticated,
-      addUserToSocketRoom,
+
       adaptRequest(this.findAllMessagesByConversation)
     );
     router.post(
@@ -121,20 +115,11 @@ export default class MessageController implements IMessageController {
     // Emit to client sockets
     const recipients = newMessage.conversation.participants;
     for (const recipient of recipients) {
-      this.socketServer.to(recipient.toString()).emit('NEW_MESSAGE', message);
-      if (recipient.toString() === req.params.userId) {
-        continue;
-      } else {
-        const newNotification: Notification =
-          await this.notificationDao.createNotificationForUser(
-            'MESSAGES',
-            recipient,
-            req.params.userId
-          );
-        this.socketServer
-          .to(recipient.toString())
-          .emit('NEW_NOTIFICATION', newNotification);
-      }
+      this.socketService.emitToRoom(
+        recipient.toString(),
+        'NEW_MESSAGE',
+        newMessage
+      );
     }
     return okResponse(newMessage);
   };

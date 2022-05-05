@@ -5,3 +5,10 @@
 .other-user-message {
     border-bottom-left-radius: 0px !important;
 }
+
+#chat-window {
+    height: 70vh;
+    overflow: scroll;
+    overflow-x: hidden;
+    padding: 1rem;
+}

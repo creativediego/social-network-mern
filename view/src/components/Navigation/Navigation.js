@@ -2,51 +2,29 @@ import React from 'react';
 import './navigation.css';
 import { useLocation, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { useState, useEffect } from 'react';
-
-import { findUnreadNotificationsForUser } from '../../services/notifications-service';
-import { setUnreadNotifications } from '../../redux/userSlice';
-import { socket } from '../../services/socket-config';
-import {AlertBox} from "../index";
+import { useEffect } from 'react';
+import { findUnreadNotificationsThunk } from '../../redux/notificationSlice';
 
 /**
  * Displays the main navigation menu of the app.
  */
 function Navigation() {
   const { pathname } = useLocation();
-  const dispatch = useDispatch();
-  const notifications = useSelector((state) => state.user.unreadNotifications);
-  const [error, setError] = useState();
-
   const authUser = useSelector((state) => state.user.data);
-
-  // find all the unread notifications for a given user
-  const findUnreadNotifications = async () => {
-    const res = await findUnreadNotificationsForUser(authUser.id);
-    if (res.error) {
-      return setError('We ran into an issue. Please try again later.');
-    }
-    dispatch(setUnreadNotifications(res));
-  };
+  const dispatch = useDispatch();
+  const unreadNotifications = useSelector(
+    (state) => state.notifications.unread
+  );
 
   let notificationColor;
-  if (notifications.length > 0) {
+  if (unreadNotifications.length > 0) {
     notificationColor = '#2a9fd6';
   } else {
     notificationColor = 'white';
   }
 
-  const listenForNewNotificationsOnSocket = async () => {
-    socket.emit('JOIN_ROOM'); // Server will assign room for user based on session.
-    socket.on('NEW_NOTIFICATION', () => {
-      findUnreadNotifications();
-    });
-  };
-
   useEffect(() => {
-    listenForNewNotificationsOnSocket();
-    findUnreadNotifications();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    dispatch(findUnreadNotificationsThunk());
   }, []);
 
   const links = [
@@ -75,7 +53,7 @@ function Navigation() {
     {
       label: 'Profile',
       icon: 'fa-user',
-      path: '/profile/my-tuits',
+      path: `/${authUser.username}`,
       color: 'white',
     },
     {
@@ -107,12 +85,12 @@ function Navigation() {
                     style={{ color: link.color }}
                   >
                     {link.label === 'Notifications' &&
-                    notifications.length > 0 ? (
+                    unreadNotifications.length > 0 ? (
                       <span
                         className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger'
                         style={{ fontSize: '.7rem' }}
                       >
-                        {notifications.length}
+                        {unreadNotifications.length}
                       </span>
                     ) : null}
                   </i>
@@ -123,7 +101,6 @@ function Navigation() {
           );
         })}
       </ul>
-      {error && <AlertBox message={error}/>}
     </div>
   );
 }

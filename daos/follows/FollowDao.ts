@@ -34,10 +34,19 @@ export default class FollowDao implements IFollowDao {
     followee: string
   ): Promise<IFollow> => {
     try {
-      return await this.followModel.create({
-        follower: follower,
-        followee: followee,
-      });
+      const follow = await this.followModel.findOneAndUpdate(
+        {
+          follower: follower,
+          followee: followee,
+        },
+        {},
+        { upsert: true, new: true }
+      );
+
+      return this.errorHandler.objectOrNullException(
+        follow,
+        FollowDaoErrors.NO_FOLLOW_FOUND
+      );
     } catch (err) {
       throw this.errorHandler.handleError(
         FollowDaoErrors.DB_ERROR_USER_FOLLOWS_USER,
@@ -61,6 +70,7 @@ export default class FollowDao implements IFollowDao {
         follower: follower,
         followee: followee,
       });
+
       this.errorHandler.objectOrNullException(
         deletedFollow,
         FollowDaoErrors.NO_FOLLOW_FOUND

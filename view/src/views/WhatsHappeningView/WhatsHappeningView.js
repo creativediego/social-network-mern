@@ -5,13 +5,13 @@ import './WhatsHappeningView.css';
 function WhatsHappeningView() {
   return (
     <div className='ttr-whats-happening p-2'>
-      <div className='ttr-search position-relative'>
+      {/* <div className='ttr-search position-relative'>
         <i className='fas fa-search position-absolute'></i>
         <input
           className='bg-secondary bg-opacity-10 border-0 form-control form-control-lg rounded-pill ps-5'
           placeholder='Search Tuiter'
         />
-      </div>
+      </div> */}
       <div className='bg-secondary bg-opacity-10 ttr-rounded-15px mt-2 p-2'>
         <h5>What's happening</h5>
         {whatsHappening.map((wh) => {

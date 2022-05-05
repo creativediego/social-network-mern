@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearFoundUsers, findUsersByNameThunk } from '../../redux/userSlice';
+import { clearFoundUsers } from '../../redux/messageSlice';
+import { findUsersByNameThunk } from '../../redux/messageThunks';
 import Search from '../Search/Search';
 
 /**
@@ -10,7 +11,9 @@ import Search from '../Search/Search';
  */
 const FindUsers = ({ selectedUsers, setSelectedUsers }) => {
   const dispatch = useDispatch();
-  const allFoundUsers = useSelector((state) => state.user.foundUsers);
+  const allFoundUsers = useSelector(
+    (state) => state.messages.foundUsersForNewChat
+  );
   const [searchValue, setSearchValue] = useState('');
 
   /**
@@ -21,13 +24,13 @@ const FindUsers = ({ selectedUsers, setSelectedUsers }) => {
       if (!searchValue) return;
       return dispatch(findUsersByNameThunk(searchValue));
     },
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [searchValue]
   );
 
   useEffect(() => {
     findAllUsers(searchValue);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [findAllUsers]);
 
   /**

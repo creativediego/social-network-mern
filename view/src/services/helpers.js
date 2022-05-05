@@ -7,5 +7,11 @@ export const processError = (err) => {
   if (err.response.data.error) {
     return err.response.data;
   }
-  return { error: 'Sorry! Something went wrong.' };
+  return { error: 'Sorry! Something went wrong.', status: err.response.status };
+};
+
+export const setHeaders = function (config) {
+  const token = localStorage.getItem('token');
+  config.headers.authorization = token;
+  return config;
 };

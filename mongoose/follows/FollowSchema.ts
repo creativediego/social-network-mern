@@ -51,8 +51,9 @@ FollowSchema.index(
 /**
  * Check if users exist before updating follow status to accepted. Then increment follower/followee counts on the user document.
  */
-FollowSchema.pre('updateOne', async function (next): Promise<void> {
+FollowSchema.post('findOneAndUpdate', async function (next): Promise<void> {
   const doc: IFollow | null = await FollowModel.findOne(this.getQuery());
+  // console.log(doc);
   const existingFollower: IUser | null = await UserModel.findOneAndUpdate(
     { _id: doc?.follower },
     { $inc: { followeeCount: 1 } }
