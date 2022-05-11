@@ -25,7 +25,11 @@ import BcryptHasher from '../controllers/auth/BcryptHasher';
 import { handleCentralError } from '../errors/handleCentralError';
 import AuthController from '../controllers/auth/AuthController';
 import IAuthController from '../controllers/auth/IAuthController';
-import { jwtService, socketService } from './configServices';
+import {
+  jwtService,
+  socketService,
+  firebaseJWTService,
+} from './configServices';
 
 let alreadyCreated = false;
 const hasher = new BcryptHasher(10);

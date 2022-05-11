@@ -35,9 +35,11 @@ export const createTuitThunk = createAsyncThunk(
 export const deleteTuitThunk = createAsyncThunk(
   'tuits/deleteTuit',
   async (tuitId, ThunkAPI) => {
-    const newTuit = await deleteTuit(tuitId);
-    ThunkAPI.dispatch(findAllTuitsThunk());
-    return dataOrStateError(newTuit, ThunkAPI);
+    const deletedTuitCount = await deleteTuit(tuitId);
+    if (!deletedTuitCount.error) {
+      ThunkAPI.dispatch(updateTuits(tuitId));
+    }
+    return dataOrStateError(deletedTuitCount, ThunkAPI);
   }
 );
 
@@ -46,6 +48,20 @@ const tuitSlice = createSlice({
   initialState: {
     list: [],
     loading: false,
+  },
+  reducers: {
+    setTuits: (state, action) => {
+      state.list = action.payload;
+      console.log('setting', state.list);
+    },
+    updateTuits: (state, action) => {
+      state.list = state.list.filter((tuit) => tuit.id !== action.payload);
+      console.log(state.list);
+    },
+    clearTuits: (state) => {
+      console.log('clearing', state.list);
+      state.list = [];
+    },
   },
   extraReducers: {
     // for the async thunks
@@ -79,5 +95,5 @@ const tuitSlice = createSlice({
     },
   },
 });
-
+export const { setTuits, clearTuits, updateTuits } = tuitSlice.actions;
 export default tuitSlice.reducer;

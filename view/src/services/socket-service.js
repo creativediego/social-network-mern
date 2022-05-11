@@ -46,7 +46,7 @@ export const enableListeners = (ThunkAPI) => {
     },
     query: { token: localStorage.getItem('token') },
     transports: ['polling'],
-    // reconnection: false,
+    reconnection: false,
   });
   if (listening) {
     return;

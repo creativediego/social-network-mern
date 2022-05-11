@@ -161,7 +161,7 @@ export default class LikeController implements ILikeController {
    */
   findAllTuitsLikedByUser = async (req: HttpRequest): Promise<HttpResponse> => {
     const likedTuits: ITuit[] = await this.likeDao.findAllTuitsLikedByUser(
-      req.user.id
+      req.params.userId
     );
     return okResponse(likedTuits);
   };
@@ -170,7 +170,7 @@ export default class LikeController implements ILikeController {
     req: HttpRequest
   ): Promise<HttpResponse> => {
     const likedTuits: ITuit[] = await this.likeDao.findAllTuitsDislikedByUser(
-      req.user.id
+      req.params.userId
     );
     return okResponse(likedTuits);
   };

@@ -53,7 +53,7 @@ function Navigation() {
     {
       label: 'Profile',
       icon: 'fa-user',
-      path: `/${authUser.username}`,
+      path: `/${authUser.id}/tuits`,
       color: 'white',
     },
     {

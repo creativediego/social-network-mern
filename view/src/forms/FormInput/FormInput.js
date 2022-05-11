@@ -12,9 +12,11 @@ const FormInput = (props) => {
   const { errorMessage, onChange, label, dataTestId, ...inputProps } = props;
   return (
     <span>
-      <label htmlFor={label} className='form-label'></label>
+      <label htmlFor={label} className='form-label'>
+        {label}
+      </label>
       <input
-        className='form-control'
+        className='form-control mb-3'
         data-testid={dataTestId}
         onChange={onChange}
         {...inputProps}

@@ -7,7 +7,7 @@
 }
 
 #chat-window {
-    height: 70vh;
+    height: 60vh;
     overflow: scroll;
     overflow-x: hidden;
     padding: 1rem;

@@ -2,17 +2,16 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 
-const ProfileNav = () => {
-  const { username } = useParams();
+const ProfileNav = ({ userId }) => {
   const navItems = [
     {
-      title: 'My Tuits',
-      link: `/${username}/my-tuits`,
+      title: 'Tuits',
+      link: `/${userId}/tuits`,
     },
-    { title: 'Likes', link: `/${username}/my-likes` },
-    { title: 'Dislikes', link: `/${username}/my-dislikes` },
-    { title: 'Tuits and Replies', link: `/${username}/tuits-and-replies` },
-    { title: 'Media', link: `/${username}/my-media` },
+    { title: 'Likes', link: `/${userId}/likes` },
+    { title: 'Dislikes', link: `/${userId}/dislikes` },
+    // { title: 'Tuits and Replies', link: `/${userId}/tuits-and-replies` },
+    // { title: 'Media', link: `/${userId}/media` },
   ];
   return (
     <ul className='mt-4 nav nav-pills nav-fill'>

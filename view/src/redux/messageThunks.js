@@ -36,7 +36,6 @@ export const findMessagesByConversationThunk = createAsyncThunk(
       userId,
       conversationId
     );
-    console.log('conversation', conversation);
     let messages = await messageAPI.findMessagesByConversation(
       userId,
       conversationId
@@ -61,7 +60,6 @@ export const sendMessageThunk = createAsyncThunk(
       conversationId,
       message
     );
-    console.log(newMessage);
     // ThunkAPI.dispatch(findMessagesByConversationThunk(conversationId));
     // push message to front of array in state
     return dataOrStateError(newMessage, ThunkAPI);

@@ -1,14 +1,14 @@
 import React from 'react';
 import { SignupForm } from '../../forms';
 import { LoginForm } from '../../forms';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AlertBox } from '../../components';
+import { loginWithGoogleThunk } from '../../redux/userSlice';
 
 const LoginView = () => {
   const error = useSelector((state) => state.error.data);
-  const google = () => {
-    window.open(`${process.env.REACT_APP_API_URL}/auth/google`, '_self');
-  };
+  const dispatch = useDispatch();
+
   return (
     <div>
       <h1 className='fs-1 home-heading-primary'>Happening Now</h1>
@@ -18,7 +18,10 @@ const LoginView = () => {
           <LoginForm />
         </div>
         <div className='d-flex justify-content-between'>
-          <div className='btn btn-primary rounded-pill' onClick={google}>
+          <div
+            className='btn btn-primary rounded-pill'
+            onClick={() => dispatch(loginWithGoogleThunk())}
+          >
             <i className='fa-brands fa-google'></i> Login with Google
           </div>
         </div>

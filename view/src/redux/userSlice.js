@@ -2,10 +2,11 @@
  * Includes redux state management for user actions such as login and update user.
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { register, getProfile, login, logout } from '../services/auth-service';
-import { findUserByUsername, updateUser } from '../services/users-service';
+import { register, getProfile, login } from '../services/auth-service';
+import { updateUser } from '../services/users-service';
 import { dataOrStateError } from './helpers';
 import * as socketService from '../services/socket-service';
+import { loginWithGoogle } from '../services/firebase-auth';
 
 /**
  * Updates redux state with user profile after calling getProfile from user service.
@@ -44,8 +45,19 @@ export const loginThunk = createAsyncThunk(
     if (!res.error) {
       socketService.enableListeners(ThunkAPI);
     }
-
     return dataOrStateError(res, ThunkAPI);
+  }
+);
+
+export const loginWithGoogleThunk = createAsyncThunk(
+  'users/loginWithGoogle',
+  async (user, ThunkAPI) => {
+    const profile = await loginWithGoogle();
+    if (!profile.error) {
+      socketService.enableListeners(ThunkAPI);
+    }
+    console.log('profile', profile);
+    return dataOrStateError(profile, ThunkAPI);
   }
 );
 
@@ -67,6 +79,7 @@ export const logoutThunk = createAsyncThunk(
 export const updateUserThunk = createAsyncThunk(
   'users/update',
   async (user, ThunkAPI) => {
+    console.log('user to be updatesd', user);
     const res = await updateUser(user);
     return dataOrStateError(res, ThunkAPI);
   }
@@ -102,10 +115,13 @@ const userSlice = createSlice({
     setUnreadNotifications: (state, action) => {
       state.unreadNotifications = action.payload;
     },
-    clearUser(state) {
+    clearUser: (state) => {
       state.data = null;
       state.profileComplete = null;
       state.token = null;
+    },
+    updateAuthUser: (state, action) => {
+      state.data = { ...state.data, ...action.payload };
     },
   },
   extraReducers: {
@@ -139,6 +155,16 @@ const userSlice = createSlice({
       state.token = action.payload.token;
       checkProfileComplete(state, action.payload.user);
     },
+    [loginWithGoogleThunk.rejected]: (state, action) => {
+      state.loading = false;
+    },
+    [loginWithGoogleThunk.pending]: (state) => {
+      state.loading = true;
+    },
+    [loginWithGoogleThunk.fulfilled]: (state, action) => {
+      state.loading = false;
+      checkProfileComplete(state, action.payload);
+    },
     [loginThunk.rejected]: (state, action) => {
       state.loading = false;
     },
@@ -150,6 +176,7 @@ const userSlice = createSlice({
       state.data = null;
       state.profileComplete = false;
     },
+
     [logoutThunk.rejected]: (state) => {
       state.loading = false;
       state.data = null;
@@ -162,5 +189,6 @@ export const {
   setNotifications,
   setUnreadNotifications,
   clearUser,
+  updateAuthUser,
 } = userSlice.actions;
 export default userSlice.reducer;

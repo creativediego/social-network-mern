@@ -27,12 +27,12 @@ const CreateTuit = () => {
       ></textarea>
       <div className='row'>
         <div className='col-10 ttr-font-size-150pc text-primary'>
-          <i className='fas fa-portrait me-3'></i>
-          <i className='far fa-gif me-3'></i>
+          <i className='fas fa-image me-3'></i>
+          {/* <i className='far fa-gif me-3'></i>
           <i className='far fa-bar-chart me-3'></i>
           <i className='far fa-face-smile me-3'></i>
           <i className='far fa-calendar me-3'></i>
-          <i className='far fa-map-location me-3'></i>
+          <i className='far fa-map-location me-3'></i> */}
         </div>
         <div className='col-2'>
           <button

@@ -52,6 +52,6 @@ const UserSchema = new mongoose.Schema<IUser>(
   { timestamps: true, collection: 'users' }
 );
 
-formatJSON(UserSchema);
 formatUserJSON(UserSchema);
+formatJSON(UserSchema);
 export default UserSchema;

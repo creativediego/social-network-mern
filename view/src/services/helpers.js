@@ -15,3 +15,9 @@ export const setHeaders = function (config) {
   config.headers.authorization = token;
   return config;
 };
+
+export const setAuthToken = (token) => {
+  localStorage.setItem('token', token);
+};
+
+export const getAuthToken = (token) => localStorage.getItem('token', token);

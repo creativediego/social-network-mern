@@ -3,7 +3,10 @@ import express, { Request, Response } from 'express';
 import configGlobalMiddleware from './config/configGlobalMiddleware';
 import createControllers from './config/createControllers';
 import configDatabase from './config/configDatabase';
-import { handleUncaughtException } from './errors/handleCentralError';
+import {
+  handleCentralError,
+  handleUncaughtException,
+} from './errors/handleCentralError';
 import path from 'path';
 import { app, httpServer } from './config/configExpress';
 dotenv.config();
@@ -12,6 +15,7 @@ configDatabase(process.env.MONGO_URL!);
 configGlobalMiddleware(app);
 createControllers(app);
 handleUncaughtException();
+app.use(handleCentralError);
 
 if (process.env.NODE_ENV! === 'PRODUCTION') {
   app.set('trust proxy', 1); // trust first proxy

@@ -29,7 +29,7 @@ function TuiterView() {
           <Routes>
             <Route path='/' element={<HomeView />} />
             <Route path='/tuiter' element={<HomeView />} />
-            <Route path='/:username/*' element={<ProfileView />} />
+            <Route path='/:userId/*' element={<ProfileView />} />
             <Route path='/home' element={<HomeView />} />
             <Route path='/home/:uid' element={<HomeView />} />
             <Route path='/explore' element={<ExploreView />} />

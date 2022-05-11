@@ -30,6 +30,7 @@ const messageSlice = createSlice({
       state.activeChat.participants = conversation.participants;
     },
     updateChat: (state, action) => {
+      console.log('update chat');
       const conversation = action.payload.conversation.id;
       if (conversation === state.activeChat.id) {
         state.activeChat.messages.push(action.payload);

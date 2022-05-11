@@ -21,7 +21,7 @@ export const createUser = (user) =>
 export const updateUser = (user) =>
   api
     .put(`${USERS_API}/${user.id}`, user)
-    .then((response) => response.data.body)
+    .then((response) => response.data)
     .catch((err) => err.response.data);
 
 // Find all users in the system. Primarily useful for testing purposes.

@@ -17,3 +17,4 @@ node_modules
 coverage
 out
 package-lock.json
+serviceAccount.js

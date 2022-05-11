@@ -8,28 +8,31 @@ import MyTuits from './MyTuits';
 import MyLikes from './MyLikes';
 import MyDislikes from './MyDislikes';
 import ProfileNav from './ProfileNav';
-import { findUserByUsername } from '../../services/users-service';
+import { findUserById, findUserByUsername } from '../../services/users-service';
 import { setGlobalError } from '../../redux/errorSlice';
 import { Loader } from '../../components';
 import FollowButton from './FollowButton';
+import UpdateProfileForm from '../../forms/UpdateProfileForm/UpdateProfileForm';
 
 const ProfileView = () => {
   const dispatch = useDispatch();
-  const [user, setUser] = useState({ id: null });
+  const { userId } = useParams();
+  const [user, setUser] = useState({ id: userId });
   const [loading, setLoading] = useState(false);
   const authUser = useSelector((state) => state.user.data);
-  const { username } = useParams();
   const isAuthUser = user.id === authUser.id;
   const findUser = async () => {
     setLoading(true);
-    const user = await findUserByUsername(username);
+    const user = await findUserById(userId);
     setLoading(false);
     if (user.error) {
       return dispatch(setGlobalError(user));
     }
     setUser({ ...user, user });
   };
-  useEffect(() => findUser(), [username]);
+  useEffect(() => {
+    findUser();
+  }, [userId]);
   return (
     <div>
       {loading && (
@@ -45,12 +48,19 @@ const ProfileView = () => {
               <i className='fa fa-badge-check text-primary'></i>
             </h5>
             {/* <span className='ps-2'>{user.tuitCount} Tuits</span> */}
-            <div className='mb-5 position-relative'>
-              <img
+            <div
+              className='mb-5 position-relative bg-dark'
+              style={{
+                backgroundImage: `url('${user.headerImage})`,
+                backgroundSize: 'cover',
+                height: '200px',
+              }}
+            >
+              {/* <img
                 className='w-100'
-                src='../images/nasa-profile-header.jpg'
+           
                 alt='profile header'
-              />
+              /> */}
               <div className='bottom-0 left-0 position-absolute'>
                 <div className='position-relative'>
                   <img
@@ -63,12 +73,7 @@ const ProfileView = () => {
               {isAuthUser && (
                 <span>
                   <LogoutButton />
-                  <Link
-                    to='/profile/edit'
-                    className='mt-2 me-2 btn btn-large btn-light border border-secondary fw-bolder rounded-pill fa-pull-right'
-                  >
-                    Edit profile
-                  </Link>
+                  <UpdateProfileForm />
                 </span>
               )}
             </div>
@@ -101,13 +106,13 @@ const ProfileView = () => {
               {!isAuthUser && (
                 <FollowButton userToFollow={user} setProfileUser={setUser} />
               )}
-              <ProfileNav />
+              <ProfileNav userId={user.id} />
             </div>
           </div>
           <Routes>
-            <Route path='/my-tuits' element={<MyTuits />} />
-            <Route path='/my-likes' element={<MyLikes />} />
-            <Route path='/my-dislikes' element={<MyDislikes />} />
+            <Route path='/tuits' element={<MyTuits userId={user.id} />} />
+            <Route path='/likes' element={<MyLikes userId={user.id} />} />
+            <Route path='/dislikes' element={<MyDislikes userId={user.id} />} />
 
             {/* <Route path='/tuits-and-replies' element={<TuitsAndReplies />} /> */}
             {/* <Route path='/media' element={<Media />} />

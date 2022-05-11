@@ -8,13 +8,13 @@ import IHasher from './IHasher';
 import { validateRegistration } from '../middleware/validateUser';
 import { validateResults } from '../middleware/validateResults';
 import { isAuthenticated } from './isAuthenticated';
-import { okResponse } from '../shared/createResponse';
+import { okResponse, unauthorizedResponse } from '../shared/createResponse';
 import HttpResponse from '../shared/HttpResponse';
 import { adaptRequest } from '../shared/adaptRequest';
 import jwt from 'jsonwebtoken';
 import HttpRequest from '../shared/HttpRequest';
 import IAuthController from './IAuthController';
-import JWTService from '../../services/JWTService';
+import IJWTService from '../../services/IJWTService';
 dotenv.config();
 
 /**
@@ -24,13 +24,13 @@ export default class AuthController implements IAuthController {
   private readonly dao: IDao<IUser>;
   private readonly path: string;
   private readonly hasher: IHasher;
-  private readonly jwtService: JWTService;
+  private readonly jwtService: IJWTService;
 
   public constructor(
     app: Express,
     dao: IDao<IUser>,
     hasher: IHasher,
-    jwtService: JWTService
+    jwtService: IJWTService
   ) {
     this.dao = dao;
     this.jwtService = jwtService;
@@ -82,9 +82,7 @@ export default class AuthController implements IAuthController {
       const user: any = req.user;
       return okResponse(user);
     } else {
-      throw new UnauthorizedException(
-        'Failed to get user session. Unauthorized.'
-      );
+      return unauthorizedResponse({ error: 'failed to get profile' });
     }
   };
 

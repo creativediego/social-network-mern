@@ -23,4 +23,4 @@ export const getProfile = () =>
   api
     .get(`${SECURITY_API}/profile`)
     .then((response) => response.data)
-    .catch((err) => '');
+    .catch((err) => processError(err));

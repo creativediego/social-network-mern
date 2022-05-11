@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import IJWTService from './IJWTService';
 dotenv.config();
-export default class JWTService {
+export default class JWTService implements IJWTService {
   public constructor() {}
 
   verifyToken = (token: string): any => {

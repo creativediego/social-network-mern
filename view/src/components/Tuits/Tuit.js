@@ -22,7 +22,7 @@ const Tuit = ({ tuitFromList }) => {
     tuit && (
       <TuitContext.Provider value={[tuit, setTuit]}>
         <li className='p-2 ttr-tuit list-group-item d-flex rounded-0'>
-          <Link to={`/${tuit.author.username}`}>
+          <Link to={`/${tuit.author.id}/tuits`}>
             <div className='pe-2'>
               {tuit.author && (
                 <img
@@ -41,7 +41,7 @@ const Tuit = ({ tuitFromList }) => {
             {userId === tuit.author.id ? ( // only delete if tuit belongs to user
               <i
                 onClick={() => handleDeleteTuit(tuit.id)}
-                className='fas btn fa-remove fa-2x fa-pull-right'
+                className='fa-duotone fa-trash-xmark btn fa-2x fa-pull-right fs-6 text-danger'
               ></i>
             ) : null}
             <p className='fs-6 fw-bold'>

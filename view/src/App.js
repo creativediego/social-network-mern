@@ -8,13 +8,16 @@ import { Routes, Route, HashRouter } from 'react-router-dom';
 import { Loader } from './components';
 
 import { fetchProfileThunk } from './redux/userSlice';
+import { getAuthToken } from './services/helpers';
 
 function App() {
   const profileComplete = useSelector((state) => state.user.profileComplete);
   const loading = useSelector((state) => state.user.loading);
   const dispatch = useDispatch();
+  const authToken = getAuthToken();
 
   useEffect(() => {
+    if (!authToken) return;
     dispatch(fetchProfileThunk());
   }, []);
 
