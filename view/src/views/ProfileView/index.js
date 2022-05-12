@@ -33,7 +33,7 @@ const ProfileView = () => {
   };
   useEffect(() => {
     findUser();
-  }, [userId]);
+  }, [userId, authUser]);
   return (
     <div>
       {loading && (
@@ -45,7 +45,7 @@ const ProfileView = () => {
         <div className='ttr-profile'>
           <div className='border border-bottom-0'>
             <h5 className='p-2 mb-0 pb-0 fw-bolder'>
-              {user.name ? `${user.name}` : ''}
+              {user.name || user.firstName}
               <i className='fa fa-badge-check text-primary'></i>
             </h5>
             {/* <span className='ps-2'>{user.tuitCount} Tuits</span> */}
@@ -63,7 +63,7 @@ const ProfileView = () => {
                 alt='profile header'
               /> */}
               <div className='bottom-0 top-50 left-0  position-absolute rounded-circle'>
-                <AvatarImage user={authUser} width='150px' height='150px' />
+                <AvatarImage user={user} width='150px' height='150px' />
               </div>
               {isAuthUser && (
                 <span>
@@ -75,7 +75,7 @@ const ProfileView = () => {
 
             <div className='p-2'>
               <h5 className='fw-bolder pb-0 mb-0'>
-                {`${user.name}`}
+                {user.name || user.firstName}
                 <i className='fa fa-badge-check text-primary'></i>
               </h5>
               <h6 className='pt-0'>{`@${user.username}`}</h6>

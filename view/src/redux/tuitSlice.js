@@ -52,14 +52,11 @@ const tuitSlice = createSlice({
   reducers: {
     setTuits: (state, action) => {
       state.list = action.payload;
-      console.log('setting', state.list);
     },
     updateTuits: (state, action) => {
       state.list = state.list.filter((tuit) => tuit.id !== action.payload);
-      console.log(state.list);
     },
     clearTuits: (state) => {
-      console.log('clearing', state.list);
       state.list = [];
     },
   },

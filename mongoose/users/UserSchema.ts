@@ -25,7 +25,7 @@ import { formatUserJSON } from '../util/formatUserJSON';
  */
 const UserSchema = new mongoose.Schema<IUser>(
   {
-    username: { type: String },
+    username: { type: String, unique: true },
     name: { type: String, required: true },
     password: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -39,6 +39,7 @@ const UserSchema = new mongoose.Schema<IUser>(
     accountType: {
       type: String,
       enum: AccountType,
+      default: AccountType.Personal,
       // required: true,
     },
     accountStatus: {

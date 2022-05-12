@@ -51,7 +51,7 @@ const createControllers = (app: Express): void => {
     app,
     userDao,
     hasher,
-    jwtService
+    firebaseJWTService
   );
   const tuitController: ITuitController = new TuitController(
     '/api/v1',

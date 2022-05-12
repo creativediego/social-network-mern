@@ -16,7 +16,7 @@ export const dataOrStateError = (APIdata, ThunkAPI) => {
       return ThunkAPI.dispatch(setGlobalError(APIdata)); //update errors
     }
   }
-  ThunkAPI.dispatch(setGlobalError({ error: '' })); //clear errors
+  ThunkAPI.dispatch(setGlobalError({ error: undefined })); //clear errors
   return APIdata;
 };
 

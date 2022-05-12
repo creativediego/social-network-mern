@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { processError } from './helpers';
-import { setHeaders } from './helpers';
+import { loadRequestInterceptors } from './helpers';
 const SECURITY_API = `${process.env.REACT_APP_API_URL}/auth`;
 
 const api = axios.create();
 // api.defaults.headers.common['authorization'] = localStorage.getItem('token');
-api.interceptors.request.use(setHeaders);
+api.interceptors.request.use(loadRequestInterceptors);
 
 export const register = (user) =>
   api

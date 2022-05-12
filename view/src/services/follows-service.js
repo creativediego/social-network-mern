@@ -1,11 +1,11 @@
 import axios from 'axios';
-import { setHeaders } from './helpers';
+import { loadRequestInterceptors } from './helpers';
 const BASE_URL = process.env.REACT_APP_API_URL;
 
 const USERS_API = `${BASE_URL}/users`;
 
 const api = axios.create();
-api.interceptors.request.use(setHeaders);
+api.interceptors.request.use(loadRequestInterceptors);
 // This service exposes operations relating to the follows resource, by calling the backend Follows API
 
 // Create a Follows object encompassing the relationship between the given users

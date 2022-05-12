@@ -67,12 +67,16 @@ export default class AuthController implements IAuthController {
       id: databaseUser._id,
       username: databaseUser.username,
       name: databaseUser.name,
+      email: databaseUser.name,
       profilePhoto: databaseUser.profilePhoto,
+      headerImage: databaseUser.headerImage,
+      bio: databaseUser.bio,
+      birthday: databaseUser.birthday,
       followerCount: databaseUser.followerCount,
       followeeCount: databaseUser.followeeCount,
     };
 
-    const token = this.jwtService.signToken(user);
+    const token = await this.jwtService.signToken(user);
 
     return okResponse({ user, token });
   };

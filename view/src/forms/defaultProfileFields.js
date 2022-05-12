@@ -1,54 +1,3 @@
-// export const inputs = [
-//   {
-//     id: 1,
-//     name: 'name',
-//     type: 'text',
-//     placeholder: 'name',
-//     errorMessage:
-//       "name should be 3-15 characters and shouldn't include any special character!",
-//     label: 'name',
-//     pattern: "^[A-Za-z0-9 ,.'-]{3,15}$",
-//     required: true,
-//   },
-//   {
-//     id: 2,
-//     name: 'username',
-//     type: 'text',
-//     placeholder: 'Username',
-//     errorMessage:
-//       "Username should be 3-16 characters and shouldn't include any special character!",
-//     label: 'Username',
-//     pattern: '^[A-Za-z0-9]{3,16}$',
-//     required: true,
-//   },
-//   {
-//     id: 3,
-//     name: 'email',
-//     type: 'email',
-//     placeholder: 'Email',
-//     errorMessage: 'It should be a valid email address!',
-//     label: 'Email',
-//     required: true,
-//   },
-//   {
-//     id: 4,
-//     name: 'birthday',
-//     type: 'date',
-//     placeholder: 'birthday',
-//     label: 'birthday',
-//   },
-//   {
-//     id: 5,
-//     name: 'bio',
-//     type: 'text',
-//     placeholder: 'bio',
-//     errorMessage: 'Bio should not exceed 280 characters.',
-//     label: 'bio',
-//     pattern: '/^.{0,280}$/',
-//     required: false,
-//   },
-// ];
-
 export const defaultProfileFields = [
   {
     id: 0,
@@ -76,9 +25,9 @@ export const defaultProfileFields = [
     id: 2,
     name: 'email',
     type: 'email',
-    placeholder: 'Email (optional)',
+    placeholder: 'email',
     errorMessage: 'It should be a valid email address!',
-    label: 'Email',
+    label: 'email',
     required: true,
   },
   {

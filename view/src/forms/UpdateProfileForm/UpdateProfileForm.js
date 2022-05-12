@@ -9,6 +9,7 @@ import { defaultProfileFields } from '../defaultProfileFields';
 // upload photo -> update user in state -> make API call and update user again
 const UpdateProfileForm = () => {
   const [showEditProfile, setShowEditProfile] = useState(false);
+  const error = useSelector((state) => state.error.data);
 
   const dispatch = useDispatch();
   const authUser = useSelector((state) => state.user.data);
@@ -19,7 +20,14 @@ const UpdateProfileForm = () => {
   };
   const handleUpdateProfile = async () => {
     dispatch(updateUserThunk(profileValues));
+    setShowEditProfile(false);
   };
+
+  useEffect(() => {
+    if (error) {
+      setShowEditProfile(true);
+    }
+  }, [error]);
 
   const profileInputs = () => (
     <div>
@@ -47,6 +55,7 @@ const UpdateProfileForm = () => {
     handleSubmit: handleUpdateProfile,
     show: showEditProfile,
     setShow: setShowEditProfile,
+    error: error,
   };
 
   return (

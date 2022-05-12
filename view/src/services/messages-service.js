@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { setHeaders } from './helpers';
+import { loadRequestInterceptors } from './helpers';
 import { processError } from './helpers';
 
 const BASE_URL = process.env.REACT_APP_API_URL;
@@ -7,7 +7,7 @@ const MESSAGES_API = `${BASE_URL}/users`;
 
 const api = axios.create();
 // api.defaults.headers.common['authorization'] = localStorage.getItem('token');
-api.interceptors.request.use(setHeaders);
+api.interceptors.request.use(loadRequestInterceptors);
 /**
  * Create a new message for an existing conversation by using the existing
  * id of the conversation this message belongs to. Also interact with the

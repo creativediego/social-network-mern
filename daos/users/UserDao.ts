@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import IUser from '../../models/users/IUser';
 import IErrorHandler from '../../errors/IErrorHandler';
 import User from '../../models/users/User';
+import DaoDatabaseException from '../../errors/DaoDatabseException';
 
 /**
  * DAO database CRUD operations for the user resource. Takes the injected dependencies of a {@link Model<IUser>} ORM model and an {@link IErrorHandler} error handler.
@@ -22,7 +23,25 @@ export default class UserDao implements IDao<IUser> {
     this.errorHandler = errorHandler;
     Object.freeze(this);
   }
+  checkForDuplicateEmail = async (user: IUser): Promise<IUser | null> => {
+    return await this.model.findOne({ email: user.email });
+  };
+  checkForDuplicateUsername = async (user: IUser): Promise<IUser | null> => {
+    return await this.model.findOne({ username: user.username });
+  };
 
+  checkUniqueFields = async (user: IUser): Promise<void> => {
+    const existingUserWithSameEmail: any = await this.model.findOne({
+      email: user.email,
+    });
+    const existingUserWithSameUserName: any = await this.model.findOne({
+      username: user.username,
+    });
+    if (existingUserWithSameEmail._id.toString() !== user.id)
+      throw new DaoDatabaseException(UserDaoErrors.EMAIL_TAKEN);
+    if (existingUserWithSameUserName._id.toString() !== user.id)
+      throw new DaoDatabaseException(UserDaoErrors.USERNAME_TAKEN);
+  };
   /**
    * Finds all users in the database.
    * @returns an array of all users.
@@ -77,12 +96,9 @@ export default class UserDao implements IDao<IUser> {
     const pattern = RegExp(`${nameOrUsername}`, 'i');
 
     try {
-      return await this.model.find().or([
-        { username: pattern },
-        { name: pattern },
-        // { firstName: pattern },
-        // { lastName: pattern },
-      ]);
+      return await this.model
+        .find()
+        .or([{ username: pattern }, { name: pattern }]);
     } catch (err) {
       throw this.errorHandler.handleError(
         UserDaoErrors.DB_ERROR_FINDING_USER,
@@ -148,6 +164,7 @@ export default class UserDao implements IDao<IUser> {
    * @returns the updated user
    */
   update = async (uid: string, user: IUser): Promise<IUser> => {
+    await this.checkUniqueFields(user);
     try {
       const updatedUser: IUser | null = await this.model.findOneAndUpdate(
         { _id: uid },

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { processError } from './helpers';
-import { setHeaders } from './helpers';
+import { loadRequestInterceptors } from './helpers';
 const BASE_URL = process.env.REACT_APP_API_URL;
 
 const LOGIN_API = `${BASE_URL}/login`;
@@ -8,7 +8,7 @@ const USERS_API = `${BASE_URL}/users`;
 
 const api = axios.create();
 // api.defaults.headers.common['authorization'] = localStorage.getItem('token');
-api.interceptors.request.use(setHeaders);
+api.interceptors.request.use(loadRequestInterceptors);
 /*
  * This service will expose functions which can create, retrieve, update and delete objects of the the users resource by hitting API endpoints in the backend server.
  */

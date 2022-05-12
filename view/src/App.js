@@ -6,24 +6,24 @@ import TuiterView from './views/TuiterView/TuiterView';
 import { LoginView, LandingView } from './views';
 import { Routes, Route, HashRouter } from 'react-router-dom';
 import { Loader } from './components';
-
-import { fetchProfileThunk } from './redux/userSlice';
-import { getAuthToken } from './services/helpers';
+import { clearUser, fetchProfileThunk } from './redux/userSlice';
+import { onFirebaseAuthStateChange } from './services/firebase-auth';
 
 function App() {
   const profileComplete = useSelector((state) => state.user.profileComplete);
+  const authUser = useSelector((state) => state.user.data);
   const loading = useSelector((state) => state.user.loading);
   const dispatch = useDispatch();
-  const authToken = getAuthToken();
 
   useEffect(() => {
-    if (!authToken) return;
-    dispatch(fetchProfileThunk());
+    const actionOnValidLogin = () => dispatch(fetchProfileThunk());
+    const actionOnLoginExpiration = () => dispatch(clearUser());
+    onFirebaseAuthStateChange(actionOnValidLogin, actionOnLoginExpiration);
   }, []);
 
   return (
     <div>
-      {loading ? (
+      {loading && !authUser ? (
         <div className='d-flex vh-100 justify-content-center align-items-center'>
           <Loader loading={loading} size='fs-1' />
           <i className='fa-brands fa-twitter text-primary fs-1 px-2'></i>

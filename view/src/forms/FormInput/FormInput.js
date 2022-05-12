@@ -16,7 +16,7 @@ const FormInput = (props) => {
         {label}
       </label>
       <input
-        className='form-control mb-3'
+        className='form-control mb-2'
         data-testid={dataTestId}
         onChange={onChange}
         {...inputProps}

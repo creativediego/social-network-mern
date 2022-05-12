@@ -61,13 +61,11 @@ const ConversationsInbox = ({ conversations = [] }) => {
   return (
     <div>
       <ul className='ttr-tuits list-group'>
-        {conversations.length > 0 ? (
-          conversations.map((conversation) => (
-            <InboxMessage conversation={conversation} key={conversation.id} />
-          ))
-        ) : (
-          <p>Empty conversations</p>
-        )}
+        {conversations.length > 0
+          ? conversations.map((conversation) => (
+              <InboxMessage conversation={conversation} key={conversation.id} />
+            ))
+          : null}
       </ul>
       <button
         onClick={() => setShowNewMessageModal(true)}

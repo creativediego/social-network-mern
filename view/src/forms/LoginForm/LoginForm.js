@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginThunk } from '../../redux/userSlice';
-
-import { Loader } from '../../components';
+import { Button } from 'react-bootstrap';
+import { Loader, PopupModal } from '../../components';
 import FormInput from '../FormInput/FormInput';
 
 /**
@@ -10,29 +10,27 @@ import FormInput from '../FormInput/FormInput';
  */
 const LoginForm = () => {
   const loading = useSelector((state) => state.user.loading);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginUser, setLoginUser] = useState({
-    username: 'batman',
+    email: 'createideas@hotmail.com',
     password: 'Hello123!',
   });
   const dispatch = useDispatch();
 
-  const submit = async (e) => {
-    e.preventDefault();
-    if (!loginUser || !loginUser.password || !loginUser.username) {
+  const submit = async () => {
+    if (!loginUser || !loginUser.password || !loginUser.email) {
       return;
     }
     dispatch(loginThunk(loginUser));
   };
-  return (
+
+  const form = (
     <form data-testid='login-form'>
-      <h5>Login</h5>
       <FormInput
         dataTestId='login-user'
-        placeholder='email or username'
-        value={loginUser.username}
-        onChange={(e) =>
-          setLoginUser({ ...loginUser, username: e.target.value })
-        }
+        placeholder='email'
+        value={loginUser.email}
+        onChange={(e) => setLoginUser({ ...loginUser, email: e.target.value })}
       />
       <FormInput
         type='password'
@@ -43,15 +41,31 @@ const LoginForm = () => {
           setLoginUser({ ...loginUser, password: e.target.value })
         }
       />
-
-      <button
-        type='submit'
-        onClick={(e) => submit(e)}
-        className='btn btn-primary mb-5 mt-3'
-      >
-        <Loader loading={loading} content='Log in' />
-      </button>
     </form>
+  );
+
+  const loginModalProps = {
+    content: {
+      size: 'md',
+      title: 'Login with email or username',
+      body: form,
+      submitLabel: 'Login',
+    },
+    handleSubmit: () => submit(),
+    show: showLoginModal,
+    setShow: setShowLoginModal,
+  };
+  return (
+    <div>
+      <Button
+        className='rounded-pill w-100'
+        variant='light'
+        onClick={() => setShowLoginModal(true)}
+      >
+        Login with email or username
+      </Button>
+      <PopupModal props={loginModalProps} />
+    </div>
   );
 };
 

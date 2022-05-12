@@ -22,7 +22,7 @@ export const handleCentralError = (
     error: 'Sorry, something went wrong!',
     path: req.path,
   };
-  if (err instanceof BaseError && err.code !== StatusCode.internalError) {
+  if (err instanceof BaseError) {
     clientResponse.status = err.code;
     clientResponse.error = err.message;
   }

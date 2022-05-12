@@ -6,6 +6,11 @@
     border-bottom-left-radius: 0px !important;
 }
 
+.inbox-item:hover {
+    background-color: rgb(47, 51, 54) !important;
+    transition: 0.4s ease-in-out;
+}
+
 #chat-window {
     height: 60vh;
     overflow: scroll;

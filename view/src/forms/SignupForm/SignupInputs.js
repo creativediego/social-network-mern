@@ -43,7 +43,13 @@ const SignupInputs = ({ inputValues, setInputValues, setInputFields }) => {
   const mapRelevantInputs = () => {
     let mappedFields = [];
     if (!user) {
-      mappedFields = inputs;
+      mappedFields = inputs.filter(
+        (input) =>
+          input.name !== 'bio' &&
+          input.name !== 'username' &&
+          input.name !== 'birthday' &&
+          input.name !== 'name'
+      );
     } else if (user && !profileComplete) {
       mappedFields = inputs.filter(
         (input) => !user[input.name] && input.type !== 'password'
@@ -56,7 +62,7 @@ const SignupInputs = ({ inputValues, setInputValues, setInputFields }) => {
     <FormInput
       key={input.id}
       {...input}
-      value={inputValues[input.name]}
+      value={inputValues[input.name] || ''}
       onChange={updateInputValue}
     />
   ));

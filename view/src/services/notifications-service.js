@@ -4,7 +4,7 @@
  */
 
 import axios from 'axios';
-import { setHeaders } from './helpers';
+import { loadRequestInterceptors } from './helpers';
 import { processError } from './helpers';
 
 const NOTIFICATIONS_API = `${process.env.REACT_APP_API_URL}/notifications`;
@@ -12,7 +12,7 @@ const USERS_API = `${process.env.REACT_APP_API_URL}/users`;
 
 const api = axios.create();
 // api.defaults.headers.common['authorization'] = localStorage.getItem('token');
-api.interceptors.request.use(setHeaders);
+api.interceptors.request.use(loadRequestInterceptors);
 /**
  * Find all the notifications for a particular user.
  * @param userId id of the user requesting the latest notifications

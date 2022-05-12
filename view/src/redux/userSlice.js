@@ -4,9 +4,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { register, getProfile, login } from '../services/auth-service';
 import { updateUser } from '../services/users-service';
-import { dataOrStateError } from './helpers';
+import { clearToken, dataOrStateError } from './helpers';
 import * as socketService from '../services/socket-service';
-import { loginWithGoogle } from '../services/firebase-auth';
+import {
+  firebaseLoginWithEmail,
+  firebaseLogout,
+  fireBaseRegisterUser,
+  loginWithGoogle,
+} from '../services/firebase-auth';
 
 /**
  * Updates redux state with user profile after calling getProfile from user service.
@@ -28,8 +33,8 @@ export const fetchProfileThunk = createAsyncThunk(
 export const registerThunk = createAsyncThunk(
   'users/register',
   async (user, ThunkAPI) => {
-    const res = await register(user);
-    return dataOrStateError(res, ThunkAPI);
+    const profile = await fireBaseRegisterUser(user.email, user.password);
+    return dataOrStateError(profile, ThunkAPI);
   }
 );
 
@@ -40,12 +45,11 @@ export const registerThunk = createAsyncThunk(
 export const loginThunk = createAsyncThunk(
   'users/login',
   async (user, ThunkAPI) => {
-    const res = await login(user);
-    localStorage.setItem('token', res.token);
-    if (!res.error) {
+    const authUser = await firebaseLoginWithEmail(user.email, user.password);
+    if (!authUser.error) {
       socketService.enableListeners(ThunkAPI);
     }
-    return dataOrStateError(res, ThunkAPI);
+    return dataOrStateError(authUser, ThunkAPI);
   }
 );
 
@@ -56,7 +60,6 @@ export const loginWithGoogleThunk = createAsyncThunk(
     if (!profile.error) {
       socketService.enableListeners(ThunkAPI);
     }
-    console.log('profile', profile);
     return dataOrStateError(profile, ThunkAPI);
   }
 );
@@ -69,6 +72,7 @@ export const logoutThunk = createAsyncThunk(
   async (user, ThunkAPI) => {
     localStorage.removeItem('token');
     socketService.disconnect();
+    await firebaseLogout(ThunkAPI);
     return;
   }
 );
@@ -79,7 +83,6 @@ export const logoutThunk = createAsyncThunk(
 export const updateUserThunk = createAsyncThunk(
   'users/update',
   async (user, ThunkAPI) => {
-    console.log('user to be updatesd', user);
     const res = await updateUser(user);
     return dataOrStateError(res, ThunkAPI);
   }
@@ -94,7 +97,6 @@ const checkProfileComplete = (state, user) => {
   } else {
     state.profileComplete = true;
   }
-
   return (state.data = user);
 };
 
@@ -120,12 +122,16 @@ const userSlice = createSlice({
       state.data = null;
       state.profileComplete = null;
       state.token = null;
+      clearToken();
     },
     updateAuthUser: (state, action) => {
       state.data = { ...state.data, ...action.payload };
     },
   },
   extraReducers: {
+    [fetchProfileThunk.pending]: (state) => {
+      state.loading = true;
+    },
     [fetchProfileThunk.fulfilled]: (state, action) => {
       state.loading = false;
       if (action.payload.error) return;
@@ -139,22 +145,20 @@ const userSlice = createSlice({
     },
     [updateUserThunk.fulfilled]: (state, action) => {
       state.loading = false;
-      checkProfileComplete(state, action.payload);
+      // if (!action.payload.error) checkProfileComplete(state, action.payload);
     },
     [registerThunk.pending]: (state) => {
       state.loading = true;
     },
     [registerThunk.fulfilled]: (state, action) => {
       state.loading = false;
-      checkProfileComplete(state, action.payload);
+      // checkProfileComplete(state, action.payload);
     },
     [loginThunk.pending]: (state) => {
       state.loading = true;
     },
     [loginThunk.fulfilled]: (state, action) => {
       state.loading = false;
-      state.token = action.payload.token;
-      checkProfileComplete(state, action.payload.user);
     },
     [loginWithGoogleThunk.rejected]: (state, action) => {
       state.loading = false;
@@ -164,7 +168,6 @@ const userSlice = createSlice({
     },
     [loginWithGoogleThunk.fulfilled]: (state, action) => {
       state.loading = false;
-      checkProfileComplete(state, action.payload);
     },
     [loginThunk.rejected]: (state, action) => {
       state.loading = false;

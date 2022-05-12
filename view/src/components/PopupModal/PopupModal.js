@@ -1,5 +1,6 @@
 import { React, useEffect } from 'react';
 import { Button, Modal } from 'react-bootstrap';
+import AlertBox from '../AlertBox/AlertBox';
 
 /**
  * A popup modal that can be dismissed. Takes all content as props.
@@ -14,16 +15,14 @@ import { Button, Modal } from 'react-bootstrap';
  */
 const PopupModal = ({ props }) => {
   const { show, setShow, content, handleSubmit } = props;
-
   useEffect(() => {
     setShow(show);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show]);
   return (
     <div>
       <Modal size={content.size} show={show} onHide={setShow}>
         <Modal.Header closeButton>
-          <Modal.Title>{content.title}</Modal.Title>
+          <h5>{content.title}</h5>
         </Modal.Header>
         <Modal.Body>{content.body}</Modal.Body>
         <Modal.Footer>

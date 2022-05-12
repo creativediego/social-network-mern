@@ -18,4 +18,6 @@ export enum UserDaoErrors {
   NO_USER_TO_DELETE = 'No user by that id to delete.',
   USER_DOES_NOT_EXIST_ID = 'A user by this id does not exist.',
   USER_DOES_NOT_EXIST = 'A user by this username or email does not exist.',
+  EMAIL_TAKEN = 'Email already taken.',
+  USERNAME_TAKEN = 'Username taken',
 }

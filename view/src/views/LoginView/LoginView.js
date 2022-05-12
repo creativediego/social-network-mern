@@ -11,23 +11,27 @@ const LoginView = () => {
 
   return (
     <div>
-      <h1 className='fs-1 home-heading-primary'>Happening Now</h1>
-      <h4>Join Tuiter Today</h4>
+      <h1 className='fs-1'>Happening Now</h1>
       <div className='col-md-7'>
-        <div className='mt-5'>
+        <div className='mt-3'>
+          <h5>Join Tuiter Today</h5>
+          <SignupForm />
+        </div>
+        <hr />
+        <div className='mt-4'>
+          <h2 className='fs-6'>Already have an account?</h2>
           <LoginForm />
         </div>
-        <div className='d-flex justify-content-between'>
+
+        <div className='d-flex justify-content-between mt-3'>
           <div
-            className='btn btn-primary rounded-pill'
+            className='btn btn-light rounded-pill w-100'
             onClick={() => dispatch(loginWithGoogleThunk())}
           >
             <i className='fa-brands fa-google'></i> Login with Google
           </div>
         </div>
-        <div className='mt-5'>
-          <SignupForm />
-        </div>
+
         {error && <AlertBox message={error} />}
       </div>
     </div>

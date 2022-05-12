@@ -17,9 +17,7 @@ const SignupForm = () => {
   const [inputFields, setInputFields] = useState([]);
   const [inputFieldValues, setInputFieldValues] = useState({});
   const [showSignupModal, setShowSignupModal] = useState(false);
-
   const isFormValid = () => {
-    console.log(inputFields);
     for (const input in inputFields) {
       const pattern = inputFields[input].pattern;
       if (pattern) {
@@ -45,7 +43,6 @@ const SignupForm = () => {
     if (authUser && !profileComplete) {
       setShowSignupModal(true);
     }
-    console.log('use effect input values', inputFieldValues);
   }, [authUser]);
 
   const signUpModalProps = {
@@ -98,11 +95,11 @@ const SignupForm = () => {
       ) : (
         <div>
           <Button
-            className='rounded-pill'
+            className='rounded-pill w-100'
             variant='primary'
             onClick={() => setShowSignupModal(true)}
           >
-            Sign up
+            Sign up with email
           </Button>
           <PopupModal props={signUpModalProps} />
         </div>
