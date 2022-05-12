@@ -16,7 +16,7 @@ export const loginWithGoogle = async () => {
   } catch (error) {
     // The AuthCredential type that was used.
     const credential = GoogleAuthProvider.credentialFromError(error);
-    return { error: error.message };
+    return { error: 'Login with Google error: Please try logging in later.' };
   }
 };
 

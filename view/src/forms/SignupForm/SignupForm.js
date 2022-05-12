@@ -4,6 +4,7 @@ import { registerThunk, updateUserThunk } from '../../redux/userSlice';
 import { PopupModal } from '../../components';
 import SignupInputs from './SignupInputs';
 import { Button } from 'react-bootstrap';
+import AvatarUpload from '../UpdateProfileForm/AvatarUpload';
 
 /**
  * Signup form displayed in a pop modal when the user clicks to register.
@@ -11,19 +12,19 @@ import { Button } from 'react-bootstrap';
  */
 const SignupForm = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.data);
+  const authUser = useSelector((state) => state.user.data);
   const profileComplete = useSelector((state) => state.user.profileComplete);
-  const [inputValues, setInputValues] = useState({});
   const [inputFields, setInputFields] = useState([]);
+  const [inputFieldValues, setInputFieldValues] = useState({});
   const [showSignupModal, setShowSignupModal] = useState(false);
 
   const isFormValid = () => {
+    console.log(inputFields);
     for (const input in inputFields) {
       const pattern = inputFields[input].pattern;
       if (pattern) {
         const regex = new RegExp(pattern);
-        const inputValue = inputValues[inputFields[input].name];
-        //
+        const inputValue = inputFieldValues[inputFields[input].name];
         if (!regex.test(inputValue)) return false;
       }
     }
@@ -31,38 +32,21 @@ const SignupForm = () => {
   };
 
   const handleSignup = () => {
-    if (isFormValid()) {
-      dispatch(registerThunk(inputValues));
-    }
+    if (!isFormValid()) return;
+    dispatch(registerThunk(inputFieldValues));
   };
   const handleCompleteSignup = () => {
-    dispatch(updateUserThunk({ id: user.id, ...inputValues }));
+    if (!isFormValid()) return;
+    dispatch(updateUserThunk({ id: authUser.id, ...inputFieldValues }));
   };
 
   useEffect(() => {
-    const defaultInputVales = {
-      name: '',
-      username: '',
-      email: '',
-      birthday: '',
-      password: '',
-      confirmPassword: '',
-      headerImage: '',
-      bio: '',
-      accountType: 'Personal',
-      profilePhoto:
-        'https://deejayfarm.com/wp-content/uploads/2019/10/Profile-pic.jpg',
-    };
-    if (user) {
-      setInputValues({
-        ...defaultInputVales,
-        ...user,
-        // birthday: user.birthday.toISOString().split('T')[0],
-      });
-    } else {
-      setInputValues({ ...defaultInputVales });
+    setInputFieldValues({ ...inputFieldValues, ...authUser });
+    if (authUser && !profileComplete) {
+      setShowSignupModal(true);
     }
-  }, [user, profileComplete]);
+    console.log('use effect input values', inputFieldValues);
+  }, [authUser]);
 
   const signUpModalProps = {
     content: {
@@ -70,8 +54,8 @@ const SignupForm = () => {
       title: 'Create account',
       body: (
         <SignupInputs
-          inputValues={inputValues}
-          setInputValues={setInputValues}
+          inputValues={inputFieldValues}
+          setInputValues={setInputFieldValues}
           setInputFields={setInputFields}
         />
       ),
@@ -86,24 +70,30 @@ const SignupForm = () => {
   const completeSignupModalProps = {
     content: {
       size: 'md',
-      title: 'Create account',
+      title: 'Complete signup',
       body: (
-        <SignupInputs
-          inputValues={inputValues}
-          setInputValues={setInputValues}
-          setInputFields={setInputFields}
-        />
+        <div>
+          <AvatarUpload
+            profileValues={inputFieldValues}
+            setProfileValues={setInputFieldValues}
+          />
+          <SignupInputs
+            inputValues={inputFieldValues}
+            setInputValues={setInputFieldValues}
+            setInputFields={setInputFields}
+          />
+        </div>
       ),
       submitLabel: 'Submit',
     },
     handleSubmit: handleCompleteSignup,
-    show: !showSignupModal,
+    show: showSignupModal,
     setShow: setShowSignupModal,
   };
 
   return (
     <div>
-      {user && !profileComplete ? (
+      {authUser && !profileComplete ? (
         <PopupModal props={completeSignupModalProps} />
       ) : (
         <div>

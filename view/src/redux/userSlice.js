@@ -89,12 +89,13 @@ export const updateUserThunk = createAsyncThunk(
  * Checks if the logged in user in state has complete their profile.
  */
 const checkProfileComplete = (state, user) => {
-  if (!user || (user && !user.username)) {
+  if (!user || !user.username || !user.birthday) {
     state.profileComplete = false;
   } else {
-    state.data = user;
     state.profileComplete = true;
   }
+
+  return (state.data = user);
 };
 
 const userSlice = createSlice({

@@ -5,6 +5,7 @@ import TuitVideo from './TuitVideo';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteTuitThunk } from '../../redux/tuitSlice';
 import { Link } from 'react-router-dom';
+import AvatarImage from '../../views/ProfileView/AvatarImage';
 
 export const TuitContext = createContext();
 
@@ -24,17 +25,18 @@ const Tuit = ({ tuitFromList }) => {
         <li className='p-2 ttr-tuit list-group-item d-flex rounded-0'>
           <Link to={`/${tuit.author.id}/tuits`}>
             <div className='pe-2'>
-              {tuit.author && (
+              <AvatarImage user={tuit.author} width='50px' height='50px' />
+              {/* {tuit.author && (
                 <img
                   src={
                     tuit.author.profilePhoto
                       ? tuit.author.profilePhoto
-                      : `../images/${tuit.author.username}.jpg`
+                      : `../images/default-avatar.png`
                   }
-                  className='ttr-tuit-avatar-logo rounded-circle'
+                  className='ttr-tuit-avatar-logo rounded-circle bg-white'
                   alt='profile'
                 />
-              )}
+              )} */}
             </div>
           </Link>
           <div className='w-100'>

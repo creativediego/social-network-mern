@@ -13,6 +13,7 @@ import { setGlobalError } from '../../redux/errorSlice';
 import { Loader } from '../../components';
 import FollowButton from './FollowButton';
 import UpdateProfileForm from '../../forms/UpdateProfileForm/UpdateProfileForm';
+import AvatarImage from './AvatarImage';
 
 const ProfileView = () => {
   const dispatch = useDispatch();
@@ -61,14 +62,8 @@ const ProfileView = () => {
            
                 alt='profile header'
               /> */}
-              <div className='bottom-0 left-0 position-absolute'>
-                <div className='position-relative'>
-                  <img
-                    className='position-relative img-fluid ttr-z-index-1 ttr-top-40px ttr-width-150px rounded-circle'
-                    alt='user profile'
-                    src={user.profilePhoto}
-                  />
-                </div>
+              <div className='bottom-0 top-50 left-0  position-absolute rounded-circle'>
+                <AvatarImage user={authUser} width='150px' height='150px' />
               </div>
               {isAuthUser && (
                 <span>

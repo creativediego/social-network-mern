@@ -32,7 +32,9 @@ const UserSchema = new mongoose.Schema<IUser>(
     bio: { type: String },
     birthday: { type: Date },
     headerImage: { type: String },
-    profilePhoto: { type: String },
+    profilePhoto: {
+      type: String,
+    },
     // location: { longitude: String, latitude: String, select: false },
     accountType: {
       type: String,
