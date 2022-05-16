@@ -150,7 +150,7 @@ export default class TuitDao implements IDao<ITuit> {
     try {
       const updatedTuit: ITuit | null = await this.tuitModel.findOneAndUpdate(
         { _id: tuitId },
-        { tuit: tuit.tuit },
+        tuit,
         {
           new: true,
         }

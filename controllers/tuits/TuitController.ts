@@ -11,6 +11,7 @@ import { validateResults } from '../middleware/validateResults';
 import AuthException from '../auth/AuthException';
 import { okResponse } from '../shared/createResponse';
 import ISocketService from '../../services/ISocketService';
+import DaoDatabaseException from '../../errors/DaoDatabseException';
 
 /**
  * Handles CRUD requests and responses for the Tuit resource.  Implements {@link ITuitController}.
@@ -92,7 +93,7 @@ export default class TuitController implements ITuitController {
    */
   create = async (req: HttpRequest): Promise<HttpResponse> => {
     const tuit = await this.tuitDao.create({
-      tuit: req.body.tuit,
+      ...req.body,
       author: req.user.id,
     });
     this.socketService.emitToAll('NEW_TUIT', tuit);
@@ -105,13 +106,14 @@ export default class TuitController implements ITuitController {
    * @returns {HttpResponse} the response data to be sent to the client
    */
   update = async (req: HttpRequest): Promise<HttpResponse> => {
-    const tuit: any = {
-      id: req.body.id,
-      tuit: req.body.tuit,
+    let tuit: any = {
+      ...req.body,
     };
-    return {
-      body: await this.tuitDao.update(req.params.tuitId, tuit),
-    };
+    delete tuit.author;
+
+    const updateTuit = await this.tuitDao.update(req.params.tuitId, tuit);
+    this.socketService.emitToAll('UPDATED_TUIT', tuit);
+    return okResponse(updateTuit);
   };
 
   /**

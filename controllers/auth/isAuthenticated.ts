@@ -65,6 +65,6 @@ export const isAuthenticated = async (
     console.log('is authenticated error:', err);
     return res
       .status(StatusCode.forbidden)
-      .json({ error: 'Server error in authenticating user.' });
+      .json({ error: 'Error authenticating credentials. Log in again.' });
   }
 };

@@ -12,6 +12,8 @@ export default interface ITuit {
     replies: number;
     retuits: number;
   };
+  image?: string;
+  gif?: string;
   postedDate?: Date;
   likedBy?: [];
   dislikedBy?: [];

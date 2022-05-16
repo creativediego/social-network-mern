@@ -30,6 +30,10 @@ const TuitSchema = new mongoose.Schema<ITuit>(
       dislikes: { type: Number, default: 0 },
       retuits: { type: Number, default: 0 },
     },
+    image: {
+      type: String,
+      default: '',
+    },
     likedBy: [
       { type: Schema.Types.ObjectId, ref: 'UserModel', required: true },
     ],
@@ -43,15 +47,15 @@ const TuitSchema = new mongoose.Schema<ITuit>(
 /**
  * Ensure uniqueness of each tuit document based on the author and tuit content. Prevents tuits of duplicate content.
  */
-TuitSchema.index(
-  {
-    author: 1,
-    tuit: 1,
-  },
-  {
-    unique: true,
-  }
-);
+// TuitSchema.index(
+//   {
+//     author: 1,
+//     tuit: 1,
+//   },
+//   {
+//     unique: true,
+//   }
+// );
 
 /**
  * Check if user/author FK is valid before creating tuit.

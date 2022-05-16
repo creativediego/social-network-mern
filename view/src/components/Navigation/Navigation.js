@@ -30,7 +30,7 @@ function Navigation() {
   const links = [
     { label: 'Tuiter', icon: 'fa-square-t', path: '/tuiter', color: 'white' },
     { label: 'Home', icon: 'fa-home', path: '/home', color: 'white' },
-    { label: 'Explore', icon: 'fa-hashtag', path: '/explore', color: 'white' },
+    // { label: 'Explore', icon: 'fa-hashtag', path: '/explore', color: 'white' },
     {
       label: 'Notifications',
       icon: 'fa-bell',
@@ -43,12 +43,12 @@ function Navigation() {
       path: '/messages',
       color: 'white',
     },
-    {
-      label: 'Bookmarks',
-      icon: 'fa-bookmark',
-      path: '/bookmarks',
-      color: 'white',
-    },
+    // {
+    //   label: 'Bookmarks',
+    //   icon: 'fa-bookmark',
+    //   path: '/bookmarks',
+    //   color: 'white',
+    // },
     { label: 'Lists', icon: 'fa-list', path: '/lists', color: 'white' },
     {
       label: 'Profile',

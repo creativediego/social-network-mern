@@ -53,15 +53,19 @@ export default class SocketService implements ISocketService {
     Object.freeze(this);
   }
 
-  handleOnConnect = (socket: Socket): void => {
-    console.log('connected to socket: ', socket.id);
+  handleOnConnect = (socket: any): void => {
+    console.log(
+      `Socket connected to user: ${socket.user.username}. Socket id: ${socket.id}`
+    );
     const socketWithUser: any = socket;
     socket.join(socketWithUser.user.id); // room to emit events privately to user
   };
 
-  handleOnDisconnect = (socket: Socket): void => {
+  handleOnDisconnect = (socket: any): void => {
     socket.on('disconnect', (reason: any) => {
-      console.log(`Socket ${socket.id} disconnected. Reason: ${reason}.`);
+      console.log(
+        `User ${socket.user.username} disconnected from socket ${socket.id}. Reason: ${reason}.`
+      );
     });
   };
 

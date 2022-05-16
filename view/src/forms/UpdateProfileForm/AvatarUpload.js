@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Loader } from '../../components';
 import { setGlobalError } from '../../redux/errorSlice';
-import { uploadImage } from '../../services/storage-service';
+import {
+  uploadAvatar,
+  uploadHeaderImage,
+  uploadImage,
+} from '../../services/storage-service';
+import AvatarImage from '../../views/ProfileView/AvatarImage';
 import './AvatarUpload.css';
 
 const AvatarUpload = ({ profileValues, setProfileValues }) => {
@@ -16,9 +21,8 @@ const AvatarUpload = ({ profileValues, setProfileValues }) => {
   const handleUploadAvatar = async () => {
     if (!avatarFile) return;
     setAvatarLoading(true);
-    const fileName = `${authUser.username}-avatar`;
     try {
-      const avatarURL = await uploadImage(fileName, avatarFile);
+      const avatarURL = await uploadAvatar(avatarFile);
       setProfileValues({ ...profileValues, profilePhoto: avatarURL });
       setAvatarLoading(false);
     } catch (err) {
@@ -31,9 +35,8 @@ const AvatarUpload = ({ profileValues, setProfileValues }) => {
   const handleUploadHeaderImage = async () => {
     if (!headerImageFile) return;
     setHeaderLoading(true);
-    const fileName = `${authUser.username}-header`;
     try {
-      const headerImageURL = await uploadImage(fileName, headerImageFile);
+      const headerImageURL = await uploadHeaderImage(headerImageFile);
       setProfileValues({ ...profileValues, headerImage: headerImageURL });
       setHeaderLoading(false);
     } catch (err) {
@@ -84,33 +87,24 @@ const AvatarUpload = ({ profileValues, setProfileValues }) => {
             />
             {/* <img src={authUser.headerImage} alt='profile header' /> */}
           </div>
-          <div className='left-0 position-absolute avatar-container rounded-circle bg-white'>
+          <div className='left-0 position-absolute avatar-container  '>
             <div className='position-relative '>
               <div className='ratio ratio-1x1 rounded-circle overflow-hidden  d-flex align-items-center'>
                 <label
                   htmlFor='avatar'
-                  className='position-relative bg-white d-flex align-items-center justify-content-center'
+                  className='position-relative  d-flex align-items-center justify-content-center'
                 >
                   {avatarLoading ? (
                     <div className='position-absolute'>
                       <Loader loading={avatarLoading} size='fs-3' />
                     </div>
                   ) : (
-                    <div className=' d-flex align-items-center justify-content-center'>
-                      <div className='position-absolute'>
-                        <img
-                          src={`${
-                            authUser.profilePhoto ||
-                            `../images/default-avatar.png`
-                          }`}
-                          className='card-img-top img-cover img-fluid'
-                          alt='avatar'
-                          style={{
-                            objectFit: 'cover',
-                            objectPosition: 'center',
-                          }}
-                        />
-                      </div>
+                    <div className='d-flex align-items-center justify-content-center'>
+                      <AvatarImage
+                        user={authUser}
+                        height='150px'
+                        width='150px'
+                      />
                       <div className='position-absolute  h-20 w-20 d-flex avatar-icon align-items-center justify-content-center'>
                         <i className='fa-solid fa-camera'></i>
                       </div>

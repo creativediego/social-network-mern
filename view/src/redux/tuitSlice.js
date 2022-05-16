@@ -1,9 +1,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { increment } from 'firebase/firestore';
+import { list } from 'firebase/storage';
+import { uploadTuitImage } from '../services/storage-service';
 import {
   findAllTuits,
   createTuit,
   deleteTuit,
+  updateTuit,
 } from '../services/tuits-service';
+import { setGlobalError } from './errorSlice';
 import { dataOrStateError } from './helpers';
 
 /**
@@ -23,9 +28,26 @@ export const findAllTuitsThunk = createAsyncThunk(
 export const createTuitThunk = createAsyncThunk(
   'tuits/createTuit',
   async ({ userId, tuit }, ThunkAPI) => {
-    const newTuit = await createTuit(userId, tuit);
-    ThunkAPI.dispatch(findAllTuitsThunk());
-    return dataOrStateError(newTuit, ThunkAPI);
+    let tuitToUpload = { ...tuit };
+    delete tuitToUpload.imageFile;
+    let resultTuit = await createTuit(userId, tuitToUpload);
+    if (tuit.image) {
+      try {
+        const tuitImageURL = await uploadTuitImage(
+          tuit.imageFile,
+          resultTuit.id
+        );
+        resultTuit.image = tuitImageURL;
+        resultTuit = await updateTuit(resultTuit.id, resultTuit);
+      } catch (err) {
+        ThunkAPI.dispatch(
+          setGlobalError({
+            error: 'Error uploading tuit image. Try again later.',
+          })
+        );
+      }
+    }
+    return resultTuit;
   }
 );
 
@@ -37,7 +59,7 @@ export const deleteTuitThunk = createAsyncThunk(
   async (tuitId, ThunkAPI) => {
     const deletedTuitCount = await deleteTuit(tuitId);
     if (!deletedTuitCount.error) {
-      ThunkAPI.dispatch(updateTuits(tuitId));
+      ThunkAPI.dispatch(removeTuits(tuitId));
     }
     return dataOrStateError(deletedTuitCount, ThunkAPI);
   }
@@ -53,8 +75,22 @@ const tuitSlice = createSlice({
     setTuits: (state, action) => {
       state.list = action.payload;
     },
-    updateTuits: (state, action) => {
+    removeTuits: (state, action) => {
       state.list = state.list.filter((tuit) => tuit.id !== action.payload);
+    },
+    updateTuits: (state, action) => {
+      const incomingTuit = action.payload;
+      const updatedList = state.list.map((tuit) => {
+        if (tuit.id === incomingTuit.id) {
+          return { ...tuit, ...incomingTuit };
+        }
+        return tuit;
+      });
+      state.list = updatedList;
+    },
+    pushTuit: (state, action) => {
+      const incomingTuit = action.payload;
+      state.list.unshift(incomingTuit);
     },
     clearTuits: (state) => {
       state.list = [];
@@ -92,5 +128,6 @@ const tuitSlice = createSlice({
     },
   },
 });
-export const { setTuits, clearTuits, updateTuits } = tuitSlice.actions;
+export const { setTuits, clearTuits, removeTuits, updateTuits, pushTuit } =
+  tuitSlice.actions;
 export default tuitSlice.reducer;

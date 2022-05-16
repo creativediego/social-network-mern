@@ -1,26 +1,40 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { TuitContext } from './Tuit';
 
 /**
  * Displays an image post of a tuit.
  */
-const TuitImage = () => {
-  const [tuit] = useContext(TuitContext);
-
+const TuitImage = ({ imageURL, deletable }) => {
+  const [image, setImage] = useState(imageURL);
+  useEffect(() => {
+    setImage(imageURL);
+  }, [imageURL]);
   return (
     <div className='position-relative'>
-      <img
-        src={`../images/${tuit.image}`}
-        className='mt-2 w-100 ttr-rounded-15px'
-        alt='Tuit'
-      />
-      {tuit.imageOverlay && (
-        <span
-          className={`fa-2x text-white fw-bold bottom-0
-                      ttr-tuit-image-overlay position-absolute`}
+      {image && (
+        <div
+          style={{
+            backgroundImage: `url('${image}')`,
+            aspectRatio: 'auto 1/1',
+            backgroundRepeat: 'no-repeat',
+            borderRadius: '1rem',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
         >
-          {tuit.imageOverlay}
-        </span>
+          {imageURL && deletable && (
+            <span
+              className={`fa-2x text-white fw-bold 
+                      ttr-tuit-image-overlay position-absolute m-2 top-0`}
+            >
+              <i
+                className='fa-solid fa-circle-xmark text-dark'
+                style={{ cursor: 'pointer' }}
+                onClick={() => setImage(undefined)}
+              ></i>
+            </span>
+          )}
+        </div>
       )}
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import TuitStats from './TuitStats';
 import TuitImage from './TuitImage';
 import TuitVideo from './TuitVideo';
@@ -20,6 +20,9 @@ const Tuit = ({ tuitFromList }) => {
   const handleDeleteTuit = async (tid) => {
     dispatch(deleteTuitThunk(tuit.id));
   };
+  useEffect(() => {
+    setTuit({ ...tuit, ...tuitFromList });
+  }, [tuitFromList]);
   return (
     tuit && (
       <TuitContext.Provider value={[tuit, setTuit]}>
@@ -51,7 +54,9 @@ const Tuit = ({ tuitFromList }) => {
             </p>
             {tuit.tuit}
             {tuit.youtube && <TuitVideo />}
-            {tuit.image && <TuitImage />}
+            {tuit.image && (
+              <TuitImage imageURL={tuitFromList.image} deletable={false} />
+            )}
             <TuitStats />
           </div>
         </li>

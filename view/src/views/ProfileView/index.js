@@ -41,7 +41,7 @@ const ProfileView = () => {
           <Loader loading={loading} size='fs-1' />
         </div>
       )}
-      {user && (
+      {user && !loading && (
         <div className='ttr-profile'>
           <div className='border border-bottom-0'>
             <h5 className='p-2 mb-0 pb-0 fw-bolder'>

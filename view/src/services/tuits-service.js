@@ -36,13 +36,13 @@ export const findTuitsByUser = (userId) => {
 
 export const createTuit = (userId, tuit) =>
   api
-    .post(`${USERS_API}/${userId}/tuits`, { tuit: tuit })
+    .post(`${USERS_API}/${userId}/tuits`, tuit)
     .then((response) => response.data)
     .catch((err) => processError(err));
 
 export const updateTuit = (tuitId, tuit) =>
   api
-    .post(`${TUITS_API}/${tuitId}`, tuit)
+    .put(`${TUITS_API}/${tuitId}`, tuit)
     .then((response) => response.data)
     .catch((err) => processError(err));
 

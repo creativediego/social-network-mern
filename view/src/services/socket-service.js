@@ -7,7 +7,8 @@ import axios from 'axios';
 import { processError } from './helpers';
 import { updateChat } from '../redux/messageSlice';
 import { updateNotifications } from '../redux/notificationSlice';
-import { findAllTuitsThunk } from '../redux/tuitSlice';
+import { findAllTuitsThunk, pushTuit, updateTuits } from '../redux/tuitSlice';
+import { updateTuit } from './tuits-service';
 const SECURITY_API = `${process.env.REACT_APP_API_URL}/auth`;
 
 const api = axios.create();
@@ -33,7 +34,13 @@ const listenForNewNotifications = (socket, ThunkAPI) => {
 
 const listenForNewTuits = (socket, ThunkAPI) => {
   socket.on('NEW_TUIT', (tuit) => {
-    ThunkAPI.dispatch(findAllTuitsThunk());
+    ThunkAPI.dispatch(pushTuit(tuit));
+  });
+};
+
+const listenForUpdatedTuits = (socket, ThunkAPI) => {
+  socket.on('UPDATED_TUIT', (tuit) => {
+    ThunkAPI.dispatch(updateTuits(tuit));
   });
 };
 
@@ -55,6 +62,7 @@ export const enableListeners = (ThunkAPI) => {
     listenForNewMessages(socket, ThunkAPI);
     listenForNewNotifications(socket, ThunkAPI);
     listenForNewTuits(socket, ThunkAPI);
+    listenForUpdatedTuits(socket, ThunkAPI);
     listening = true;
   });
   socket.on('disconnect', () => {

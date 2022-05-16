@@ -16,7 +16,7 @@ export const handleCentralError = (
   //   return;
   // }
 
-  const clientResponse = {
+  let clientResponse = {
     timestamp: Date.now,
     status: StatusCode.internalError,
     error: 'Sorry, something went wrong!',
@@ -31,9 +31,9 @@ export const handleCentralError = (
   //   clientResponse.error = 'Sorry, resource not found!';
   // }
 
-  if (err instanceof BaseError && err.isOperational) {
-    res.status(clientResponse.status).json(clientResponse);
-  }
+  // if (err instanceof BaseError && err.isOperational) {
+  res.status(clientResponse.status).json(clientResponse);
+  // }
 
   // if (!(err instanceof BaseError && err.isOperational)) {
   //   exit(1); // exit in the case of uncaught unexpected errors

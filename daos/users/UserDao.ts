@@ -23,12 +23,6 @@ export default class UserDao implements IDao<IUser> {
     this.errorHandler = errorHandler;
     Object.freeze(this);
   }
-  checkForDuplicateEmail = async (user: IUser): Promise<IUser | null> => {
-    return await this.model.findOne({ email: user.email });
-  };
-  checkForDuplicateUsername = async (user: IUser): Promise<IUser | null> => {
-    return await this.model.findOne({ username: user.username });
-  };
 
   checkUniqueFields = async (user: IUser): Promise<void> => {
     const existingUserWithSameEmail: any = await this.model.findOne({
@@ -37,9 +31,15 @@ export default class UserDao implements IDao<IUser> {
     const existingUserWithSameUserName: any = await this.model.findOne({
       username: user.username,
     });
-    if (existingUserWithSameEmail._id.toString() !== user.id)
+    if (
+      existingUserWithSameEmail &&
+      existingUserWithSameEmail._id.toString() !== user.id
+    )
       throw new DaoDatabaseException(UserDaoErrors.EMAIL_TAKEN);
-    if (existingUserWithSameUserName._id.toString() !== user.id)
+    if (
+      existingUserWithSameUserName &&
+      existingUserWithSameUserName._id.toString() !== user.id
+    )
       throw new DaoDatabaseException(UserDaoErrors.USERNAME_TAKEN);
   };
   /**

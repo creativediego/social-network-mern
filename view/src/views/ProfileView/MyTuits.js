@@ -20,7 +20,7 @@ const MyTuits = ({ userId }) => {
   useEffect(() => {
     dispatch(clearTuits());
     findTuits();
-  }, []);
+  }, [userId]);
   const deleteTuit = (tid) => service.deleteTuit(tid).then(findTuits);
 
   return (

@@ -22,7 +22,6 @@ const LoginView = () => {
           <h2 className='fs-6'>Already have an account?</h2>
           <LoginForm />
         </div>
-
         <div className='d-flex justify-content-between mt-3'>
           <div
             className='btn btn-light rounded-pill w-100'

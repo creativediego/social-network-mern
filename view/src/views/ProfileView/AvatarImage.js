@@ -4,7 +4,7 @@ const AvatarImage = ({ user, width, height }) => {
   return (
     <div className='position-relative' style={{ height, width }}>
       <img
-        className='position-relative  img-fluid  rounded-circle bg-white img-fluid'
+        className='position-relative h-100 img-fluid  rounded-circle bg-white img-fluid'
         alt='user profile'
         style={{
           objectFit: 'cover',

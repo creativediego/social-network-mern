@@ -4,7 +4,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { register, getProfile, login } from '../services/auth-service';
 import { updateUser } from '../services/users-service';
-import { clearToken, dataOrStateError } from './helpers';
+import { dataOrStateError } from './helpers';
+import { clearToken } from '../services/helpers';
 import * as socketService from '../services/socket-service';
 import {
   firebaseLoginWithEmail,
@@ -45,7 +46,8 @@ export const registerThunk = createAsyncThunk(
 export const loginThunk = createAsyncThunk(
   'users/login',
   async (user, ThunkAPI) => {
-    const authUser = await firebaseLoginWithEmail(user.email, user.password);
+    await firebaseLoginWithEmail(user.email, user.password);
+    const authUser = await getProfile();
     if (!authUser.error) {
       socketService.enableListeners(ThunkAPI);
     }
@@ -70,7 +72,7 @@ export const loginWithGoogleThunk = createAsyncThunk(
 export const logoutThunk = createAsyncThunk(
   'users/logout',
   async (user, ThunkAPI) => {
-    localStorage.removeItem('token');
+    clearToken();
     socketService.disconnect();
     await firebaseLogout(ThunkAPI);
     return;
@@ -104,7 +106,6 @@ const userSlice = createSlice({
   name: 'user',
   initialState: {
     data: null,
-    token: localStorage.getItem('token'),
     loading: false,
     profileComplete: false,
     loggedIn: false,
@@ -134,8 +135,7 @@ const userSlice = createSlice({
     },
     [fetchProfileThunk.fulfilled]: (state, action) => {
       state.loading = false;
-      if (action.payload.error) return;
-      checkProfileComplete(state, action.payload);
+      if (!action.payload.error) checkProfileComplete(state, action.payload);
     },
     [fetchProfileThunk.rejected]: (state) => {
       state.loading = false;
@@ -145,7 +145,7 @@ const userSlice = createSlice({
     },
     [updateUserThunk.fulfilled]: (state, action) => {
       state.loading = false;
-      // if (!action.payload.error) checkProfileComplete(state, action.payload);
+      checkProfileComplete(state, action.payload);
     },
     [registerThunk.pending]: (state) => {
       state.loading = true;
@@ -159,6 +159,7 @@ const userSlice = createSlice({
     },
     [loginThunk.fulfilled]: (state, action) => {
       state.loading = false;
+      checkProfileComplete(state, action.payload);
     },
     [loginWithGoogleThunk.rejected]: (state, action) => {
       state.loading = false;

@@ -15,13 +15,12 @@ const MyLikes = ({ userId }) => {
         'We ran into an issue showing your liked tuits. Please try again later.'
       );
     }
-
     dispatch(setTuits(res));
   };
   useEffect(() => {
     dispatch(clearTuits());
     findTuits();
-  }, []);
+  }, [userId]);
 
   return (
     <div>

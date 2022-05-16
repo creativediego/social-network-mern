@@ -5,6 +5,7 @@ import FormInput from '../FormInput/FormInput';
 import { updateUserThunk } from '../../redux/userSlice';
 import AvatarUpload from './AvatarUpload';
 import { defaultProfileFields } from '../defaultProfileFields';
+import { clearGlobalError } from '../../redux/errorSlice';
 
 // upload photo -> update user in state -> make API call and update user again
 const UpdateProfileForm = () => {
@@ -20,14 +21,12 @@ const UpdateProfileForm = () => {
   };
   const handleUpdateProfile = async () => {
     dispatch(updateUserThunk(profileValues));
-    setShowEditProfile(false);
   };
 
   useEffect(() => {
-    if (error) {
-      setShowEditProfile(true);
-    }
-  }, [error]);
+    setShowEditProfile(false);
+    return setProfileValues({ ...profileValues, ...authUser });
+  }, [authUser]);
 
   const profileInputs = () => (
     <div>
@@ -61,7 +60,7 @@ const UpdateProfileForm = () => {
   return (
     <div>
       <button
-        onClick={() => setShowEditProfile(!showEditProfile)}
+        onClick={() => setShowEditProfile(true)}
         className='mt-2 me-2 btn btn-large btn-light border border-secondary fw-bolder rounded-pill fa-pull-right'
       >
         Edit profile

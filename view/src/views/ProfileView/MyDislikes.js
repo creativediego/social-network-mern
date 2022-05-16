@@ -22,7 +22,7 @@ const MyDislikes = ({ userId }) => {
   useEffect(() => {
     dispatch(clearTuits());
     findTuits();
-  }, []);
+  }, [userId]);
 
   return (
     <div>
