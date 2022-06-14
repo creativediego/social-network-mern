@@ -1,6 +1,4 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { increment } from 'firebase/firestore';
-import { list } from 'firebase/storage';
 import { uploadTuitImage } from '../services/storage-service';
 import {
   findAllTuits,

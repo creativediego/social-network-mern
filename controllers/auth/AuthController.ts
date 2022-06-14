@@ -86,7 +86,7 @@ export default class AuthController implements IAuthController {
       const user: any = req.user;
       return okResponse(user);
     } else {
-      return unauthorizedResponse({ error: 'failed to get profile' });
+      return unauthorizedResponse('failed to get profile');
     }
   };
 

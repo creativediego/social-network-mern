@@ -8,4 +8,5 @@ import HttpRequest from '../shared/HttpRequest';
  */
 export default interface ITuitController extends IGenericController {
   findByUser(req: HttpRequest): Promise<HttpResponse>;
+  findAllByKeyword(req: HttpRequest): Promise<HttpResponse>;
 }

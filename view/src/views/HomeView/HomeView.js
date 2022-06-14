@@ -1,9 +1,8 @@
 import React from 'react';
-import { CreateTuit, Loader, Tuits } from '../../components';
+import { CreateTuit, Loader, Tuits, AvatarImage } from '../../components';
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { clearTuits, findAllTuitsThunk } from '../../redux/tuitSlice';
-import AvatarImage from '../ProfileView/AvatarImage';
 const HomeView = () => {
   const user = useSelector((state) => state.user.data);
   const loading = useSelector((state) => state.tuits.loading);
@@ -21,7 +20,7 @@ const HomeView = () => {
           {user && tuits && (
             <div className='d-flex'>
               <div className='p-2'>
-                <AvatarImage user={user} width='70px' height='70px' />
+                <AvatarImage profilePhoto={user.profilePhoto} size={70} />
               </div>
               <CreateTuit />
             </div>
@@ -30,7 +29,7 @@ const HomeView = () => {
 
         {/* {error && <ErrorBox message={error} />} */}
         <Loader loading={loading} message={'Loading Tuits'} />
-        {tuits && <Tuits tuits={tuits} />}
+        {tuits.length > 0 && <Tuits tuits={tuits} />}
       </div>
     )
   );

@@ -6,7 +6,6 @@ import { deleteMessage } from '../../services/messages-service';
 import './Message.css';
 
 const Message = ({ message }) => {
-  //   console.log(message);
   const dispatch = useDispatch();
   const userId = useSelector((state) => state.user.data.id);
   const isLoggedInUser = message.sender.id === userId;

@@ -37,13 +37,12 @@ const SignupForm = () => {
     if (!isFormValid()) return;
     dispatch(updateUserThunk({ id: authUser.id, ...inputFieldValues }));
   };
-
   useEffect(() => {
-    setInputFieldValues({ ...inputFieldValues, ...authUser });
+    setInputFieldValues({ ...authUser });
     if (authUser && !profileComplete) {
       setShowSignupModal(true);
     }
-  }, [authUser]);
+  }, [authUser, profileComplete]);
 
   const signUpModalProps = {
     content: {
@@ -91,7 +90,7 @@ const SignupForm = () => {
   return (
     <div>
       {authUser && !profileComplete ? (
-        <PopupModal props={completeSignupModalProps} />
+        <PopupModal {...completeSignupModalProps} />
       ) : (
         <div>
           <Button
@@ -101,7 +100,7 @@ const SignupForm = () => {
           >
             Sign up with email
           </Button>
-          <PopupModal props={signUpModalProps} />
+          <PopupModal {...signUpModalProps} />
         </div>
       )}
     </div>

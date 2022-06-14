@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
-import { markNotificationAsRead } from './../../services/notifications-service';
-import { Link, Route, Routes } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { markNotificationReadThunk } from '../../redux/notificationSlice';
-import { ProfileView } from '../../views';
 
 /**
  * @File A component to render one notification.

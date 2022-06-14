@@ -10,6 +10,7 @@ import BookmarksView from './BookmarksView/BookmarksView';
 import NotificationsView from './NotificationsView/NotificationsView';
 import MoreView from './MoreView/MoreView';
 import ListsView from './ListsView/ListsView';
+import SearchView from './SearchView/SearchView';
 
 export {
   HomeView,
@@ -23,4 +24,5 @@ export {
   NotificationsView,
   MoreView,
   ListsView,
+  SearchView,
 };

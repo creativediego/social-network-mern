@@ -8,6 +8,7 @@ import {
 import { Loader } from '../../components';
 import { setGlobalError } from '../../redux/errorSlice';
 import { findUserById } from '../../services/users-service';
+
 const FollowButton = ({ userToFollow, setProfileUser }) => {
   const [following, setFollowing] = useState(false);
   const authUser = useSelector((state) => state.user.data);
@@ -29,7 +30,7 @@ const FollowButton = ({ userToFollow, setProfileUser }) => {
       );
     }
     checkIfFollowing();
-    setProfileUser({ ...userToFollow, ...updatedUser });
+    if (setProfileUser) setProfileUser({ ...userToFollow, ...updatedUser });
   };
 
   const handleUnfollowUser = async () => {
@@ -47,7 +48,7 @@ const FollowButton = ({ userToFollow, setProfileUser }) => {
       );
     }
     checkIfFollowing();
-    setProfileUser({ ...userToFollow, ...updatedUser });
+    if (setProfileUser) setProfileUser({ ...userToFollow, ...updatedUser });
   };
   const checkIfFollowing = async () => {
     if (!userToFollow.id) return;
@@ -67,6 +68,7 @@ const FollowButton = ({ userToFollow, setProfileUser }) => {
 
   useEffect(() => {
     checkIfFollowing();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userToFollow]);
 
   return (

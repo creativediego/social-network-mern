@@ -5,9 +5,7 @@ import FormInput from '../FormInput/FormInput';
 import { updateUserThunk } from '../../redux/userSlice';
 import AvatarUpload from './AvatarUpload';
 import { defaultProfileFields } from '../defaultProfileFields';
-import { clearGlobalError } from '../../redux/errorSlice';
 
-// upload photo -> update user in state -> make API call and update user again
 const UpdateProfileForm = () => {
   const [showEditProfile, setShowEditProfile] = useState(false);
   const error = useSelector((state) => state.error.data);
@@ -25,7 +23,7 @@ const UpdateProfileForm = () => {
 
   useEffect(() => {
     setShowEditProfile(false);
-    return setProfileValues({ ...profileValues, ...authUser });
+    setProfileValues({ ...authUser });
   }, [authUser]);
 
   const profileInputs = () => (
@@ -65,7 +63,7 @@ const UpdateProfileForm = () => {
       >
         Edit profile
       </button>
-      <PopupModal props={popupModalProps} />
+      <PopupModal {...popupModalProps} />
     </div>
   );
 };

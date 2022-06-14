@@ -20,13 +20,13 @@ const MyTuits = ({ userId }) => {
   useEffect(() => {
     dispatch(clearTuits());
     findTuits();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
-  const deleteTuit = (tid) => service.deleteTuit(tid).then(findTuits);
 
   return (
     <div>
       {error && <AlertBox message={error} />}
-      <Tuits tuits={tuits} deleteTuit={deleteTuit} />
+      <Tuits tuits={tuits} />
     </div>
   );
 };

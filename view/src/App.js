@@ -19,6 +19,7 @@ function App() {
     const actionOnValidLogin = () => dispatch(fetchProfileThunk());
     const actionOnLoginExpiration = () => dispatch(clearUser());
     onFirebaseAuthStateChange(actionOnValidLogin, actionOnLoginExpiration);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

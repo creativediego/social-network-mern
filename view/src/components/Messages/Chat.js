@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  useMemo,
-  useLayoutEffect,
-} from 'react';
+import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import {
@@ -24,9 +18,6 @@ const Chat = ({ conversationId }) => {
   const dispatch = useDispatch();
   const userId = useSelector((state) => state.user.data.id);
   const loading = useSelector((state) => state.messages.loading);
-  const participants = useSelector(
-    (state) => state.messages.activeChat.participants
-  );
   let messages = useSelector((state) => state.messages.activeChat.messages);
   const [newMessageBody, setNewMessageBody] = useState({
     sender: userId,
@@ -37,7 +28,6 @@ const Chat = ({ conversationId }) => {
 
   useEffect(() => {
     dispatch(findMessagesByConversationThunk(conversationId));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, conversationId]);
 
   useLayoutEffect(() => {

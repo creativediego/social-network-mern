@@ -7,6 +7,7 @@ import IUser from '../../models/users/IUser';
 import Tuit from '../../models/tuits/Tuit';
 import DaoNullException from '../../errors/DaoNullException';
 import IDao from '../shared/IDao';
+import IHashtag from '../../models/hashtags/IHashtag';
 
 /**
  * DAO database CRUD operations for the tuit resource. Takes the injected dependencies of a {@link Model<ITuit>} ORM model and an {@link IErrorHandler} error handler.
@@ -14,6 +15,7 @@ import IDao from '../shared/IDao';
 export default class TuitDao implements IDao<ITuit> {
   private readonly tuitModel: Model<ITuit>;
   private readonly userModel: Model<IUser>;
+  private readonly hashtagModel: Model<IHashtag>;
   private readonly errorHandler: IErrorHandler;
 
   /**
@@ -24,16 +26,37 @@ export default class TuitDao implements IDao<ITuit> {
   public constructor(
     tuitModel: Model<ITuit>,
     userModel: Model<IUser>,
+    hashtagModel: Model<IHashtag>,
     errorHandler: IErrorHandler
   ) {
     this.tuitModel = tuitModel;
     this.userModel = userModel;
+    this.hashtagModel = hashtagModel;
     this.errorHandler = errorHandler;
     Object.freeze(this); // Make this object immutable.
   }
-  findAllByField(field: string): Promise<any> {
-    throw new Error('Method not implemented.');
-  }
+  findAllByField = async (keyword: string): Promise<any> => {
+    const output: ITuit[] = [];
+    const hashtagsWithTuits = await this.hashtagModel
+      .find({ hashtag: keyword })
+      .populate({ path: 'tuit', populate: { path: 'author' } });
+    if (hashtagsWithTuits) {
+      for (const hashTag of hashtagsWithTuits) {
+        output.push(hashTag.tuit);
+      }
+    }
+    const tuitsByKeyword = await this.tuitModel
+      .find({
+        tuit: { $regex: keyword, $options: 'i' },
+      })
+      .populate('author');
+    if (tuitsByKeyword) {
+      for (const tuit of tuitsByKeyword) {
+        output.push(tuit);
+      }
+    }
+    return output;
+  };
 
   /**
    * Finds all tuits belonging by a user id in the database. Populates the tuit author in the document.
@@ -129,6 +152,16 @@ export default class TuitDao implements IDao<ITuit> {
         const newTuit = await (
           await this.tuitModel.create(validatedTuit)
         ).populate('author');
+
+        // if (tuitData.hashtags && tuitData.hashtags.length > 0) {
+        //   for (const hashtag of tuitData.hashtags) {
+        //     await this.hashtagModel.findOneAndUpdate(
+        //       { tuit: newTuit._id, hashtag },
+        //       { hashtag },
+        //       { upsert: true }
+        //     );
+        //   }
+        // }
 
         return newTuit;
       }

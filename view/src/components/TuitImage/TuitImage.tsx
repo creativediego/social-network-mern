@@ -1,25 +1,27 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { TuitContext } from './Tuit';
-
+import * as React from 'react';
+import './TuitImage.scss';
 /**
  * Displays an image post of a tuit.
  */
-const TuitImage = ({ imageURL, deletable }) => {
-  const [image, setImage] = useState(imageURL);
-  useEffect(() => {
+interface TuitImageProps {
+  imageURL: string | undefined;
+  deletable: boolean;
+}
+const TuitImage: React.FC<TuitImageProps> = ({
+  imageURL,
+  deletable,
+}): JSX.Element => {
+  const [image, setImage] = React.useState(imageURL);
+  React.useEffect(() => {
     setImage(imageURL);
   }, [imageURL]);
   return (
     <div className='position-relative'>
       {image && (
         <div
+          className='ttr-image-file'
           style={{
             backgroundImage: `url('${image}')`,
-            aspectRatio: 'auto 1/1',
-            backgroundRepeat: 'no-repeat',
-            borderRadius: '1rem',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
           }}
         >
           {imageURL && deletable && (
@@ -30,7 +32,7 @@ const TuitImage = ({ imageURL, deletable }) => {
               <i
                 className='fa-solid fa-circle-xmark text-dark'
                 style={{ cursor: 'pointer' }}
-                onClick={() => setImage(undefined)}
+                onClick={() => setImage('')}
               ></i>
             </span>
           )}

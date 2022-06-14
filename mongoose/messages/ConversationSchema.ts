@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import { ConversationType } from '../../models/messages/ConversationType';
-import IConversion from '../../models/messages/IConversation';
+import IConversation from '../../models/messages/IConversation';
 import { formatJSON } from '../util/formatJSON';
 
 /**
@@ -14,7 +14,7 @@ import { formatJSON } from '../util/formatJSON';
  * @param {Schema.Types.ObjectId} participants the users who are part of this conversation. Ref to {@link UserModel}.
  * @module ConversationSchema
  */
-const ConversationSchema = new mongoose.Schema<IConversion>(
+const ConversationSchema = new mongoose.Schema<IConversation>(
   {
     type: { type: String, enum: ConversationType, required: true },
     cid: { type: String, unique: true, required: true, select: false },

@@ -9,6 +9,7 @@ import { Server } from 'socket.io';
 import { okResponse } from '../shared/createResponse';
 import { isAuthenticated } from '../auth/isAuthenticated';
 import ISocketService from '../../services/ISocketService';
+import IConversation from '../../models/messages/IConversation';
 
 /**
  * Represents an implementation of an {@link IMessageController}
@@ -157,9 +158,9 @@ export default class MessageController implements IMessageController {
   findAllMessagesSentByUser = async (
     req: HttpRequest
   ): Promise<HttpResponse> => {
-    return {
-      body: await this.messageDao.findAllMessagesSentByUser(req.user.id),
-    };
+    const messages: IMessage[] =
+      await this.messageDao.findAllMessagesSentByUser(req.user.id);
+    return okResponse(messages);
   };
 
   /**
@@ -168,12 +169,11 @@ export default class MessageController implements IMessageController {
    * @returns {HttpResponse} the response data to be sent to the client
    */
   deleteMessage = async (req: HttpRequest): Promise<HttpResponse> => {
-    return {
-      body: await this.messageDao.deleteMessage(
-        req.user.id,
-        req.params.messageId
-      ),
-    };
+    const deletedMessage: IMessage = await this.messageDao.deleteMessage(
+      req.user.id,
+      req.params.messageId
+    );
+    return okResponse(deletedMessage);
   };
 
   /**
@@ -182,11 +182,11 @@ export default class MessageController implements IMessageController {
    * @returns {HttpResponse} the response data to be sent to the client
    */
   deleteConversation = async (req: HttpRequest): Promise<HttpResponse> => {
-    return {
-      body: await this.messageDao.deleteConversation(
+    const deletedConversation: IConversation =
+      await this.messageDao.deleteConversation(
         req.user.id,
         req.params.conversationId
-      ),
-    };
+      );
+    return okResponse(deletedConversation);
   };
 }

@@ -16,6 +16,7 @@ import IUser from '../models/users/IUser';
 import BookmarkModel from '../mongoose/bookmarks/BookmarkModel';
 import DislikeModel from '../mongoose/dislikes/DislikeModel';
 import FollowModel from '../mongoose/follows/FollowModel';
+import HashtagModel from '../mongoose/hashtags/HashtagModel';
 import LikeModel from '../mongoose/likes/LikeModel';
 import ConversationModel from '../mongoose/messages/ConversationModel';
 import MessageModel from '../mongoose/messages/MessageModel';
@@ -44,6 +45,7 @@ export const likeDao: ILikeDao = new LikeDao(
 export const tuitDao: IDao<ITuit> = new TuitDao(
   TuitModel,
   UserModel,
+  HashtagModel,
   daoErrorHandler
 );
 export const messageDao: IMessageDao = new MessageDao(

@@ -19,18 +19,13 @@ const FindUsers = ({ selectedUsers, setSelectedUsers }) => {
   /**
    * Uses search value from Search component to dispatch an API call to find users by name or username.
    */
-  const findAllUsers = useCallback(
-    (searchValue) => {
-      if (!searchValue) return;
-      return dispatch(findUsersByNameThunk(searchValue));
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [searchValue]
-  );
+  const findAllUsers = useCallback(() => {
+    if (!searchValue) return;
+    return dispatch(findUsersByNameThunk(searchValue));
+  }, [dispatch, searchValue]);
 
   useEffect(() => {
-    findAllUsers(searchValue);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    findAllUsers();
   }, [findAllUsers]);
 
   /**
@@ -43,7 +38,11 @@ const FindUsers = ({ selectedUsers, setSelectedUsers }) => {
   };
   return (
     <div>
-      <Search searchValue={searchValue} setSearchValue={setSearchValue} />
+      <Search
+        searchValue={searchValue}
+        setSearchValue={setSearchValue}
+        placeHolder='Search for user'
+      />
       {selectedUsers.map((user) => (
         <span key={user.id} className='badge rounded-pill bg-primary'>
           {user.name || user.firstName}

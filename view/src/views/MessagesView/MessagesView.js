@@ -4,7 +4,6 @@ import { Routes, Route } from 'react-router-dom';
 import ConversationsInbox from '../../components/Messages/ConversationsInbox';
 import Chat from '../../components/Messages/Chat';
 import { findInboxMessagesThunk } from '../../redux/messageThunks';
-import { AlertBox } from '../../components';
 import { Loader } from '../../components';
 
 /**

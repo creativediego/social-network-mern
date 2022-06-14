@@ -4,6 +4,8 @@ import HttpResponse from '../shared/HttpResponse';
 import IBookMarkController from './IBookmarkController';
 import { Express, Router } from 'express';
 import { adaptRequest } from '../shared/adaptRequest';
+import { okResponse } from '../shared/createResponse';
+import IBookmark from '../../models/bookmarks/IBookmark';
 
 /**
  * Represents the implementation of an IBookmarkController interface for handling the bookmarks resource api.
@@ -33,9 +35,11 @@ export default class BookMarkController implements IBookMarkController {
    * @param {NextFunction} next the next middleware function for any
    */
   create = async (req: HttpRequest): Promise<HttpResponse> => {
-    return {
-      body: await this.bookmarkDao.create(req.params.userId, req.params.tuitId),
-    };
+    const bookmark: IBookmark = await this.bookmarkDao.create(
+      req.params.userId,
+      req.params.tuitId
+    );
+    return okResponse(bookmark);
   };
 
   /**
@@ -45,7 +49,10 @@ export default class BookMarkController implements IBookMarkController {
    * @param {NextFunction} next the next middleware function for any
    */
   findAllByUser = async (req: HttpRequest): Promise<HttpResponse> => {
-    return { body: await this.bookmarkDao.findAllByUser(req.params.userId) };
+    const bookmarks: IBookmark[] = await this.bookmarkDao.findAllByUser(
+      req.params.userId
+    );
+    return okResponse(bookmarks);
   };
 
   /**
@@ -55,13 +62,16 @@ export default class BookMarkController implements IBookMarkController {
    * @param {NextFunction} next the next middleware function for any
    */
   delete = async (req: HttpRequest): Promise<HttpResponse> => {
-    return { body: await this.bookmarkDao.delete(req.params.bookmarkId) };
+    const deletedBookmark: IBookmark = await this.bookmarkDao.delete(
+      req.params.bookmarkId
+    );
+    return okResponse(deletedBookmark);
   };
 
   deleteAllByUser = async (req: HttpRequest): Promise<HttpResponse> => {
     const deletedCount: number = await this.bookmarkDao.deleteAllByUser(
       req.params.userId
     );
-    return { body: deletedCount };
+    return okResponse(deletedCount);
   };
 }

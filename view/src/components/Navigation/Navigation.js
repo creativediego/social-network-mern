@@ -25,7 +25,7 @@ function Navigation() {
 
   useEffect(() => {
     dispatch(findUnreadNotificationsThunk());
-  }, []);
+  }, [dispatch]);
 
   const links = [
     { label: 'Tuiter', icon: 'fa-square-t', path: '/tuiter', color: 'white' },

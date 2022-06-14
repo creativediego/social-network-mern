@@ -12,6 +12,7 @@ import ITuitController from '../controllers/tuits/ITuitController';
 import TuitController from '../controllers/tuits/TuitController';
 import { UserController } from '../controllers/users/UserController';
 import NotificationController from '../controllers/notifications/NotificationController';
+import SearchController from '../controllers/search/SearchController';
 import {
   userDao,
   tuitDao,
@@ -30,6 +31,7 @@ import {
   socketService,
   firebaseJWTService,
 } from './configServices';
+import ISearchController from '../controllers/search/ISearchController';
 
 let alreadyCreated = false;
 const hasher = new BcryptHasher(10);
@@ -88,6 +90,13 @@ const createControllers = (app: Express): void => {
 
   const notificationController: NotificationController =
     new NotificationController('/api/v1', app, notificationDao, socketService);
+
+  const searchController: ISearchController = new SearchController(
+    '/api/v1',
+    app,
+    userDao,
+    tuitDao
+  );
 
   app.use(handleCentralError);
   alreadyCreated = true;

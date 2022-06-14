@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import * as service from '../../services/likes-service';
 import { AlertBox, Tuits } from '../../components';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,7 +8,7 @@ const MyLikes = ({ userId }) => {
   const dispatch = useDispatch();
   const tuits = useSelector((state) => state.tuits.list);
   const [error, setError] = useState();
-  const findTuits = async () => {
+  const findTuits = useCallback(async () => {
     const res = await service.findAllTuitsLikedByUser(userId);
     if (res.error) {
       return setError(
@@ -16,11 +16,11 @@ const MyLikes = ({ userId }) => {
       );
     }
     dispatch(setTuits(res));
-  };
+  }, [userId, dispatch]);
   useEffect(() => {
     dispatch(clearTuits());
     findTuits();
-  }, [userId]);
+  }, [dispatch, findTuits]);
 
   return (
     <div>

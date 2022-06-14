@@ -18,12 +18,12 @@ export const handleCentralError = (
 
   let clientResponse = {
     timestamp: Date.now,
-    status: StatusCode.internalError,
+    code: StatusCode.internalError,
     error: 'Sorry, something went wrong!',
     path: req.path,
   };
   if (err instanceof BaseError) {
-    clientResponse.status = err.code;
+    clientResponse.code = err.code;
     clientResponse.error = err.message;
   }
 
@@ -32,7 +32,7 @@ export const handleCentralError = (
   // }
 
   // if (err instanceof BaseError && err.isOperational) {
-  res.status(clientResponse.status).json(clientResponse);
+  res.status(clientResponse.code).json(clientResponse);
   // }
 
   // if (!(err instanceof BaseError && err.isOperational)) {

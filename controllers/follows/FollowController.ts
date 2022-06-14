@@ -114,9 +114,7 @@ export default class FollowController implements IFollowController {
       req.body.followeeId
     );
 
-    return {
-      body: deletedFollow,
-    };
+    return okResponse(deletedFollow);
   };
 
   findAllFollowees = async (req: HttpRequest): Promise<HttpResponse> => {
@@ -147,9 +145,7 @@ export default class FollowController implements IFollowController {
     const allFollows: IFollow[] = await this.followDao.findAllPendingFollows(
       req.params.userId
     );
-    return {
-      body: allFollows,
-    };
+    return okResponse(allFollows);
   };
 
   /**

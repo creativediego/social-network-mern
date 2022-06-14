@@ -6,7 +6,12 @@ export const okResponse = <T>(data: T): HttpResponse => ({
   body: data,
 });
 
-export const unauthorizedResponse = <T>(data: T): HttpResponse => ({
+export const unauthorizedResponse = (message: string): HttpResponse => ({
   code: StatusCode.unauthorized,
-  body: data,
+  error: message,
+});
+
+export const forbiddenResponse = (message: string): HttpResponse => ({
+  code: StatusCode.forbidden,
+  error: message,
 });

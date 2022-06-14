@@ -18,7 +18,6 @@ class ErrorBoundary extends Component {
 
   componentDidCatch(error, errorInfo) {
     // TODO: Install logger.
-    console.log(error, errorInfo);
   }
 
   render() {

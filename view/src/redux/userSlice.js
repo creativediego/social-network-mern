@@ -2,7 +2,7 @@
  * Includes redux state management for user actions such as login and update user.
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { register, getProfile, login } from '../services/auth-service';
+import { getProfile } from '../services/auth-service';
 import { updateUser } from '../services/users-service';
 import { dataOrStateError } from './helpers';
 import { clearToken } from '../services/helpers';

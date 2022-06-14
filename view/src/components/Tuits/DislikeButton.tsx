@@ -1,21 +1,21 @@
-import React, { useContext, useState, useMemo } from 'react';
+import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { TuitContext } from './Tuit';
-import './Tuits.css';
+import './Tuits.scss';
 import { userDislikesTuit } from '../../services/likes-service';
 import { setClassWithTimeout } from './helpers';
 /**
  * Displays like button.
  */
-function DislikeButton() {
-  const [tuit, setTuit] = useContext(TuitContext);
-  const userId = useSelector((state) => state.user.data.id);
-  const [animationClass, setAnimationClass] = useState('');
+const DislikeButton: React.FC = (): JSX.Element => {
+  const [tuit, setTuit] = React.useContext(TuitContext);
+  const userId = useSelector((state:any ) => state.user.data.id);
+  const [animationClass, setAnimationClass] = React.useState('');
 
   /**
    * Checks if the user liked the tuit, and updates state used for styling.
    */
-  const userHasDisliked = useMemo(() => {
+  const userHasDisliked = React.useMemo(() => {
     if (tuit.dislikedBy.includes(userId)) {
       return true;
     }

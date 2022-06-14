@@ -15,24 +15,29 @@ api.interceptors.request.use(loadRequestInterceptors);
 //   },
 // };
 
+export const findAllTuitsByKeyword = (keyword) =>
+  api
+    .get(`${TUITS_API}/search/${keyword}`)
+    .then((response) => response.data)
+    .catch((err) => processError(err));
+
 export const findAllTuits = () =>
   api
     .get(TUITS_API)
     .then((response) => response.data)
     .catch((err) => processError(err));
 
-export const findTuitById = (tuitId) =>
-  api
-    .get(`${TUITS_API}/${tuitId}`)
-    .then((response) => response.data)
-    .catch((err) => processError(err));
+// export const findTuitById = (tuitId) =>
+//   api
+//     .get(`${TUITS_API}/${tuitId}`)
+//     .then((response) => response.data)
+//     .catch((err) => processError(err));
 
-export const findTuitsByUser = (userId) => {
-  return api
+export const findTuitsByUser = (userId) =>
+  api
     .get(`${USERS_API}/${userId}/tuits`)
     .then((response) => response.data)
     .catch((err) => processError(err));
-};
 
 export const createTuit = (userId, tuit) =>
   api

@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { loginThunk } from '../../redux/userSlice';
 import { Button } from 'react-bootstrap';
-import { Loader, PopupModal } from '../../components';
+import { PopupModal } from '../../components';
 import FormInput from '../FormInput/FormInput';
 
 /**
  * User login form that uses a redux async loginThunk to log user in. Displays loading button when login in being processed.
  */
 const LoginForm = () => {
-  const loading = useSelector((state) => state.user.loading);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginUser, setLoginUser] = useState({
     email: 'createideas@hotmail.com',
@@ -64,7 +63,7 @@ const LoginForm = () => {
       >
         Login with email or username
       </Button>
-      <PopupModal props={loginModalProps} />
+      <PopupModal {...loginModalProps} />
     </div>
   );
 };

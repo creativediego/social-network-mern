@@ -22,6 +22,7 @@ const MyDislikes = ({ userId }) => {
   useEffect(() => {
     dispatch(clearTuits());
     findTuits();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   return (

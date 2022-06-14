@@ -1,12 +1,12 @@
 import IUser from '../users/IUser';
-import IConversion from './IConversation';
+import IConversation from './IConversation';
 
 /**
  * Model interface for a message.
  */
 export default interface IMessage {
   sender?: IUser;
-  conversation: IConversion;
+  conversation: IConversation;
   message: string;
   removeFor?: IUser[];
 }

@@ -1,22 +1,22 @@
-import React, { useContext, useState, useMemo } from 'react';
+import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { TuitContext } from './Tuit';
 import { userLikesTuit } from '../../services/likes-service';
-import './Tuits.css';
+import './Tuits.scss';
 import { setClassWithTimeout } from './helpers';
 /**
  * Displays like button.
  */
-function LikeButton() {
-  const userId = useSelector((state) => state.user.data.id);
-  const [tuit, setTuit] = useContext(TuitContext);
-  const [animationClass, setAnimationClass] = useState('');
+const LikeButton: React.FC = (): JSX.Element => {
+  const userId = useSelector((state: any) => state.user.data.id);
+  const [tuit, setTuit] = React.useContext(TuitContext);
+  const [animationClass, setAnimationClass] = React.useState('');
 
   /**
    * Checks if the user liked the tuit, and updates state used for styling.
    */
-  const userHasLiked = useMemo(() => {
-    if (tuit.likedBy.includes(userId)) {
+  const userHasLiked = React.useMemo((): boolean => {
+    if (tuit && tuit.likedBy.includes(userId)) {
       return true;
     }
     return false;
@@ -25,7 +25,7 @@ function LikeButton() {
   /**
    * Calls the likes service when a user likes a tuit. Uses the updated tuit stats from the service to update state.
    */
-  const handleLikeTuit = async () => {
+  const handleLikeTuit = async (): Promise<void> => {
     const resTuit = await userLikesTuit(userId, tuit.id);
     if (resTuit && resTuit.error) {
       return;

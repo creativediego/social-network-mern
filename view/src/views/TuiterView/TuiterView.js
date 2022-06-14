@@ -11,14 +11,13 @@ import {
   NotificationsView,
   MoreView,
   ListsView,
-  OtherUserProfileView,
+  SearchView,
 } from '../index';
 import { useSelector } from 'react-redux';
 import MessagesView from '../MessagesView/MessagesView';
 
 function TuiterView() {
   const error = useSelector((state) => state.error.data);
-  const authUser = useSelector((state) => state.user.data);
   return (
     <div className='container'>
       <div className='ttr-tuiter'>
@@ -32,12 +31,13 @@ function TuiterView() {
             <Route path='/:userId/*' element={<ProfileView />} />
             <Route path='/home' element={<HomeView />} />
             <Route path='/home/:uid' element={<HomeView />} />
-            {/* <Route path='/explore' element={<ExploreView />} /> */}
+            <Route path='/explore' element={<ExploreView />} />
             <Route path='/notifications/*' element={<NotificationsView />} />
-            {/* <Route path='/bookmarks' element={<BookmarksView />} /> */}
+            <Route path='/bookmarks' element={<BookmarksView />} />
             <Route path='/lists' element={<ListsView />} />
             <Route path='/more' element={<MoreView />} />
             <Route path='/messages/*' element={<MessagesView />} />
+            <Route path='/search/*' element={<SearchView />} />
           </Routes>
           {error && <AlertBox message={error} />}
         </div>

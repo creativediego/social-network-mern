@@ -1,12 +1,6 @@
 import React, { useEffect, useLayoutEffect } from 'react';
-import Notifications from '../../components/Notifications/index.js';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  findNotificationsThunk,
-  findUnreadNotificationsThunk,
-} from '../../redux/notificationSlice';
-import { Routes, Route } from 'react-router-dom';
-import ProfileView from '../ProfileView/index.js';
+import { findNotificationsThunk } from '../../redux/notificationSlice';
 import Notification from '../../components/Notifications/notification.js';
 
 /**
@@ -24,6 +18,7 @@ const NotificationsView = () => {
 
   useEffect(() => {
     dispatch(findNotificationsThunk());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useLayoutEffect(() => {}, []);

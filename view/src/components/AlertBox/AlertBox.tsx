@@ -1,16 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import * as React from 'react';
 import { Alert } from 'react-bootstrap';
-import './AlertBox.css';
+import './AlertBox.scss';
 import { useDispatch } from 'react-redux';
-import { clearGlobalError } from '../../redux/errorSlice';
+// @ts-ignore
+import { clearGlobalError }  from '../../redux/errorSlice';
+
+interface AlertBoxProps {
+  heading: string,
+  message: string
+}
 /**
  * Displays an alert message with option to dismiss message.
  */
-const AlertBox = ({ heading, message }) => {
-  const [show, setShow] = useState(true);
+const AlertBox: React.FC<AlertBoxProps> = ({ heading, message }: AlertBoxProps): JSX.Element | null => {
+  const [show, setShow] = React.useState(true);
   const dispatch = useDispatch();
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!message) {
       setShow(false);
     } else {

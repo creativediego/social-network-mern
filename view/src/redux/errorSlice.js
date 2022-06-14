@@ -10,11 +10,9 @@ const errorSlice = createSlice({
   },
   reducers: {
     setGlobalError: (state, action) => {
-      console.log('set error');
       state.data = action.payload.error;
     },
     clearGlobalError: (state, action) => {
-      console.log('clear error');
       state.data = null;
     },
   },

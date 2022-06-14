@@ -13,7 +13,7 @@ const adaptRequest =
     };
     try {
       const response: HttpResponse = await controllerMethod(request);
-      res.status(StatusCode.ok).json(response.body);
+      res.status(response.code).json(response.body);
     } catch (err) {
       next(err);
     }

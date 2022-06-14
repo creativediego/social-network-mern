@@ -5,7 +5,6 @@ import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
-import { getProfile } from './auth-service';
 import { setAuthToken } from './helpers';
 import { clearUser } from '../redux/userSlice';
 

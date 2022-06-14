@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { findInboxMessagesThunk } from '../../redux/messageThunks';
 import { useDispatch, useSelector } from 'react-redux';
-import { socket } from '../../services/socket-service';
 import InboxMessage from './InboxMessage';
 import { PopupModal } from '../index';
 import FindUsers from '../FindUsers/FindUsers';
@@ -73,7 +71,7 @@ const ConversationsInbox = ({ conversations = [] }) => {
       >
         <span>New message</span>
       </button>
-      <PopupModal props={newMessageModalProps} />
+      <PopupModal {...newMessageModalProps} />
     </div>
   );
 };

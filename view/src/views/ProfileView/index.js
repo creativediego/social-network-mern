@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from 'react';
 
 import { Routes, Route, useParams } from 'react-router-dom';
-import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import LogoutButton from './LogoutButton';
 import MyTuits from './MyTuits';
 import MyLikes from './MyLikes';
 import MyDislikes from './MyDislikes';
 import ProfileNav from './ProfileNav';
-import { findUserById, findUserByUsername } from '../../services/users-service';
+import { findUserById } from '../../services/users-service';
 import { setGlobalError } from '../../redux/errorSlice';
-import { Loader } from '../../components';
-import FollowButton from './FollowButton';
+import { Loader, AvatarImage, FollowButton } from '../../components';
 import UpdateProfileForm from '../../forms/UpdateProfileForm/UpdateProfileForm';
-import AvatarImage from './AvatarImage';
 
 const ProfileView = () => {
   const dispatch = useDispatch();
@@ -33,6 +30,7 @@ const ProfileView = () => {
   };
   useEffect(() => {
     findUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, authUser]);
   return (
     <div>
@@ -63,7 +61,7 @@ const ProfileView = () => {
                 alt='profile header'
               /> */}
               <div className='bottom-0 top-50 left-0  position-absolute rounded-circle'>
-                <AvatarImage user={user} width='150px' height='150px' />
+                <AvatarImage profilePhoto={user.profilePhoto} size={150} />
               </div>
               {isAuthUser && (
                 <span>

@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Loader } from '../../components';
 import { setGlobalError } from '../../redux/errorSlice';
 import {
   uploadAvatar,
   uploadHeaderImage,
-  uploadImage,
 } from '../../services/storage-service';
-import AvatarImage from '../../views/ProfileView/AvatarImage';
+import { AvatarImage } from '../../components';
 import './AvatarUpload.css';
 
 const AvatarUpload = ({ profileValues, setProfileValues }) => {
@@ -48,10 +47,12 @@ const AvatarUpload = ({ profileValues, setProfileValues }) => {
 
   useEffect(() => {
     handleUploadAvatar();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [avatarFile]);
 
   useEffect(() => {
     handleUploadHeaderImage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [headerImageFile]);
 
   return (
@@ -101,9 +102,8 @@ const AvatarUpload = ({ profileValues, setProfileValues }) => {
                   ) : (
                     <div className='d-flex align-items-center justify-content-center'>
                       <AvatarImage
-                        user={authUser}
-                        height='150px'
-                        width='150px'
+                        profilePhoto={authUser.profilePhoto}
+                        size={150}
                       />
                       <div className='position-absolute  h-20 w-20 d-flex avatar-icon align-items-center justify-content-center'>
                         <i className='fa-solid fa-camera'></i>

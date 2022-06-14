@@ -4,7 +4,7 @@ import { ConversationType } from './ConversationType';
 /**
  * Model interface for a conversation used for the messages resource.
  */
-export default interface IConversion {
+export default interface IConversation {
   type: ConversationType;
   createdBy: IUser;
   cid?: string;

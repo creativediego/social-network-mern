@@ -1,14 +1,10 @@
 import io from 'socket.io-client';
-import {
-  findInboxMessagesThunk,
-  findMessagesByConversationThunk,
-} from '../redux/messageThunks';
+import { findInboxMessagesThunk } from '../redux/messageThunks';
 import axios from 'axios';
 import { processError } from './helpers';
 import { updateChat } from '../redux/messageSlice';
 import { updateNotifications } from '../redux/notificationSlice';
-import { findAllTuitsThunk, pushTuit, updateTuits } from '../redux/tuitSlice';
-import { updateTuit } from './tuits-service';
+import { pushTuit, updateTuits } from '../redux/tuitSlice';
 const SECURITY_API = `${process.env.REACT_APP_API_URL}/auth`;
 
 const api = axios.create();

@@ -13,6 +13,7 @@ import NotificationDao from '../../daos/notifications/NotificationsDao';
 import INotification from '../../models/notifications/INotification';
 import { NotificationType } from '../../models/notifications/NotificationType';
 import ISocketService from '../../services/ISocketService';
+import IUser from '../../models/users/IUser';
 
 /**
  * Represents the implementation of an ILikeController interface for handling the likes resource api.
@@ -149,9 +150,10 @@ export default class LikeController implements ILikeController {
    * @returns {HttpResponse} the response data to be sent to the client
    */
   findAllUsersByTuitLike = async (req: HttpRequest): Promise<HttpResponse> => {
-    return {
-      body: await this.likeDao.findAllUsersByTuitLike(req.params.tuitId),
-    };
+    const users: IUser[] = await this.likeDao.findAllUsersByTuitLike(
+      req.params.tuitId
+    );
+    return okResponse(users);
   };
 
   /**

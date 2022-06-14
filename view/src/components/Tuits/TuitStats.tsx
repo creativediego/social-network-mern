@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import * as React from 'react';
 import { TuitContext } from './Tuit';
 import LikeButton from './LikeButton';
 import DislikeButton from './DislikeButton';
@@ -6,8 +6,8 @@ import DislikeButton from './DislikeButton';
 /**
  * Displays all stats of a tuit, including likes, dislikes, retuits, and replies.
  */
-const TuitStats = () => {
-  const [tuit] = useContext(TuitContext);
+const TuitStats: React.FC = (): JSX.Element => {
+  const [tuit] = React.useContext(TuitContext);
   return (
     <div className='row mt-2'>
       <div className='col'>

@@ -34,6 +34,11 @@ export default class TuitController implements ITuitController {
     const router: Router = Router();
     // router.use(isAuthenticated);
     router.get('/tuits', isAuthenticated, adaptRequest(this.findAll));
+    router.get(
+      '/tuits/search/:keyword',
+      isAuthenticated,
+      adaptRequest(this.findByField)
+    );
     router.get('/tuits/:tuitId', isAuthenticated, adaptRequest(this.findById));
     router.get(
       '/users/:userId/tuits',
@@ -52,9 +57,16 @@ export default class TuitController implements ITuitController {
     app.use(path, router);
     Object.freeze(this); // Make this object immutable.
   }
-  findByField(req: HttpRequest): Promise<HttpResponse> {
+  findAllByKeyword(req: HttpRequest): Promise<HttpResponse> {
     throw new Error('Method not implemented.');
   }
+
+  findByField = async (req: HttpRequest): Promise<HttpResponse> => {
+    const tuits: ITuit[] = await this.tuitDao.findAllByField(
+      req.params.keyword
+    );
+    return okResponse(tuits);
+  };
 
   /**
    * Uses the user id from the request parameter to call the dao to find the user. Sends the found user back to the client, or passes any caught errors to the next error handler middleware.
@@ -63,10 +75,11 @@ export default class TuitController implements ITuitController {
    */
   findByUser = async (req: HttpRequest): Promise<HttpResponse> => {
     if (req.params.userId === 'me') {
-      return { body: await this.tuitDao.findByField(req.user.id) };
+      const tuits: ITuit[] = await this.tuitDao.findByField(req.user.id);
+      return okResponse(tuits);
     }
-
-    return { body: await this.tuitDao.findByField(req.params.userId) };
+    const tuits: ITuit[] = await this.tuitDao.findByField(req.params.userId);
+    return okResponse(tuits);
   };
 
   /**
@@ -74,7 +87,8 @@ export default class TuitController implements ITuitController {
    * @returns {HttpResponse} the response data to be sent to the client
    */
   findAll = async (): Promise<HttpResponse> => {
-    return { body: await this.tuitDao.findAll() };
+    const tuits: ITuit[] = await this.tuitDao.findAll();
+    return okResponse(tuits);
   };
 
   /**
@@ -83,7 +97,9 @@ export default class TuitController implements ITuitController {
    * @returns {HttpResponse} the response data to be sent to the client
    */
   findById = async (req: HttpRequest): Promise<HttpResponse> => {
-    return { body: await this.tuitDao.findById(req.params.tuitId) };
+    console.log('FIND BY ID', req.params);
+    const tuit: ITuit = await this.tuitDao.findById(req.params.tuitId);
+    return okResponse(tuit);
   };
 
   /**

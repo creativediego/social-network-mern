@@ -17,4 +17,5 @@ export default interface ITuit {
   postedDate?: Date;
   likedBy?: [];
   dislikedBy?: [];
+  hashtags?: string[];
 }
