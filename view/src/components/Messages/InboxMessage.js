@@ -19,7 +19,7 @@ const InboxMessage = ({ conversation: message }) => {
     const res = await deleteConversation(userId, message.conversation);
 
     if (res.error) {
-      return dispatch(setGlobalError(res));
+      return dispatch(setGlobalError(res.error));
     }
     return dispatch(findInboxMessagesThunk());
   };

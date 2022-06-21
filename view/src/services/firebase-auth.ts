@@ -8,7 +8,7 @@ import {
 import { setAuthToken } from './helpers';
 import { clearUser } from '../redux/userSlice';
 
-export const loginWithGoogle = async (ThunkAPI) => {
+export const loginWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
   try {
     const result = await signInWithPopup(auth, provider);
@@ -19,12 +19,15 @@ export const loginWithGoogle = async (ThunkAPI) => {
   }
 };
 
-export const firebaseLoginWithEmail = async (email, password) => {
+export const firebaseLoginWithEmail = async (
+  email: string,
+  password: string
+) => {
   try {
     const result = await signInWithEmailAndPassword(auth, email, password);
     const user = result.user;
     return { uid: user.uid, email: user.email, name: user.displayName };
-  } catch (error) {
+  } catch (error: any) {
     let message;
     if (error.code === 'auth/wrong-password' || 'auth/wrong-email') {
       message = 'Wrong email or password.';
@@ -35,7 +38,7 @@ export const firebaseLoginWithEmail = async (email, password) => {
   }
 };
 
-export const fireBaseRegisterUser = async (email, password) => {
+export const fireBaseRegisterUser = async (email: string, password: string) => {
   try {
     const credentials = await createUserWithEmailAndPassword(
       auth,
@@ -44,7 +47,7 @@ export const fireBaseRegisterUser = async (email, password) => {
     );
     const user = credentials.user; // signed in
     return user;
-  } catch (err) {
+  } catch (err: any) {
     if (err.code === 'auth/email-already-in-use') {
       return { error: 'A user with this email already exists.' };
     }
@@ -53,10 +56,10 @@ export const fireBaseRegisterUser = async (email, password) => {
 };
 
 export const onFirebaseAuthStateChange = async (
-  activeAction,
-  expiredAction
+  activeAction: Function,
+  expiredAction: Function
 ) => {
-  auth.onAuthStateChanged(function (user) {
+  auth.onAuthStateChanged(function (user: any) {
     if (user) {
       setAuthToken(user.accessToken);
       return activeAction();
@@ -66,7 +69,7 @@ export const onFirebaseAuthStateChange = async (
   });
 };
 
-export const firebaseLogout = async (ThunkAPI) => {
+export const firebaseLogout = async (ThunkAPI: any) => {
   await auth.signOut();
   return ThunkAPI.dispatch(clearUser());
 };

@@ -1,4 +1,5 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { ITuit } from '../interfaces/ITuit';
 import { uploadTuitImage } from '../services/storage-service';
 import {
   findAllTuits,
@@ -9,6 +10,10 @@ import {
 import { setGlobalError } from './errorSlice';
 import { dataOrStateError } from './helpers';
 
+interface State {
+  list: ITuit[];
+  loading: boolean;
+}
 /**
  * Uses tuits service to update state with all tuits. Also keeps track of loading status of requests.
  */
@@ -25,11 +30,11 @@ export const findAllTuitsThunk = createAsyncThunk(
  */
 export const createTuitThunk = createAsyncThunk(
   'tuits/createTuit',
-  async ({ userId, tuit }, ThunkAPI) => {
+  async ({ userId, tuit }: { userId: string; tuit: ITuit }, ThunkAPI) => {
     let tuitToUpload = { ...tuit };
     delete tuitToUpload.imageFile;
     let resultTuit = await createTuit(userId, tuitToUpload);
-    if (tuit.image) {
+    if (tuit.image && tuit.imageFile) {
       try {
         const tuitImageURL = await uploadTuitImage(
           tuit.imageFile,
@@ -40,7 +45,8 @@ export const createTuitThunk = createAsyncThunk(
       } catch (err) {
         ThunkAPI.dispatch(
           setGlobalError({
-            error: 'Error uploading tuit image. Try again later.',
+            code: 500,
+            message: 'Error uploading tuit image. Try again later.',
           })
         );
       }
@@ -54,7 +60,7 @@ export const createTuitThunk = createAsyncThunk(
  */
 export const deleteTuitThunk = createAsyncThunk(
   'tuits/deleteTuit',
-  async (tuitId, ThunkAPI) => {
+  async (tuitId: string, ThunkAPI) => {
     const deletedTuitCount = await deleteTuit(tuitId);
     if (!deletedTuitCount.error) {
       ThunkAPI.dispatch(removeTuits(tuitId));
@@ -62,13 +68,13 @@ export const deleteTuitThunk = createAsyncThunk(
     return dataOrStateError(deletedTuitCount, ThunkAPI);
   }
 );
-
+const initialState: State = {
+  list: [],
+  loading: false,
+};
 const tuitSlice = createSlice({
   name: 'tuits',
-  initialState: {
-    list: [],
-    loading: false,
-  },
+  initialState,
   reducers: {
     setTuits: (state, action) => {
       state.list = action.payload;
@@ -94,36 +100,38 @@ const tuitSlice = createSlice({
       state.list = [];
     },
   },
-  extraReducers: {
-    // for the async thunks
-    [findAllTuitsThunk.pending]: (state) => {
+  extraReducers: (builder) => {
+    builder.addCase(findAllTuitsThunk.pending, (state) => {
       state.loading = true;
-    },
-    [findAllTuitsThunk.fulfilled]: (state, action) => {
+    });
+    builder.addCase(
+      findAllTuitsThunk.fulfilled,
+      (state, action: PayloadAction<ITuit[]>) => {
+        state.loading = false;
+        state.list = action.payload;
+      }
+    );
+    builder.addCase(findAllTuitsThunk.rejected, (state) => {
       state.loading = false;
-      state.list = [...action.payload];
-    },
-    [findAllTuitsThunk.rejected]: (state, action) => {
-      state.loading = false;
-    },
-    [createTuitThunk.pending]: (state) => {
+    });
+    builder.addCase(createTuitThunk.pending, (state) => {
       state.loading = true;
-    },
-    [createTuitThunk.fulfilled]: (state, action) => {
+    });
+    builder.addCase(createTuitThunk.fulfilled, (state) => {
       state.loading = false;
-    },
-    [createTuitThunk.rejected]: (state, action) => {
+    });
+    builder.addCase(createTuitThunk.rejected, (state) => {
       state.loading = false;
-    },
-    [deleteTuitThunk.pending]: (state) => {
+    });
+    builder.addCase(deleteTuitThunk.pending, (state) => {
       state.loading = true;
-    },
-    [deleteTuitThunk.fulfilled]: (state, action) => {
+    });
+    builder.addCase(deleteTuitThunk.fulfilled, (state) => {
       state.loading = false;
-    },
-    [deleteTuitThunk.rejected]: (state, action) => {
+    });
+    builder.addCase(deleteTuitThunk.rejected, (state) => {
       state.loading = false;
-    },
+    });
   },
 });
 export const { setTuits, clearTuits, removeTuits, updateTuits, pushTuit } =

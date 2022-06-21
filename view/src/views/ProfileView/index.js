@@ -24,7 +24,7 @@ const ProfileView = () => {
     const user = await findUserById(userId);
     setLoading(false);
     if (user.error) {
-      return dispatch(setGlobalError(user));
+      return dispatch(setGlobalError(user.error));
     }
     setUser({ ...user, user });
   };

@@ -8,7 +8,7 @@ export const processError = (err: any) => {
   if (err.response.data.error) {
     return err.response.data;
   }
-  return { error: 'Sorry! Something went wrong.', status: err.response.status };
+  return { error: 'Sorry! Something went wrong.', code: err.response.status };
 };
 
 export const loadRequestInterceptors = function (config: any) {

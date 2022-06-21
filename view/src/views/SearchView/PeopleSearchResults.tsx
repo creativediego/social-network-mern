@@ -8,7 +8,7 @@ interface PeopleSearchResultsProps {
   users: IUser[];
 }
 
-const userResult = (user: IUser) => (
+const getResultElement = (user: IUser) => (
   <div
     key={user.id}
     className='d-flex my-2 align-items-center justify-content-between list-group-item'
@@ -19,7 +19,7 @@ const userResult = (user: IUser) => (
       style={{ zIndex: '1' }}
     >
       <div className='d-flex align-items-center'>
-        <AvatarImage profilePhoto={user.profilePhoto} size='60' />
+        <AvatarImage profilePhoto={user.profilePhoto} size={60} />
         <div className='d-flex flex-column flex-fill'>
           <span className='fs-6 text-white fw-bold'>
             {user.name || user.firstName}
@@ -34,10 +34,10 @@ const userResult = (user: IUser) => (
     <hr />
   </div>
 );
-const UserSearchResults: React.FC<PeopleSearchResultsProps> = ({
+const UserSearchResults = ({
   users,
-}): any => {
-  return <div>{users && users.map((user) => userResult(user))}</div>;
+}: PeopleSearchResultsProps): JSX.Element => {
+  return <div>{users && users.map((user) => getResultElement(user))}</div>;
 };
 
 export default UserSearchResults;

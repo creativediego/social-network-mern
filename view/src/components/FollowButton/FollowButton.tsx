@@ -1,18 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import {
   findAllFollowers,
   followUser,
   unfollowUser,
 } from '../../services/follows-service';
-import { Loader } from '../../components';
+import { Loader } from '..';
 import { setGlobalError } from '../../redux/errorSlice';
 import { findUserById } from '../../services/users-service';
+import { IUser } from '../../interfaces/IUser';
 
-const FollowButton = ({ userToFollow, setProfileUser }) => {
-  const [following, setFollowing] = useState(false);
-  const authUser = useSelector((state) => state.user.data);
-  const [loading, setLoading] = useState(false);
+interface FollowButtonProps {
+  userToFollow: IUser;
+  setProfileUser?: React.Dispatch<React.SetStateAction<IUser>>;
+}
+const FollowButton = ({
+  userToFollow,
+  setProfileUser,
+}: FollowButtonProps): JSX.Element => {
+  const [following, setFollowing] = React.useState(false);
+  const authUser = useSelector((state: any) => state.user.data);
+  const [loading, setLoading] = React.useState(false);
   const dispatch = useDispatch();
 
   const handleFollowUser = async () => {
@@ -24,7 +33,8 @@ const FollowButton = ({ userToFollow, setProfileUser }) => {
     if (res.error || updatedUser.error) {
       dispatch(
         setGlobalError({
-          error:
+          code: 500,
+          message:
             'We ran into an issue following the user. Please try again later.',
         })
       );
@@ -42,7 +52,8 @@ const FollowButton = ({ userToFollow, setProfileUser }) => {
     if (res.error || updatedUser.error) {
       return dispatch(
         setGlobalError({
-          error:
+          code: 500,
+          message:
             'We ran into an issue unfollowing the user. Please try again later.',
         })
       );
@@ -55,10 +66,12 @@ const FollowButton = ({ userToFollow, setProfileUser }) => {
     const res = await findAllFollowers(userToFollow.id);
     // If we have an error return it
     if (res.error) {
-      dispatch(setGlobalError(res));
+      dispatch(setGlobalError(res.error));
     } else {
       // Otherwise, check if the authUser is in the list of followers for this user.
-      if (res.some((follower) => follower.username === authUser.username)) {
+      if (
+        res.some((follower: IUser) => follower.username === authUser.username)
+      ) {
         setFollowing(true);
       } else {
         setFollowing(false);
@@ -66,7 +79,7 @@ const FollowButton = ({ userToFollow, setProfileUser }) => {
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     checkIfFollowing();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userToFollow]);

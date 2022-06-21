@@ -8,7 +8,7 @@ import useSearchResults from './useSearchResults';
 import { Tuits } from '../../components';
 import PeopleSearchResults from './PeopleSearchResults';
 
-const SearchView: React.FC = (): JSX.Element => {
+const SearchView = (): JSX.Element => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [queryType, setQueryType] = React.useState<string>(
     searchParams.get('type') || 'tuits'

@@ -1,7 +1,7 @@
 /**
  * Includes redux state management for user actions such as login and update user.
  */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { getProfile } from '../services/auth-service';
 import { updateUser } from '../services/users-service';
 import { dataOrStateError } from './helpers';
@@ -13,6 +13,16 @@ import {
   fireBaseRegisterUser,
   loginWithGoogle,
 } from '../services/firebase-auth';
+import { IUser } from '../interfaces/IUser';
+import { INotification } from '../interfaces/INotification';
+
+interface State {
+  data: IUser | null;
+  loading: boolean;
+  profileComplete: boolean;
+  notifications: INotification[];
+  unreadNotifications: INotification[];
+}
 
 /**
  * Updates redux state with user profile after calling getProfile from user service.
@@ -33,7 +43,7 @@ export const fetchProfileThunk = createAsyncThunk(
  */
 export const registerThunk = createAsyncThunk(
   'users/register',
-  async (user, ThunkAPI) => {
+  async (user: IUser, ThunkAPI) => {
     const profile = await fireBaseRegisterUser(user.email, user.password);
     return dataOrStateError(profile, ThunkAPI);
   }
@@ -45,7 +55,7 @@ export const registerThunk = createAsyncThunk(
  */
 export const loginThunk = createAsyncThunk(
   'users/login',
-  async (user, ThunkAPI) => {
+  async (user: IUser, ThunkAPI) => {
     await firebaseLoginWithEmail(user.email, user.password);
     const authUser = await getProfile();
     if (!authUser.error) {
@@ -84,7 +94,7 @@ export const logoutThunk = createAsyncThunk(
  */
 export const updateUserThunk = createAsyncThunk(
   'users/update',
-  async (user, ThunkAPI) => {
+  async (user: IUser, ThunkAPI) => {
     const res = await updateUser(user);
     return dataOrStateError(res, ThunkAPI);
   }
@@ -93,7 +103,7 @@ export const updateUserThunk = createAsyncThunk(
 /**
  * Checks if the logged in user in state has complete their profile.
  */
-const checkProfileComplete = (state, user) => {
+const checkProfileComplete = (state: State, user: IUser) => {
   if (!user || !user.username || !user.birthday) {
     state.profileComplete = false;
   } else {
@@ -102,18 +112,19 @@ const checkProfileComplete = (state, user) => {
   return (state.data = user);
 };
 
+const initialState: State = {
+  data: null,
+  loading: false,
+  profileComplete: false,
+  notifications: [],
+  unreadNotifications: [],
+};
+
 const userSlice = createSlice({
   name: 'user',
-  initialState: {
-    data: null,
-    loading: false,
-    profileComplete: false,
-    loggedIn: false,
-    notifications: [],
-    unreadNotifications: [],
-  },
+  initialState,
   reducers: {
-    setNotifications: (state, action) => {
+    setNotifications: (state, action: PayloadAction<INotification[]>) => {
       state.notifications = action.payload;
     },
     setUnreadNotifications: (state, action) => {
@@ -121,76 +132,96 @@ const userSlice = createSlice({
     },
     clearUser: (state) => {
       state.data = null;
-      state.profileComplete = null;
-      state.token = null;
+      state.profileComplete = false;
       clearToken();
     },
-    updateAuthUser: (state, action) => {
+    updateAuthUser: (state, action: PayloadAction<IUser>) => {
       state.data = { ...state.data, ...action.payload };
     },
   },
-  extraReducers: {
-    [fetchProfileThunk.pending]: (state) => {
+  extraReducers: (builder) => {
+    builder.addCase(fetchProfileThunk.pending, (state) => {
       state.loading = true;
-    },
-    [fetchProfileThunk.fulfilled]: (state, action) => {
+    });
+    builder.addCase(
+      fetchProfileThunk.fulfilled,
+      (state, action: PayloadAction<IUser>) => {
+        state.loading = false;
+        checkProfileComplete(state, action.payload);
+      }
+    );
+    builder.addCase(fetchProfileThunk.rejected, (state) => {
       state.loading = false;
-      if (!action.payload.error) checkProfileComplete(state, action.payload);
-    },
-    [fetchProfileThunk.rejected]: (state) => {
-      state.loading = false;
-    },
-    [updateUserThunk.pending]: (state) => {
-      state.loading = true;
-    },
-    [updateUserThunk.fulfilled]: (state, action) => {
-      state.loading = false;
-      checkProfileComplete(state, action.payload);
-    },
-    [registerThunk.pending]: (state) => {
-      state.loading = true;
-    },
-    [registerThunk.fulfilled]: (state, action) => {
-      state.loading = false;
-      // checkProfileComplete(state, action.payload);
-    },
-    [loginThunk.pending]: (state) => {
-      state.loading = true;
-    },
-    [loginThunk.fulfilled]: (state, action) => {
-      state.loading = false;
-      checkProfileComplete(state, action.payload);
-    },
-    [loginWithGoogleThunk.rejected]: (state, action) => {
-      state.loading = false;
-    },
-    [loginWithGoogleThunk.pending]: (state) => {
-      state.loading = true;
-    },
-    [loginWithGoogleThunk.fulfilled]: (state, action) => {
-      state.loading = false;
-    },
-    [loginThunk.rejected]: (state, action) => {
-      state.loading = false;
-    },
-    [logoutThunk.pending]: (state) => {
-      state.loading = true;
-    },
-    [logoutThunk.fulfilled]: (state, action) => {
-      state.loading = false;
-      state.data = null;
-      state.profileComplete = false;
-    },
+    });
 
-    [logoutThunk.rejected]: (state) => {
+    builder.addCase(updateUserThunk.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(
+      updateUserThunk.fulfilled,
+      (state, action: PayloadAction<IUser>) => {
+        state.loading = false;
+        checkProfileComplete(state, action.payload);
+      }
+    );
+    builder.addCase(updateUserThunk.rejected, (state) => {
+      state.loading = false;
+    });
+
+    builder.addCase(registerThunk.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(
+      registerThunk.fulfilled,
+      (state, action: PayloadAction<IUser>) => {
+        state.loading = false;
+        checkProfileComplete(state, action.payload);
+      }
+    );
+    builder.addCase(registerThunk.rejected, (state) => {
+      state.loading = false;
+    });
+
+    builder.addCase(loginThunk.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(
+      loginThunk.fulfilled,
+      (state, action: PayloadAction<IUser>) => {
+        state.loading = false;
+        checkProfileComplete(state, action.payload);
+      }
+    );
+    builder.addCase(loginThunk.rejected, (state) => {
+      state.loading = false;
+    });
+
+    builder.addCase(logoutThunk.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(logoutThunk.fulfilled, (state) => {
       state.loading = false;
       state.data = null;
       state.profileComplete = false;
-    },
+    });
+    builder.addCase(logoutThunk.rejected, (state) => {
+      state.loading = false;
+      state.data = null;
+      state.profileComplete = false;
+    });
+
+    builder.addCase(loginWithGoogleThunk.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(loginWithGoogleThunk.fulfilled, (state) => {
+      state.loading = false;
+    });
+    builder.addCase(loginWithGoogleThunk.rejected, (state) => {
+      state.loading = false;
+    });
   },
 });
 export const {
-  clearFoundUsers,
   setNotifications,
   setUnreadNotifications,
   clearUser,

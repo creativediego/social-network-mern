@@ -1,7 +1,8 @@
-import GenericError from './GenericError/GenericError';
 import PopupModal from './PopupModal/PopupModal';
+import GenericError from './GenericError/GenericError';
 import Tuits from './Tuits';
 import AlertBox from './AlertBox/AlertBox';
+// @ts-ignore
 import Navigation from './Navigation/Navigation';
 import CreateTuit from './CreateTuit/CreateTuit';
 import Loader from './Loader/Loader';

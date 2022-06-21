@@ -16,15 +16,15 @@ export const handleCentralError = (
   //   return;
   // }
 
-  let clientResponse = {
+  let errorResponse = {
     timestamp: Date.now,
     code: StatusCode.internalError,
-    error: 'Sorry, something went wrong!',
+    message: 'Sorry, something went wrong!',
     path: req.path,
   };
   if (err instanceof BaseError) {
-    clientResponse.code = err.code;
-    clientResponse.error = err.message;
+    errorResponse.code = err.code;
+    errorResponse.message = err.message;
   }
 
   // if (err instanceof BaseError && err.code === StatusCode.notFound) {
@@ -32,7 +32,7 @@ export const handleCentralError = (
   // }
 
   // if (err instanceof BaseError && err.isOperational) {
-  res.status(clientResponse.code).json(clientResponse);
+  res.status(errorResponse.code).json({ error: errorResponse });
   // }
 
   // if (!(err instanceof BaseError && err.isOperational)) {

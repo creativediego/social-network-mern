@@ -4,7 +4,7 @@ import React from 'react';
  * Generic error content that can be added to a landing page. Passed into {@link LandingView}.
  *
  */
-const GenericError = () => {
+const GenericError = (): JSX.Element => {
   return (
     <div>
       <h1>Oooops! Something went wrong.</h1>

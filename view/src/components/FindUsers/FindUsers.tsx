@@ -1,37 +1,45 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { IUser } from '../../interfaces/IUser';
+// @ts-ignore
 import { clearFoundUsers } from '../../redux/messageSlice';
+// @ts-ignore
 import { findUsersByNameThunk } from '../../redux/messageThunks';
 import Search from '../Search/Search';
 
+interface FindUserProps {
+  selectedUsers: IUser[];
+  setSelectedUsers: React.Dispatch<React.SetStateAction<IUser[]>>;
+}
 /**
  * Container that displays a search bar to search for users and results.
- * @param {{}} selectedUsers the users selected from the search result; the state is maintained by the parent, which uses it to dispatch an action to another component
- * @param {Function} setSelectedUsers sets the selectedUsers state
  */
-const FindUsers = ({ selectedUsers, setSelectedUsers }) => {
+const FindUsers: React.FC<FindUserProps> = ({
+  selectedUsers,
+  setSelectedUsers,
+}: FindUserProps): JSX.Element => {
   const dispatch = useDispatch();
   const allFoundUsers = useSelector(
-    (state) => state.messages.foundUsersForNewChat
+    (state: any) => state.messages.foundUsersForNewChat
   );
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = React.useState('');
 
   /**
    * Uses search value from Search component to dispatch an API call to find users by name or username.
    */
-  const findAllUsers = useCallback(() => {
+  const findAllUsers = React.useCallback(() => {
     if (!searchValue) return;
     return dispatch(findUsersByNameThunk(searchValue));
   }, [dispatch, searchValue]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     findAllUsers();
   }, [findAllUsers]);
 
   /**
    * When the user selects someone from the search results, this function resets the search inbox value, clears the found users in the results in redux state, and sets the state of the selected users maintained by the parent component (which then makes an API call).
    */
-  const selectUsersForParentComponent = (user) => {
+  const selectUsersForParentComponent = (user: IUser) => {
     setSearchValue('');
     dispatch(clearFoundUsers());
     return setSelectedUsers([...selectedUsers, user]);
@@ -51,7 +59,7 @@ const FindUsers = ({ selectedUsers, setSelectedUsers }) => {
       <hr />
 
       <h5 className='mt-4'>Results</h5>
-      {allFoundUsers.map((user) => (
+      {allFoundUsers.map((user: IUser) => (
         <div key={user.id}>
           <p
             className='btn'

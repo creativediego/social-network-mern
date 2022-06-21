@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { IConversation } from '../interfaces/IConversation';
+import { IMessage } from '../interfaces/IMessage';
 import { loadRequestInterceptors } from './helpers';
 import { processError } from './helpers';
 
@@ -18,7 +20,11 @@ api.interceptors.request.use(loadRequestInterceptors);
  * @param message messages object
  * @returns {Promise<{message}>} the message object or error
  */
-export const sendMessage = async (userId, conversationId, message) => {
+export const sendMessage = async (
+  userId: string,
+  conversationId: string,
+  message: IMessage
+) => {
   try {
     const res = await api.post(
       `${MESSAGES_API}/${userId}/conversations/${conversationId}/messages`,
@@ -37,7 +43,10 @@ export const sendMessage = async (userId, conversationId, message) => {
  * @param conversation conversation object
  * @returns {Promise<{conversation}>} the conversation object or error
  */
-export const createConversation = async (userId, conversation) => {
+export const createConversation = async (
+  userId: string,
+  conversation: IConversation
+) => {
   try {
     const res = await api.post(
       `${MESSAGES_API}/${userId}/conversations`,
@@ -57,7 +66,7 @@ export const createConversation = async (userId, conversation) => {
  * and to format the returned output.
  * @param userId id of the user requesting the latest messages
  * @returns {Promise<[{message}]>} an array of message objects */
-export const findInboxMessages = async (userId, ThunkAPI) => {
+export const findInboxMessages = async (userId: string) => {
   try {
     const res = await api.get(`${MESSAGES_API}/${userId}/messages/`);
     return res.data;
@@ -65,7 +74,10 @@ export const findInboxMessages = async (userId, ThunkAPI) => {
     return processError(err);
   }
 };
-export const findConversation = async (userId, conversationId) => {
+export const findConversation = async (
+  userId: string,
+  conversationId: string
+) => {
   try {
     const res = await api.get(
       `${MESSAGES_API}/${userId}/conversations/${conversationId}`
@@ -83,7 +95,10 @@ export const findConversation = async (userId, conversationId) => {
  * @param conversationId the id of the conversation
  * @returns {Promise<[{message}]>} an array of message objects */
 
-export const findMessagesByConversation = async (userId, conversationId) => {
+export const findMessagesByConversation = async (
+  userId: string,
+  conversationId: string
+) => {
   try {
     const res = await api.get(
       `${MESSAGES_API}/${userId}/conversations/${conversationId}/messages`
@@ -98,7 +113,7 @@ export const findMessagesByConversation = async (userId, conversationId) => {
  * Finds all the messages sent by the specified user.
  * @param userId id of the user requesting the latest messages
  * @returns {Promise<[{message}]>} an array of message objects */
-export const findAllMessagesSentByUser = async (userId) => {
+export const findAllMessagesSentByUser = async (userId: string) => {
   try {
     const res = await api.get(`${MESSAGES_API}/${userId}/messages/sent`);
     return res.data;
@@ -115,7 +130,7 @@ export const findAllMessagesSentByUser = async (userId) => {
  * @param messageId id of the message
  * @returns {Promise<{message}>} the deleted message
  */
-export const deleteMessage = async (userId, messageId) => {
+export const deleteMessage = async (userId: string, messageId: string) => {
   try {
     const res = await api.delete(
       `${MESSAGES_API}/${userId}/messages/${messageId}`
@@ -132,7 +147,10 @@ export const deleteMessage = async (userId, messageId) => {
  * @param conversationId id of the conversation
  * @returns {Promise<{message}>} the deleted conversation
  */
-export const deleteConversation = async (userId, conversationId) => {
+export const deleteConversation = async (
+  userId: string,
+  conversationId: string
+) => {
   try {
     const res = await api.delete(
       `${MESSAGES_API}/${userId}/conversations/${conversationId}`

@@ -22,7 +22,7 @@ const Message = ({ message }) => {
     const res = await deleteMessage(userId, message.id);
     setShowOptions(false);
     if (res.error) {
-      return dispatch(setGlobalError(res));
+      return dispatch(setGlobalError(res.error));
     }
     return dispatch(findMessagesByConversationThunk(message.conversation));
   };

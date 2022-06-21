@@ -1,9 +1,13 @@
-import io from 'socket.io-client';
+import io, { Socket } from 'socket.io-client';
+// @ts-ignore
 import { findInboxMessagesThunk } from '../redux/messageThunks';
 import axios from 'axios';
 import { processError } from './helpers';
+// @ts-ignore
 import { updateChat } from '../redux/messageSlice';
+// @ts-ignore
 import { updateNotifications } from '../redux/notificationSlice';
+// @ts-ignore
 import { pushTuit, updateTuits } from '../redux/tuitSlice';
 const SECURITY_API = `${process.env.REACT_APP_API_URL}/auth`;
 
@@ -12,29 +16,29 @@ const api = axios.create();
 const SOCKET_URL = process.env.REACT_APP_SOCKET_URL;
 const CLIENT_URL = process.env.CLIENT_URL;
 
-let socket;
+let socket: any;
 let listening = false;
 
-const listenForNewMessages = (socket, ThunkAPI) => {
+const listenForNewMessages = (socket: Socket, ThunkAPI: any) => {
   socket.on('NEW_MESSAGE', (message) => {
     ThunkAPI.dispatch(updateChat(message));
     ThunkAPI.dispatch(findInboxMessagesThunk());
   });
 };
 
-const listenForNewNotifications = (socket, ThunkAPI) => {
+const listenForNewNotifications = (socket: Socket, ThunkAPI: any) => {
   socket.on('NEW_NOTIFICATION', (notification) => {
     ThunkAPI.dispatch(updateNotifications(notification));
   });
 };
 
-const listenForNewTuits = (socket, ThunkAPI) => {
+const listenForNewTuits = (socket: Socket, ThunkAPI: any) => {
   socket.on('NEW_TUIT', (tuit) => {
     ThunkAPI.dispatch(pushTuit(tuit));
   });
 };
 
-const listenForUpdatedTuits = (socket, ThunkAPI) => {
+const listenForUpdatedTuits = (socket: Socket, ThunkAPI: any) => {
   socket.on('UPDATED_TUIT', (tuit) => {
     ThunkAPI.dispatch(updateTuits(tuit));
   });
@@ -42,11 +46,11 @@ const listenForUpdatedTuits = (socket, ThunkAPI) => {
 
 const listeners = ['NEW_MESSAGE', 'NEW_NOTIFICATION', 'NEW_TUIT'];
 
-export const enableListeners = (ThunkAPI) => {
+export const enableListeners = (ThunkAPI: any) => {
   socket = io(`${SOCKET_URL}`, {
-    cors: {
-      origin: CLIENT_URL,
-    },
+    // cors: {
+    //   origin: CLIENT_URL,
+    // },
     query: { token: localStorage.getItem('token') },
     transports: ['polling'],
     reconnection: false,

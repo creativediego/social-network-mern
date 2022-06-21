@@ -8,6 +8,7 @@ import { deleteTuitThunk } from '../../redux/tuitSlice';
 import { Link } from 'react-router-dom';
 import AvatarImage from '../AvatarImage/AvatarImage';
 import { ITuit } from '../../interfaces/ITuit';
+import moment from 'moment';
 const defaultContext: any[] = [];
 export const TuitContext = React.createContext(defaultContext);
 
@@ -60,7 +61,9 @@ const Tuit: React.FC<TuitProps> = ({ tuit }): React.ReactElement => {
                   contextTuit.author.username
                 } `}
               </Link>
-              <span className='text-dark'>{contextTuit.createdAt}</span>
+              <span className='text-dark'>
+                {moment(contextTuit.createdAt).fromNow()}
+              </span>
             </p>
             {tuitWordArray.map((word, index) =>
               word[0] === '#' ? ( // style the hashtag word and create link

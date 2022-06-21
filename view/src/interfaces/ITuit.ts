@@ -6,7 +6,7 @@ export interface ITuit {
   author: IUser;
   createdAt: string;
   image?: string;
-  imageFile?: File | Blob | undefined;
+  imageFile?: File;
   youtube?: string;
   hashtags?: string[];
 }

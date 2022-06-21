@@ -27,7 +27,7 @@ const AvatarUpload = ({ profileValues, setProfileValues }) => {
     } catch (err) {
       const message =
         'Sorry, we ran into an error uploading your profile avatar. Login again, or try again later.';
-      dispatch(setGlobalError({ error: message }));
+      dispatch(setGlobalError({ code: 500, message }));
     }
   };
 
@@ -41,7 +41,7 @@ const AvatarUpload = ({ profileValues, setProfileValues }) => {
     } catch (err) {
       const message =
         'Sorry, we ran into an error uploading your profile background photo. Try again later.';
-      dispatch(setGlobalError({ error: message }));
+      dispatch(setGlobalError({ code: 500, message }));
     }
   };
 

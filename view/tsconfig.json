@@ -1,8 +1,10 @@
 {
     "compilerOptions": {
+      "allowSyntheticDefaultImports": true,
+      "esModuleInterop": true,
       "jsx": "react",
       "strict": true,
       "strictNullChecks": true,
-    //   "noImplicitAny": true
+      "noImplicitAny": true
     }
   }

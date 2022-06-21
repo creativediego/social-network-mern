@@ -70,7 +70,7 @@ const useSearchResults = (
     submitSearch(searchValue, queryType).then((results) => {
       setLoading(false);
       if (results.error) {
-        dispatch(setGlobalError(results));
+        dispatch(setGlobalError(results.error));
         return;
       }
       if (isAPISubscribed) {

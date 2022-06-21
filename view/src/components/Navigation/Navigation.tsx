@@ -3,17 +3,18 @@ import './navigation.css';
 import { useLocation, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
+// @ts-ignore
 import { findUnreadNotificationsThunk } from '../../redux/notificationSlice';
 
 /**
  * Displays the main navigation menu of the app.
  */
-function Navigation() {
+const Navigation = (): JSX.Element => {
   const { pathname } = useLocation();
-  const authUser = useSelector((state) => state.user.data);
+  const authUser = useSelector((state: any) => state.user.data);
   const dispatch = useDispatch();
   const unreadNotifications = useSelector(
-    (state) => state.notifications.unread
+    (state: any) => state.notifications.unread
   );
 
   let notificationColor;
@@ -103,6 +104,6 @@ function Navigation() {
       </ul>
     </div>
   );
-}
+};
 
 export default Navigation;
