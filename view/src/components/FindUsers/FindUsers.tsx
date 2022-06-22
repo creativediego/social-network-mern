@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { IUser } from '../../interfaces/IUser';
 // @ts-ignore
 import { clearFoundUsers } from '../../redux/messageSlice';
@@ -18,9 +18,9 @@ const FindUsers: React.FC<FindUserProps> = ({
   selectedUsers,
   setSelectedUsers,
 }: FindUserProps): JSX.Element => {
-  const dispatch = useDispatch();
-  const allFoundUsers = useSelector(
-    (state: any) => state.messages.foundUsersForNewChat
+  const dispatch = useAppDispatch();
+  const allFoundUsers = useAppSelector(
+    (state) => state.messages.foundUsersForNewChat
   );
   const [searchValue, setSearchValue] = React.useState('');
 

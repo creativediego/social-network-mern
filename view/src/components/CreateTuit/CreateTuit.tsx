@@ -1,19 +1,20 @@
 import * as React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { ITuit } from '../../interfaces/ITuit';
 // @ts-ignore
 import { createTuitThunk } from '../../redux/tuitSlice';
 import TuitImage from '../TuitImage/TuitImage';
 import TuitImageUpload from './TuitImageUpload';
+import { getAuthUser } from '../../redux/userSlice';
 
 /**
  * Displays form where user can submit a new tuit.
  *
  */
 const CreateTuit = () => {
-  const authUser = useSelector((state: any) => state.user.data);
+  const authUser = useAppSelector(getAuthUser);
   const userId = authUser.id;
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [tuit, setTuit] = React.useState<ITuit>({
     id: '',
     author: authUser,

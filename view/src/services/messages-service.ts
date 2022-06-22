@@ -15,16 +15,12 @@ api.interceptors.request.use(loadRequestInterceptors);
  * id of the conversation this message belongs to. Also interact with the
  * ConversationModel to check if sender is a participant in the conversation.
  * If so, then call the MessageModel to create the message.
- * @param userId id of the user requesting the latest messages
- * @param conversation conversation object
- * @param message messages object
- * @returns {Promise<{message}>} the message object or error
  */
 export const sendMessage = async (
   userId: string,
   conversationId: string,
-  message: IMessage
-) => {
+  message: string
+): Promise<IMessage> => {
   try {
     const res = await api.post(
       `${MESSAGES_API}/${userId}/conversations/${conversationId}/messages`,
@@ -46,7 +42,7 @@ export const sendMessage = async (
 export const createConversation = async (
   userId: string,
   conversation: IConversation
-) => {
+): Promise<IConversation> => {
   try {
     const res = await api.post(
       `${MESSAGES_API}/${userId}/conversations`,
@@ -66,7 +62,9 @@ export const createConversation = async (
  * and to format the returned output.
  * @param userId id of the user requesting the latest messages
  * @returns {Promise<[{message}]>} an array of message objects */
-export const findInboxMessages = async (userId: string) => {
+export const findInboxMessages = async (
+  userId: string
+): Promise<IConversation[]> => {
   try {
     const res = await api.get(`${MESSAGES_API}/${userId}/messages/`);
     return res.data;
@@ -77,7 +75,7 @@ export const findInboxMessages = async (userId: string) => {
 export const findConversation = async (
   userId: string,
   conversationId: string
-) => {
+): Promise<IConversation> => {
   try {
     const res = await api.get(
       `${MESSAGES_API}/${userId}/conversations/${conversationId}`
@@ -93,12 +91,12 @@ export const findConversation = async (
  * Also check if user if indeed a participant in the conversation for security reasons.
  * @param userId id of the user requesting the latest messages
  * @param conversationId the id of the conversation
- * @returns {Promise<[{message}]>} an array of message objects */
+ * @returns {Promise<IMessage[]>} an array of message objects */
 
 export const findMessagesByConversation = async (
   userId: string,
   conversationId: string
-) => {
+): Promise<IMessage[]> => {
   try {
     const res = await api.get(
       `${MESSAGES_API}/${userId}/conversations/${conversationId}/messages`
@@ -113,7 +111,9 @@ export const findMessagesByConversation = async (
  * Finds all the messages sent by the specified user.
  * @param userId id of the user requesting the latest messages
  * @returns {Promise<[{message}]>} an array of message objects */
-export const findAllMessagesSentByUser = async (userId: string) => {
+export const findAllMessagesSentByUser = async (
+  userId: string
+): Promise<IMessage[]> => {
   try {
     const res = await api.get(`${MESSAGES_API}/${userId}/messages/sent`);
     return res.data;
@@ -130,7 +130,10 @@ export const findAllMessagesSentByUser = async (userId: string) => {
  * @param messageId id of the message
  * @returns {Promise<{message}>} the deleted message
  */
-export const deleteMessage = async (userId: string, messageId: string) => {
+export const deleteMessage = async (
+  userId: string,
+  messageId: string
+): Promise<IMessage> => {
   try {
     const res = await api.delete(
       `${MESSAGES_API}/${userId}/messages/${messageId}`
@@ -145,12 +148,12 @@ export const deleteMessage = async (userId: string, messageId: string) => {
  * Remove a conversation between user(s)
  * @param userId id of the user requesting the latest messages
  * @param conversationId id of the conversation
- * @returns {Promise<{message}>} the deleted conversation
+ * @returns {Promise<{IConversation}>} the deleted conversation
  */
 export const deleteConversation = async (
   userId: string,
   conversationId: string
-) => {
+): Promise<IConversation> => {
   try {
     const res = await api.delete(
       `${MESSAGES_API}/${userId}/conversations/${conversationId}`

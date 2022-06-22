@@ -11,7 +11,7 @@ import { onFirebaseAuthStateChange } from './services/firebase-auth';
 
 function App() {
   const profileComplete = useSelector((state) => state.user.profileComplete);
-  const authUser = useSelector((state) => state.user.data);
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const loading = useSelector((state) => state.user.loading);
   const dispatch = useDispatch();
 
@@ -24,7 +24,7 @@ function App() {
 
   return (
     <div>
-      {loading && !authUser ? (
+      {loading && !isLoggedIn ? (
         <div className='d-flex vh-100 justify-content-center align-items-center'>
           <Loader loading={loading} size='fs-1' />
           <i className='fa-brands fa-twitter text-primary fs-1 px-2'></i>

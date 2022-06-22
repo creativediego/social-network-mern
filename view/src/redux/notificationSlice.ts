@@ -1,17 +1,18 @@
 /**
  * Includes redux state management for user actions such as login and update user.
  */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { dataOrStateError } from './helpers';
 import {
   findNotifications,
   findUnreadNotifications,
   markNotificationAsRead,
 } from '../services/notifications-service';
+import { INotification } from '../interfaces/INotification';
 
 export const findNotificationsThunk = createAsyncThunk(
   'notifications/findNotifications',
-  async (data, ThunkAPI) => {
+  async (data, ThunkAPI: any) => {
     const userId = ThunkAPI.getState().user.data.id;
     const notifications = await findNotifications(userId);
     return dataOrStateError(notifications, ThunkAPI);
@@ -20,7 +21,7 @@ export const findNotificationsThunk = createAsyncThunk(
 
 export const findUnreadNotificationsThunk = createAsyncThunk(
   'notifications/findUnreadNotifications',
-  async (data, ThunkAPI) => {
+  async (data, ThunkAPI: any) => {
     const userId = ThunkAPI.getState().user.data.id;
     const notifications = await findUnreadNotifications(userId);
     return dataOrStateError(notifications, ThunkAPI);
@@ -29,19 +30,27 @@ export const findUnreadNotificationsThunk = createAsyncThunk(
 
 export const markNotificationReadThunk = createAsyncThunk(
   'notifications/markNotificationRead',
-  async (notificationId, ThunkAPI) => {
+  async (notificationId: string, ThunkAPI: any) => {
     const notification = await markNotificationAsRead(notificationId);
     return dataOrStateError(notification, ThunkAPI);
   }
 );
 
+export interface NotificationsState {
+  all: INotification[];
+  unread: INotification[];
+  loading: boolean;
+}
+
+const initialState: NotificationsState = {
+  all: [],
+  unread: [],
+  loading: false,
+};
+
 const notificationSlice = createSlice({
   name: 'notifications',
-  initialState: {
-    loading: false,
-    all: [],
-    unread: [],
-  },
+  initialState,
   reducers: {
     updateNotifications: (state, action) => {
       const notification = action.payload;
@@ -58,48 +67,56 @@ const notificationSlice = createSlice({
       state.unread = [];
     },
   },
-  extraReducers: {
-    [findNotificationsThunk.pending]: (state) => {
+  extraReducers: (builder) => {
+    builder.addCase(findNotificationsThunk.pending, (state) => {
       state.loading = true;
-    },
-    [findNotificationsThunk.fulfilled]: (state, action) => {
+    });
+    builder.addCase(
+      findNotificationsThunk.fulfilled,
+      (state, action: PayloadAction<INotification[]>) => {
+        state.loading = false;
+        state.all = action.payload;
+      }
+    );
+    builder.addCase(findNotificationsThunk.rejected, (state) => {
       state.loading = false;
-      state.all = action.payload;
-    },
-    [findNotificationsThunk.rejected]: (state, action) => {
-      state.loading = false;
-    },
-    [findUnreadNotificationsThunk.pending]: (state) => {
+    });
+    builder.addCase(findUnreadNotificationsThunk.pending, (state) => {
       state.loading = true;
-    },
-    [findUnreadNotificationsThunk.fulfilled]: (state, action) => {
+    });
+    builder.addCase(
+      findUnreadNotificationsThunk.fulfilled,
+      (state, action: PayloadAction<INotification[]>) => {
+        state.loading = false;
+        state.all = action.payload;
+      }
+    );
+    builder.addCase(findUnreadNotificationsThunk.rejected, (state) => {
       state.loading = false;
-      state.unread = action.payload;
-    },
-    [findUnreadNotificationsThunk.rejected]: (state, action) => {
-      state.loading = false;
-    },
-    [markNotificationReadThunk.pending]: (state) => {
+    });
+    builder.addCase(markNotificationReadThunk.pending, (state) => {
       state.loading = true;
-    },
-    [markNotificationReadThunk.fulfilled]: (state, action) => {
+    });
+    builder.addCase(
+      markNotificationReadThunk.fulfilled,
+      (state, action: PayloadAction<INotification>) => {
+        state.loading = false;
+        const readNotification = action.payload;
+        state.unread = state.unread.filter(
+          (notification) => notification.id !== readNotification.id
+        );
+        state.all = state.all.map((notification) => {
+          if (notification.id === readNotification.id) return readNotification;
+          else return notification;
+        });
+      }
+    );
+    builder.addCase(markNotificationReadThunk.rejected, (state) => {
       state.loading = false;
-      const readNotification = action.payload;
-      state.unread = state.unread.filter(
-        (notification) => notification.id !== readNotification.id
-      );
-      state.all = state.all.map((notification) => {
-        if (notification.id === readNotification.id) return readNotification;
-        else return notification;
-      });
-    },
-    [markNotificationReadThunk.rejected]: (state, action) => {
-      state.loading = false;
-    },
+    });
   },
 });
 export const {
-  setNotifications,
   setUnreadNotifications,
   clearUnreadNotifications,
   updateNotifications,

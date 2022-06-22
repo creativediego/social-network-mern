@@ -20,7 +20,9 @@ const LoginForm = () => {
     if (!loginUser || !loginUser.password || !loginUser.email) {
       return;
     }
-    dispatch(loginThunk(loginUser));
+    dispatch(
+      loginThunk({ email: loginUser.email, password: loginUser.password })
+    );
   };
 
   const form = (

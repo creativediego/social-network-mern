@@ -2,8 +2,7 @@ import * as React from 'react';
 import TuitStats from './TuitStats';
 import TuitImage from '../TuitImage/TuitImage';
 import TuitVideo from './TuitVideo';
-import { useDispatch, useSelector } from 'react-redux';
-// @ts-ignore
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { deleteTuitThunk } from '../../redux/tuitSlice';
 import { Link } from 'react-router-dom';
 import AvatarImage from '../AvatarImage/AvatarImage';
@@ -21,8 +20,8 @@ interface TuitProps {
 const Tuit: React.FC<TuitProps> = ({ tuit }): React.ReactElement => {
   const [contextTuit, setContextTuit] = React.useState(tuit);
   const tuitWordArray = contextTuit.tuit.split(' ');
-  const userId = useSelector((state: any) => state.user.data.id);
-  const dispatch = useDispatch();
+  const userId = useAppSelector((state: any) => state.user.data.id);
+  const dispatch = useAppDispatch();
   const handleDeleteTuit = async (tid: string) => {
     dispatch(deleteTuitThunk(contextTuit.id));
   };

@@ -10,10 +10,6 @@ import {
 import { setGlobalError } from './errorSlice';
 import { dataOrStateError } from './helpers';
 
-interface State {
-  list: ITuit[];
-  loading: boolean;
-}
 /**
  * Uses tuits service to update state with all tuits. Also keeps track of loading status of requests.
  */
@@ -68,7 +64,11 @@ export const deleteTuitThunk = createAsyncThunk(
     return dataOrStateError(deletedTuitCount, ThunkAPI);
   }
 );
-const initialState: State = {
+export interface TuitsState {
+  list: ITuit[];
+  loading: boolean;
+}
+const initialState: TuitsState = {
   list: [],
   loading: false,
 };

@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { Alert } from 'react-bootstrap';
 import './AlertBox.scss';
-import { useDispatch } from 'react-redux';
-// @ts-ignore
+import { useAppDispatch } from '../../redux/hooks';
 import { clearGlobalError } from '../../redux/errorSlice';
 
 interface AlertBoxProps {
@@ -17,7 +16,7 @@ const AlertBox: React.FC<AlertBoxProps> = ({
   message,
 }: AlertBoxProps): JSX.Element | null => {
   const [show, setShow] = React.useState(true);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   React.useEffect(() => {
     if (!message) {

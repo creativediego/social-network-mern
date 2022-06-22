@@ -2,6 +2,8 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import * as messageAPI from '../services/messages-service';
 import { dataOrStateError } from './helpers';
 import { findAllByName } from '../services/users-service';
+import { IConversation } from '../interfaces/IConversation';
+import type { RootState } from './store';
 
 /**
  * The following thunks call the messages API for different CRUD operations and to return the data to the messages slice where state is updated.
@@ -13,14 +15,9 @@ import { findAllByName } from '../services/users-service';
 export const findInboxMessagesThunk = createAsyncThunk(
   'messages/findInbox',
   async (data, ThunkAPI) => {
-    const userId = ThunkAPI.getState().user.data.id;
-    let inboxMessages = await messageAPI.findInboxMessages(userId, ThunkAPI);
-    // inboxMessages.forEach((inboxMessage) => {
-    //   // Remove logged-in user from list of recipients
-    //   inboxMessage.recipients = inboxMessage.recipients.filter(
-    //     (recipient) => recipient._id !== userId
-    //   );
-    // });
+    const state = ThunkAPI.getState() as RootState;
+    const userId = state.user.data.id;
+    let inboxMessages = await messageAPI.findInboxMessages(userId);
     return dataOrStateError(inboxMessages, ThunkAPI);
   }
 );
@@ -30,8 +27,9 @@ export const findInboxMessagesThunk = createAsyncThunk(
  */
 export const findMessagesByConversationThunk = createAsyncThunk(
   'messages/findMessagesByConversation',
-  async (conversationId, ThunkAPI) => {
-    const userId = ThunkAPI.getState().user.data.id;
+  async (conversationId: string, ThunkAPI) => {
+    const state = ThunkAPI.getState() as RootState;
+    const userId = state.user.data.id;
     let conversation = await messageAPI.findConversation(
       userId,
       conversationId
@@ -51,12 +49,16 @@ export const findMessagesByConversationThunk = createAsyncThunk(
  */
 export const sendMessageThunk = createAsyncThunk(
   'messages/sendMessage',
-  async (messageBody, ThunkAPI) => {
-    const userId = messageBody.sender;
-    const conversationId = messageBody.conversationId;
-    const message = messageBody.message;
+  async (
+    {
+      sender,
+      conversationId,
+      message,
+    }: { sender: string; conversationId: string; message: string },
+    ThunkAPI
+  ) => {
     const newMessage = await messageAPI.sendMessage(
-      userId,
+      sender,
       conversationId,
       message
     );
@@ -70,8 +72,9 @@ export const sendMessageThunk = createAsyncThunk(
  */
 export const createConversationThunk = createAsyncThunk(
   'messages/createConversation',
-  async (conversation, ThunkAPI) => {
-    const userId = ThunkAPI.getState().user.data.id;
+  async (conversation: IConversation, ThunkAPI) => {
+    const state = ThunkAPI.getState() as RootState;
+    const userId = state.user.data.id;
     const newConversation = await messageAPI.createConversation(
       userId,
       conversation
@@ -85,7 +88,7 @@ export const createConversationThunk = createAsyncThunk(
  */
 export const findUsersByNameThunk = createAsyncThunk(
   'users/findAllByName',
-  async (nameOrUsername, ThunkAPI) => {
+  async (nameOrUsername: string, ThunkAPI) => {
     const users = await findAllByName(nameOrUsername);
     return dataOrStateError(users, ThunkAPI);
   }

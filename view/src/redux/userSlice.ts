@@ -1,7 +1,12 @@
 /**
  * Includes redux state management for user actions such as login and update user.
  */
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+  PayloadAction,
+} from '@reduxjs/toolkit';
 import { getProfile } from '../services/auth-service';
 import { updateUser } from '../services/users-service';
 import { dataOrStateError } from './helpers';
@@ -15,14 +20,7 @@ import {
 } from '../services/firebase-auth';
 import { IUser } from '../interfaces/IUser';
 import { INotification } from '../interfaces/INotification';
-
-interface State {
-  data: IUser | null;
-  loading: boolean;
-  profileComplete: boolean;
-  notifications: INotification[];
-  unreadNotifications: INotification[];
-}
+import { RootState } from './store';
 
 /**
  * Updates redux state with user profile after calling getProfile from user service.
@@ -43,8 +41,11 @@ export const fetchProfileThunk = createAsyncThunk(
  */
 export const registerThunk = createAsyncThunk(
   'users/register',
-  async (user: IUser, ThunkAPI) => {
-    const profile = await fireBaseRegisterUser(user.email, user.password);
+  async (
+    { email, password }: { email: string; password: string },
+    ThunkAPI
+  ) => {
+    const profile = await fireBaseRegisterUser(email, password);
     return dataOrStateError(profile, ThunkAPI);
   }
 );
@@ -55,8 +56,11 @@ export const registerThunk = createAsyncThunk(
  */
 export const loginThunk = createAsyncThunk(
   'users/login',
-  async (user: IUser, ThunkAPI) => {
-    await firebaseLoginWithEmail(user.email, user.password);
+  async (
+    { email, password }: { email: string; password: string },
+    ThunkAPI
+  ) => {
+    await firebaseLoginWithEmail(email, password);
     const authUser = await getProfile();
     if (!authUser.error) {
       socketService.enableListeners(ThunkAPI);
@@ -99,25 +103,46 @@ export const updateUserThunk = createAsyncThunk(
     return dataOrStateError(res, ThunkAPI);
   }
 );
+export interface UserState {
+  data: IUser;
+  loading: boolean;
+  profileComplete: boolean;
+  isLoggedIn: boolean;
+  notifications: INotification[];
+  unreadNotifications: INotification[];
+}
+
+const initialUser: IUser = {
+  id: '',
+  username: '',
+  name: '',
+  firstName: '',
+  email: '',
+  bio: '',
+  headerImage: '',
+  profilePhoto: '',
+  accountType: '',
+};
+
+const initialState: UserState = {
+  data: initialUser,
+  isLoggedIn: false,
+  profileComplete: false,
+  notifications: [],
+  unreadNotifications: [],
+  loading: false,
+};
 
 /**
- * Checks if the logged in user in state has complete their profile.
+ * Helper: Checks if the logged in user in state has complete their profile.
  */
-const checkProfileComplete = (state: State, user: IUser) => {
+const checkProfileComplete = (state: UserState, user: IUser) => {
   if (!user || !user.username || !user.birthday) {
     state.profileComplete = false;
   } else {
     state.profileComplete = true;
   }
   return (state.data = user);
-};
-
-const initialState: State = {
-  data: null,
-  loading: false,
-  profileComplete: false,
-  notifications: [],
-  unreadNotifications: [],
 };
 
 const userSlice = createSlice({
@@ -131,7 +156,8 @@ const userSlice = createSlice({
       state.unreadNotifications = action.payload;
     },
     clearUser: (state) => {
-      state.data = null;
+      state.data = initialUser;
+      state.isLoggedIn = false;
       state.profileComplete = false;
       clearToken();
     },
@@ -189,6 +215,7 @@ const userSlice = createSlice({
       loginThunk.fulfilled,
       (state, action: PayloadAction<IUser>) => {
         state.loading = false;
+        state.isLoggedIn = true;
         checkProfileComplete(state, action.payload);
       }
     );
@@ -201,12 +228,12 @@ const userSlice = createSlice({
     });
     builder.addCase(logoutThunk.fulfilled, (state) => {
       state.loading = false;
-      state.data = null;
+      state.data = initialUser;
       state.profileComplete = false;
     });
     builder.addCase(logoutThunk.rejected, (state) => {
       state.loading = false;
-      state.data = null;
+      state.data = initialUser;
       state.profileComplete = false;
     });
 
@@ -221,6 +248,12 @@ const userSlice = createSlice({
     });
   },
 });
+
+export const getAuthUser = createSelector(
+  (state: RootState) => state.user.data,
+  (user) => user
+);
+
 export const {
   setNotifications,
   setUnreadNotifications,

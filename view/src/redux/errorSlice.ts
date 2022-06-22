@@ -5,7 +5,8 @@ import { IError } from '../interfaces/IError';
  * Handles global error state for the app. Used to display error messages in higher level parent components.
  */
 
-const initialState: IError = {
+export interface ErrorState extends IError {}
+const initialState: ErrorState = {
   message: '',
   code: undefined,
 };

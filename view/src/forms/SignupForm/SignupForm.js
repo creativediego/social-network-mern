@@ -13,6 +13,7 @@ import AvatarUpload from '../UpdateProfileForm/AvatarUpload';
 const SignupForm = () => {
   const dispatch = useDispatch();
   const authUser = useSelector((state) => state.user.data);
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const profileComplete = useSelector((state) => state.user.profileComplete);
   const [inputFields, setInputFields] = useState([]);
   const [inputFieldValues, setInputFieldValues] = useState({});
@@ -31,7 +32,12 @@ const SignupForm = () => {
 
   const handleSignup = () => {
     if (!isFormValid()) return;
-    dispatch(registerThunk(inputFieldValues));
+    dispatch(
+      registerThunk({
+        email: inputFieldValues.email,
+        password: inputFieldValues.password,
+      })
+    );
   };
   const handleCompleteSignup = () => {
     if (!isFormValid()) return;
@@ -39,10 +45,10 @@ const SignupForm = () => {
   };
   useEffect(() => {
     setInputFieldValues({ ...authUser });
-    if (authUser && !profileComplete) {
+    if (isLoggedIn && !profileComplete) {
       setShowSignupModal(true);
     }
-  }, [authUser, profileComplete]);
+  }, [isLoggedIn, profileComplete]);
 
   const signUpModalProps = {
     content: {
@@ -89,7 +95,7 @@ const SignupForm = () => {
 
   return (
     <div>
-      {authUser && !profileComplete ? (
+      {isLoggedIn && !profileComplete ? (
         <PopupModal {...completeSignupModalProps} />
       ) : (
         <div>
