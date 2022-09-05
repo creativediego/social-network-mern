@@ -8,6 +8,7 @@ export enum UserErrorMessages {
   INVALID_BIO = 'Invalid bio. Must be less than 150 characters.',
   INVALID_DOB = 'Invalid date of birth. Valid format: YYYY-MM-DD',
   INVALID_USERNAME = 'Invalid username.',
+  EMPTY_USERNAME = 'Username must not be empty.',
   INVALID_ACCOUNT_TYPE = 'Invalid account type.',
   FOLLOWERS_FOLLOWEE = 'Follower Followee count cannot be empty.',
 }

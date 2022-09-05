@@ -1,35 +1,52 @@
 import * as React from 'react';
 import { Button, Modal } from 'react-bootstrap';
+import { useAppSelector } from '../../redux/hooks';
+import AlertBox from '../AlertBox/AlertBox';
 
-interface PopupModalContent {
-    size: 'sm' | 'lg' | 'xl',
-    title: string,
-    body: JSX.Element,
-    submitLabel: string,
-}
+// interface PopupModalContent {
+//   title: string;
+//   body: JSX.Element;
+//   submitLabel: string;
+// }
 interface PopupModalProps {
-  show: boolean,
-  setShow: React.Dispatch<React.SetStateAction<boolean>>,
-  content: PopupModalContent,
-  handleSubmit: Function,
-  error?: string
+  title: string;
+  show: boolean;
+  size: 'sm' | 'lg';
+  setShow: React.Dispatch<React.SetStateAction<boolean>>;
+  locked?: boolean;
+  children?: React.ReactNode;
 }
 /**
  * A dismissible popup modal with  a title, content, and submit action customizable via props.
  */
-const PopupModal: React.FC<PopupModalProps> = ({ show, setShow, content, handleSubmit, error }: PopupModalProps) => {
- 
+const PopupModal: React.FC<PopupModalProps> = ({
+  title,
+  show,
+  size,
+  setShow,
+  locked,
+  children,
+}) => {
   const handleShow = (): void => {
     setShow(!show);
-  }
+  };
+  const errorMessage = useAppSelector((state) => state.error.message);
   return (
     <div>
-      <Modal size={content.size} show={show} onHide={handleShow}>
-        <Modal.Header closeButton>
-          <h5>{content.title}</h5>
+      <Modal
+        size={size}
+        show={show}
+        onHide={handleShow}
+        backdrop={locked ? 'static' : true}
+      >
+        <Modal.Header closeButton={locked ? false : true}>
+          <h5>{title}</h5>
         </Modal.Header>
-        <Modal.Body>{content.body}</Modal.Body>
-        <Modal.Footer>
+        <Modal.Body>
+          {children && children}
+          <AlertBox message={errorMessage} />
+        </Modal.Body>
+        {/* <Modal.Footer>
           <Button
             type='submit'
             className='rounded-pill'
@@ -39,9 +56,9 @@ const PopupModal: React.FC<PopupModalProps> = ({ show, setShow, content, handleS
             }}
           >
             {content.submitLabel}
-            {/* <i className='fas fa-spinner fa-pulse'></i> */}
+           
           </Button>
-        </Modal.Footer>
+        </Modal.Footer> */}
       </Modal>
     </div>
   );

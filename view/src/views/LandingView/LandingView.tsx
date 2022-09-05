@@ -1,9 +1,13 @@
-import React from 'react';
-import './LandingView.css';
+import React, { ReactElement } from 'react';
+import './LandingView.scss';
 
-const LandingView = ({ content }) => {
+export interface LandingViewProps {
+  content: ReactElement;
+}
+
+const LandingView = ({ content }: LandingViewProps): JSX.Element => {
   return (
-    <div className='container-fluid p-0 m-0 '>
+    <div className='container-fluid p-0 m-0'>
       <div className='row p-0 vh-100 vw-100'>
         <div className='bg-black text-white col-lg-6 order-lg-2 d-flex justify-content-center align-items-center'>
           <div className='container'>{content}</div>

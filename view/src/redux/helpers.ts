@@ -1,4 +1,5 @@
 import { BaseThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk';
+import { IError } from '../interfaces/IError';
 import { setGlobalError } from './errorSlice';
 // @ts-ignore
 import { clearUser } from './userSlice';
@@ -11,7 +12,12 @@ export const dataOrStateError = (APIdata: any, ThunkAPI: any) => {
     if (APIdata.code === 403 || APIdata.code === 401) {
       ThunkAPI.dispatch(clearUser());
     }
-    ThunkAPI.dispatch(setGlobalError(APIdata.error)); //update errors
+    const error: IError = {
+      message: APIdata.error,
+      code: APIdata.code,
+    };
+
+    ThunkAPI.dispatch(setGlobalError(error)); //update errors
     throw Error('Thunk error: ' + APIdata.error || APIdata.message);
   }
 

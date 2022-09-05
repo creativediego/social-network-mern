@@ -17,6 +17,7 @@ const errorSlice = createSlice({
   reducers: {
     setGlobalError: (state, action: PayloadAction<IError>) => {
       state.message = action.payload.message;
+      state.code = action.payload.code;
     },
     clearGlobalError: (state) => {
       state.message = '';

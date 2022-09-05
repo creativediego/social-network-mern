@@ -19,7 +19,7 @@ const SearchView = (): JSX.Element => {
   const [loading, searchData] = useSearchResults(queryType, searchValue); // custom hook
 
   return (
-    <div>
+    <>
       <Search
         searchValue={searchValue}
         setSearchValue={setSearchValue}
@@ -76,7 +76,7 @@ const SearchView = (): JSX.Element => {
           </div>
         }
       </div>
-    </div>
+    </>
   );
 };
 

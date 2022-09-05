@@ -9,7 +9,12 @@ import MyDislikes from './MyDislikes';
 import ProfileNav from './ProfileNav';
 import { findUserById } from '../../services/users-service';
 import { setGlobalError } from '../../redux/errorSlice';
-import { Loader, AvatarImage, FollowButton } from '../../components';
+import {
+  Loader,
+  AvatarImage,
+  FollowButton,
+  PopupModal,
+} from '../../components';
 import UpdateProfileForm from '../../forms/UpdateProfileForm/UpdateProfileForm';
 
 const ProfileView = () => {
@@ -19,6 +24,8 @@ const ProfileView = () => {
   const [loading, setLoading] = useState(false);
   const authUser = useSelector((state) => state.user.data);
   const isAuthUser = user.id === authUser.id;
+  const [showEditProfile, setShowEditProfile] = useState(false);
+
   const findUser = async () => {
     setLoading(true);
     const user = await findUserById(userId);
@@ -30,8 +37,10 @@ const ProfileView = () => {
   };
   useEffect(() => {
     findUser();
+    setShowEditProfile(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, authUser]);
+
   return (
     <div>
       {loading && (
@@ -55,18 +64,26 @@ const ProfileView = () => {
                 height: '200px',
               }}
             >
-              {/* <img
-                className='w-100'
-           
-                alt='profile header'
-              /> */}
               <div className='bottom-0 top-50 left-0  position-absolute rounded-circle'>
                 <AvatarImage profilePhoto={user.profilePhoto} size={150} />
               </div>
               {isAuthUser && (
                 <span>
                   <LogoutButton />
-                  <UpdateProfileForm />
+                  <button
+                    onClick={() => setShowEditProfile(true)}
+                    className='mt-2 me-2 btn btn-large btn-light border border-secondary fw-bolder rounded-pill fa-pull-right'
+                  >
+                    Edit profile
+                  </button>
+                  <PopupModal
+                    title='Update Profile'
+                    show={showEditProfile}
+                    setShow={setShowEditProfile}
+                    size='lg'
+                  >
+                    <UpdateProfileForm />
+                  </PopupModal>
                 </span>
               )}
             </div>

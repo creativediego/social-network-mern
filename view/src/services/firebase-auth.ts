@@ -4,9 +4,13 @@ import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
+  sendEmailVerification,
+  User,
 } from 'firebase/auth';
 import { setAuthToken } from './helpers';
 import { clearUser } from '../redux/userSlice';
+
+const CLIENT_URL = `${process.env.REACT_APP_CLIENT_URL}`;
 
 export const loginWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
@@ -30,15 +34,18 @@ export const firebaseLoginWithEmail = async (
   } catch (error: any) {
     let message;
     if (error.code === 'auth/wrong-password' || 'auth/wrong-email') {
-      message = 'Wrong email or password.';
+      throw new Error('Wrong email or password.');
     } else {
-      message = 'Login with email error: Please try logging in later.';
+      throw new Error('Login with email error: Please try logging in later.');
     }
     return { error: message };
   }
 };
 
-export const fireBaseRegisterUser = async (email: string, password: string) => {
+export const fireBaseRegisterUser = async (
+  email: string,
+  password: string
+): Promise<User> => {
   try {
     const credentials = await createUserWithEmailAndPassword(
       auth,
@@ -46,12 +53,13 @@ export const fireBaseRegisterUser = async (email: string, password: string) => {
       password
     );
     const user = credentials.user; // signed in
+    await sendEmailVerification(user, { url: CLIENT_URL });
     return user;
   } catch (err: any) {
     if (err.code === 'auth/email-already-in-use') {
-      return { error: 'A user with this email already exists.' };
+      throw new Error('A user with this email already exists.');
     }
-    return { error: 'Registration error: Please try again later.' };
+    throw new Error('Registration error: Please try again later.');
   }
 };
 
@@ -69,9 +77,8 @@ export const onFirebaseAuthStateChange = async (
   });
 };
 
-export const firebaseLogout = async (ThunkAPI: any) => {
-  await auth.signOut();
-  return ThunkAPI.dispatch(clearUser());
+export const firebaseLogout = async () => {
+  return await auth.signOut();
 };
 
 export const isLoggedIn = async () => {

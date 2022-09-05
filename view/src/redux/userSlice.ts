@@ -5,6 +5,7 @@ import {
   createAsyncThunk,
   createSelector,
   createSlice,
+  isRejectedWithValue,
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { getProfile } from '../services/auth-service';
@@ -16,17 +17,21 @@ import {
   firebaseLoginWithEmail,
   firebaseLogout,
   fireBaseRegisterUser,
+  isLoggedIn,
   loginWithGoogle,
 } from '../services/firebase-auth';
+import { setAuthToken } from '../services/helpers';
 import { IUser } from '../interfaces/IUser';
 import { INotification } from '../interfaces/INotification';
 import { RootState } from './store';
+import { setGlobalError } from './errorSlice';
+import { IError } from '../interfaces/IError';
 
 /**
  * Updates redux state with user profile after calling getProfile from user service.
  */
 export const fetchProfileThunk = createAsyncThunk(
-  'users/getProfile',
+  'users/fetchProfile',
   async (data, ThunkAPI) => {
     const profile = await getProfile();
     if (!profile.error) {
@@ -36,17 +41,27 @@ export const fetchProfileThunk = createAsyncThunk(
   }
 );
 
-/**
- * Calls the registration service and updates state with registered user.
- */
 export const registerThunk = createAsyncThunk(
   'users/register',
   async (
     { email, password }: { email: string; password: string },
     ThunkAPI
   ) => {
-    const profile = await fireBaseRegisterUser(email, password);
-    return dataOrStateError(profile, ThunkAPI);
+    if (!email || !password) {
+      throw new Error('Email and password required for registration.');
+    }
+    try {
+      await fireBaseRegisterUser(email, password);
+    } catch (err: unknown) {
+      const error = err as IError;
+      ThunkAPI.dispatch(setGlobalError({ message: error.message }));
+      return ThunkAPI.rejectWithValue({ message: error.message });
+    }
+    const authUser = await getProfile();
+    if (!authUser.error) {
+      socketService.enableListeners(ThunkAPI);
+    }
+    return dataOrStateError(authUser, ThunkAPI);
   }
 );
 
@@ -60,7 +75,13 @@ export const loginThunk = createAsyncThunk(
     { email, password }: { email: string; password: string },
     ThunkAPI
   ) => {
-    await firebaseLoginWithEmail(email, password);
+    try {
+      await firebaseLoginWithEmail(email, password);
+    } catch (err: unknown) {
+      const error = err as IError;
+      ThunkAPI.dispatch(setGlobalError({ message: error.message }));
+      return ThunkAPI.rejectWithValue({ message: error.message });
+    }
     const authUser = await getProfile();
     if (!authUser.error) {
       socketService.enableListeners(ThunkAPI);
@@ -88,7 +109,8 @@ export const logoutThunk = createAsyncThunk(
   async (user, ThunkAPI) => {
     clearToken();
     socketService.disconnect();
-    await firebaseLogout(ThunkAPI);
+    clearUser();
+    await firebaseLogout();
     return;
   }
 );
@@ -142,7 +164,8 @@ const checkProfileComplete = (state: UserState, user: IUser) => {
   } else {
     state.profileComplete = true;
   }
-  return (state.data = user);
+  state.data = { ...state.data, ...user };
+  return state.data;
 };
 
 const userSlice = createSlice({
@@ -160,6 +183,7 @@ const userSlice = createSlice({
       state.isLoggedIn = false;
       state.profileComplete = false;
       clearToken();
+      firebaseLogout();
     },
     updateAuthUser: (state, action: PayloadAction<IUser>) => {
       state.data = { ...state.data, ...action.payload };
@@ -173,11 +197,14 @@ const userSlice = createSlice({
       fetchProfileThunk.fulfilled,
       (state, action: PayloadAction<IUser>) => {
         state.loading = false;
+        state.isLoggedIn = true;
         checkProfileComplete(state, action.payload);
       }
     );
     builder.addCase(fetchProfileThunk.rejected, (state) => {
       state.loading = false;
+      clearUser();
+      firebaseLogout();
     });
 
     builder.addCase(updateUserThunk.pending, (state) => {
@@ -187,6 +214,7 @@ const userSlice = createSlice({
       updateUserThunk.fulfilled,
       (state, action: PayloadAction<IUser>) => {
         state.loading = false;
+        state.data = { ...state.data, ...action.payload };
         checkProfileComplete(state, action.payload);
       }
     );

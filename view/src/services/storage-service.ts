@@ -1,4 +1,5 @@
 import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
+import { ImageTypes } from '../interfaces/ImageTypes';
 import { storage, auth } from './firebase-config';
 
 const errors = {
@@ -41,6 +42,20 @@ export const uploadHeaderImage = async (file: File): Promise<string> => {
   }
   return await uploadImage(
     `users/${firebaseUser.uid}/profile/${firebaseUser.uid}-header`,
+    file
+  );
+};
+
+export const firebaseUploadProfileImage = async (
+  file: File,
+  type: ImageTypes
+): Promise<string> => {
+  const firebaseUser = auth.currentUser;
+  if (!firebaseUser) {
+    throw new Error(errors.NOT_LOGGED_IN);
+  }
+  return await uploadImage(
+    `users/${firebaseUser.uid}/profile/${firebaseUser.uid}-${type}`,
     file
   );
 };

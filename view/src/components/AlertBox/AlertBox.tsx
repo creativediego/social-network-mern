@@ -5,16 +5,13 @@ import { useAppDispatch } from '../../redux/hooks';
 import { clearGlobalError } from '../../redux/errorSlice';
 
 interface AlertBoxProps {
-  heading: string;
+  heading?: string;
   message: string;
 }
 /**
  * Displays an alert message with option to dismiss message.
  */
-const AlertBox: React.FC<AlertBoxProps> = ({
-  heading,
-  message,
-}: AlertBoxProps): JSX.Element | null => {
+const AlertBox = ({ heading, message }: AlertBoxProps): JSX.Element | null => {
   const [show, setShow] = React.useState(true);
   const dispatch = useAppDispatch();
 

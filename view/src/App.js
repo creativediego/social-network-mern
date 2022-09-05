@@ -24,31 +24,28 @@ function App() {
 
   return (
     <div>
-      {loading && !isLoggedIn ? (
-        <div className='d-flex vh-100 justify-content-center align-items-center'>
-          <Loader loading={loading} size='fs-1' />
-          <i className='fa-brands fa-twitter text-primary fs-1 px-2'></i>
-        </div>
-      ) : (
-        <HashRouter>
-          <Routes>
-            <Route
-              path='/*'
-              element={
-                profileComplete ? (
-                  <TuiterView />
-                ) : (
-                  <LandingView content={<LoginView />} />
-                )
-              }
-            ></Route>
-            <Route
-              path='/error'
-              element={<LandingView content={<GenericError />} />}
-            ></Route>
-          </Routes>
-        </HashRouter>
-      )}
+      <HashRouter>
+        <Routes>
+          <Route
+            path='/*'
+            element={
+              profileComplete ? (
+                <TuiterView />
+              ) : (
+                <LandingView content={<LoginView />} />
+              )
+            }
+          ></Route>
+          <Route
+            path='/error'
+            element={
+              <LandingView>
+                <GenericError />
+              </LandingView>
+            }
+          ></Route>
+        </Routes>
+      </HashRouter>
     </div>
   );
 }

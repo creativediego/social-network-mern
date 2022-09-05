@@ -1,4 +1,9 @@
 .validation-error {
+  color: red;
+  display: block;
+}
+/* 
+.validation-error {
   display: none;
 }
 
@@ -8,4 +13,4 @@ input:invalid[focused='true'] ~ span {
 
 input:invalid[focused='true'] {
   border: 1px solid red;
-}
+} */

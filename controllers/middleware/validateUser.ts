@@ -12,6 +12,7 @@ export const validateRegistration = [
     .trim()
     .not()
     .isEmpty()
+    .withMessage(UserValidationMessages.EMPTY_USERNAME)
     .isLength({ min: 3, max: 15 })
     .withMessage(UserValidationMessages.INVALID_USERNAME),
   body('bio')
@@ -37,7 +38,7 @@ export const validateRegistration = [
 ];
 
 export const validateProfile = [
-  param('userId').isString(),
+  // param('userId').isString(),
   ...validateRegistration,
 ];
 
