@@ -6,7 +6,7 @@
   "scripts": {
     "heroku-postbuild": "cd view && yarn install && yarn build",
     "start": "node build/server.js",
-    "dev": "nodemon ./server.ts",
+    "dev": "nodemon ./server.ts  --ignore ./view/",
     "build": "tsc --project ./",
     "test": "jest --watchAll --detectOpenHandles --verbose --coverage",
     "postinstall": "npm run build",

@@ -3,9 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { Routes, Route, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import LogoutButton from './LogoutButton';
-import MyTuits from './MyTuits';
-import MyLikes from './MyLikes';
-import MyDislikes from './MyDislikes';
 import ProfileNav from './ProfileNav';
 import { findUserById } from '../../services/users-service';
 import { setGlobalError } from '../../redux/errorSlice';
@@ -14,8 +11,15 @@ import {
   AvatarImage,
   FollowButton,
   PopupModal,
+  Tuits,
 } from '../../components';
 import UpdateProfileForm from '../../forms/UpdateProfileForm/UpdateProfileForm';
+import useProfileTuits from '../../hooks/useProfileTuits';
+import { findTuitsByUser } from '../../services/tuits-service';
+import {
+  findAllTuitsDislikedByUser,
+  findAllTuitsLikedByUser,
+} from '../../services/likes-service';
 
 const ProfileView = () => {
   const dispatch = useDispatch();
@@ -25,6 +29,11 @@ const ProfileView = () => {
   const authUser = useSelector((state) => state.user.data);
   const isAuthUser = user.id === authUser.id;
   const [showEditProfile, setShowEditProfile] = useState(false);
+  const [myTuits] = useProfileTuits(() => findTuitsByUser(userId));
+  const [myLikes] = useProfileTuits(() => findAllTuitsLikedByUser(userId));
+  const [myDislikes] = useProfileTuits(() =>
+    findAllTuitsDislikedByUser(userId)
+  );
 
   const findUser = async () => {
     setLoading(true);
@@ -120,9 +129,9 @@ const ProfileView = () => {
             </div>
           </div>
           <Routes>
-            <Route path='/tuits' element={<MyTuits userId={user.id} />} />
-            <Route path='/likes' element={<MyLikes userId={user.id} />} />
-            <Route path='/dislikes' element={<MyDislikes userId={user.id} />} />
+            <Route path='/tuits' element={<Tuits tuits={myTuits} />} />
+            <Route path='/likes' element={<Tuits tuits={myLikes} />} />
+            <Route path='/dislikes' element={<Tuits tuits={myDislikes} />} />
 
             {/* <Route path='/tuits-and-replies' element={<TuitsAndReplies />} /> */}
             {/* <Route path='/media' element={<Media />} />

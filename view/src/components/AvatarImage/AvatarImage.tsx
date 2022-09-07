@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { memo } from 'react';
 
 interface AvatarImageProps {
   profilePhoto: string;
@@ -29,4 +29,4 @@ const AvatarImage: React.FC<AvatarImageProps> = ({
   );
 };
 
-export default AvatarImage;
+export default memo(AvatarImage);

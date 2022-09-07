@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { memo } from 'react';
 import TuitStats from './TuitStats';
 import TuitImage from '../TuitImage/TuitImage';
 import TuitVideo from './TuitVideo';
@@ -91,4 +91,4 @@ const Tuit: React.FC<TuitProps> = ({ tuit }): React.ReactElement => {
     )
   );
 };
-export default Tuit;
+export default memo(Tuit);

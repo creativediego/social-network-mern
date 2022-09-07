@@ -8,7 +8,7 @@ import { updateChat } from '../redux/messageSlice';
 // @ts-ignore
 import { updateNotifications } from '../redux/notificationSlice';
 // @ts-ignore
-import { pushTuit, updateTuits } from '../redux/tuitSlice';
+import { addTuit, updateTuits } from '../redux/tuitSlice';
 const SECURITY_API = `${process.env.REACT_APP_API_URL}/auth`;
 
 const api = axios.create();
@@ -34,7 +34,7 @@ const listenForNewNotifications = (socket: Socket, ThunkAPI: any) => {
 
 const listenForNewTuits = (socket: Socket, ThunkAPI: any) => {
   socket.on('NEW_TUIT', (tuit) => {
-    ThunkAPI.dispatch(pushTuit(tuit));
+    ThunkAPI.dispatch(addTuit(tuit));
   });
 };
 

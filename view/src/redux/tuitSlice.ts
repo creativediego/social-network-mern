@@ -1,4 +1,10 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createEntityAdapter,
+  createSelector,
+  createSlice,
+  PayloadAction,
+} from '@reduxjs/toolkit';
 import { ITuit } from '../interfaces/ITuit';
 import { uploadTuitImage } from '../services/storage-service';
 import {
@@ -9,6 +15,7 @@ import {
 } from '../services/tuits-service';
 import { setGlobalError } from './errorSlice';
 import { dataOrStateError } from './helpers';
+import { RootState } from './store';
 
 /**
  * Uses tuits service to update state with all tuits. Also keeps track of loading status of requests.
@@ -26,16 +33,19 @@ export const findAllTuitsThunk = createAsyncThunk(
  */
 export const createTuitThunk = createAsyncThunk(
   'tuits/createTuit',
-  async ({ userId, tuit }: { userId: string; tuit: ITuit }, ThunkAPI) => {
+  async (
+    {
+      userId,
+      tuit,
+      imageFile,
+    }: { userId: string; tuit: ITuit; imageFile: File | null },
+    ThunkAPI
+  ) => {
     let tuitToUpload = { ...tuit };
-    delete tuitToUpload.imageFile;
     let resultTuit = await createTuit(userId, tuitToUpload);
-    if (tuit.image && tuit.imageFile) {
+    if (tuit.image && imageFile) {
       try {
-        const tuitImageURL = await uploadTuitImage(
-          tuit.imageFile,
-          resultTuit.id
-        );
+        const tuitImageURL = await uploadTuitImage(imageFile, resultTuit.id);
         resultTuit.image = tuitImageURL;
         resultTuit = await updateTuit(resultTuit.id, resultTuit);
       } catch (err) {
@@ -59,45 +69,34 @@ export const deleteTuitThunk = createAsyncThunk(
   async (tuitId: string, ThunkAPI) => {
     const deletedTuitCount = await deleteTuit(tuitId);
     if (!deletedTuitCount.error) {
-      ThunkAPI.dispatch(removeTuits(tuitId));
+      ThunkAPI.dispatch(removeTuit(tuitId));
     }
     return dataOrStateError(deletedTuitCount, ThunkAPI);
   }
 );
 export interface TuitsState {
-  list: ITuit[];
+  byAllUsers: ITuit[];
   loading: boolean;
 }
-const initialState: TuitsState = {
-  list: [],
-  loading: false,
-};
+
+const tuitsAdapter = createEntityAdapter<ITuit>({
+  selectId: (tuit: ITuit) => tuit.id,
+  sortComparer: (a, b) => b.createdAt.localeCompare(a.createdAt),
+});
+
 const tuitSlice = createSlice({
   name: 'tuits',
-  initialState,
+  initialState: tuitsAdapter.getInitialState({ loading: false }),
   reducers: {
-    setTuits: (state, action) => {
-      state.list = action.payload;
-    },
-    removeTuits: (state, action) => {
-      state.list = state.list.filter((tuit) => tuit.id !== action.payload);
+    addTuit: tuitsAdapter.upsertOne,
+    removeTuit: (state, action) => {
+      tuitsAdapter.removeOne(state, action.payload);
     },
     updateTuits: (state, action) => {
-      const incomingTuit = action.payload;
-      const updatedList = state.list.map((tuit) => {
-        if (tuit.id === incomingTuit.id) {
-          return { ...tuit, ...incomingTuit };
-        }
-        return tuit;
-      });
-      state.list = updatedList;
+      tuitsAdapter.updateMany(state, action.payload);
     },
-    pushTuit: (state, action) => {
-      const incomingTuit = action.payload;
-      state.list.unshift(incomingTuit);
-    },
-    clearTuits: (state) => {
-      state.list = [];
+    removeAllTuits: (state) => {
+      tuitsAdapter.removeAll(state);
     },
   },
   extraReducers: (builder) => {
@@ -108,7 +107,7 @@ const tuitSlice = createSlice({
       findAllTuitsThunk.fulfilled,
       (state, action: PayloadAction<ITuit[]>) => {
         state.loading = false;
-        state.list = action.payload;
+        tuitsAdapter.setAll(state, action.payload);
       }
     );
     builder.addCase(findAllTuitsThunk.rejected, (state) => {
@@ -134,6 +133,14 @@ const tuitSlice = createSlice({
     });
   },
 });
-export const { setTuits, clearTuits, removeTuits, updateTuits, pushTuit } =
+
+export const tuitsLoadingSelector = createSelector(
+  (state: RootState) => state.tuits.loading,
+  (loading) => loading
+);
+
+export const { selectAll: selectAllTuits, selectById: selectTuitById } =
+  tuitsAdapter.getSelectors((state: RootState) => state.tuits);
+export const { removeAllTuits, removeTuit, updateTuits, addTuit } =
   tuitSlice.actions;
 export default tuitSlice.reducer;

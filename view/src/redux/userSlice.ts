@@ -17,7 +17,7 @@ import {
   firebaseLoginWithEmail,
   firebaseLogout,
   fireBaseRegisterUser,
-  isLoggedIn,
+  firebaseIsLoggedIn,
   loginWithGoogle,
 } from '../services/firebase-auth';
 import { setAuthToken } from '../services/helpers';
@@ -277,9 +277,14 @@ const userSlice = createSlice({
   },
 });
 
-export const getAuthUser = createSelector(
+export const authUserSelector = createSelector(
   (state: RootState) => state.user.data,
   (user) => user
+);
+
+export const isLoggedInSelector = createSelector(
+  (state: RootState) => state.user.isLoggedIn,
+  (isLoggedIn) => isLoggedIn
 );
 
 export const {

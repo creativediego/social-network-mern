@@ -1,5 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IError } from '../interfaces/IError';
+import { RootState } from './store';
 
 /**
  * Handles global error state for the app. Used to display error messages in higher level parent components.
@@ -24,5 +25,9 @@ const errorSlice = createSlice({
     },
   },
 });
+export const errorSelector = createSelector(
+  (state: RootState) => state.error,
+  (error) => error
+);
 export const { setGlobalError, clearGlobalError } = errorSlice.actions;
 export default errorSlice.reducer;

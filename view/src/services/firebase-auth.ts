@@ -81,7 +81,7 @@ export const firebaseLogout = async () => {
   return await auth.signOut();
 };
 
-export const isLoggedIn = async () => {
+export const firebaseIsLoggedIn = async () => {
   const user = auth.currentUser;
   if (user) {
     return true;

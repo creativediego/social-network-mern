@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Color } from 'react-bootstrap/esm/types';
 
 interface LoaderProps {
@@ -34,4 +34,4 @@ const Loader = ({
   );
 };
 
-export default Loader;
+export default memo(Loader);
