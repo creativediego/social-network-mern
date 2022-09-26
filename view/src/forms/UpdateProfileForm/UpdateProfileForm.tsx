@@ -12,11 +12,11 @@ import HeaderImageUpload from './HeaderImageUpload';
  */
 const UpdateProfileForm = (): JSX.Element => {
   const {
+    loading,
     inputFields,
     setInputField,
-    uploadProfileImage,
-    loading,
     user,
+    uploadProfileImage,
     submitForm,
   } = useUpdateProfile();
 

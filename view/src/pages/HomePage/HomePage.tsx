@@ -1,13 +1,13 @@
 import React from 'react';
 import { NewTuit, Loader, Tuits, AvatarImage } from '../../components';
 import { useAppSelector } from '../../redux/hooks';
-import { authUserSelector } from '../../redux/userSlice';
+import { selectAuthUser } from '../../redux/userSlice';
 import useAllTuits from '../../hooks/useAllTuits';
-const HomeView = (): JSX.Element | null => {
+const HomePage = (): JSX.Element | null => {
   const { tuits, loading } = useAllTuits();
-  const authUser = useAppSelector(authUserSelector);
+  const authUser = useAppSelector(selectAuthUser);
   return (
-    <div className='ttr-home'>
+    <section className='ttr-home'>
       <div className='border border-bottom-0'>
         <h5 className='fw-bold p-2'>Home</h5>
         {tuits && (
@@ -21,7 +21,7 @@ const HomeView = (): JSX.Element | null => {
       </div>
       <Loader loading={loading} message={'Loading Tuits'} />
       {tuits.length > 0 && <Tuits tuits={tuits} />}
-    </div>
+    </section>
   );
 };
-export default HomeView;
+export default HomePage;

@@ -1,7 +1,7 @@
-import HomeView from './HomeView/HomeView';
+import HomePage from './HomePage/HomePage';
 import LandingView from './LandingView/LandingView';
 import LoginView from './LoginView/LoginView';
-import MessagesView from './MessagesView/MessagesView';
+import MessagesView from './MessagesPage/MessagesPage';
 
 import WhatsHappeningView from './WhatsHappeningView/WhatsHappeningView';
 import ProfileView from './ProfileView';
@@ -13,7 +13,7 @@ import ListsView from './ListsView/ListsView';
 import SearchView from './SearchView/SearchView';
 
 export {
-  HomeView,
+  HomePage as HomeView,
   LoginView,
   MessagesView,
   WhatsHappeningView,

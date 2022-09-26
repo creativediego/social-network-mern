@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { ITuit } from '../../interfaces/ITuit';
 import { createTuitThunk } from '../../redux/tuitSlice';
-import { authUserSelector } from '../../redux/userSlice';
+import { selectAuthUser } from '../../redux/userSlice';
 import { IUser } from '../../interfaces/IUser';
 
 /**
@@ -10,7 +10,7 @@ import { IUser } from '../../interfaces/IUser';
  *
  */
 const useNewTuit = () => {
-  const authUser: IUser = useAppSelector(authUserSelector);
+  const authUser: IUser = useAppSelector(selectAuthUser);
   const dispatch = useAppDispatch();
   const [tuit, setTuit] = React.useState<ITuit>({
     id: '',

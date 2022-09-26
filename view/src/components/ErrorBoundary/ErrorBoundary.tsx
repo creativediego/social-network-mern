@@ -1,6 +1,6 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 // @ts-ignore
-import { LandingView } from '../../views';
+import { LandingView } from '../../pages';
 
 interface Props {
   children?: ReactNode;

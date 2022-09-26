@@ -10,6 +10,8 @@ import TuitImage from './TuitImage/TuitImage';
 import AvatarImage from './AvatarImage/AvatarImage';
 import Search from './Search/Search';
 import FollowButton from './FollowButton/FollowButton';
+// @ts-ignore
+import InboxMessage from './Messages/Inbox/InboxMessage';
 
 export {
   AlertBox,
@@ -24,4 +26,5 @@ export {
   Search,
   FollowButton,
   ErrorBoundary,
+  InboxMessage,
 };

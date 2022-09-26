@@ -14,7 +14,7 @@ import {
   SearchView,
 } from '../index';
 import { useSelector } from 'react-redux';
-import MessagesView from '../MessagesView/MessagesView';
+import MessagesView from '../MessagesPage/MessagesPage';
 
 function TuiterView() {
   const error = useSelector((state) => state.error.data);

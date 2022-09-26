@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { IUser } from '../../interfaces/IUser';
 // @ts-ignore
-import { clearFoundUsers } from '../../redux/messageSlice';
+import { clearFoundUsers } from '../../redux/chatSlice';
 // @ts-ignore
 import { findUsersByNameThunk } from '../../redux/messageThunks';
 import Search from '../Search/Search';
@@ -18,35 +18,33 @@ const FindUsers: React.FC<FindUserProps> = ({
   selectedUsers,
   setSelectedUsers,
 }: FindUserProps): JSX.Element => {
-  const dispatch = useAppDispatch();
-  const allFoundUsers = useAppSelector(
-    (state) => state.messages.foundUsersForNewChat
-  );
-  const [searchValue, setSearchValue] = React.useState('');
+  // const dispatch = useAppDispatch();
+  // const allFoundUsers: any = [];
+  // const [searchValue, setSearchValue] = React.useState('');
 
-  /**
-   * Uses search value from Search component to dispatch an API call to find users by name or username.
-   */
-  const findAllUsers = React.useCallback(() => {
-    if (!searchValue) return;
-    return dispatch(findUsersByNameThunk(searchValue));
-  }, [dispatch, searchValue]);
+  // /**
+  //  * Uses search value from Search component to dispatch an API call to find users by name or username.
+  //  */
+  // const findAllUsers = React.useCallback(() => {
+  //   if (!searchValue) return;
+  //   return dispatch(findUsersByNameThunk(searchValue));
+  // }, [dispatch, searchValue]);
 
-  React.useEffect(() => {
-    findAllUsers();
-  }, [findAllUsers]);
+  // React.useEffect(() => {
+  //   findAllUsers();
+  // }, [findAllUsers]);
 
-  /**
-   * When the user selects someone from the search results, this function resets the search inbox value, clears the found users in the results in redux state, and sets the state of the selected users maintained by the parent component (which then makes an API call).
-   */
-  const selectUsersForParentComponent = (user: IUser) => {
-    setSearchValue('');
-    dispatch(clearFoundUsers());
-    return setSelectedUsers([...selectedUsers, user]);
-  };
+  // /**
+  //  * When the user selects someone from the search results, this function resets the search inbox value, clears the found users in the results in redux state, and sets the state of the selected users maintained by the parent component (which then makes an API call).
+  //  */
+  // const selectUsersForParentComponent = (user: IUser) => {
+  //   setSearchValue('');
+  //   dispatch(clearFoundUsers());
+  //   return setSelectedUsers([...selectedUsers, user]);
+  // };
   return (
     <div>
-      <Search
+      {/* <Search
         searchValue={searchValue}
         setSearchValue={setSearchValue}
         placeHolder='Search for user'
@@ -68,7 +66,7 @@ const FindUsers: React.FC<FindUserProps> = ({
             {user.name || user.firstName} @{user.username}
           </p>
         </div>
-      ))}
+      ))} */}
     </div>
   );
 };

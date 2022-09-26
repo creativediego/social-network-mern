@@ -3,13 +3,13 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 
 import {
   findAllTuitsThunk,
-  tuitsLoadingSelector,
+  selectTuitsLoading,
   selectAllTuits,
 } from '../redux/tuitSlice';
 
 const useAllTuits = () => {
   const tuits = useAppSelector(selectAllTuits);
-  const loading = useAppSelector(tuitsLoadingSelector);
+  const loading = useAppSelector(selectTuitsLoading);
   const dispatch = useAppDispatch();
 
   useEffect(() => {

@@ -4,25 +4,31 @@ import { Link } from 'react-router-dom';
 import {
   findInboxMessagesThunk,
   findMessagesByConversationThunk,
-} from '../../redux/messageThunks';
-import { deleteConversation } from '../../services/messages-service';
-import { setGlobalError } from '../../redux/errorSlice';
+} from '../../../redux/messageThunks';
+import { deleteConversation } from '../../../services/messages-service';
+import { setGlobalError } from '../../../redux/errorSlice';
+import { IMessage } from '../../../interfaces/IMessage';
+
+// interface InboxMessageProps {
+//   message: IMessage;
+// }
 
 /**
- * A component to render each individual conversation.
+ * A component to render each latest unique message in the inbox.
  * @param conversationconversation from a list of conversations
  */
 const InboxMessage = ({ conversation: message }) => {
   const userId = useSelector((state) => state.user.data.id);
   const dispatch = useDispatch();
+
   const handleDeleteConversation = async () => {
     const res = await deleteConversation(userId, message.conversation);
-
     if (res.error) {
       return dispatch(setGlobalError(res.error));
     }
     return dispatch(findInboxMessagesThunk());
   };
+
   return (
     <li className='p-2 inbox-item list-group-item d-flex rounded-0'>
       <Link

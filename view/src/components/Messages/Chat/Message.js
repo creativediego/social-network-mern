@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setGlobalError } from '../../redux/errorSlice';
-import { findMessagesByConversationThunk } from '../../redux/messageThunks';
-import { deleteMessage } from '../../services/messages-service';
+import { setGlobalError } from '../../../redux/errorSlice';
+import { findMessagesByConversationThunk } from '../../../redux/messageThunks';
+import { deleteMessage } from '../../../services/messages-service';
 import './Message.css';
 
 const Message = ({ message }) => {

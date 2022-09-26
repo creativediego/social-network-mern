@@ -11,7 +11,9 @@ export const isAuthenticated = async (
   res: Response,
   next: NextFunction
 ): Promise<any> => {
-  const token = req.headers['authorization'];
+  const header = req.headers['authorization'] || '';
+  const bearer = header.split(' ');
+  const token = bearer[1];
   if (!token) {
     return next(
       new UnauthorizedException('Failed to login: No token provided.')

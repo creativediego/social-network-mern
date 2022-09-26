@@ -26,7 +26,7 @@ export const makeAPICall = (url: string, method: Requests, data?: any) =>
 
 export const setHeaders = function (config: any) {
   const token = localStorage.getItem('token');
-  config.headers.authorization = token;
+  config.headers.authorization = `Bearer ${token}`;
   return config;
 };
 

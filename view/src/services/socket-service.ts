@@ -1,14 +1,11 @@
 import io, { Socket } from 'socket.io-client';
-// @ts-ignore
-import { findInboxMessagesThunk } from '../redux/messageThunks';
 import axios from 'axios';
 import { processError } from './helpers';
-// @ts-ignore
-import { updateChat } from '../redux/messageSlice';
 // @ts-ignore
 import { updateNotifications } from '../redux/notificationSlice';
 // @ts-ignore
 import { addTuit, updateTuits } from '../redux/tuitSlice';
+import { findInboxMessagesThunk } from '../redux/messageInboxSlice';
 const SECURITY_API = `${process.env.REACT_APP_API_URL}/auth`;
 
 const api = axios.create();
@@ -21,7 +18,6 @@ let listening = false;
 
 const listenForNewMessages = (socket: Socket, ThunkAPI: any) => {
   socket.on('NEW_MESSAGE', (message) => {
-    ThunkAPI.dispatch(updateChat(message));
     ThunkAPI.dispatch(findInboxMessagesThunk());
   });
 };

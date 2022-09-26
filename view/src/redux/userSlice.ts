@@ -277,12 +277,12 @@ const userSlice = createSlice({
   },
 });
 
-export const authUserSelector = createSelector(
+export const selectAuthUser = createSelector(
   (state: RootState) => state.user.data,
   (user) => user
 );
 
-export const isLoggedInSelector = createSelector(
+export const selectIsLoggedIn = createSelector(
   (state: RootState) => state.user.isLoggedIn,
   (isLoggedIn) => isLoggedIn
 );

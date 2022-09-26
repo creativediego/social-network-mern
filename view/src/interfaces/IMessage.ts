@@ -1,10 +1,11 @@
-import { IConversation } from './IConversation';
+import { IConversation as string } from './IConversation';
 import { IUser } from './IUser';
 
 export interface IMessage {
   id: string;
   sender?: IUser;
-  conversation: IConversation;
+  conversationId: string;
   message: string;
   removeFor?: IUser[];
+  createdAt: string;
 }

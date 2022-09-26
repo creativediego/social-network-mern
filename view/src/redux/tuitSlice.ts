@@ -134,7 +134,7 @@ const tuitSlice = createSlice({
   },
 });
 
-export const tuitsLoadingSelector = createSelector(
+export const selectTuitsLoading = createSelector(
   (state: RootState) => state.tuits.loading,
   (loading) => loading
 );
