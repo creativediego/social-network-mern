@@ -13,12 +13,14 @@ interface FormInputProps {
   onChange: (e: React.FormEvent<HTMLInputElement>) => void;
   errorMessage: string;
   dataTestId?: number | string;
+  cssClass?: string;
 }
 /**
  * Form input for a form.
  */
 const FormInput = (props: FormInputProps) => {
-  const { errorMessage, onChange, label, dataTestId, ...inputProps } = props;
+  const { errorMessage, onChange, label, dataTestId, cssClass, ...inputProps } =
+    props;
   const [error, setError] = useState('');
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     if (
@@ -37,7 +39,7 @@ const FormInput = (props: FormInputProps) => {
         {label}
       </label>
       <input
-        className='form-control mb-2'
+        className={`form-control mb-2 ${cssClass && cssClass}`}
         data-testid={dataTestId}
         onChange={onChange}
         {...inputProps}

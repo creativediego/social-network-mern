@@ -45,29 +45,6 @@ export const findMessagesByConversationThunk = createAsyncThunk(
 );
 
 /**
- * Post a new message.
- */
-export const sendMessageThunk = createAsyncThunk(
-  'messages/sendMessage',
-  async (
-    {
-      sender,
-      conversationId,
-      message,
-    }: { sender: string; conversationId: string; message: string },
-    ThunkAPI
-  ) => {
-    const newMessage = await messageAPI.sendMessage(
-      sender,
-      conversationId,
-      message
-    );
-    // ThunkAPI.dispatch(findMessagesByConversationThunk(conversationId));
-    // push message to front of array in state
-    return dataOrStateError(newMessage, ThunkAPI);
-  }
-);
-/**
  * Post a new conversation.
  */
 export const createConversationThunk = createAsyncThunk(

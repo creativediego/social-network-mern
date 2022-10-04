@@ -1,21 +1,22 @@
 import React, { useState, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '../../../redux/hooks';
+// @ts-ignore
 import InboxMessage from './InboxMessage';
 import { PopupModal } from '../../index';
 import FindUsers from '../../FindUsers/FindUsers';
 import { setGlobalError } from '../../../redux/errorSlice';
-
+import useInbox from '../../../pages/MessagesPage/useInbox';
+import { Loader } from '../../index';
 import { createConversation as APIcreateConversation } from '../../../services/messages-service';
 
 /**
  * A container component to display a list of conversations.
- * @param conversations conversations list returned by an API
- * @returns {JSX.Element}
  */
-const InboxMessagesList = ({ conversations = [] }) => {
-  const loggedInUser = useSelector((state) => state.user.data);
-  const dispatch = useDispatch();
+const InboxMessagesList = () => {
+  const { inbox, loading } = useInbox();
+  const loggedInUser = useAppSelector((state) => state.user.data);
+  const dispatch = useAppDispatch();
   const [showNewMessageModal, setShowNewMessageModal] = useState(false);
   const [newConversationUsers, setNewConversationUsers] = useState([]);
   let navigateToChatView = useNavigate();
@@ -57,22 +58,24 @@ const InboxMessagesList = ({ conversations = [] }) => {
   // };
 
   return (
-    <div>
+    <>
+      <Loader loading={loading} size='fs-4' />
+      {inbox && inbox.length < 1 && <div>You have no messages.</div>}
       <ul className='ttr-tuits list-group'>
-        {conversations.length > 0
-          ? conversations.map((conversation) => (
+        {inbox.length > 0
+          ? inbox.map((conversation) => (
               <InboxMessage conversation={conversation} key={conversation.id} />
             ))
           : null}
       </ul>
-      <button
+      {/* <button
         onClick={() => setShowNewMessageModal(true)}
         className='mt-2 me-2 btn btn-large btn-primary border border-secondary fw-bolder rounded-pill'
       >
         <span>New message</span>
-      </button>
+      </button> */}
       {/* <PopupModal {...newMessageModalProps} /> */}
-    </div>
+    </>
   );
 };
 

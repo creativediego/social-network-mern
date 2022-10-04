@@ -12,6 +12,7 @@ import Search from './Search/Search';
 import FollowButton from './FollowButton/FollowButton';
 // @ts-ignore
 import InboxMessage from './Messages/Inbox/InboxMessage';
+import InboxMessagesList from './Messages/Inbox/InboxMessagesList';
 
 export {
   AlertBox,
@@ -27,4 +28,5 @@ export {
   FollowButton,
   ErrorBoundary,
   InboxMessage,
+  InboxMessagesList,
 };

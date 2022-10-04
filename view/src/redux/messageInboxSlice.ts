@@ -48,7 +48,11 @@ const inboxAdapter = createEntityAdapter<IMessage>({
 const messageInboxSlice = createSlice({
   name: 'messagesInbox',
   initialState: inboxAdapter.getInitialState({ loading: false }),
-  reducers: {},
+  reducers: {
+    updateInbox: (state, action: PayloadAction<IMessage>) => {
+      inboxAdapter.upsertOne(state, action.payload);
+    },
+  },
   // Manages the async call states for creating conversations.
   extraReducers: (builder) => {
     builder.addCase(createConversationThunk.pending, (state) => {
@@ -84,4 +88,5 @@ export const inboxLoadingSelector = createSelector(
 export const { selectAll: selectAllInboxMessages } = inboxAdapter.getSelectors(
   (state: RootState) => state.messagesInbox
 );
+export const { updateInbox } = messageInboxSlice.actions;
 export default messageInboxSlice.reducer;

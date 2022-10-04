@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setGlobalError } from '../../../redux/errorSlice';
-import { findMessagesByConversationThunk } from '../../../redux/messageThunks';
-import { deleteMessage } from '../../../services/messages-service';
-import './Message.css';
+import { useAppSelector, useAppDispatch } from '../../../redux/hooks';
+import './Message.scss';
+import moment from 'moment';
+import { IMessage } from '../../../interfaces/IMessage';
+import { deleteMessageThunk } from '../../../redux/chatSlice';
 
-const Message = ({ message }) => {
-  const dispatch = useDispatch();
-  const userId = useSelector((state) => state.user.data.id);
-  const isLoggedInUser = message.sender.id === userId;
+interface MessageProps {
+  message: IMessage;
+}
+/**
+ * Displays a chat message in the current active/open chat with time sent and an option to remove/delete the message.
+ */
+const Message = ({ message }: MessageProps) => {
+  const dispatch = useAppDispatch();
+  const userId = useAppSelector((state) => state.user.data.id);
+  const isLoggedInUser = message.sender && message.sender.id === userId;
   const [showOptions, setShowOptions] = useState(false);
 
   const bgColor = isLoggedInUser ? 'bg-primary' : 'bg-light';
@@ -19,12 +25,7 @@ const Message = ({ message }) => {
     : 'other-user-message';
 
   const handleDeleteMessage = async () => {
-    const res = await deleteMessage(userId, message.id);
-    setShowOptions(false);
-    if (res.error) {
-      return dispatch(setGlobalError(res.error));
-    }
-    return dispatch(findMessagesByConversationThunk(message.conversation));
+    dispatch(deleteMessageThunk({ messageId: message.id, userId }));
   };
 
   return (
@@ -33,7 +34,7 @@ const Message = ({ message }) => {
         <span style={{ width: '8%' }}>
           <img
             className='img-fluid rounded-circle'
-            src={message.sender.profilePhoto}
+            src={message.sender && message.sender.profilePhoto}
             alt='profile'
           />
         </span>
@@ -53,7 +54,9 @@ const Message = ({ message }) => {
         )}
       </div>
 
-      <span className='px-2 badge text-dark'>{message.createdAt}</span>
+      <span className='px-2 badge text-dark'>
+        {moment(message.createdAt).fromNow()}
+      </span>
     </div>
   );
 };

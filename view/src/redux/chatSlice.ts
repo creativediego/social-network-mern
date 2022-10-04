@@ -10,7 +10,6 @@ import { IMessage } from '../interfaces/IMessage';
 import { IUser } from '../interfaces/IUser';
 import {
   findInboxMessagesThunk,
-  sendMessageThunk,
   createConversationThunk,
   findUsersByNameThunk,
 } from './messageThunks';
@@ -60,13 +59,51 @@ export const findMessagesByConversationThunk = createAsyncThunk(
     return { conversation, messages };
   }
 );
+
+/**
+ * Post a new message.
+ */
+export const sendMessageThunk = createAsyncThunk(
+  'messages/send',
+  async (
+    {
+      sender,
+      conversationId,
+      message,
+    }: { sender: string; conversationId: string; message: string },
+    ThunkAPI
+  ) => {
+    const newMessage = await messageAPI.sendMessage(
+      sender,
+      conversationId,
+      message
+    );
+    // ThunkAPI.dispatch(findMessagesByConversationThunk(conversationId));
+    // push message to front of array in state
+    return dataOrStateError(newMessage, ThunkAPI);
+  }
+);
+
+export const deleteMessageThunk = createAsyncThunk(
+  'messages/delete',
+  async (
+    { userId, messageId }: { userId: string; messageId: string },
+    ThunkAPI
+  ) => {
+    const deletedMessage = await messageAPI.deleteMessage(userId, messageId);
+    // ThunkAPI.dispatch(findMessagesByConversationThunk(conversationId));
+    // push message to front of array in state
+    return dataOrStateError(deletedMessage, ThunkAPI);
+  }
+);
+
 /**
  * Manages the state dealing with messages, including inbox and current active chat.
  */
 
 const chatAdapter = createEntityAdapter<IMessage>({
   selectId: (message: IMessage) => message.id,
-  sortComparer: (a, b) => b.createdAt.localeCompare(a.createdAt),
+  sortComparer: (a, b) => a.createdAt.localeCompare(b.createdAt),
 });
 const participantsAdapter = createEntityAdapter<IUser>({
   selectId: (user: IUser) => user.id,
@@ -80,6 +117,9 @@ const chatSlice = createSlice({
     loading: false,
   }),
   reducers: {
+    upsertChatMessage: (state, action: PayloadAction<IMessage>) => {
+      chatAdapter.upsertOne(state, action.payload);
+    },
     // Sets the state of the current active chat/conversation.
     // setActiveChat: (state, action) => {
     //   const conversation = action.payload;
@@ -101,15 +141,19 @@ const chatSlice = createSlice({
   },
   // Manages the async call states for creating conversations.
   extraReducers: (builder) => {
-    // builder.addCase(createConversationThunk.pending, (state) => {
-    //   state.loading = true;
-    // });
-    // builder.addCase(createConversationThunk.fulfilled, (state) => {
-    //   state.loading = false;
-    // });
-    // builder.addCase(createConversationThunk.rejected, (state) => {
-    //   state.loading = false;
-    // });
+    builder.addCase(deleteMessageThunk.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(
+      deleteMessageThunk.fulfilled,
+      (state, action: PayloadAction<IMessage>) => {
+        state.loading = false;
+        chatAdapter.removeOne(state, action.payload.id);
+      }
+    );
+    builder.addCase(deleteMessageThunk.rejected, (state) => {
+      state.loading = false;
+    });
 
     // builder.addCase(findInboxMessagesThunk.pending, (state) => {
     //   state.loading = true;
@@ -148,15 +192,19 @@ const chatSlice = createSlice({
       state.loading = false;
     });
 
-    // builder.addCase(sendMessageThunk.pending, (state) => {
-    //   state.loading = true;
-    // });
-    // builder.addCase(sendMessageThunk.fulfilled, (state) => {
-    //   state.loading = false;
-    // });
-    // builder.addCase(sendMessageThunk.rejected, (state) => {
-    //   state.loading = false;
-    // });
+    builder.addCase(sendMessageThunk.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(
+      sendMessageThunk.fulfilled,
+      (state, action: PayloadAction<IMessage>) => {
+        state.loading = false;
+        chatAdapter.upsertOne(state, action.payload);
+      }
+    );
+    builder.addCase(sendMessageThunk.rejected, (state) => {
+      state.loading = false;
+    });
 
     // builder.addCase(findUsersByNameThunk.pending, (state) => {
     //   state.loading = true;
@@ -173,7 +221,7 @@ const chatSlice = createSlice({
     // });
   },
 });
-export const selectActiveChat = createSelector(
+export const selectActiveChatId = createSelector(
   (state: RootState) => state.chat,
   (chat) => chat.id
 );
@@ -190,5 +238,5 @@ export const { selectAll: selectAllParticipants } =
   participantsAdapter.getSelectors(
     (state: RootState) => state.chat.participants
   );
-
+export const { upsertChatMessage } = chatSlice.actions;
 export default chatSlice.reducer;
