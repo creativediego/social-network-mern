@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { FormInput } from '../../../forms';
-import useNewMessage from './useNewMessage';
+import useNewChatMessage from './useNewChatMessage';
 
 /**
  * Displays input to write and send a new message in active chat. Uses custom hook to manage state.
  */
-const NewMessageForm = () => {
-  const { messageFieldAttributes, setMessage, submitMessage } = useNewMessage();
+const NewChatMessage = () => {
+  const { messageFieldAttributes, setMessage, submitMessage } =
+    useNewChatMessage();
   return (
     <form onSubmit={(e) => submitMessage(e)}>
       <FormInput
@@ -24,4 +25,4 @@ const NewMessageForm = () => {
   );
 };
 
-export default NewMessageForm;
+export default memo(NewChatMessage);

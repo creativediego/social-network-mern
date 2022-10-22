@@ -1,8 +1,7 @@
-import * as React from 'react';
-
+import React, { memo } from 'react';
 interface SearchProps {
   searchValue: string;
-  setSearchValue: React.Dispatch<React.SetStateAction<string>>;
+  setSearchValue: (val: string) => void;
   placeHolder: string;
 }
 /**
@@ -22,12 +21,12 @@ const Search: React.FC<SearchProps> = ({
         className='bg-dark bg-opacity-10 border-0 form-control form-control-sm rounded-pill ps-4'
         placeholder={placeHolder}
         value={searchValue}
-        onChange={(e) => {
-          setSearchValue(e.target.value);
+        onChange={(e: React.FormEvent<HTMLInputElement>) => {
+          setSearchValue(e.currentTarget.value);
         }}
       />
     </div>
   );
 };
 
-export default Search;
+export default memo(Search);

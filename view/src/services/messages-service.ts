@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { IConversation } from '../interfaces/IConversation';
 import { IMessage } from '../interfaces/IMessage';
-import { loadRequestInterceptors } from './helpers';
-import { processError } from './helpers';
+import { loadRequestInterceptors, makeAPICall, Requests } from './helpers';
 
 const BASE_URL = process.env.REACT_APP_API_URL;
 const MESSAGES_API = `${BASE_URL}/users`;
@@ -20,17 +19,12 @@ export const sendMessage = async (
   userId: string,
   conversationId: string,
   message: string
-): Promise<IMessage> => {
-  try {
-    const res = await api.post(
-      `${MESSAGES_API}/${userId}/conversations/${conversationId}/messages`,
-      { message }
-    );
-    return res.data;
-  } catch (err) {
-    return processError(err);
-  }
-};
+) =>
+  makeAPICall<IMessage>(
+    `${MESSAGES_API}/${userId}/conversations/${conversationId}/messages`,
+    Requests.POST,
+    { message }
+  );
 
 /**
  * Create a conversation document.
@@ -42,17 +36,12 @@ export const sendMessage = async (
 export const createConversation = async (
   userId: string,
   conversation: IConversation
-): Promise<IConversation> => {
-  try {
-    const res = await api.post(
-      `${MESSAGES_API}/${userId}/conversations`,
-      conversation
-    );
-    return res.data;
-  } catch (err) {
-    return processError(err);
-  }
-};
+) =>
+  makeAPICall<IConversation>(
+    `${MESSAGES_API}/${userId}/conversations`,
+    Requests.POST,
+    conversation
+  );
 
 /**
  * Finds the latest messages per conversation for the specified user.
@@ -60,67 +49,42 @@ export const createConversation = async (
  * conversation regardless of who sent the last message per conversation.
  * Uses the mongo aggregate functionality to filter and sort through conversations/messages
  * and to format the returned output.
- * @param userId id of the user requesting the latest messages
- * @returns {Promise<[{message}]>} an array of message objects */
-export const findInboxMessages = async (
-  userId: string
-): Promise<IConversation[]> => {
-  try {
-    const res = await api.get(`${MESSAGES_API}/${userId}/messages/`);
-    return res.data;
-  } catch (err) {
-    return processError(err);
-  }
-};
+ */
+export const findInboxMessages = async (userId: string) =>
+  makeAPICall<IMessage[]>(`${MESSAGES_API}/${userId}/messages/`, Requests.GET);
+
 export const findConversation = async (
   userId: string,
   conversationId: string
-): Promise<IConversation> => {
-  try {
-    const res = await api.get(
-      `${MESSAGES_API}/${userId}/conversations/${conversationId}`
-    );
-    return res.data;
-  } catch (err) {
-    return processError(err);
-  }
-};
+) =>
+  makeAPICall<IConversation>(
+    `${MESSAGES_API}/${userId}/conversations/${conversationId}`,
+    Requests.GET
+  );
 
 /**
  * Find all messages for conversation for the specified user and conversation ids.
  * Also check if user if indeed a participant in the conversation for security reasons.
  * @param userId id of the user requesting the latest messages
- * @param conversationId the id of the conversation
- * @returns {Promise<IMessage[]>} an array of message objects */
+ * @param conversationId the id of the conversation*/
 
 export const findMessagesByConversation = async (
   userId: string,
   conversationId: string
-): Promise<IMessage[]> => {
-  try {
-    const res = await api.get(
-      `${MESSAGES_API}/${userId}/conversations/${conversationId}/messages`
-    );
-    return res.data;
-  } catch (err) {
-    return processError(err);
-  }
-};
+) =>
+  makeAPICall<IMessage[]>(
+    `${MESSAGES_API}/${userId}/conversations/${conversationId}/messages`,
+    Requests.GET
+  );
 
 /**
  * Finds all the messages sent by the specified user.
- * @param userId id of the user requesting the latest messages
- * @returns {Promise<[{message}]>} an array of message objects */
-export const findAllMessagesSentByUser = async (
-  userId: string
-): Promise<IMessage[]> => {
-  try {
-    const res = await api.get(`${MESSAGES_API}/${userId}/messages/sent`);
-    return res.data;
-  } catch (err) {
-    return processError(err);
-  }
-};
+ */
+export const findAllMessagesSentByUser = async (userId: string) =>
+  makeAPICall<IMessage[]>(
+    `${MESSAGES_API}/${userId}/messages/sent`,
+    Requests.GET
+  );
 
 /**
  * Remove a message for a particular user by finding the message in the database,
@@ -130,19 +94,11 @@ export const findAllMessagesSentByUser = async (
  * @param messageId id of the message
  * @returns {Promise<{message}>} the deleted message
  */
-export const deleteMessage = async (
-  userId: string,
-  messageId: string
-): Promise<IMessage> => {
-  try {
-    const res = await api.delete(
-      `${MESSAGES_API}/${userId}/messages/${messageId}`
-    );
-    return res.data;
-  } catch (err) {
-    return processError(err);
-  }
-};
+export const deleteMessage = async (userId: string, messageId: string) =>
+  makeAPICall<IMessage>(
+    `${MESSAGES_API}/${userId}/messages/${messageId}`,
+    Requests.DELETE
+  );
 
 /**
  * Remove a conversation between user(s)
@@ -153,13 +109,8 @@ export const deleteMessage = async (
 export const deleteConversation = async (
   userId: string,
   conversationId: string
-): Promise<IConversation> => {
-  try {
-    const res = await api.delete(
-      `${MESSAGES_API}/${userId}/conversations/${conversationId}`
-    );
-    return res.data;
-  } catch (err) {
-    return processError(err);
-  }
-};
+) =>
+  makeAPICall<IConversation>(
+    `${MESSAGES_API}/${userId}/conversations/${conversationId}`,
+    Requests.DELETE
+  );

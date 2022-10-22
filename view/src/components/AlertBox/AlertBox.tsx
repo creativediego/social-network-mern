@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Alert } from 'react-bootstrap';
 import './AlertBox.scss';
 import { useAppDispatch } from '../../redux/hooks';
-import { clearGlobalError } from '../../redux/errorSlice';
+import { clearAllErrors } from '../../redux/errorSlice';
 
 interface AlertBoxProps {
   heading?: string;
@@ -30,7 +30,7 @@ const AlertBox = ({ heading, message }: AlertBoxProps): JSX.Element | null => {
         className='alert-fixed'
         onClose={() => {
           setShow(false);
-          dispatch(clearGlobalError());
+          dispatch(clearAllErrors());
         }}
         dismissible
       >

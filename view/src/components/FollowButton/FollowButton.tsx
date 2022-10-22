@@ -10,6 +10,7 @@ import { Loader } from '..';
 import { setGlobalError } from '../../redux/errorSlice';
 import { findUserById } from '../../services/users-service';
 import { IUser } from '../../interfaces/IUser';
+import { isError } from '../../services/helpers';
 
 interface FollowButtonProps {
   userToFollow: IUser;
@@ -30,7 +31,7 @@ const FollowButton = ({
     const res = await followUser(authUser.id, userToFollow.id);
     const updatedUser = await findUserById(res.followee);
     setLoading(false);
-    if (res.error || updatedUser.error) {
+    if (isError(res) || isError(updatedUser)) {
       dispatch(
         setGlobalError({
           code: 500,
@@ -49,7 +50,7 @@ const FollowButton = ({
     const res = await unfollowUser(authUser.id, userToFollow.id);
     const updatedUser = await findUserById(res.followee);
     setLoading(false);
-    if (res.error || updatedUser.error) {
+    if (isError(res.error) || isError(updatedUser)) {
       return dispatch(
         setGlobalError({
           code: 500,

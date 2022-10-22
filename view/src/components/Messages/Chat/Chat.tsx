@@ -1,17 +1,19 @@
 import React, { useRef, useLayoutEffect, memo } from 'react';
-import Message from './Message';
+import './Chat.scss';
+import ChatMessage from '../ChatMessage/ChatMessage';
 import useChat from './useChat';
 import { IMessage } from '../../../interfaces/IMessage';
-import NewMessageForm from './NewMessageForm';
+import NewChatMessage from '../ChatMessage/NewChatMessage';
 import { IUser } from '../../../interfaces/IUser';
+import Loader from '../../Loader/Loader';
 
 /**
  * Displays the active chat window with all its messages and send message text area.
  *
  */
-const Chat = ({ conversationId }: { conversationId: string }) => {
+const Chat = () => {
   const chatWindowRef = useRef<null | HTMLDivElement>(null);
-  const { loading, messages, participants } = useChat(conversationId);
+  const { loading, messages, participants } = useChat();
 
   const scrollToBottom = () => {
     if (chatWindowRef.current)
@@ -29,7 +31,7 @@ const Chat = ({ conversationId }: { conversationId: string }) => {
   return (
     <>
       <p className='mt-4 mb-4'>
-        {participants.map((participant: IUser, index) => (
+        {participants.map((participant: IUser) => (
           <span
             className='badge rounded-pill bg-light mx-1'
             key={participant.id}
@@ -39,15 +41,16 @@ const Chat = ({ conversationId }: { conversationId: string }) => {
         ))}
       </p>
       <div id='chat-window'>
+        <Loader loading={loading} />
         {messages.length > 0 &&
           messages.map((message: IMessage) => (
-            <Message message={message} key={message.id} />
+            <ChatMessage message={message} key={message.id} />
           ))}
 
         <div ref={chatWindowRef} />
       </div>
       <div>
-        <NewMessageForm />
+        <NewChatMessage />
       </div>
     </>
   );

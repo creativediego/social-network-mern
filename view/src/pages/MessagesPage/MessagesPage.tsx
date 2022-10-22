@@ -1,25 +1,26 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { InboxMessagesList } from '../../components';
-import Chat from '../../components/Messages/Chat/Chat';
-import { useAppSelector } from '../../redux/hooks';
-import { selectActiveChatId } from '../../redux/chatSlice';
+import { InboxList, Chat, NewChat } from '../../components';
 
 /**
  * Displays inbox or active chat based on the route. Uses the inbox messages fetched
  * and stored in redux state to set up custom URLs for each conversation based on its ID.
  */
 const MessagesPage = () => {
-  const activeChatId = useAppSelector(selectActiveChatId);
   return (
     <div>
-      <h1>Messages</h1>
+      <div className='d-flex justify-content-between'>
+        <h1>Messages</h1>
+        <span
+          className='d-flex align-items-center justify-content-center'
+          title='New message'
+        >
+          <NewChat />
+        </span>
+      </div>
       <Routes>
-        <Route path={`/`} element={<InboxMessagesList />} />
-        <Route
-          path={`/${activeChatId && activeChatId}`}
-          element={<Chat conversationId={activeChatId && activeChatId} />}
-        />
+        <Route path={`/`} element={<InboxList />} />
+        <Route path={`/*`} element={<Chat />} />
       </Routes>
     </div>
   );

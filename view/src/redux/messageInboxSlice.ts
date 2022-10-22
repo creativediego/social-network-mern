@@ -24,16 +24,16 @@ export const findInboxMessagesThunk = createAsyncThunk(
   }
 );
 
-export const createConversationThunk = createAsyncThunk(
-  'messages/createConversation',
-  async (conversation: IConversation, ThunkAPI) => {
+export const deleteConversationThunk = createAsyncThunk(
+  'messages/deleteConversation',
+  async (conversationId: string, ThunkAPI) => {
     const state = ThunkAPI.getState() as RootState;
     const userId = state.user.data.id;
-    const newConversation = await messageAPI.createConversation(
+    const deletedConversation = await messageAPI.deleteConversation(
       userId,
-      conversation
+      conversationId
     );
-    return dataOrStateError(newConversation, ThunkAPI);
+    return dataOrStateError(deletedConversation, ThunkAPI);
   }
 );
 
@@ -41,7 +41,7 @@ export const createConversationThunk = createAsyncThunk(
  * Manages the state dealing with messages, including inbox and current active chat.
  */
 const inboxAdapter = createEntityAdapter<IMessage>({
-  selectId: (message: IMessage) => message.id,
+  selectId: (message: IMessage) => message.conversationId,
   sortComparer: (a, b) => b.createdAt.localeCompare(a.createdAt),
 });
 
@@ -55,15 +55,6 @@ const messageInboxSlice = createSlice({
   },
   // Manages the async call states for creating conversations.
   extraReducers: (builder) => {
-    builder.addCase(createConversationThunk.pending, (state) => {
-      state.loading = true;
-    });
-    builder.addCase(createConversationThunk.fulfilled, (state) => {
-      state.loading = false;
-    });
-    builder.addCase(createConversationThunk.rejected, (state) => {
-      state.loading = false;
-    });
     builder.addCase(findInboxMessagesThunk.pending, (state) => {
       state.loading = true;
     });
@@ -75,6 +66,19 @@ const messageInboxSlice = createSlice({
       }
     );
     builder.addCase(findInboxMessagesThunk.rejected, (state) => {
+      state.loading = false;
+    });
+    builder.addCase(deleteConversationThunk.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(
+      deleteConversationThunk.fulfilled,
+      (state, action: PayloadAction<IConversation>) => {
+        state.loading = false;
+        inboxAdapter.removeOne(state, action.payload.id);
+      }
+    );
+    builder.addCase(deleteConversationThunk.rejected, (state) => {
       state.loading = false;
     });
   },

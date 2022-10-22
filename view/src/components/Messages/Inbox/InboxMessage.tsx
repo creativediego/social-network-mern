@@ -1,44 +1,26 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import {
-  findInboxMessagesThunk,
-  findMessagesByConversationThunk,
-} from '../../../redux/messageThunks';
-import { deleteConversation } from '../../../services/messages-service';
-import { setGlobalError } from '../../../redux/errorSlice';
 import { IMessage } from '../../../interfaces/IMessage';
+import useInboxMessage from './useInboxMessage';
 
-// interface InboxMessageProps {
-//   message: IMessage;
-// }
+interface InboxMessageProps {
+  message: IMessage;
+}
 
 /**
  * A component to render each latest unique message in the inbox.
- * @param conversationconversation from a list of conversations
  */
-const InboxMessage = ({ conversation: message }) => {
-  const userId = useSelector((state) => state.user.data.id);
-  const dispatch = useDispatch();
-
-  const handleDeleteConversation = async () => {
-    const res = await deleteConversation(userId, message.conversation);
-    if (res.error) {
-      return dispatch(setGlobalError(res.error));
-    }
-    return dispatch(findInboxMessagesThunk());
-  };
+const InboxMessage = ({ message }: InboxMessageProps) => {
+  const { deleteConversation, messageOptions, toggleMessageOptions } =
+    useInboxMessage();
 
   return (
     <li className='p-2 inbox-item list-group-item d-flex rounded-0'>
       <Link
         style={{ zIndex: '1', flex: '1' }}
-        to={`/messages/${message.conversation}`}
+        to={`/messages/${message.conversationId}`}
         id={message.id}
         className='text-decoration-none text-white'
-        onClick={() =>
-          dispatch(findMessagesByConversationThunk(message.conversation))
-        }
       >
         <div className='w-100 d-flex'>
           <div className='pe-2'>
@@ -70,11 +52,19 @@ const InboxMessage = ({ conversation: message }) => {
           </div>
         </div>
       </Link>
-      <span>
+      <span className='d-flex align-items-center'>
+        {messageOptions && (
+          <span
+            className='px-2 btn text-danger'
+            onClick={() => deleteConversation(message.conversationId)}
+          >
+            <i className='fa-solid fa-trash-can'></i> Delete for you
+          </span>
+        )}
         <span
-          onClick={() => handleDeleteConversation(message.id)}
+          onClick={() => toggleMessageOptions()}
           style={{ zIndex: '2' }}
-          className='fa-duotone p-0 fa-trash-xmark fa-2x fa-pull-right btn text-dark fs-5'
+          className='fa-duotone p-0 fa-ellipsis fa-2x fa-pull-right btn text-dark fs-5'
         ></span>
       </span>
     </li>

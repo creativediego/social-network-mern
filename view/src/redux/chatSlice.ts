@@ -8,54 +8,28 @@ import {
 import { IConversation } from '../interfaces/IConversation';
 import { IMessage } from '../interfaces/IMessage';
 import { IUser } from '../interfaces/IUser';
-import {
-  findInboxMessagesThunk,
-  createConversationThunk,
-  findUsersByNameThunk,
-} from './messageThunks';
-import { dataOrStateError } from './helpers';
+import { dataOrStateError as dataOrSetError } from './helpers';
 import * as messageAPI from '../services/messages-service';
 import { RootState } from './store';
 
-// interface MessageState {
-//   inbox: IMessage[];
-//   loading: boolean;
-//   activeChat: {
-//     id: string;
-//     messages: IMessage[];
-//     participants: IUser[];
-//   };
-//   foundUsersForNewChat: IUser[];
-// }
-
-// const initialState: MessageState = {
-//   inbox: [],
-//   loading: false,
-//   activeChat: {
-//     id: '',
-//     messages: [],
-//     participants: [],
-//   },
-//   foundUsersForNewChat: [],
-// };
 /**
  * Fetch a specific conversation and all messages related to it.
  */
 export const findMessagesByConversationThunk = createAsyncThunk(
-  'messages/findMessagesByConversation',
+  'chat/findAllMessages',
   async (conversationId: string, ThunkAPI) => {
     const state = ThunkAPI.getState() as RootState;
     const userId = state.user.data.id;
-    let conversation = await messageAPI.findConversation(
+    const conversationOrError = await messageAPI.findConversation(
       userId,
       conversationId
     );
-    let messages = await messageAPI.findMessagesByConversation(
+    const messagesOrError = await messageAPI.findMessagesByConversation(
       userId,
       conversationId
     );
-    conversation = dataOrStateError(conversation, ThunkAPI);
-    messages = dataOrStateError(messages, ThunkAPI);
+    const conversation = dataOrSetError(conversationOrError, ThunkAPI);
+    const messages = dataOrSetError(messagesOrError, ThunkAPI);
     return { conversation, messages };
   }
 );
@@ -64,7 +38,7 @@ export const findMessagesByConversationThunk = createAsyncThunk(
  * Post a new message.
  */
 export const sendMessageThunk = createAsyncThunk(
-  'messages/send',
+  'chat/send',
   async (
     {
       sender,
@@ -78,22 +52,34 @@ export const sendMessageThunk = createAsyncThunk(
       conversationId,
       message
     );
-    // ThunkAPI.dispatch(findMessagesByConversationThunk(conversationId));
-    // push message to front of array in state
-    return dataOrStateError(newMessage, ThunkAPI);
+    return dataOrSetError(newMessage, ThunkAPI);
   }
 );
 
 export const deleteMessageThunk = createAsyncThunk(
-  'messages/delete',
+  'chat/delete',
   async (
     { userId, messageId }: { userId: string; messageId: string },
     ThunkAPI
   ) => {
     const deletedMessage = await messageAPI.deleteMessage(userId, messageId);
-    // ThunkAPI.dispatch(findMessagesByConversationThunk(conversationId));
-    // push message to front of array in state
-    return dataOrStateError(deletedMessage, ThunkAPI);
+    return dataOrSetError(deletedMessage, ThunkAPI);
+  }
+);
+
+// /**
+//  * Post a new conversation.
+//  */
+export const createConversationThunk = createAsyncThunk(
+  'messages/createConversation',
+  async (conversation: IConversation, ThunkAPI) => {
+    const state = ThunkAPI.getState() as RootState;
+    const userId = state.user.data.id;
+    const newConversation = await messageAPI.createConversation(
+      userId,
+      conversation
+    );
+    return dataOrSetError(newConversation, ThunkAPI);
   }
 );
 
@@ -118,28 +104,10 @@ const chatSlice = createSlice({
   }),
   reducers: {
     upsertChatMessage: (state, action: PayloadAction<IMessage>) => {
+      console.log('UPSERT CHAT MESSAGE', action.payload);
       chatAdapter.upsertOne(state, action.payload);
     },
-    // Sets the state of the current active chat/conversation.
-    // setActiveChat: (state, action) => {
-    //   const conversation = action.payload;
-    //   state.activeChat.id = conversation.id;
-    //   state.activeChat.participants = conversation.participants;
-    // },
-    // updateChat: (state, action: PayloadAction<IMessage>) => {
-    //   const conversation = action.payload.conversationId;
-    //   if (
-    //     conversation === state.activeChat.id && // same convo
-    //     !state.activeChat.messages.includes(action.payload) // message not in chat
-    //   ) {
-    //     state.activeChat.messages.push(action.payload);
-    //   }
-    // },
-    // clearFoundUsers: (state) => {
-    //   state.foundUsersForNewChat = [];
-    // },
   },
-  // Manages the async call states for creating conversations.
   extraReducers: (builder) => {
     builder.addCase(deleteMessageThunk.pending, (state) => {
       state.loading = true;
@@ -154,17 +122,6 @@ const chatSlice = createSlice({
     builder.addCase(deleteMessageThunk.rejected, (state) => {
       state.loading = false;
     });
-
-    // builder.addCase(findInboxMessagesThunk.pending, (state) => {
-    //   state.loading = true;
-    // });
-    // builder.addCase(findInboxMessagesThunk.fulfilled, (state) => {
-    //   state.loading = false;
-    // });
-    // builder.addCase(findInboxMessagesThunk.rejected, (state) => {
-    //   state.loading = false;
-    // });
-
     builder.addCase(findMessagesByConversationThunk.pending, (state) => {
       state.loading = true;
       chatAdapter.removeAll(state);
@@ -198,6 +155,7 @@ const chatSlice = createSlice({
     builder.addCase(
       sendMessageThunk.fulfilled,
       (state, action: PayloadAction<IMessage>) => {
+        console.log('MESSAGE PAYLOAD', action.payload);
         state.loading = false;
         chatAdapter.upsertOne(state, action.payload);
       }
@@ -205,20 +163,24 @@ const chatSlice = createSlice({
     builder.addCase(sendMessageThunk.rejected, (state) => {
       state.loading = false;
     });
-
-    // builder.addCase(findUsersByNameThunk.pending, (state) => {
-    //   state.loading = true;
-    // });
-    // builder.addCase(
-    //   findUsersByNameThunk.fulfilled,
-    //   (state, action: PayloadAction<IUser[]>) => {
-    //     state.loading = false;
-    //     state.foundUsersForNewChat = action.payload;
-    //   }
-    // );
-    // builder.addCase(findUsersByNameThunk.rejected, (state) => {
-    //   state.loading = false;
-    // });
+    builder.addCase(createConversationThunk.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(
+      createConversationThunk.fulfilled,
+      (state, action: PayloadAction<IConversation>) => {
+        state.loading = false;
+        state.id = action.payload.id;
+        chatAdapter.removeAll(state);
+        participantsAdapter.setAll(
+          state.participants,
+          action.payload.participants
+        );
+      }
+    );
+    builder.addCase(createConversationThunk.rejected, (state) => {
+      state.loading = false;
+    });
   },
 });
 export const selectActiveChatId = createSelector(

@@ -1,5 +1,6 @@
-import * as React from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import React, { memo } from 'react';
+import { Modal } from 'react-bootstrap';
+import { selectGlobalErrorMessage } from '../../redux/errorSlice';
 import { useAppSelector } from '../../redux/hooks';
 import AlertBox from '../AlertBox/AlertBox';
 
@@ -9,10 +10,10 @@ import AlertBox from '../AlertBox/AlertBox';
 //   submitLabel: string;
 // }
 interface PopupModalProps {
-  title: string;
+  title: string | JSX.Element;
   show: boolean;
   size: 'sm' | 'lg';
-  setShow: React.Dispatch<React.SetStateAction<boolean>>;
+  setShow: () => void;
   locked?: boolean;
   children?: React.ReactNode;
 }
@@ -28,9 +29,9 @@ const PopupModal: React.FC<PopupModalProps> = ({
   children,
 }) => {
   const handleShow = (): void => {
-    setShow(!show);
+    setShow();
   };
-  const errorMessage = useAppSelector((state) => state.error.message);
+  const errorMessage = useAppSelector(selectGlobalErrorMessage);
   return (
     <div>
       <Modal
@@ -64,4 +65,4 @@ const PopupModal: React.FC<PopupModalProps> = ({
   );
 };
 
-export default PopupModal;
+export default memo(PopupModal);

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { IError, ResponseError } from '../interfaces/IError';
 
 export enum Requests {
   GET = 'get',
@@ -15,14 +16,18 @@ export const loadRequestInterceptors = function (config: any) {
 };
 
 api.interceptors.request.use(loadRequestInterceptors);
-export const makeAPICall = (url: string, method: Requests, data?: any) =>
+export const makeAPICall = <T>(
+  url: string,
+  method: Requests,
+  data?: any
+): Promise<T | ResponseError> =>
   api({
     method,
     url,
     data,
   })
     .then((response) => response.data)
-    .catch((err) => err.response.data);
+    .catch((err) => processError(err));
 
 export const setHeaders = function (config: any) {
   const token = localStorage.getItem('token');
@@ -45,9 +50,13 @@ export const getAuthToken = (token: any) => localStorage.getItem('token');
  * @param err the error object caught from the API call
  * @returns the intended server error or a generic error message
  */
-export const processError = (err: any) => {
+export const processError = (err: any): IError => {
   if (err.response.data.error) {
     return err.response.data;
   }
-  return { error: 'Sorry! Something went wrong.', code: err.response.status };
+  return { message: 'Sorry! Something went wrong.', code: err.response.status };
+};
+
+export const isError = (value: any): value is ResponseError => {
+  return value.error && value.error.message !== undefined;
 };

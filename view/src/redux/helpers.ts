@@ -1,25 +1,25 @@
 import { BaseThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk';
-import { IError } from '../interfaces/IError';
-import { setGlobalError } from './errorSlice';
+import { IError, ResponseError } from '../interfaces/IError';
+import { isError } from '../services/helpers';
+import { setGlobalError, setResponseError } from './errorSlice';
 // @ts-ignore
 import { clearUser } from './userSlice';
 
 /**
  * Redux helper that checks if data returned from service contains an error. If so, updates the global error in errorSlice; otherwise, returns the passed-in data.
  */
-export const dataOrStateError = (APIdata: any, ThunkAPI: any) => {
-  if (APIdata.error || APIdata instanceof Error) {
-    if (APIdata.code === 403 || APIdata.code === 401) {
+export const dataOrStateError = <T>(
+  APIdata: T | ResponseError,
+  ThunkAPI: any
+): T => {
+  if (isError(APIdata)) {
+    if (APIdata.error.code === 403 || APIdata.error.code === 401) {
       ThunkAPI.dispatch(clearUser());
+    } else {
+      ThunkAPI.dispatch(setResponseError(APIdata)); //update errors
     }
-    const error: IError = {
-      message: APIdata.error,
-      code: APIdata.code,
-    };
-
-    ThunkAPI.dispatch(setGlobalError(error)); //update errors
-    throw Error('Thunk error: ' + APIdata.error || APIdata.message);
+    throw Error('Thunk error: ' + APIdata.error.message);
+  } else {
+    return APIdata;
   }
-
-  return APIdata;
 };

@@ -7,6 +7,7 @@ import { updateNotifications } from '../redux/notificationSlice';
 import { addTuit, updateTuits } from '../redux/tuitSlice';
 import { updateInbox } from '../redux/messageInboxSlice';
 import { upsertChatMessage } from '../redux/chatSlice';
+import { IMessage } from '../interfaces/IMessage';
 const SECURITY_API = `${process.env.REACT_APP_API_URL}/auth`;
 
 const api = axios.create();
@@ -19,8 +20,12 @@ let listening = false;
 
 const listenForNewMessages = (socket: Socket, ThunkAPI: any) => {
   socket.on('NEW_MESSAGE', (message) => {
-    ThunkAPI.dispatch(updateInbox(message));
-    ThunkAPI.dispatch(upsertChatMessage(message));
+    const newMessage: IMessage = {
+      ...message,
+      conversationId: message.conversation.id,
+    };
+    ThunkAPI.dispatch(updateInbox(newMessage));
+    ThunkAPI.dispatch(upsertChatMessage(newMessage));
   });
 };
 

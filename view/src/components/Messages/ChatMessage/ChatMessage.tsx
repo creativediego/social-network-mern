@@ -1,21 +1,18 @@
-import React, { useState } from 'react';
-import { useAppSelector, useAppDispatch } from '../../../redux/hooks';
-import './Message.scss';
+import React, { memo } from 'react';
+import './ChatMessage.scss';
 import moment from 'moment';
 import { IMessage } from '../../../interfaces/IMessage';
-import { deleteMessageThunk } from '../../../redux/chatSlice';
+import { useChatMessage } from './useChatMessage';
 
 interface MessageProps {
   message: IMessage;
 }
 /**
- * Displays a chat message in the current active/open chat with time sent and an option to remove/delete the message.
+ * Displays a chat message in the current active/open chat with time sent and an option to remove/delete the message. Uses custom hook useChatMessage to manage state.
  */
-const Message = ({ message }: MessageProps) => {
-  const dispatch = useAppDispatch();
-  const userId = useAppSelector((state) => state.user.data.id);
-  const isLoggedInUser = message.sender && message.sender.id === userId;
-  const [showOptions, setShowOptions] = useState(false);
+const ChatMessage = ({ message }: MessageProps) => {
+  const { isLoggedInUser, showOptions, setShowOptions, deleteMessage } =
+    useChatMessage(message);
 
   const bgColor = isLoggedInUser ? 'bg-primary' : 'bg-light';
   const position = isLoggedInUser ? 'flex-row-reverse' : 'justify-row';
@@ -23,10 +20,6 @@ const Message = ({ message }: MessageProps) => {
   const bubbleBorder = isLoggedInUser
     ? 'logged-in-user-message'
     : 'other-user-message';
-
-  const handleDeleteMessage = async () => {
-    dispatch(deleteMessageThunk({ messageId: message.id, userId }));
-  };
 
   return (
     <div className={`d-flex ${position} align-items-center mb-4`}>
@@ -48,7 +41,7 @@ const Message = ({ message }: MessageProps) => {
           {message.message}
         </span>
         {showOptions && (
-          <span className='px-2 btn text-danger' onClick={handleDeleteMessage}>
+          <span className='px-2 btn text-danger' onClick={deleteMessage}>
             <i className='fa-solid fa-trash-can'></i> Delete for you
           </span>
         )}
@@ -61,4 +54,4 @@ const Message = ({ message }: MessageProps) => {
   );
 };
 
-export default Message;
+export default memo(ChatMessage);

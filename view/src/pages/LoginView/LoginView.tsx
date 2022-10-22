@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { PopupModal } from '../../components';
 import UpdateProfileForm from '../../forms/UpdateProfileForm/UpdateProfileForm';
 import { Button } from 'react-bootstrap';
@@ -8,14 +8,16 @@ import { SignupForm } from '../../forms';
 import { LoginForm } from '../../forms';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { clearUser, loginWithGoogleThunk } from '../../redux/userSlice';
+import useToggleBoolean from '../../hooks/useToggleBoolean';
 
 const LoginView = () => {
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
   const profileComplete = useAppSelector((state) => state.user.profileComplete);
   const dispatch = useAppDispatch();
-  const [showSignupModal, setShowSignupModal] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [showUpdateProfileModal, setShowUpdateProfileModal] = useState(true);
+  const [showSignupModal, setShowSignupModal] = useToggleBoolean(false);
+  const [showLoginModal, setShowLoginModal] = useToggleBoolean(false);
+  const [showUpdateProfileModal, setShowUpdateProfileModal] =
+    useToggleBoolean(true);
 
   // Clears user session if user closes the complete signup modal.
   useEffect(() => {
@@ -34,7 +36,7 @@ const LoginView = () => {
           <Button
             className='rounded-pill w-100'
             variant='primary'
-            onClick={() => setShowSignupModal(true)}
+            onClick={setShowSignupModal}
           >
             Sign up with email
           </Button>
@@ -66,7 +68,7 @@ const LoginView = () => {
           <Button
             className='rounded-pill w-100'
             variant='light'
-            onClick={() => setShowLoginModal(true)}
+            onClick={setShowLoginModal}
           >
             Login with email or username
           </Button>

@@ -4,26 +4,33 @@ import {
   selectChatLoading,
   findMessagesByConversationThunk,
   selectAllParticipants,
+  selectActiveChatId,
 } from '../../../redux/chatSlice';
 
 import { selectAllChatMessages } from '../../../redux/chatSlice';
+import { useLocation } from 'react-router-dom';
 
 /**
- * Custom hook to returns messages in an active chat, the participants, and loading state.
+ * Manages the state of an active chat, including messages, the participants, and loading state.
  *
  */
-const useChat = (conversationId: string) => {
-  const dispatch = useAppDispatch();
+const useChat = () => {
+  // Get chat id from url path or redux state.
+  const urlPath = useLocation().pathname.split('/');
+  const urlChatId = urlPath[urlPath.length - 1];
+  const reduxChatId = useAppSelector(selectActiveChatId);
+  const activeChatId = urlChatId || reduxChatId;
 
+  const dispatch = useAppDispatch();
   const messages = useAppSelector(selectAllChatMessages);
   const loading = useAppSelector(selectChatLoading);
   const participants = useAppSelector(selectAllParticipants);
 
   useEffect(() => {
-    dispatch(findMessagesByConversationThunk(conversationId));
-  }, [dispatch, conversationId]);
+    dispatch(findMessagesByConversationThunk(activeChatId));
+  }, [dispatch, activeChatId]);
 
-  return { messages, participants, loading };
+  return { activeChatId, messages, participants, loading };
 };
 
 export default useChat;

@@ -2,6 +2,10 @@ body {
     overflow-x: hidden;
 }
 
+h1 {
+    font-size: 2rem;
+}
+
 .ttr-width-100-pc {
     width: 100%;
 }

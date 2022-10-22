@@ -13,11 +13,11 @@ import {
   ListsView,
   SearchView,
 } from '../index';
-import { useSelector } from 'react-redux';
 import MessagesView from '../MessagesPage/MessagesPage';
+import useError from '../../hooks/useError';
 
 function TuiterView() {
-  const error = useSelector((state) => state.error.data);
+  const error = useError();
   return (
     <div className='container'>
       <div className='ttr-tuiter'>
@@ -39,7 +39,7 @@ function TuiterView() {
             <Route path='/messages/*' element={<MessagesView />} />
             <Route path='/search/*' element={<SearchView />} />
           </Routes>
-          {error && <AlertBox message={error} />}
+          {error && <AlertBox message={error.message} />}
         </div>
         <div className='ttr-right-column'>
           <WhatsHappeningView />
