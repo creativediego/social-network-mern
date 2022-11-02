@@ -3,8 +3,8 @@ import { ActionButton, Loader, PopupModal, Search } from '../..';
 import useToggleBoolean from '../../../hooks/useToggleBoolean';
 import { IUser } from '../../../interfaces/IUser';
 import { findAllUsersByName } from '../../../services/users-service';
-import useSearch from '../../Search/useSearch';
-import useNewChat from './useNewChat';
+import { useSearch } from '../../Search/useSearch';
+import { useNewChat } from './useNewChat';
 
 const NewChat = () => {
   const [showModal, toggleModal] = useToggleBoolean(false);
@@ -19,13 +19,20 @@ const NewChat = () => {
   } = useNewChat();
   return (
     <>
-      <span
+      {/* <Button
+        aria-label='new chat button'
         style={{ zIndex: '2' }}
         className='p-0 fa-solid fa-message-plus fa-2x fa-pull-right btn text-primary fs-5'
         onClick={toggleModal}
-      ></span>
+      /> */}
+      <button
+        aria-label='new chat'
+        style={{ zIndex: '2' }}
+        className='p-0 fa-solid fa-message-plus fa-2x fa-pull-right btn text-primary fs-5'
+        onClick={toggleModal}
+      ></button>
       <PopupModal
-        title='New Chat'
+        title='New chat'
         size='sm'
         setShow={toggleModal}
         show={showModal}

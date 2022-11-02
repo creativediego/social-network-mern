@@ -9,7 +9,7 @@ import {
   selectActiveChatId,
 } from '../../../redux/chatSlice';
 
-const useNewChat = () => {
+export const useNewChat = () => {
   const isMounted = useRef(true);
   const navigate = useNavigate();
   const authUser = useAppSelector(selectAuthUser);
@@ -69,5 +69,3 @@ const useNewChat = () => {
     createNewChat,
   };
 };
-
-export default useNewChat;
