@@ -32,7 +32,7 @@ const NewChat = () => {
         onClick={toggleModal}
       ></button>
       <PopupModal
-        title='New chat'
+        title='Start a new chat'
         size='sm'
         setShow={toggleModal}
         show={showModal}
@@ -59,15 +59,17 @@ const NewChat = () => {
           <>
             <div className='d-flex justify-content-between align-items-center'>
               <h6 className='mt-4'>Results</h6>
-              <ActionButton
-                submitAction={() => {
-                  toggleModal();
-                  createNewChat();
-                }}
-                position='right'
-                label='Create'
-                loading={newChatLoading}
-              />
+              {selectedUsers && (
+                <ActionButton
+                  submitAction={() => {
+                    toggleModal();
+                    createNewChat();
+                  }}
+                  position='right'
+                  label='Create'
+                  loading={newChatLoading}
+                />
+              )}
             </div>
 
             <div style={{ overflowY: 'scroll', height: '50vh' }}>
