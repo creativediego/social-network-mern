@@ -5,28 +5,23 @@ import { Button } from 'react-bootstrap';
 import { AlertBox, Loader, PopupModal } from '../../components';
 import FormInput from '../FormInput/FormInput';
 import { profileFields } from '../shared/profileFields';
-import { useAppSelector } from '../../redux/hooks';
+import { useAuthUser } from '../../hooks/useAuthUser';
+import { useAlert } from '../../hooks/useAlert';
 
 /**
  * User login form that uses a redux async loginThunk to log user in. Displays loading button when login in being processed.
  */
 const LoginForm = (): JSX.Element => {
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const loading = useAppSelector((state) => state.user.loading);
-  const error = useAppSelector((state) => state.error.message);
+  const { error } = useAlert();
+  const { login, loading } = useAuthUser();
+
   const [loginUser, setLoginUser] = useState({
     email: 'createideas@hotmail.com',
     password: 'Hello123!',
   });
-  const dispatch = useDispatch();
 
-  const submit = async () => {
-    if (!loginUser || !loginUser.password || !loginUser.email) {
-      return;
-    }
-    dispatch(
-      loginThunk({ email: loginUser.email, password: loginUser.password })
-    );
+  const submit = () => {
+    login(loginUser.email, loginUser.password);
   };
 
   return (
@@ -65,7 +60,7 @@ const LoginForm = (): JSX.Element => {
           {loading ? <Loader loading={loading} /> : <>Log in</>}
         </Button>
       </span>
-      <AlertBox message={error} />
+      <AlertBox message={error.message} />
     </div>
   );
 };

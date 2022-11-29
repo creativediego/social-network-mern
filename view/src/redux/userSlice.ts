@@ -9,7 +9,7 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { getProfile } from '../services/auth-service';
-import { updateUser } from '../services/users-service';
+import { findUserById, updateUser } from '../services/users-service';
 import { dataOrStateError } from './helpers';
 import { clearToken } from '../services/helpers';
 import * as socketService from '../services/socket-service';
@@ -24,8 +24,9 @@ import { setAuthToken } from '../services/helpers';
 import { IUser } from '../interfaces/IUser';
 import { INotification } from '../interfaces/INotification';
 import { RootState } from './store';
-import { setGlobalError } from './errorSlice';
-import { IError } from '../interfaces/IError';
+import { setGlobalError, setSuccessAlert } from './alertSlice';
+import { IAlert } from '../interfaces/IError';
+import { setProfileUser } from './profileSlice';
 
 /**
  * Updates redux state with user profile after calling getProfile from user service.
@@ -53,7 +54,7 @@ export const registerThunk = createAsyncThunk(
     try {
       await fireBaseRegisterUser(email, password);
     } catch (err: unknown) {
-      const error = err as IError;
+      const error = err as IAlert;
       ThunkAPI.dispatch(setGlobalError({ message: error.message }));
       return ThunkAPI.rejectWithValue({ message: error.message });
     }
@@ -78,7 +79,7 @@ export const loginThunk = createAsyncThunk(
     try {
       await firebaseLoginWithEmail(email, password);
     } catch (err: unknown) {
-      const error = err as IError;
+      const error = err as IAlert;
       ThunkAPI.dispatch(setGlobalError({ message: error.message }));
       return ThunkAPI.rejectWithValue({ message: error.message });
     }
@@ -106,7 +107,7 @@ export const loginWithGoogleThunk = createAsyncThunk(
  */
 export const logoutThunk = createAsyncThunk(
   'users/logout',
-  async (user, ThunkAPI) => {
+  async (_: void, ThunkAPI) => {
     clearToken();
     socketService.disconnect();
     clearUser();
@@ -121,8 +122,13 @@ export const logoutThunk = createAsyncThunk(
 export const updateUserThunk = createAsyncThunk(
   'users/update',
   async (user: IUser, ThunkAPI) => {
-    const res = await updateUser(user);
-    return dataOrStateError(res, ThunkAPI);
+    let updatedUser = await updateUser(user);
+    ThunkAPI.dispatch(
+      setSuccessAlert({ message: 'Profile updated successfully.' })
+    );
+    updatedUser = dataOrStateError(updatedUser, ThunkAPI);
+    ThunkAPI.dispatch(setProfileUser(updatedUser));
+    return dataOrStateError(updatedUser, ThunkAPI);
   }
 );
 export interface UserState {
@@ -174,6 +180,9 @@ const userSlice = createSlice({
   reducers: {
     setNotifications: (state, action: PayloadAction<INotification[]>) => {
       state.notifications = action.payload;
+    },
+    setAuthUser: (state, action: PayloadAction<IUser>) => {
+      state.data = action.payload;
     },
     setUnreadNotifications: (state, action) => {
       state.unreadNotifications = action.payload;
@@ -282,6 +291,11 @@ export const selectAuthUser = createSelector(
   (user) => user
 );
 
+export const selectAuthUserLoading = createSelector(
+  (state: RootState) => state.user.loading,
+  (loading) => loading
+);
+
 export const selectIsLoggedIn = createSelector(
   (state: RootState) => state.user.isLoggedIn,
   (isLoggedIn) => isLoggedIn
@@ -292,5 +306,6 @@ export const {
   setUnreadNotifications,
   clearUser,
   updateAuthUser,
+  setAuthUser,
 } = userSlice.actions;
 export default userSlice.reducer;

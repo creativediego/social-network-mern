@@ -1,47 +1,38 @@
-import * as React from 'react';
-import { useSelector } from 'react-redux';
-import { TuitContext } from './Tuit';
-import { userLikesTuit } from '../../services/likes-service';
+import React, { useMemo } from 'react';
 import './Tuits.scss';
-import { setClassWithTimeout } from './helpers';
+import { useTuits } from '../../hooks/useTuits';
+import { useAuthUser } from '../../hooks/useAuthUser';
+import { useToggleAnimation } from '../../hooks/useToggleAnimation';
 /**
  * Displays like button.
  */
-const LikeButton: React.FC = (): JSX.Element => {
-  const userId = useSelector((state: any) => state.user.data.id);
-  const [tuit, setTuit] = React.useContext(TuitContext);
-  const [animationClass, setAnimationClass] = React.useState('');
+const LikeButton = (): JSX.Element | null => {
+  const userId = useAuthUser().user.id;
+  const { tuit, handleLikeTuit } = useTuits();
+  const { animationClass, handleAnimation } = useToggleAnimation(
+    'fs-6 fa-pulse',
+    800
+  );
 
   /**
    * Checks if the user liked the tuit, and updates state used for styling.
    */
-  const userHasLiked = React.useMemo((): boolean => {
+  const userHasLiked = useMemo((): boolean => {
     if (tuit && tuit.likedBy.includes(userId)) {
       return true;
     }
     return false;
   }, [userId, tuit]);
 
-  /**
-   * Calls the likes service when a user likes a tuit. Uses the updated tuit stats from the service to update state.
-   */
-  const handleLikeTuit = async (): Promise<void> => {
-    const resTuit = await userLikesTuit(userId, tuit.id);
-    if (resTuit && resTuit.error) {
-      return;
-    }
-
-    // updateLiked(resTuit);
-    setTuit({ ...tuit, ...resTuit });
-    setClassWithTimeout(setAnimationClass, 'fs-6 ttr-heart-animated fa-pulse');
-  };
-
-  return (
+  return tuit ? (
     <div className='col'>
       <span
         className='btn p-0 m-0'
         data-testid='ttr-like-btn'
-        onClick={() => handleLikeTuit()}
+        onClick={() => {
+          handleLikeTuit(tuit.id);
+          handleAnimation();
+        }}
       >
         <i
           className={
@@ -56,7 +47,7 @@ const LikeButton: React.FC = (): JSX.Element => {
         </i>
       </span>
     </div>
-  );
-}
+  ) : null;
+};
 
 export default LikeButton;

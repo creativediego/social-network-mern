@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useAppDispatch } from '../../redux/hooks';
 import { registerThunk } from '../../redux/userSlice';
 import { InputFieldI } from '../../interfaces/InputFieldI';
-import { IError } from '../../interfaces/IError';
+import { IAlert } from '../../interfaces/IError';
 
 const useSignupForm = () => {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<IError>({ message: '' });
+  const [error, setError] = useState<IAlert>({ message: '' });
   const [fields, setFields] = useState<InputFieldI>({
     email: {
       id: '1',

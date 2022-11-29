@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { ITuit } from '../../interfaces/ITuit';
 import { createTuitThunk } from '../../redux/tuitSlice';
@@ -12,16 +12,26 @@ import { IUser } from '../../interfaces/IUser';
 const useNewTuit = () => {
   const authUser: IUser = useAppSelector(selectAuthUser);
   const dispatch = useAppDispatch();
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState('');
   const [tuit, setTuit] = React.useState<ITuit>({
     id: '',
     author: authUser,
     createdAt: '',
     tuit: '',
     image: '',
+    likedBy: [],
+    dislikedBy: [],
+    stats: {
+      likes: 0,
+      dislikes: 0,
+      retuits: 0,
+      replies: 0,
+    },
   });
-  const [imageFile, setImageFile] = React.useState<File | null>(null);
 
   const handleSetImageFile = useCallback((file: File | null) => {
+    console.log(file);
     setImageFile(file);
   }, []);
 
@@ -29,6 +39,8 @@ const useNewTuit = () => {
     if (!tuit.tuit) return;
     setTuit({ ...tuit, tuit: '', image: '', hashtags: [] });
     dispatch(createTuitThunk({ userId: authUser.id, tuit, imageFile }));
+    setImagePreview('');
+    setImageFile(null);
   };
 
   const parseHashtags = (tuit: string): string[] | null => {
@@ -47,11 +59,24 @@ const useNewTuit = () => {
     }
     setTuit({ ...tuit, ...updatedTuit });
   };
+  // Create an image preview when image is selected.
+  useEffect(() => {
+    if (!imageFile) {
+      setImagePreview('');
+      return;
+    }
+    const objectUrl = URL.createObjectURL(imageFile);
+    setImagePreview(objectUrl);
+
+    // free memory when ever this component is unmounted
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [imageFile]);
 
   return {
     tuit,
     setTuit,
     setImageFile: handleSetImageFile,
+    imagePreview,
     setInput,
     createTuit,
   };

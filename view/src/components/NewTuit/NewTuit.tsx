@@ -8,7 +8,8 @@ import useNewTuit from './useNewTuit';
  *
  */
 const NewTuit = () => {
-  const { tuit, setInput, setImageFile, createTuit } = useNewTuit();
+  const { tuit, setInput, setImageFile, createTuit, imagePreview } =
+    useNewTuit();
   return (
     <div className='p-2 w-100'>
       <textarea
@@ -30,7 +31,7 @@ const NewTuit = () => {
           ))}
         </div>
       )}
-      {tuit.image && <TuitImage imageURL={tuit.image} deletable={true} />}
+      {<TuitImage imageURL={imagePreview} deletable={true} />}
       <div className='row'>
         <div className='col-10 ttr-font-size-150pc text-primary mt-4'>
           <TuitImageUpload setImageFile={setImageFile} />

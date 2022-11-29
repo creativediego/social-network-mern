@@ -1,42 +1,38 @@
 import * as React from 'react';
-import { useSelector } from 'react-redux';
-import { TuitContext } from './Tuit';
 import './Tuits.scss';
-import { userDislikesTuit } from '../../services/likes-service';
-import { setClassWithTimeout } from './helpers';
+import { useTuits } from '../../hooks/useTuits';
+import { useAuthUser } from '../../hooks/useAuthUser';
+import { useToggleAnimation } from '../../hooks/useToggleAnimation';
 /**
  * Displays like button.
  */
-const DislikeButton: React.FC = (): JSX.Element => {
-  const [tuit, setTuit] = React.useContext(TuitContext);
-  const userId = useSelector((state:any ) => state.user.data.id);
-  const [animationClass, setAnimationClass] = React.useState('');
+const DislikeButton: React.FC = (): JSX.Element | null => {
+  const userId = useAuthUser().user.id;
+  const { tuit, handleDislikeTuit } = useTuits();
+  const { animationClass, handleAnimation } = useToggleAnimation(
+    'fs-6 fa-pulse',
+    800
+  );
 
   /**
    * Checks if the user liked the tuit, and updates state used for styling.
    */
   const userHasDisliked = React.useMemo(() => {
-    if (tuit.dislikedBy.includes(userId)) {
+    if (tuit && tuit.dislikedBy.includes(userId)) {
       return true;
     }
     return false;
   }, [userId, tuit]);
 
-  const handleDislikeTuit = async () => {
-    const resTuit = await userDislikesTuit(userId, tuit.id);
-    if (resTuit.error) {
-      return;
-    }
-    setTuit({ ...tuit, ...resTuit });
-    setClassWithTimeout(setAnimationClass, 'fs-6 fa-pulse');
-  };
-
-  return (
+  return tuit ? (
     <div className='col'>
       <span
         className='btn p-0 m-0'
         data-testid='ttr-like-btn'
-        onClick={() => handleDislikeTuit()}
+        onClick={() => {
+          handleDislikeTuit(tuit.id);
+          handleAnimation();
+        }}
       >
         <i
           className={
@@ -51,7 +47,7 @@ const DislikeButton: React.FC = (): JSX.Element => {
         </i>
       </span>
     </div>
-  );
-}
+  ) : null;
+};
 
 export default DislikeButton;

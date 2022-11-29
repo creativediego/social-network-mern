@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IError, ResponseError } from '../interfaces/IError';
+import { IAlert, ResponseError } from '../interfaces/IError';
 
 export enum Requests {
   GET = 'get',
@@ -50,7 +50,7 @@ export const getAuthToken = (token: any) => localStorage.getItem('token');
  * @param err the error object caught from the API call
  * @returns the intended server error or a generic error message
  */
-export const processError = (err: any): IError => {
+export const processError = (err: any): IAlert => {
   if (err.response.data.error) {
     return err.response.data;
   }

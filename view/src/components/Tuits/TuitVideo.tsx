@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { TuitContext } from './Tuit';
+import { useTuits } from '../../hooks/useTuits';
 
 /**
  * Displays a video post of a tuit.
  */
-const TuitVideo: React.FC = (): JSX.Element => {
-  const [tuit] = React.useContext(TuitContext);
-  return (
+const TuitVideo: React.FC = (): JSX.Element | null => {
+  const { tuit } = useTuits();
+  return tuit ? (
     <div className='ttr-responsive-video ttr-rounded-15px position-relative overflow-hidden w-100 mt-2'>
       <iframe
         width='560'
@@ -19,6 +19,6 @@ const TuitVideo: React.FC = (): JSX.Element => {
         allowFullScreen
       ></iframe>
     </div>
-  );
+  ) : null;
 };
 export default TuitVideo;

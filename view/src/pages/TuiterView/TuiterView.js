@@ -3,21 +3,21 @@ import './TuiterView.css';
 import { Routes, Route } from 'react-router-dom';
 import { AlertBox, Navigation } from '../../components';
 import {
-  WhatsHappeningView,
-  HomeView,
-  BookmarksView,
-  ProfileView,
-  ExploreView,
-  NotificationsView,
-  MoreView,
-  ListsView,
+  WhatsHappeningWidget,
+  HomePage,
+  BookmarksPage,
+  ProfilePage,
+  ExplorePage,
+  NotificationsPage,
+  MorePage,
+  ListsPage,
   SearchView,
 } from '../index';
 import MessagesView from '../MessagesPage/MessagesPage';
-import useError from '../../hooks/useError';
+import { useAlert } from '../../hooks/useAlert';
 
 function TuiterView() {
-  const error = useError();
+  const { error, success } = useAlert();
   return (
     <div className='container'>
       <div className='ttr-tuiter'>
@@ -26,23 +26,23 @@ function TuiterView() {
         </div>
         <div className='ttr-center-column'>
           <Routes>
-            <Route path='/' element={<HomeView />} />
-            <Route path='/tuiter' element={<HomeView />} />
-            <Route path='/:userId/*' element={<ProfileView />} />
-            <Route path='/home' element={<HomeView />} />
-            <Route path='/home/:uid' element={<HomeView />} />
-            <Route path='/explore' element={<ExploreView />} />
-            <Route path='/notifications/*' element={<NotificationsView />} />
-            <Route path='/bookmarks' element={<BookmarksView />} />
-            <Route path='/lists' element={<ListsView />} />
-            <Route path='/more' element={<MoreView />} />
+            <Route path='/' element={<HomePage />} />
+            <Route path='/tuiter' element={<HomePage />} />
+            <Route path='/:username/*' element={<ProfilePage />} />
+            <Route path='/home' element={<HomePage />} />
+            <Route path='/explore' element={<ExplorePage />} />
+            <Route path='/notifications/*' element={<NotificationsPage />} />
+            <Route path='/bookmarks' element={<BookmarksPage />} />
+            <Route path='/lists' element={<ListsPage />} />
+            <Route path='/more' element={<MorePage />} />
             <Route path='/messages/*' element={<MessagesView />} />
             <Route path='/search/*' element={<SearchView />} />
           </Routes>
           {error && <AlertBox message={error.message} />}
+          {success && <AlertBox message={success.message} variant='primary' />}
         </div>
         <div className='ttr-right-column'>
-          <WhatsHappeningView />
+          <WhatsHappeningWidget />
         </div>
       </div>
     </div>

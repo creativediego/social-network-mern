@@ -7,7 +7,6 @@ import NewTuit from './NewTuit/NewTuit';
 import Loader from './Loader/Loader';
 import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 import TuitImage from './TuitImage/TuitImage';
-import AvatarImage from './AvatarImage/AvatarImage';
 import Search from './Search/Search';
 import FollowButton from './FollowButton/FollowButton';
 import InboxMessage from './Messages/Inbox/InboxMessage';
@@ -15,13 +14,15 @@ import InboxList from './Messages/Inbox/InboxList';
 import Chat from './Messages/Chat/Chat';
 import NewChat from './Messages/NewChat/NewChat';
 import ActionButton from './ActionButton/ActionButton';
-
+import ProfileInfo from './Profile/ProfileInfo/ProfileInfo';
+import ProfileTuits from './Profile/ProfileTuits/ProfileTuits';
+import { AvatarImage } from './AvatarImage/AvatarImage';
+import Notification from './Notifications/Notification';
 export {
   AlertBox,
   GenericError,
   PopupModal,
   TuitImage,
-  AvatarImage,
   Tuits,
   Navigation,
   NewTuit,
@@ -34,4 +35,8 @@ export {
   NewChat,
   Chat,
   ActionButton,
+  ProfileInfo,
+  ProfileTuits,
+  AvatarImage,
+  Notification,
 };

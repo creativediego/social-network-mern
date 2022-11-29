@@ -4,6 +4,8 @@ import useSignupForm from './useSignupForm';
 import FormInput from '../FormInput/FormInput';
 import { AlertBox, Loader } from '../../components';
 import { useAppSelector } from '../../redux/hooks';
+import { selectGlobalErrorMessage } from '../../redux/alertSlice';
+import { useAlert } from '../../hooks/useAlert';
 
 /**
  * Displays the registration/signup form with submit button. Uses the custom hook useSignupForm to manage state and process submission.
@@ -11,7 +13,7 @@ import { useAppSelector } from '../../redux/hooks';
 const SignupForm = (): JSX.Element => {
   const { fields, setField, submitForm } = useSignupForm();
   const loading = useAppSelector((state) => state.user.loading);
-  const error = useAppSelector((state) => state.error.message);
+  const { error } = useAlert();
   return (
     <div>
       {Object.values(fields).map((field) => (
@@ -34,7 +36,7 @@ const SignupForm = (): JSX.Element => {
           {loading ? <Loader loading={loading} /> : <>Create</>}
         </Button>
       </span>
-      <AlertBox message={error} />
+      <AlertBox message={error.message} />
     </div>
   );
 };

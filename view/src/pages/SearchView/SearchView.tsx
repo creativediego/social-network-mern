@@ -1,10 +1,8 @@
 import * as React from 'react';
 import { Nav } from 'react-bootstrap';
 import { useSearchParams } from 'react-router-dom';
-//@ts-ignore
 import { Search, Loader } from '../../components';
 import useSearchResults from './useSearchResults';
-//@ts-ignore
 import { Tuits } from '../../components';
 import PeopleSearchResults from './PeopleSearchResults';
 
@@ -16,7 +14,7 @@ const SearchView = (): JSX.Element => {
   const [searchValue, setSearchValue] = React.useState(
     searchParams.get('q') || ''
   );
-  const [loading, searchData] = useSearchResults(queryType, searchValue); // custom hook
+  const [loading, searchData] = useSearchResults(queryType, searchValue);
 
   return (
     <>

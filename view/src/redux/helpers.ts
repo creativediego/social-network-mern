@@ -1,7 +1,7 @@
 import { BaseThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk';
-import { IError, ResponseError } from '../interfaces/IError';
+import { IAlert, ResponseError } from '../interfaces/IError';
 import { isError } from '../services/helpers';
-import { setGlobalError, setResponseError } from './errorSlice';
+import { setGlobalError, setPageError, setResponseError } from './alertSlice';
 // @ts-ignore
 import { clearUser } from './userSlice';
 
@@ -16,7 +16,13 @@ export const dataOrStateError = <T>(
     if (APIdata.error.code === 403 || APIdata.error.code === 401) {
       ThunkAPI.dispatch(clearUser());
     } else {
-      ThunkAPI.dispatch(setResponseError(APIdata)); //update errors
+      const userFriendlyError = {
+        error: {
+          message: 'Ooops! Something went wrong. Try again later.',
+          code: APIdata.error.code,
+        },
+      };
+      ThunkAPI.dispatch(setPageError(userFriendlyError.error)); //update errors
     }
     throw Error('Thunk error: ' + APIdata.error.message);
   } else {

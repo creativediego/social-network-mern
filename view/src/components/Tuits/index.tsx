@@ -14,11 +14,11 @@ interface TuitsProps {
 const Tuits = ({ tuits }: TuitsProps): JSX.Element => {
   const dispatch = useAppDispatch();
   useEffect(() => {
+    // Remove all tuits when component unmounts.
     return () => {
       dispatch(removeAllTuits());
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dispatch]);
   return (
     <div>
       <ul className='ttr-tuits list-group'>

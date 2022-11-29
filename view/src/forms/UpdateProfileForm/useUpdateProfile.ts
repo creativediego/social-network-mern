@@ -12,7 +12,7 @@ import { IUser } from '../../interfaces/IUser';
 import { updateUserThunk } from '../../redux/userSlice';
 import { firebaseUploadProfileImage } from '../../services/storage-service';
 import { ImageTypes } from '../../interfaces/ImageTypes';
-import { setGlobalError } from '../../redux/errorSlice';
+import { setGlobalError } from '../../redux/alertSlice';
 
 /**
  * Custom hook that Mmnages the state of the update/edit profile form, including form fields, image uploads, and submitting the form.
@@ -115,11 +115,13 @@ const useUpdateProfile = () => {
     return true;
   };
 
-  const submitForm = () => {
+  const submitForm = async () => {
     if (!isFormValid()) {
       return;
     }
-    dispatch(updateUserThunk(tempUser));
+    setLoading(true);
+    await dispatch(updateUserThunk(tempUser));
+    setLoading(false);
   };
 
   // Sets up component initial field values and cleanup subscription.

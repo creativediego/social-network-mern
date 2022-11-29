@@ -22,7 +22,10 @@ const ChatMessage = ({ message }: MessageProps) => {
     : 'other-user-message';
 
   return (
-    <div className={`d-flex ${position} align-items-center mb-4`}>
+    <div
+      aria-label='chat message'
+      className={`d-flex ${position} align-items-center mb-4`}
+    >
       {displayAvatar && (
         <span style={{ width: '8%' }}>
           <img

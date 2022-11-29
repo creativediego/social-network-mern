@@ -7,7 +7,7 @@ import {
   unfollowUser,
 } from '../../services/follows-service';
 import { Loader } from '..';
-import { setGlobalError } from '../../redux/errorSlice';
+import { setGlobalError } from '../../redux/alertSlice';
 import { findUserById } from '../../services/users-service';
 import { IUser } from '../../interfaces/IUser';
 import { isError } from '../../services/helpers';

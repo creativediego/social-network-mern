@@ -2,9 +2,10 @@ import React from 'react';
 import { NewTuit, Loader, Tuits, AvatarImage } from '../../components';
 import { useAppSelector } from '../../redux/hooks';
 import { selectAuthUser } from '../../redux/userSlice';
-import useAllTuits from '../../hooks/useAllTuits';
+import { useTuits } from '../../hooks/useTuits';
+
 const HomePage = (): JSX.Element | null => {
-  const { tuits, loading } = useAllTuits();
+  const { tuits, loading } = useTuits();
   const authUser = useAppSelector(selectAuthUser);
   return (
     <section className='ttr-home'>
@@ -20,7 +21,7 @@ const HomePage = (): JSX.Element | null => {
         )}
       </div>
       <Loader loading={loading} message={'Loading Tuits'} />
-      {tuits.length > 0 && <Tuits tuits={tuits} />}
+      <Tuits tuits={tuits} />
     </section>
   );
 };

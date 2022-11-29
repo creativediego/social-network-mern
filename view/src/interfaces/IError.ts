@@ -1,7 +1,7 @@
-export interface IError {
+export interface IAlert {
   message: string;
   code?: number | string | undefined;
 }
 export interface ResponseError {
-  error: IError;
+  error: IAlert;
 }

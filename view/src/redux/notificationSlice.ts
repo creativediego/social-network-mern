@@ -1,7 +1,12 @@
 /**
  * Includes redux state management for user actions such as login and update user.
  */
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+  PayloadAction,
+} from '@reduxjs/toolkit';
 import { dataOrStateError } from './helpers';
 import {
   findNotifications,
@@ -9,6 +14,7 @@ import {
   markNotificationAsRead,
 } from '../services/notifications-service';
 import { INotification } from '../interfaces/INotification';
+import { RootState } from './store';
 
 export const findNotificationsThunk = createAsyncThunk(
   'notifications/findNotifications',
@@ -116,6 +122,17 @@ const notificationSlice = createSlice({
     });
   },
 });
+
+export const selectAllNotifications = createSelector(
+  (state: RootState) => state.notifications.all,
+  (notifications) => notifications
+);
+
+export const selectNotificationsLoading = createSelector(
+  (state: RootState) => state.notifications.loading,
+  (loading) => loading
+);
+
 export const {
   setUnreadNotifications,
   clearUnreadNotifications,

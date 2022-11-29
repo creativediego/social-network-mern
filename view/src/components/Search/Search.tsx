@@ -18,6 +18,8 @@ const Search: React.FC<SearchProps> = ({
     <div className='ttr-search position-relative'>
       {/* <i className='fas fa-search position-absolute'></i> */}
       <input
+        type='text'
+        aria-label='search box'
         className='bg-dark bg-opacity-10 border-0 form-control form-control-sm rounded-pill ps-4'
         placeholder={placeHolder}
         value={searchValue}

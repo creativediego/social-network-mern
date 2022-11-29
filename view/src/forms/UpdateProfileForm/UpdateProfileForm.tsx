@@ -1,8 +1,7 @@
 import React from 'react';
 import FormInput from '../FormInput/FormInput';
 import AvatarUpload from './AvatarUpload';
-import { Button } from 'react-bootstrap';
-import { Loader } from '../../components';
+import { ActionButton, Loader } from '../../components';
 
 import useUpdateProfile from './useUpdateProfile';
 import HeaderImageUpload from './HeaderImageUpload';
@@ -50,22 +49,11 @@ const UpdateProfileForm = (): JSX.Element => {
           />
         ) : null
       )}
-      <Button
-        type='submit'
-        className='rounded-pill fa-pull-right mt-2'
-        variant='primary'
-        onClick={() => {
-          submitForm();
-        }}
-      >
-        {loading ? (
-          <span>
-            <Loader loading={loading} size='fs-5' />
-          </span>
-        ) : (
-          <span>Update</span>
-        )}
-      </Button>
+      <ActionButton
+        submitAction={submitForm}
+        position={'right'}
+        loading={loading}
+      />
     </div>
   );
 };

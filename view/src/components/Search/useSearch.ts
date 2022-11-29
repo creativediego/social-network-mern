@@ -1,10 +1,10 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { ResponseError } from '../../interfaces/IError';
-import { setGlobalError } from '../../redux/errorSlice';
+import { setGlobalError } from '../../redux/alertSlice';
 import { useAppDispatch } from '../../redux/hooks';
 import { isError } from '../../services/helpers';
 
-const useSearch = <T>(
+export const useSearch = <T>(
   APICall: (searchValue: string) => Promise<T[] | ResponseError>
 ) => {
   const dispatch = useAppDispatch();
@@ -48,5 +48,3 @@ const useSearch = <T>(
     searchLoading,
   };
 };
-
-export default useSearch;

@@ -1,4 +1,4 @@
-import { IError } from '../interfaces/IError';
+import { IAlert } from '../interfaces/IError';
 import { IUser } from '../interfaces/IUser';
 import { makeAPICall } from './helpers';
 import { Requests } from './helpers';
@@ -23,7 +23,7 @@ export const findAllUsersByName = (nameOrUsername: string) =>
   makeAPICall<IUser[]>(`${USERS_API}/${nameOrUsername}`, Requests.POST);
 
 // Find a user by the given id.
-export const findUserById = (uid: number) =>
+export const findUserById = (uid: string) =>
   makeAPICall<IUser>(`${USERS_API}/${uid}`, Requests.GET);
 
 export const findUserByUsername = (username: string) =>

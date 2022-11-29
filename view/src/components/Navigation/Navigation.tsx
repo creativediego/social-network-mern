@@ -1,19 +1,19 @@
 import React from 'react';
 import './navigation.css';
 import { useLocation, Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 // @ts-ignore
 import { findUnreadNotificationsThunk } from '../../redux/notificationSlice';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 
 /**
  * Displays the main navigation menu of the app.
  */
 const Navigation = (): JSX.Element => {
   const { pathname } = useLocation();
-  const authUser = useSelector((state: any) => state.user.data);
-  const dispatch = useDispatch();
-  const unreadNotifications = useSelector(
+  const authUser = useAppSelector((state: any) => state.user.data);
+  const dispatch = useAppDispatch();
+  const unreadNotifications = useAppSelector(
     (state: any) => state.notifications.unread
   );
 
@@ -50,19 +50,25 @@ const Navigation = (): JSX.Element => {
     //   path: '/bookmarks',
     //   color: 'white',
     // },
-    { label: 'Lists', icon: 'fa-list', path: '/lists', color: 'white' },
+    // { label: 'Lists', icon: 'fa-list', path: '/lists', color: 'white' },
     {
       label: 'Profile',
       icon: 'fa-user',
-      path: `/${authUser.id}/tuits`,
+      path: `/${authUser.username}/tuits`,
       color: 'white',
     },
     {
-      label: 'More',
-      icon: 'fa-circle-ellipsis',
-      path: '/more',
+      label: 'Search',
+      icon: 'fa-magnifying-glass',
+      path: '/search',
       color: 'white',
     },
+    // {
+    //   label: 'More',
+    //   icon: 'fa-circle-ellipsis',
+    //   path: '/more',
+    //   color: 'white',
+    // },
   ];
 
   return (

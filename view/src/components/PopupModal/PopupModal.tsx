@@ -1,14 +1,7 @@
 import React, { memo } from 'react';
-import { Modal } from 'react-bootstrap';
-import { selectGlobalErrorMessage } from '../../redux/errorSlice';
-import { useAppSelector } from '../../redux/hooks';
-import AlertBox from '../AlertBox/AlertBox';
+import { Modal, ModalFooter } from 'react-bootstrap';
+import ActionButton from '../ActionButton/ActionButton';
 
-// interface PopupModalContent {
-//   title: string;
-//   body: JSX.Element;
-//   submitLabel: string;
-// }
 interface PopupModalProps {
   title: string | JSX.Element;
   show: boolean;
@@ -16,6 +9,7 @@ interface PopupModalProps {
   setShow: () => void;
   locked?: boolean;
   children?: React.ReactNode;
+  closeButton?: boolean;
 }
 /**
  * A dismissible popup modal with  a title, content, and submit action customizable via props.
@@ -26,42 +20,39 @@ const PopupModal: React.FC<PopupModalProps> = ({
   size,
   setShow,
   locked,
+  closeButton,
   children,
 }) => {
   const handleShow = (): void => {
     setShow();
   };
-  const errorMessage = useAppSelector(selectGlobalErrorMessage);
   return (
-    <div>
-      <Modal
-        size={size}
-        show={show}
-        onHide={handleShow}
-        backdrop={locked ? 'static' : true}
-      >
-        <Modal.Header closeButton={locked ? false : true}>
-          <h5>{title}</h5>
-        </Modal.Header>
-        <Modal.Body>
-          {children && children}
-          <AlertBox message={errorMessage} />
-        </Modal.Body>
-        {/* <Modal.Footer>
-          <Button
-            type='submit'
-            className='rounded-pill'
-            variant='primary'
-            onClick={() => {
-              handleSubmit();
-            }}
-          >
-            {content.submitLabel}
-           
-          </Button>
-        </Modal.Footer> */}
-      </Modal>
-    </div>
+    <Modal
+      id='modal'
+      role='dialog'
+      aria-modal='true'
+      aria-labelledby='modal_title'
+      aria-describedby='modal_body'
+      size={size}
+      show={show}
+      onHide={handleShow}
+      backdrop={locked ? 'static' : true}
+    >
+      <Modal.Header closeButton={locked ? false : true}>
+        <h2 id='modal_title'>{title}</h2>
+      </Modal.Header>
+      <Modal.Body id='modal_body'>{children && children}</Modal.Body>
+      <ModalFooter>
+        {closeButton && (
+          <ActionButton
+            position='right'
+            color='secondary'
+            submitAction={setShow}
+            label='Close'
+          />
+        )}
+      </ModalFooter>
+    </Modal>
   );
 };
 
