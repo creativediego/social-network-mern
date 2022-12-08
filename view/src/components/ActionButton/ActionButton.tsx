@@ -10,6 +10,9 @@ interface ActionButtonProps {
   loading?: boolean;
 }
 
+/**
+ * Generic action button that takes a label, position, color, loading state, and submit action.
+ */
 const ActionButton = ({
   submitAction,
   label,

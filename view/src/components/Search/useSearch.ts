@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { ResponseError } from '../../interfaces/IError';
 import { setGlobalError } from '../../redux/alertSlice';
 import { useAppDispatch } from '../../redux/hooks';

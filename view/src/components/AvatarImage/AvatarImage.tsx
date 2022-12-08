@@ -4,8 +4,8 @@ interface AvatarImageProps {
   profilePhoto: string;
   size: Number;
 }
-export const AvatarImage: React.FC<AvatarImageProps> = memo(
-  ({ profilePhoto, size }): JSX.Element => {
+export const AvatarImage = memo(
+  ({ profilePhoto, size }: AvatarImageProps): JSX.Element => {
     return (
       <div
         className='position-relative'

@@ -16,10 +16,12 @@ import {
   userDislikesTuitThunk,
   deleteTuitThunk,
 } from '../redux/tuitSlice';
-import { useAuthUser } from './useAuthUser';
 
 const TuitContext = createContext<ITuit | null>(null);
 
+/**
+ * Context for a single tuit to give nested components (such as stats) access to its data.
+ */
 export const TuitProvider = ({
   tuit,
   children,
@@ -30,6 +32,9 @@ export const TuitProvider = ({
   return <TuitContext.Provider value={tuit}>{children}</TuitContext.Provider>;
 };
 
+/**
+ * Custom hook that manages the state of fetching tuits, liking, disliking, and deleting.
+ */
 export const useTuits = () => {
   const tuits = useAppSelector(selectAllTuits);
   const tuit = useContext(TuitContext);

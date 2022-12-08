@@ -4,7 +4,6 @@ import useSignupForm from './useSignupForm';
 import FormInput from '../FormInput/FormInput';
 import { AlertBox, Loader } from '../../components';
 import { useAppSelector } from '../../redux/hooks';
-import { selectGlobalErrorMessage } from '../../redux/alertSlice';
 import { useAlert } from '../../hooks/useAlert';
 
 /**

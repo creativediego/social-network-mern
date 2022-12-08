@@ -1,11 +1,6 @@
 import * as React from 'react';
-//@ts-ignore
-import { Tuits } from '../../components';
-// @ts-ignore
 import * as searchService from '../../services/search-service';
-import PeopleSearchResults from './PeopleSearchResults';
 import { useDispatch } from 'react-redux';
-// @ts-ignore
 import { setGlobalError } from '../../redux/alertSlice';
 
 interface QueryTypeMap {

@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { loginThunk } from '../../redux/userSlice';
 import { Button } from 'react-bootstrap';
-import { AlertBox, Loader, PopupModal } from '../../components';
+import { AlertBox, Loader } from '../../components';
 import FormInput from '../FormInput/FormInput';
 import { profileFields } from '../shared/profileFields';
 import { useAuthUser } from '../../hooks/useAuthUser';

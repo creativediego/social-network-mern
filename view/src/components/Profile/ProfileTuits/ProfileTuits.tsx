@@ -3,7 +3,6 @@ import { Routes, Route } from 'react-router-dom';
 import { useProfileTuits } from './useProfileTuits';
 import Tuits from '../../Tuits';
 import ProfileNav from '../ProfileNav/ProfileNav';
-import Loader from '../../Loader/Loader';
 
 const ProfileTuits = ({
   userId,
@@ -16,7 +15,6 @@ const ProfileTuits = ({
     useProfileTuits(userId);
   return (
     <>
-      <Loader loading={loading} />
       {userId && !loading && (
         <div className='p2'>
           <ProfileNav username={username} />

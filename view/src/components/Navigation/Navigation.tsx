@@ -2,7 +2,6 @@ import React from 'react';
 import './navigation.css';
 import { useLocation, Link } from 'react-router-dom';
 import { useEffect } from 'react';
-// @ts-ignore
 import { findUnreadNotificationsThunk } from '../../redux/notificationSlice';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 
@@ -60,7 +59,7 @@ const Navigation = (): JSX.Element => {
     {
       label: 'Search',
       icon: 'fa-magnifying-glass',
-      path: '/search',
+      path: '/search/?q=&type=top',
       color: 'white',
     },
     // {

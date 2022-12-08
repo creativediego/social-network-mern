@@ -5,11 +5,10 @@ import {
   createAsyncThunk,
   createSelector,
   createSlice,
-  isRejectedWithValue,
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { getProfile } from '../services/auth-service';
-import { findUserById, updateUser } from '../services/users-service';
+import { updateUser } from '../services/users-service';
 import { dataOrStateError } from './helpers';
 import { clearToken } from '../services/helpers';
 import * as socketService from '../services/socket-service';
@@ -17,10 +16,8 @@ import {
   firebaseLoginWithEmail,
   firebaseLogout,
   fireBaseRegisterUser,
-  firebaseIsLoggedIn,
   loginWithGoogle,
 } from '../services/firebase-auth';
-import { setAuthToken } from '../services/helpers';
 import { IUser } from '../interfaces/IUser';
 import { INotification } from '../interfaces/INotification';
 import { RootState } from './store';
@@ -299,6 +296,11 @@ export const selectAuthUserLoading = createSelector(
 export const selectIsLoggedIn = createSelector(
   (state: RootState) => state.user.isLoggedIn,
   (isLoggedIn) => isLoggedIn
+);
+
+export const selectIsProfileComplete = createSelector(
+  (state: RootState) => state.user.profileComplete,
+  (profileComplete) => profileComplete
 );
 
 export const {

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import {
   findNotificationsThunk,
@@ -7,6 +7,9 @@ import {
   selectNotificationsLoading,
 } from '../../redux/notificationSlice';
 
+/**
+ * Manages the state of notifications, including fetching the notifications and marking them as read.
+ */
 const useNotifications = () => {
   const dispatch = useAppDispatch();
   const notifications = useAppSelector(selectAllNotifications);

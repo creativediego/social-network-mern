@@ -11,12 +11,15 @@ import {
   NotificationsPage,
   MorePage,
   ListsPage,
-  SearchView,
+  SearchPage,
 } from '../index';
 import MessagesView from '../MessagesPage/MessagesPage';
 import { useAlert } from '../../hooks/useAlert';
 
-function TuiterView() {
+/**
+ * Main middle column view of the app where all pages are displayed.
+ */
+const TuiterView = (): JSX.Element => {
   const { error, success } = useAlert();
   return (
     <div className='container'>
@@ -36,7 +39,7 @@ function TuiterView() {
             <Route path='/lists' element={<ListsPage />} />
             <Route path='/more' element={<MorePage />} />
             <Route path='/messages/*' element={<MessagesView />} />
-            <Route path='/search/*' element={<SearchView />} />
+            <Route path='/search/*' element={<SearchPage />} />
           </Routes>
           {error && <AlertBox message={error.message} />}
           {success && <AlertBox message={success.message} variant='primary' />}
@@ -47,6 +50,6 @@ function TuiterView() {
       </div>
     </div>
   );
-}
+};
 
 export default TuiterView;

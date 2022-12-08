@@ -6,7 +6,7 @@ import useSearchResults from './useSearchResults';
 import { Tuits } from '../../components';
 import PeopleSearchResults from './PeopleSearchResults';
 
-const SearchView = (): JSX.Element => {
+const SearchPage = (): JSX.Element => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [queryType, setQueryType] = React.useState<string>(
     searchParams.get('type') || 'tuits'
@@ -44,38 +44,43 @@ const SearchView = (): JSX.Element => {
           </Nav.Item>
         ))}
       </Nav>
-      <div>
-        <Loader loading={loading} />{' '}
-        {Object.values(searchData[queryType].results).every(
-          (results) => results.length < 1
-        ) && (
-          <div className='d-flex justify-content-center p-5'>
-            Your search did not match any results.
-          </div>
-        )}
-        {
-          <div className='mt-2'>
-            {searchData[queryType].results.users &&
-              searchData[queryType].results.users.length > 0 && (
-                <div>
-                  <h5>People</h5>
-                  <PeopleSearchResults
-                    users={searchData[queryType].results.users}
-                  />
-                </div>
+      <Loader loading={loading} />{' '}
+      {!loading && (
+        <>
+          {Object.values(searchData[queryType].results).every(
+            (results) => results.length < 1
+          ) && (
+            <div className='d-flex justify-content-center p-5'>
+              {!searchValue && <p>Enter a search term.</p>}
+              {searchValue && !loading && (
+                <p>Your search did not match any results.</p>
               )}
-            {searchData[queryType].results.tuits &&
-              searchData[queryType].results.tuits.length > 0 && (
-                <div>
-                  <h5>Tuits</h5>
-                  <Tuits tuits={searchData[queryType].results.tuits} />
-                </div>
-              )}
-          </div>
-        }
-      </div>
+            </div>
+          )}
+          {
+            <div className='mt-2'>
+              {searchData[queryType].results.users &&
+                searchData[queryType].results.users.length > 0 && (
+                  <div>
+                    <h5>People</h5>
+                    <PeopleSearchResults
+                      users={searchData[queryType].results.users}
+                    />
+                  </div>
+                )}
+              {searchData[queryType].results.tuits &&
+                searchData[queryType].results.tuits.length > 0 && (
+                  <div>
+                    <h5>Tuits</h5>
+                    <Tuits tuits={searchData[queryType].results.tuits} />
+                  </div>
+                )}
+            </div>
+          }
+        </>
+      )}
     </>
   );
 };
 
-export default SearchView;
+export default SearchPage;

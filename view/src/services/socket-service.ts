@@ -1,9 +1,7 @@
 import io, { Socket } from 'socket.io-client';
 import axios from 'axios';
 import { processError } from './helpers';
-// @ts-ignore
 import { updateNotifications } from '../redux/notificationSlice';
-// @ts-ignore
 import { addTuit, updateTuits } from '../redux/tuitSlice';
 import { updateInbox } from '../redux/messageInboxSlice';
 import { upsertChatMessage } from '../redux/chatSlice';
@@ -13,7 +11,6 @@ const SECURITY_API = `${process.env.REACT_APP_API_URL}/auth`;
 const api = axios.create();
 
 const SOCKET_URL = process.env.REACT_APP_SOCKET_URL;
-const CLIENT_URL = process.env.CLIENT_URL;
 
 let socket: any;
 let listening = false;
@@ -50,6 +47,9 @@ const listenForUpdatedTuits = (socket: Socket, ThunkAPI: any) => {
 const listeners = ['NEW_MESSAGE', 'NEW_NOTIFICATION', 'NEW_TUIT'];
 
 export const enableListeners = (ThunkAPI: any) => {
+  if (listening) {
+    return;
+  }
   socket = io(`${SOCKET_URL}`, {
     // cors: {
     //   origin: CLIENT_URL,
@@ -58,10 +58,7 @@ export const enableListeners = (ThunkAPI: any) => {
     transports: ['polling'],
     reconnection: false,
   });
-  if (listening) {
-    return;
-  }
-  socket.on('connect', () => {
+  socket.once('connect', () => {
     listenForNewMessages(socket, ThunkAPI);
     listenForNewNotifications(socket, ThunkAPI);
     listenForNewTuits(socket, ThunkAPI);

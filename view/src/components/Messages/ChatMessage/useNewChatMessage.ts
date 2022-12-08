@@ -1,4 +1,4 @@
-import React, { useState, useCallback, memo } from 'react';
+import React, { useState, useCallback } from 'react';
 import { InputFieldI } from '../../../interfaces/InputFieldI';
 import { selectActiveChatId } from '../../../redux/chatSlice';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
@@ -55,8 +55,7 @@ const useNewChatMessage = () => {
         },
       }));
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [messageFieldAttributes]
+    [messageFieldAttributes, activeChatId, dispatch, sender]
   );
   return {
     messageFieldAttributes: messageFieldAttributes['chat'],

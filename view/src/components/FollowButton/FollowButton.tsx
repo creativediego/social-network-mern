@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -62,7 +62,7 @@ const FollowButton = ({
     checkIfFollowing();
     if (setProfileUser) setProfileUser({ ...userToFollow, ...updatedUser });
   };
-  const checkIfFollowing = async () => {
+  const checkIfFollowing = useCallback(async () => {
     if (!userToFollow.id) return;
     const res = await findAllFollowers(userToFollow.id);
     // If we have an error return it
@@ -78,12 +78,11 @@ const FollowButton = ({
         setFollowing(false);
       }
     }
-  };
+  }, [authUser.username, dispatch, userToFollow.id]);
 
   React.useEffect(() => {
     checkIfFollowing();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userToFollow]);
+  }, [userToFollow, checkIfFollowing]);
 
   return (
     <span>

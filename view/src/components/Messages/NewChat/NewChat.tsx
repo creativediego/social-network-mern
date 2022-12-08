@@ -6,6 +6,9 @@ import { findAllUsersByName } from '../../../services/users-service';
 import { useSearch } from '../../Search/useSearch';
 import { useNewChat } from './useNewChat';
 
+/**
+ * Displays a new chat button and new chat model, where the user can initiate a new chat.
+ */
 const NewChat = () => {
   const [showModal, toggleModal] = useToggleBoolean(false);
   const { searchResults, searchLoading, searchValue, setSearch } =

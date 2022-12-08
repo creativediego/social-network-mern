@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import LikeButton from './LikeButton';
 import DislikeButton from './DislikeButton';
 import { useTuits } from '../../hooks/useTuits';

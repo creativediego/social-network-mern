@@ -1,6 +1,6 @@
 import HomePage from './HomePage/HomePage';
 import LandingPage from './LandingPage/LandingPage';
-import LoginView from './LoginView/LoginView';
+import LoginPage from './LoginPage/LoginPage';
 import MessagesPage from './MessagesPage/MessagesPage';
 import WhatsHappeningWidget from './WhatsHappeningWidget/WhatsHappeningWidget';
 import ProfilePage from './ProfilePage/ProfilePage';
@@ -9,21 +9,21 @@ import BookmarksPage from './BookmarksPage/BookmarksPage';
 import NotificationsPage from './NotificationsPage/NotificationsPage';
 import MorePage from './MorePage/MorePage';
 import ListsPage from './ListsPage/ListsPage';
-import SearchView from './SearchView/SearchView';
+import SearchPage from './SearchPage/SearchPage';
 import NotFoundPage from './NotFoundPage/NotFoundPage';
 
 export {
   HomePage,
-  LoginView,
+  LoginPage,
   MessagesPage,
   WhatsHappeningWidget,
-  LandingPage as LandingView,
+  LandingPage,
   ProfilePage,
   ExplorePage,
   BookmarksPage,
   NotificationsPage,
   MorePage,
   ListsPage,
-  SearchView,
+  SearchPage,
   NotFoundPage,
 };

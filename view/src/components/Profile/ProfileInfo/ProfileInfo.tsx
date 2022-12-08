@@ -1,5 +1,4 @@
 import React, { memo } from 'react';
-import { useProfile } from './useProfile';
 import LogoutButton from '../LogoutButton/LogoutButton';
 import { AvatarImage } from '../../AvatarImage/AvatarImage';
 import { UpdateProfileForm } from '../../../forms';

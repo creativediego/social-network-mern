@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useState,
-  useRef,
-  useMemo,
-} from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { InputFieldI } from '../../interfaces/InputFieldI';
 import { profileFields } from '../shared/profileFields';

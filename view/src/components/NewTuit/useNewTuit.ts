@@ -44,7 +44,7 @@ const useNewTuit = () => {
   };
 
   const parseHashtags = (tuit: string): string[] | null => {
-    return tuit.toLowerCase().match(/\B(\#[a-zA-Z]+\b)(?!;)/g);
+    return tuit.toLowerCase().match(/\B(#[a-zA-Z]+\b)(?!;)/g);
   };
 
   const setInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

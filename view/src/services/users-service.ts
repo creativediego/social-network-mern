@@ -1,4 +1,3 @@
-import { IAlert } from '../interfaces/IError';
 import { IUser } from '../interfaces/IUser';
 import { makeAPICall } from './helpers';
 import { Requests } from './helpers';

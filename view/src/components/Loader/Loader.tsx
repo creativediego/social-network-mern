@@ -1,5 +1,4 @@
 import React, { memo } from 'react';
-import { Color } from 'react-bootstrap/esm/types';
 
 interface LoaderProps {
   loading: boolean;

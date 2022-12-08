@@ -4,7 +4,7 @@ import useInbox from './useInbox';
 import { Loader } from '../../index';
 
 /**
- * A container component to display a list of conversations.
+ * A container component to display a list of conversations in the user's inbox.
  */
 const InboxList = () => {
   const { messages, loading } = useInbox();

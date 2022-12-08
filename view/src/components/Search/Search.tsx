@@ -6,8 +6,6 @@ interface SearchProps {
 }
 /**
  * Search box with dynamic state as the user types. Input state is maintained by the parent component, which uses it to dispatch an action.
- * @param {string} searchValue the input value of the search box
- * @param {Function} setInputValue sets the searchValue state
  */
 const Search: React.FC<SearchProps> = ({
   searchValue,

@@ -1,6 +1,5 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
-// @ts-ignore
-import { LandingView } from '../../pages';
+import { LandingPage } from '../../pages';
 
 interface Props {
   children?: ReactNode;
@@ -10,7 +9,7 @@ interface State {
 }
 /**
  * Error boundary wrapper for the application to display a friendly error for uncaught errors. Made to wrap the main App component.
- * @class
+ *
  */
 class ErrorBoundary extends Component<Props, State> {
   public state: State = {
@@ -30,13 +29,9 @@ class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       // Fallback UI
       return (
-        <LandingView
-          content={
-            <div>
-              <h3>Oooops! Something went wrong.</h3>
-            </div>
-          }
-        />
+        <LandingPage>
+          <h3>Oooops! Something went wrong.</h3>
+        </LandingPage>
       );
     }
 

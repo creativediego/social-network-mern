@@ -2,15 +2,13 @@ import React, { useEffect } from 'react';
 import { PopupModal } from '../../components';
 import UpdateProfileForm from '../../forms/UpdateProfileForm/UpdateProfileForm';
 import { Button } from 'react-bootstrap';
-// @ts-ignore
 import { SignupForm } from '../../forms';
-// @ts-ignore
 import { LoginForm } from '../../forms';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { clearUser, loginWithGoogleThunk } from '../../redux/userSlice';
 import useToggleBoolean from '../../hooks/useToggleBoolean';
 
-const LoginView = () => {
+const LoginPage = () => {
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
   const profileComplete = useAppSelector((state) => state.user.profileComplete);
   const dispatch = useAppDispatch();
@@ -24,8 +22,7 @@ const LoginView = () => {
     if (!showUpdateProfileModal) {
       dispatch(clearUser());
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showUpdateProfileModal]);
+  }, [showUpdateProfileModal, dispatch]);
 
   return (
     <div>
@@ -97,4 +94,4 @@ const LoginView = () => {
   );
 };
 
-export default LoginView;
+export default LoginPage;

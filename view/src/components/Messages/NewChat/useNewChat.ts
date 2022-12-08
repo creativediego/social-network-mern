@@ -9,6 +9,9 @@ import {
   selectActiveChatId,
 } from '../../../redux/chatSlice';
 
+/**
+ * Manages the state of creating a new chat. Used with NewChat component.
+ */
 export const useNewChat = () => {
   const isMounted = useRef(true);
   const navigate = useNavigate();
@@ -58,8 +61,7 @@ export const useNewChat = () => {
     return () => {
       isMounted.current = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeChatId]);
+  }, [activeChatId, navigate]);
 
   return {
     newChatLoading: loading,

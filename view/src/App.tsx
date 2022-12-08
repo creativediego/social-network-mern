@@ -1,27 +1,22 @@
 import React, { useEffect } from 'react';
+import { useAppDispatch } from './redux/hooks';
 import { GenericError } from './components';
-import { useDispatch, useSelector } from 'react-redux';
 import './styles.css';
 import TuiterView from './pages/TuiterView/TuiterView';
-import { LoginView, LandingView } from './pages';
+import { LoginPage, LandingPage } from './pages';
 import { Routes, Route, HashRouter } from 'react-router-dom';
-import { Loader } from './components';
-import { clearUser, fetchProfileThunk } from './redux/userSlice';
+import { useAuthUser } from './hooks/useAuthUser';
 import { onFirebaseAuthStateChange } from './services/firebase-auth';
+import { clearUser, fetchProfileThunk } from './redux/userSlice';
 
 function App() {
-  const profileComplete = useSelector((state) => state.user.profileComplete);
-  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
-  const loading = useSelector((state) => state.user.loading);
-  const dispatch = useDispatch();
-
+  const { profileComplete, isLoggedIn } = useAuthUser();
+  const dispatch = useAppDispatch();
   useEffect(() => {
     const actionOnValidLogin = () => dispatch(fetchProfileThunk());
     const actionOnLoginExpiration = () => dispatch(clearUser());
     onFirebaseAuthStateChange(actionOnValidLogin, actionOnLoginExpiration);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+  }, [dispatch]);
   return (
     <div>
       <HashRouter>
@@ -29,19 +24,21 @@ function App() {
           <Route
             path='/*'
             element={
-              profileComplete ? (
+              profileComplete && isLoggedIn ? (
                 <TuiterView />
               ) : (
-                <LandingView content={<LoginView />} />
+                <LandingPage>
+                  <LoginPage />
+                </LandingPage>
               )
             }
           ></Route>
           <Route
             path='/error'
             element={
-              <LandingView>
+              <LandingPage>
                 <GenericError />
-              </LandingView>
+              </LandingPage>
             }
           ></Route>
         </Routes>

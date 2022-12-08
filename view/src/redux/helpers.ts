@@ -1,7 +1,6 @@
-import { BaseThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk';
-import { IAlert, ResponseError } from '../interfaces/IError';
+import { ResponseError } from '../interfaces/IError';
 import { isError } from '../services/helpers';
-import { setGlobalError, setPageError, setResponseError } from './alertSlice';
+import { setResponseError } from './alertSlice';
 // @ts-ignore
 import { clearUser } from './userSlice';
 
@@ -19,10 +18,9 @@ export const dataOrStateError = <T>(
       const userFriendlyError = {
         error: {
           message: 'Ooops! Something went wrong. Try again later.',
-          code: APIdata.error.code,
         },
       };
-      ThunkAPI.dispatch(setPageError(userFriendlyError.error)); //update errors
+      ThunkAPI.dispatch(setResponseError(userFriendlyError)); //update errors
     }
     throw Error('Thunk error: ' + APIdata.error.message);
   } else {

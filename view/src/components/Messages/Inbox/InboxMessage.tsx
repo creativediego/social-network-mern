@@ -8,7 +8,7 @@ interface InboxMessageProps {
 }
 
 /**
- * A component to render each latest unique message in the inbox.
+ * A component to render each latest message.
  */
 const InboxMessage = ({ message }: InboxMessageProps) => {
   const { deleteConversation, messageOptions, toggleMessageOptions } =

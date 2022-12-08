@@ -2,7 +2,6 @@ import React, { memo } from 'react';
 import { Loader } from '../../components';
 import { AvatarImage } from '../../components';
 import './AvatarUpload.scss';
-import { IUser } from '../../interfaces/IUser';
 import { ImageTypes } from '../../interfaces/ImageTypes';
 
 /**

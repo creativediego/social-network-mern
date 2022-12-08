@@ -9,6 +9,9 @@ import {
   deleteConversationThunk,
 } from '../../../redux/messageInboxSlice';
 
+/**
+ * Custom hook that manages the state of the user's inbox messages.
+ */
 const useInbox = () => {
   const messages = useAppSelector(selectAllInboxMessages);
   const loading = useAppSelector(inboxLoadingSelector);

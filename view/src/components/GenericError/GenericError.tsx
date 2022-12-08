@@ -1,7 +1,7 @@
 import React from 'react';
 
 /**
- * Generic error content that can be added to a landing page. Passed into {@link LandingView}.
+ * Generic error content that can be added to a landing page..
  *
  */
 const GenericError = (): JSX.Element => {

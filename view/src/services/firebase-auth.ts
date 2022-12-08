@@ -8,7 +8,6 @@ import {
   User,
 } from 'firebase/auth';
 import { setAuthToken } from './helpers';
-import { clearUser } from '../redux/userSlice';
 
 const CLIENT_URL = `${process.env.REACT_APP_CLIENT_URL}`;
 
@@ -32,13 +31,11 @@ export const firebaseLoginWithEmail = async (
     const user = result.user;
     return { uid: user.uid, email: user.email, name: user.displayName };
   } catch (error: any) {
-    let message;
     if (error.code === 'auth/wrong-password' || 'auth/wrong-email') {
       throw new Error('Wrong email or password.');
     } else {
       throw new Error('Login with email error: Please try logging in later.');
     }
-    return { error: message };
   }
 };
 
@@ -70,6 +67,7 @@ export const onFirebaseAuthStateChange = async (
   auth.onAuthStateChanged(function (user: any) {
     if (user) {
       setAuthToken(user.accessToken);
+
       return activeAction();
     } else {
       return expiredAction();

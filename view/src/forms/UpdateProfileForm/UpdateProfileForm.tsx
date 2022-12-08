@@ -2,7 +2,6 @@ import React from 'react';
 import FormInput from '../FormInput/FormInput';
 import AvatarUpload from './AvatarUpload';
 import { ActionButton, Loader } from '../../components';
-
 import useUpdateProfile from './useUpdateProfile';
 import HeaderImageUpload from './HeaderImageUpload';
 

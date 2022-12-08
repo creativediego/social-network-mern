@@ -4,8 +4,7 @@ import TuitImageUpload from './TuitImageUpload';
 import useNewTuit from './useNewTuit';
 
 /**
- * Displays form where user can submit a new tuit.
- *
+ * Displays form for a user to submit a new tuit.
  */
 const NewTuit = () => {
   const { tuit, setInput, setImageFile, createTuit, imagePreview } =

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-//@ts-ignore
 import { AvatarImage, FollowButton } from '../../components';
 import { IUser } from '../../interfaces/IUser';
 

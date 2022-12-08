@@ -42,7 +42,7 @@ const Notification = ({ notification }: NotificationProps) => {
   }
 
   return (
-    <div>
+    <>
       <Link
         to={notificationLink[notification.type].link}
         className='text-decoration-none'
@@ -85,7 +85,7 @@ const Notification = ({ notification }: NotificationProps) => {
           </span>
         </li>
       </Link>
-    </div>
+    </>
   );
 };
 export default Notification;
