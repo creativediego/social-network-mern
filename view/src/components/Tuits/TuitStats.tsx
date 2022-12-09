@@ -1,13 +1,14 @@
 import React from 'react';
 import LikeButton from './LikeButton';
 import DislikeButton from './DislikeButton';
-import { useTuits } from '../../hooks/useTuits';
+import { useTuit } from '../../hooks/useTuit';
 
 /**
  * Displays all stats of a tuit, including likes, dislikes, retuits, and replies.
  */
 const TuitStats = (): JSX.Element | null => {
-  const { tuit } = useTuits();
+  const { tuit } = useTuit();
+  console.log(tuit);
   return tuit ? (
     <div className='row mt-2'>
       <div className='col'>

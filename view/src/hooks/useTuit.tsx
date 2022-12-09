@@ -1,17 +1,15 @@
 import React, {
   useContext,
-  useEffect,
   createContext,
   ReactNode,
   useCallback,
+  useState,
 } from 'react';
 import { ITuit } from '../interfaces/ITuit';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 
 import {
-  findAllTuitsThunk,
   selectTuitsLoading,
-  selectAllTuits,
   userLikesTuitThunk,
   userDislikesTuitThunk,
   deleteTuitThunk,
@@ -35,11 +33,18 @@ export const TuitProvider = ({
 /**
  * Custom hook that manages the state of fetching tuits, liking, disliking, and deleting.
  */
-export const useTuits = () => {
-  const tuits = useAppSelector(selectAllTuits);
+export const useTuit = () => {
   const tuit = useContext(TuitContext);
+  const [showMenu, setShowMenu] = useState(false);
   const loading = useAppSelector(selectTuitsLoading);
   const dispatch = useAppDispatch();
+
+  const handleShowMenu = useCallback(
+    (status: boolean) => {
+      setShowMenu(status);
+    },
+    [dispatch]
+  );
 
   const handleLikeTuit = useCallback(
     async (tuitId: string) => {
@@ -62,14 +67,11 @@ export const useTuits = () => {
     [dispatch]
   );
 
-  useEffect(() => {
-    dispatch(findAllTuitsThunk());
-  }, [dispatch]);
-
   return {
-    tuits,
     loading,
     tuit,
+    showMenu,
+    handleShowMenu,
     handleLikeTuit,
     handleDislikeTuit,
     handleDeleteTuit,

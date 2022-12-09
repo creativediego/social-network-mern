@@ -1,14 +1,14 @@
 import * as React from 'react';
 import './Tuits.scss';
-import { useTuits } from '../../hooks/useTuits';
 import { useAuthUser } from '../../hooks/useAuthUser';
 import { useToggleAnimation } from '../../hooks/useToggleAnimation';
+import { useTuit } from '../../hooks/useTuit';
 /**
  * Displays like button.
  */
 const DislikeButton: React.FC = (): JSX.Element | null => {
   const userId = useAuthUser().user.id;
-  const { tuit, handleDislikeTuit } = useTuits();
+  const { tuit, handleDislikeTuit } = useTuit();
   const { animationClass, handleAnimation } = useToggleAnimation(
     'fs-6 fa-pulse',
     800

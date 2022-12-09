@@ -1,14 +1,14 @@
 import React, { useMemo } from 'react';
 import './Tuits.scss';
-import { useTuits } from '../../hooks/useTuits';
 import { useAuthUser } from '../../hooks/useAuthUser';
 import { useToggleAnimation } from '../../hooks/useToggleAnimation';
+import { useTuit } from '../../hooks/useTuit';
 /**
  * Displays like button.
  */
 const LikeButton = (): JSX.Element | null => {
   const userId = useAuthUser().user.id;
-  const { tuit, handleLikeTuit } = useTuits();
+  const { tuit, handleLikeTuit } = useTuit();
   const { animationClass, handleAnimation } = useToggleAnimation(
     'fs-6 fa-pulse',
     800

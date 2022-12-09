@@ -27,3 +27,22 @@
 .ttr-tuit-title {
   font-size: .9rem;
 }
+
+.ttr-dismiss-layer {
+  position: fixed;
+  right: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  z-index: 1;
+}
+
+.dropdown-menu {
+  display: block !important;
+  cursor: pointer;
+}
+
+.trr-tuit-more-button {
+  right: 0
+}

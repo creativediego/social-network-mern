@@ -6,8 +6,10 @@ import { Link } from 'react-router-dom';
 import { AvatarImage } from '../AvatarImage/AvatarImage';
 import { ITuit } from '../../interfaces/ITuit';
 import moment from 'moment';
-import { TuitProvider, useTuits } from '../../hooks/useTuits';
+import { TuitProvider } from '../../hooks/useTuit';
 import { useAuthUser } from '../../hooks/useAuthUser';
+import { useTuit } from '../../hooks/useTuit';
+import TuitMoreButton from './TuitMoreButton';
 
 interface TuitProps {
   tuit: ITuit;
@@ -15,10 +17,10 @@ interface TuitProps {
 /**
  * Displays a tuit with all of its information, including Author, time, and stats (likes, dislikes, etc).
  */
-const Tuit: React.FC<TuitProps> = ({ tuit }): React.ReactElement => {
+const Tuit = ({ tuit }: TuitProps): JSX.Element => {
   const tuitWordArray = tuit.tuit.split(' ');
   const { user } = useAuthUser();
-  const { handleDeleteTuit } = useTuits();
+  const { handleDeleteTuit } = useTuit();
   return (
     tuit && (
       <>
@@ -33,27 +35,32 @@ const Tuit: React.FC<TuitProps> = ({ tuit }): React.ReactElement => {
               </div>
             </Link>
             <div className='w-100'>
-              {user.id === tuit.author.id ? ( // only delete if tuit belongs to user
+              <div className='d-flex justify-content-between'>
+                <div>
+                  {/* {user.id === tuit.author.id ? ( // only delete if tuit belongs to user
                 <i
                   onClick={() => handleDeleteTuit(tuit.id)}
                   className='fa-duotone fa-trash-xmark btn fa-2x fa-pull-right fs-6 text-dark'
                 ></i>
-              ) : null}
-              <p className='fw-bold ttr-tuit-title'>
-                {/* {tuit.author && tuit.author.name} */}
-                {/* This link and the one above will naviagate a user's the profile page for the user who posted this tuit.  */}
-                <Link
-                  to={`/${tuit.author.username}/tuits`}
-                  className='text-decoration-none'
-                >
-                  {`${tuit.author.name || tuit.author.firstName} @${
-                    tuit.author.username
-                  } `}
-                </Link>
-                <span className='text-dark'>
-                  {moment(tuit.createdAt).fromNow()}
-                </span>
-              </p>
+              ) : null} */}
+                  <p className='fw-bold ttr-tuit-title'>
+                    {/* {tuit.author && tuit.author.name} */}
+                    {/* This link and the one above will naviagate a user's the profile page for the user who posted this tuit.  */}
+                    <Link
+                      to={`/${tuit.author.username}/tuits`}
+                      className='text-decoration-none'
+                    >
+                      {`${tuit.author.name || tuit.author.firstName} @${
+                        tuit.author.username
+                      } `}
+                    </Link>
+                    <span className='text-dark'>
+                      {moment(tuit.createdAt).fromNow()}
+                    </span>
+                  </p>
+                </div>
+                <TuitMoreButton />
+              </div>
               {tuitWordArray.map((word, index) =>
                 word[0] === '#' ? ( // style the hashtag word and create link
                   <Link

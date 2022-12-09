@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { useTuits } from '../../hooks/useTuits';
+import { useTuit } from '../../hooks/useTuit';
 
 /**
  * Displays a video post of a tuit.
  */
 const TuitVideo: React.FC = (): JSX.Element | null => {
-  const { tuit } = useTuits();
+  const { tuit } = useTuit();
   return tuit ? (
     <div className='ttr-responsive-video ttr-rounded-15px position-relative overflow-hidden w-100 mt-2'>
       <iframe

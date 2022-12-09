@@ -2,10 +2,10 @@ import React from 'react';
 import { NewTuit, Loader, Tuits, AvatarImage } from '../../components';
 import { useAppSelector } from '../../redux/hooks';
 import { selectAuthUser } from '../../redux/userSlice';
-import { useTuits } from '../../hooks/useTuits';
+import { useAllTuits } from '../../hooks/useAllTuits';
 
 const HomePage = (): JSX.Element | null => {
-  const { tuits, loading } = useTuits();
+  const { tuits, loading } = useAllTuits();
   const authUser = useAppSelector(selectAuthUser);
   return (
     <section className='ttr-home'>
