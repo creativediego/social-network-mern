@@ -56,7 +56,6 @@ export const createTuitThunk = createAsyncThunk(
         const tuitImageURL = await uploadTuitImage(imageFile, resultTuit.id);
         resultTuit.image = tuitImageURL;
         resultTuit = await updateTuit(resultTuit.id, resultTuit);
-        console.log('updated tuit', resultTuit);
       } catch (err) {
         ThunkAPI.dispatch(
           setGlobalError({
@@ -158,9 +157,13 @@ const tuitSlice = createSlice({
     builder.addCase(createTuitThunk.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(createTuitThunk.fulfilled, (state) => {
-      state.loading = false;
-    });
+    builder.addCase(
+      createTuitThunk.fulfilled,
+      (state, action: PayloadAction<ITuit>) => {
+        state.loading = false;
+        tuitsAdapter.upsertOne(state, action.payload);
+      }
+    );
     builder.addCase(createTuitThunk.rejected, (state) => {
       state.loading = false;
     });

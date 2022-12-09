@@ -7,8 +7,6 @@ import { AvatarImage } from '../AvatarImage/AvatarImage';
 import { ITuit } from '../../interfaces/ITuit';
 import moment from 'moment';
 import { TuitProvider } from '../../hooks/useTuit';
-import { useAuthUser } from '../../hooks/useAuthUser';
-import { useTuit } from '../../hooks/useTuit';
 import TuitMoreButton from './TuitMoreButton';
 
 interface TuitProps {
@@ -19,8 +17,7 @@ interface TuitProps {
  */
 const Tuit = ({ tuit }: TuitProps): JSX.Element => {
   const tuitWordArray = tuit.tuit.split(' ');
-  const { user } = useAuthUser();
-  const { handleDeleteTuit } = useTuit();
+  console.log('PRINTING TUIT', tuit);
   return (
     tuit && (
       <>

@@ -7,7 +7,6 @@ import './Tuits.scss';
  */
 const TuitMoreButton = (): JSX.Element | null => {
   const { tuit, showMenu, handleShowMenu, handleDeleteTuit } = useTuit();
-
   return (
     tuit && (
       <>

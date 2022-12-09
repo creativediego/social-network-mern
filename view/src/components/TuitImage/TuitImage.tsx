@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { memo, useEffect } from 'react';
 import './TuitImage.scss';
 /**
  * Displays an image post of a tuit.
@@ -7,12 +7,10 @@ interface TuitImageProps {
   imageURL: string | undefined;
   deletable: boolean;
 }
-const TuitImage: React.FC<TuitImageProps> = ({
-  imageURL,
-  deletable,
-}): JSX.Element => {
+const TuitImage = ({ imageURL, deletable }: TuitImageProps): JSX.Element => {
   const [image, setImage] = React.useState(imageURL);
-  React.useEffect(() => {
+  console.log(imageURL);
+  useEffect(() => {
     setImage(imageURL);
   }, [imageURL]);
   return (
@@ -41,4 +39,4 @@ const TuitImage: React.FC<TuitImageProps> = ({
     </div>
   );
 };
-export default TuitImage;
+export default memo(TuitImage);

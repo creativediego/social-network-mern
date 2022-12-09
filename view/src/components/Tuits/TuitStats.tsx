@@ -8,7 +8,6 @@ import { useTuit } from '../../hooks/useTuit';
  */
 const TuitStats = (): JSX.Element | null => {
   const { tuit } = useTuit();
-  console.log(tuit);
   return tuit ? (
     <div className='row mt-2'>
       <div className='col'>
