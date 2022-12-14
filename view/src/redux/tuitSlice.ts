@@ -13,7 +13,6 @@ import {
   createTuit,
   deleteTuit,
   updateTuit,
-  findAllTuitsByKeyword,
 } from '../services/tuits-service';
 import { setGlobalError } from './alertSlice';
 import { dataOrStateError } from './helpers';

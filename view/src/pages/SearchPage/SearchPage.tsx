@@ -15,8 +15,7 @@ const SearchPage = (): JSX.Element => {
     results,
     loading,
   } = useSearchResults('top');
-  const tuits = useAppSelector(selectAllTuits);
-  console.log(tuits);
+  const reduxTuits = useAppSelector(selectAllTuits);
   return (
     <>
       <Search
@@ -68,7 +67,7 @@ const SearchPage = (): JSX.Element => {
             (queryType === 'top' || queryType === 'tuits') && (
               <div>
                 <h5>Tuits</h5>
-                <Tuits tuits={tuits} showOptions={false} />
+                <Tuits tuits={reduxTuits} showOptions={false} />
               </div>
             )}
         </div>

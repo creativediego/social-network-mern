@@ -11,24 +11,28 @@ const useSearchResults = (defaultQueryType: string) => {
   const [queryType, setQueryType] = useState(defaultQueryType);
   const dispatch = useAppDispatch();
 
-  const handleSetQueryType = useCallback((type: string) => {
-    setQueryType(type);
-  }, []);
-
   const { searchValue, searchResults, setSearch, searchLoading } = useSearch(
     (searchValue) => findAllByKeyword(searchValue),
     queryValue
   );
 
+  const handleSetQueryType = useCallback((type: string) => {
+    setQueryType(type);
+  }, []);
+
   useEffect(() => {
     setSearchParams({ q: searchValue });
   }, [searchValue, setSearchParams]);
 
+  /**
+   * Redux state of tuits needs updating because results from useSearch are not stored in redux.
+   */
   useEffect(() => {
     if (searchResults && searchResults.tuits.length > 0) {
       dispatch(setAllTuits(searchResults.tuits));
     }
-  }, [searchResults, searchResults?.tuits, dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchResults?.tuits, dispatch]);
 
   return {
     queryValue: searchValue,

@@ -7,7 +7,7 @@ interface PeopleSearchResultsProps {
   users: IUser[];
 }
 
-const getResultElement = (user: IUser) => (
+const getPersonElement = (user: IUser) => (
   <div
     key={user.id}
     className='d-flex my-2 align-items-center justify-content-between list-group-item'
@@ -36,7 +36,7 @@ const getResultElement = (user: IUser) => (
 const UserSearchResults = ({
   users,
 }: PeopleSearchResultsProps): JSX.Element => {
-  return <div>{users && users.map((user) => getResultElement(user))}</div>;
+  return <div>{users && users.map((user) => getPersonElement(user))}</div>;
 };
 
 export default React.memo(UserSearchResults);
