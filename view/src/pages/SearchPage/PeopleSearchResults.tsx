@@ -13,7 +13,7 @@ const getResultElement = (user: IUser) => (
     className='d-flex my-2 align-items-center justify-content-between list-group-item'
   >
     <Link
-      to={`/${user.id}/tuits`}
+      to={`/${user.username}/tuits`}
       className='position-relative flex-fill text-decoration-none'
       style={{ zIndex: '1' }}
     >
@@ -39,4 +39,4 @@ const UserSearchResults = ({
   return <div>{users && users.map((user) => getResultElement(user))}</div>;
 };
 
-export default UserSearchResults;
+export default React.memo(UserSearchResults);

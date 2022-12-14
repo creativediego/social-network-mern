@@ -1,83 +1,77 @@
 import * as React from 'react';
 import { Nav } from 'react-bootstrap';
-import { useSearchParams } from 'react-router-dom';
-import { Search, Loader } from '../../components';
-import useSearchResults from './useSearchResults';
-import { Tuits } from '../../components';
+import { Search, Loader, Tuits } from '../../components';
+import { useAppSelector } from '../../redux/hooks';
+import { selectAllTuits } from '../../redux/tuitSlice';
 import PeopleSearchResults from './PeopleSearchResults';
+import useSearchResults from './useSearchResults';
 
 const SearchPage = (): JSX.Element => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [queryType, setQueryType] = React.useState<string>(
-    searchParams.get('type') || 'tuits'
-  );
-  const [searchValue, setSearchValue] = React.useState(
-    searchParams.get('q') || ''
-  );
-  const [loading, searchData] = useSearchResults(queryType, searchValue);
-
+  const {
+    queryValue,
+    handleSetQueryValue,
+    queryType,
+    handleSetQueryType,
+    results,
+    loading,
+  } = useSearchResults('top');
+  const tuits = useAppSelector(selectAllTuits);
+  console.log(tuits);
   return (
     <>
       <Search
-        searchValue={searchValue}
-        setSearchValue={setSearchValue}
+        searchValue={queryValue}
+        setSearchValue={handleSetQueryValue}
         placeHolder='Search Tuiter'
       />
-      <Nav
-        variant='tabs'
-        defaultActiveKey={queryType || 'tuits'}
-        className='mt-3'
-      >
-        {Object.values(searchData).map((category: any, index) => (
-          <Nav.Item key={index}>
-            <Nav.Link
-              eventKey={category.type}
-              onClick={async () => {
-                if (searchValue) {
-                  setSearchParams({ q: searchValue, type: category.type });
-                  setQueryType(category.type);
-                }
-              }}
-            >
-              {category.type}
-            </Nav.Link>
-          </Nav.Item>
-        ))}
+      <Nav variant='tabs' defaultActiveKey={queryType} className='mt-3'>
+        {results &&
+          Object.keys(results).map((category: string, index) => (
+            <Nav.Item key={index}>
+              <Nav.Link
+                eventKey={category}
+                onClick={async () => {
+                  if (queryValue) {
+                    handleSetQueryType(category);
+                  }
+                }}
+              >
+                {category}
+              </Nav.Link>
+            </Nav.Item>
+          ))}
       </Nav>
-      <Loader loading={loading} />{' '}
+      <h1 className='mt-4'>Search Results</h1>
+      <Loader loading={loading} />
       {!loading && (
-        <>
-          {Object.values(searchData[queryType].results).every(
-            (results) => results.length < 1
-          ) && (
-            <div className='d-flex justify-content-center p-5'>
-              {!searchValue && <p>Enter a search term.</p>}
-              {searchValue && !loading && (
-                <p>Your search did not match any results.</p>
-              )}
-            </div>
-          )}
-          {
-            <div className='mt-2'>
-              {searchData[queryType].results.users &&
-                searchData[queryType].results.users.length > 0 && (
-                  <div>
-                    <h5>People</h5>
-                    <PeopleSearchResults
-                      users={searchData[queryType].results.users}
-                    />
-                  </div>
-                )}
-              {searchData[queryType].results.tuits &&
-                searchData[queryType].results.tuits.length > 0 && (
-                  <div>
-                    <h5>Tuits</h5>
-                    <Tuits tuits={searchData[queryType].results.tuits} />
-                  </div>
-                )}
-            </div>
-          }
-        </>
+        <div className='mt-2'>
+          {!queryValue && !results && <p>Enter a search term.</p>}
+
+          {queryValue &&
+            results &&
+            results.tuits.length < 1 &&
+            results.users.length < 1 && <p>Sorry, no results</p>}
+
+          {results &&
+            results.users &&
+            results.users.length > 0 &&
+            (queryType === 'top' || queryType === 'users') && (
+              <div>
+                <h5>People</h5>
+                <PeopleSearchResults users={results.users} />
+              </div>
+            )}
+
+          {results &&
+            results.tuits &&
+            results.tuits.length > 0 &&
+            (queryType === 'top' || queryType === 'tuits') && (
+              <div>
+                <h5>Tuits</h5>
+                <Tuits tuits={tuits} showOptions={false} />
+              </div>
+            )}
+        </div>
       )}
     </>
   );

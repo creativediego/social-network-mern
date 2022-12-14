@@ -12,7 +12,7 @@ import { useNewChat } from './useNewChat';
 const NewChat = () => {
   const [showModal, toggleModal] = useToggleBoolean(false);
   const { searchResults, searchLoading, searchValue, setSearch } =
-    useSearch<IUser>(findAllUsersByName);
+    useSearch<IUser[]>(findAllUsersByName);
   const {
     newChatLoading,
     selectedUsers,
@@ -58,7 +58,7 @@ const NewChat = () => {
         </div>
         <hr />
         <Loader loading={searchLoading} />
-        {searchResults.length > 0 && (
+        {searchResults && searchResults.length > 0 && (
           <>
             <div className='d-flex justify-content-between align-items-center'>
               <h6 className='mt-4'>Results</h6>

@@ -1,18 +1,16 @@
 import axios from 'axios';
-import { processError } from './helpers';
+import { ISearchResults } from '../interfaces/ISearchResults';
+
+import { makeAPICall, processError, Requests } from './helpers';
 import { loadRequestInterceptors } from './helpers';
 const SEARCH_API = `${process.env.REACT_APP_API_URL}/search`;
 
 const api = axios.create();
 api.interceptors.request.use(loadRequestInterceptors);
 
-export const findAllByKeyword = (keyword: string) =>
-  api
-    .get(`${SEARCH_API}/${keyword}`)
-    .then((response) => {
-      return response.data;
-    })
-    .catch((err) => processError(err));
+export const findAllByKeyword = (keyword: string) => {
+  return makeAPICall<ISearchResults>(`${SEARCH_API}/${keyword}`, Requests.GET);
+};
 
 export const findAllTuitsByKeyword = (keyword: string) =>
   api

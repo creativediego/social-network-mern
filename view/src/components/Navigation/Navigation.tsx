@@ -59,7 +59,7 @@ const Navigation = (): JSX.Element => {
     {
       label: 'Search',
       icon: 'fa-magnifying-glass',
-      path: '/search/?q=&type=top',
+      path: '/search/?q=',
       color: 'white',
     },
     // {

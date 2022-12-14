@@ -15,6 +15,7 @@ import {
   userLikesTuitThunk,
   userDislikesTuitThunk,
   deleteTuitThunk,
+  removeAllTuits,
 } from '../redux/tuitSlice';
 
 const TuitContext = createContext<ITuit | null>(null);
@@ -42,6 +43,13 @@ export const useAllTuits = () => {
 
   useEffect(() => {
     dispatch(findAllTuitsThunk());
+  }, [dispatch]);
+
+  useEffect(() => {
+    // Remove all tuits when component unmounts.
+    return () => {
+      dispatch(removeAllTuits());
+    };
   }, [dispatch]);
 
   return {

@@ -47,10 +47,10 @@ const FollowButton = ({
   const handleUnfollowUser = async () => {
     if (loading) return;
     setLoading(true);
-    const res = await unfollowUser(authUser.id, userToFollow.id);
-    const updatedUser = await findUserById(res.followee);
+    const unfollowedUser = await unfollowUser(authUser.id, userToFollow.id);
+    const updatedUser = await findUserById(unfollowedUser.followee);
     setLoading(false);
-    if (isError(res.error) || isError(updatedUser)) {
+    if (isError(unfollowedUser) || isError(updatedUser)) {
       return dispatch(
         setGlobalError({
           code: 500,

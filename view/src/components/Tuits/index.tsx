@@ -7,18 +7,12 @@ import { removeAllTuits } from '../../redux/tuitSlice';
 
 interface TuitsProps {
   tuits: ITuit[];
+  showOptions?: boolean;
 }
 /**
  * A container to display a list of tuits.
  */
 const Tuits = ({ tuits }: TuitsProps): JSX.Element => {
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    // Remove all tuits when component unmounts.
-    return () => {
-      dispatch(removeAllTuits());
-    };
-  }, [dispatch]);
   return (
     <div>
       <ul className='ttr-tuits list-group'>

@@ -9,7 +9,6 @@ interface TuitImageProps {
 }
 const TuitImage = ({ imageURL, deletable }: TuitImageProps): JSX.Element => {
   const [image, setImage] = React.useState(imageURL);
-  console.log(imageURL);
   useEffect(() => {
     setImage(imageURL);
   }, [imageURL]);

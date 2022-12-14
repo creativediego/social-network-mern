@@ -17,7 +17,6 @@ interface TuitProps {
  */
 const Tuit = ({ tuit }: TuitProps): JSX.Element => {
   const tuitWordArray = tuit.tuit.split(' ');
-  console.log('PRINTING TUIT', tuit);
   return (
     tuit && (
       <>

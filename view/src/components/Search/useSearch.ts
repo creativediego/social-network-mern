@@ -5,11 +5,12 @@ import { useAppDispatch } from '../../redux/hooks';
 import { isError } from '../../services/helpers';
 
 export const useSearch = <T>(
-  APICall: (searchValue: string) => Promise<T[] | ResponseError>
+  APICall: (searchValue: string) => Promise<T | ResponseError>,
+  initialSearchValue?: string
 ) => {
   const dispatch = useAppDispatch();
-  const [searchValue, setSearchValue] = useState('');
-  const [searchResults, setResults] = useState<T[]>([]);
+  const [searchValue, setSearchValue] = useState(initialSearchValue || '');
+  const [searchResults, setResults] = useState<T | null>(null);
   const [searchLoading, setLoading] = useState(false);
 
   const handleSetSearchValue = useCallback((val: string) => {
@@ -19,9 +20,11 @@ export const useSearch = <T>(
   useEffect(() => {
     let mounted = true;
     const findData = async () => {
-      if (!searchValue) {
+      const validAlphaChars = new RegExp(/^[a-z]*[A-Z]*$/);
+      if (!searchValue || !searchValue.match(validAlphaChars)) {
         return;
       }
+      setResults(null);
       setLoading(true);
       const data = await APICall(searchValue);
       if (!mounted) {

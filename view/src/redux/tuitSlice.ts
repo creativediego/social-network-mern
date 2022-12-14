@@ -13,6 +13,7 @@ import {
   createTuit,
   deleteTuit,
   updateTuit,
+  findAllTuitsByKeyword,
 } from '../services/tuits-service';
 import { setGlobalError } from './alertSlice';
 import { dataOrStateError } from './helpers';
@@ -77,7 +78,6 @@ export const deleteTuitThunk = createAsyncThunk(
   async (tuitId: string, ThunkAPI) => {
     const deletedTuit = await deleteTuit(tuitId);
     if (!deletedTuit.error) {
-      console.log('DEELTED TUIT', deletedTuit);
       ThunkAPI.dispatch(removeTuit(tuitId));
       ThunkAPI.dispatch(removeMyTuit(deletedTuit));
       ThunkAPI.dispatch(removeLikedTuit(deletedTuit));
@@ -138,6 +138,9 @@ const tuitSlice = createSlice({
     },
     selectTuit: (state, action) => {
       tuitsAdapter.setOne(state, action.payload);
+    },
+    setAllTuits: (state, action: PayloadAction<ITuit[]>) => {
+      tuitsAdapter.setAll(state, action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -205,9 +208,17 @@ export const selectTuitsLoading = createSelector(
   (loading) => loading
 );
 
-export const { selectAll: selectAllTuits } = tuitsAdapter.getSelectors(
-  (state: RootState) => state.tuits
+export const selectAllTuits = createSelector(
+  (state: RootState) => tuitsAdapter.getSelectors().selectAll(state.tuits),
+  (tuits) => tuits
 );
-export const { removeAllTuits, removeTuit, updateTuits, addTuit, selectTuit } =
-  tuitSlice.actions;
+
+export const {
+  removeAllTuits,
+  removeTuit,
+  updateTuits,
+  addTuit,
+  selectTuit,
+  setAllTuits,
+} = tuitSlice.actions;
 export default tuitSlice.reducer;
