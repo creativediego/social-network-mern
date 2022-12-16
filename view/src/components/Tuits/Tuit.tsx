@@ -8,6 +8,7 @@ import { ITuit } from '../../interfaces/ITuit';
 import moment from 'moment';
 import { TuitProvider } from '../../hooks/useTuit';
 import TuitMoreButton from './TuitMoreButton';
+import { useAuthUser } from '../../hooks/useAuthUser';
 
 interface TuitProps {
   tuit: ITuit;
@@ -17,6 +18,7 @@ interface TuitProps {
  */
 const Tuit = ({ tuit }: TuitProps): JSX.Element => {
   const tuitWordArray = tuit.tuit.split(' ');
+  const { user } = useAuthUser();
   return (
     tuit && (
       <>
@@ -55,7 +57,7 @@ const Tuit = ({ tuit }: TuitProps): JSX.Element => {
                     </span>
                   </p>
                 </div>
-                <TuitMoreButton />
+                {user.id === tuit.author.id && <TuitMoreButton />}
               </div>
               {tuitWordArray.map((word, index) =>
                 word[0] === '#' ? ( // style the hashtag word and create link

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuthUser } from '../../../hooks/useAuthUser';
 import { IMessage } from '../../../interfaces/IMessage';
 import useInboxMessage from './useInboxMessage';
 
@@ -13,6 +14,7 @@ interface InboxMessageProps {
 const InboxMessage = ({ message }: InboxMessageProps) => {
   const { deleteConversation, messageOptions, toggleMessageOptions } =
     useInboxMessage();
+  const { user } = useAuthUser();
 
   return (
     <li className='p-2 inbox-item list-group-item d-flex rounded-0'>
@@ -31,6 +33,13 @@ const InboxMessage = ({ message }: InboxMessageProps) => {
                     ? message.recipients[0].profilePhoto
                     : `../images/${message.recipients[0].username}.jpg`
                 }
+                className='ttr-tuit-avatar-logo rounded-circle'
+                alt='profile'
+              />
+            )}
+            {message.recipients && message.recipients.length === 0 && (
+              <img
+                src={user.profilePhoto}
                 className='ttr-tuit-avatar-logo rounded-circle'
                 alt='profile'
               />
