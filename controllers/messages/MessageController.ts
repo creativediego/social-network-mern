@@ -108,7 +108,7 @@ export default class MessageController implements IMessageController {
       message: req.body.message,
     };
 
-    const newMessage: any = await this.messageDao.createMessage(
+    const newMessage: IMessage = await this.messageDao.createMessage(
       req.user.id,
       message
     );

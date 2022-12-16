@@ -39,6 +39,7 @@ export default class TuitDao implements IDao<ITuit> {
     const output: ITuit[] = [];
     const hashtagsWithTuits = await this.hashtagModel
       .find({ hashtag: keyword })
+      .sort({ createdAt: 'descending' })
       .populate({ path: 'tuit', populate: { path: 'author' } });
     if (hashtagsWithTuits) {
       for (const hashTag of hashtagsWithTuits) {
@@ -49,6 +50,7 @@ export default class TuitDao implements IDao<ITuit> {
       .find({
         tuit: { $regex: keyword, $options: 'i' },
       })
+      .sort({ createdAt: 'descending' })
       .populate('author');
     if (tuitsByKeyword) {
       for (const tuit of tuitsByKeyword) {
@@ -68,6 +70,7 @@ export default class TuitDao implements IDao<ITuit> {
     try {
       const tuits = await this.tuitModel
         .find({ author: userId })
+        .sort({ createdAt: 'descending' })
         .populate('author');
       return this.errorHandler.objectOrNullException(
         tuits,
@@ -181,13 +184,11 @@ export default class TuitDao implements IDao<ITuit> {
    */
   update = async (tuitId: string, tuit: ITuit): Promise<ITuit> => {
     try {
-      const updatedTuit: ITuit | null = await this.tuitModel.findOneAndUpdate(
-        { _id: tuitId },
-        tuit,
-        {
+      const updatedTuit: ITuit | null = await this.tuitModel
+        .findOneAndUpdate({ _id: tuitId }, tuit, {
           new: true,
-        }
-      );
+        })
+        .populate('author');
       return this.errorHandler.objectOrNullException(
         updatedTuit,
         TuitDaoErrors.TUIT_NOT_FOUND
@@ -205,10 +206,17 @@ export default class TuitDao implements IDao<ITuit> {
    * @param {string} tuitId the id of the tuit.
    * @returns the deleted tuit
    */
-  delete = async (tuitId: string): Promise<number> => {
+  delete = async (tuitId: string): Promise<ITuit> => {
     try {
-      const tuitToDelete = await this.tuitModel.deleteOne({ _id: tuitId });
-      return tuitToDelete.deletedCount;
+      const tuitToDelete = await this.tuitModel
+        .findOneAndDelete({
+          _id: tuitId,
+        })
+        .populate('author');
+      return this.errorHandler.objectOrNullException(
+        tuitToDelete,
+        TuitDaoErrors.TUIT_NOT_FOUND
+      );
     } catch (err) {
       throw this.errorHandler.handleError(
         TuitDaoErrors.DB_ERROR_DELETING_TUIT,

@@ -13,13 +13,13 @@ const HashtagSchema = new mongoose.Schema<IHashtag>(
   }
 );
 
-HashtagSchema.index(
-  {
-    hashtag: 1,
-    tuit: 1,
-  },
-  { unique: true }
-);
+// HashtagSchema.index(
+//   {
+//     hashtag: 1,
+//     tuit: 1,
+//   },
+//   { unique: true }
+// );
 
 formatJSON(HashtagSchema);
 export default HashtagSchema;

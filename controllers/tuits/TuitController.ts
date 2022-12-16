@@ -138,11 +138,11 @@ export default class TuitController implements ITuitController {
    * @returns {HttpResponse} the response data to be sent to the client
    */
   delete = async (req: HttpRequest): Promise<HttpResponse> => {
-    const tuit: any = await this.tuitDao.findById(req.params.tuitId);
+    const tuit: ITuit = await this.tuitDao.findById(req.params.tuitId);
     if (req.user.id !== tuit.author.id) {
       throw new AuthException('User not authorized to delete tuit.');
     }
-    const deletedCount = this.tuitDao.delete(req.params.tuitId);
-    return okResponse(deletedCount);
+    const deletedTuit: ITuit = await this.tuitDao.delete(req.params.tuitId);
+    return okResponse(deletedTuit);
   };
 }

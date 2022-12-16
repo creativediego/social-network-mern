@@ -48,17 +48,7 @@ export default class NotificationDao {
     notification: INotification
   ): Promise<INotification> =>
     await (
-      await INotificationModel.findOneAndUpdate(
-        {
-          userActing: notification.userActing,
-          userNotified: notification.userNotified,
-          type: notification.type,
-        },
-        {
-          ...notification,
-        },
-        { upsert: true, new: true }
-      )
+      await INotificationModel.create(notification)
     ).populate('userActing');
   /**
    * Marks a notification as read.
@@ -68,7 +58,8 @@ export default class NotificationDao {
   updateReadNotification = async (nid: string): Promise<any> =>
     await INotificationModel.findOneAndUpdate(
       { _id: nid },
-      { read: true }
+      { read: true },
+      { new: true }
     ).populate('userActing');
 
   /**

@@ -39,24 +39,30 @@ export default class MessageDao implements IMessageDao {
   createConversation = async (
     conversation: IConversation
   ): Promise<IConversation> => {
-    let participants = conversation.participants;
-    if (!conversation.participants.includes(conversation.createdBy)) {
-      participants.push(conversation.createdBy);
-    }
+    console.log(conversation);
+    let participants = conversation.participants.map((user) => user.id);
+    // if (!conversation.participants.includes(conversation.createdBy)) {
+    //   participants.push(conversation.createdBy.id);
+    // }
     let type: ConversationType;
     if (conversation.participants.length > 2) {
       type = ConversationType.Group;
     } else {
       type = ConversationType.Private;
     }
-    const conversationId: string = conversation.participants.sort().join('');
+    let conversationCid;
+    if (!conversation.cid) {
+      conversationCid = participants.sort().join('');
+    } else {
+      conversationCid = conversation.cid;
+    }
     try {
       const convo = await this.conversationModel
         .findOneAndUpdate(
-          { cid: conversationId },
+          { cid: conversationCid },
           {
-            ...conversation,
-            cid: conversationId,
+            createdBy: conversation.createdBy.id,
+            cid: conversationCid,
             type,
             participants,
             removeFor: [],
@@ -212,11 +218,11 @@ export default class MessageDao implements IMessageDao {
             localField: 'participants',
             foreignField: '_id',
             pipeline: [
-              {
-                $match: {
-                  _id: { $ne: userId },
-                },
-              },
+              // {
+              //   $match: {
+              //     _id: { $ne: userId }, // exclude logged in user
+              //   },
+              // },
               {
                 $project: {
                   _id: 1,
@@ -238,17 +244,18 @@ export default class MessageDao implements IMessageDao {
             localField: '_id',
             foreignField: 'conversation',
             as: 'messages',
+            // Match the messages where the user has not removed/deleted the message.
+            pipeline: [
+              {
+                $match: {
+                  removeFor: {
+                    $ne: [userId],
+                  },
+                },
+              },
+            ],
           },
         },
-        // Match the messages where the user has not removed/deleted the message.
-        {
-          $match: {
-            removeFrom: {
-              $nin: [userId],
-            },
-          },
-        },
-        // Do an unwind to split the conversation documents by each message belonging to the conversation. This will help with sorting by message in next step.
 
         {
           $unwind: {
@@ -320,7 +327,7 @@ export default class MessageDao implements IMessageDao {
             id: '$latestMessageId',
             message: '$latestMessage',
             sender: '$sender',
-            conversation: '$_id',
+            conversationId: '$_id',
             removeFor: '$removeFor',
             recipients: '$recipients',
             createdAt: '$createdAt',
