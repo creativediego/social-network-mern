@@ -218,14 +218,15 @@ export default class MessageDao implements IMessageDao {
             localField: 'participants',
             foreignField: '_id',
             pipeline: [
-              // {
-              //   $match: {
-              //     _id: { $ne: userId }, // exclude logged in user
-              //   },
-              // },
+              {
+                $match: {
+                  _id: { $ne: userId }, // exclude logged in user
+                },
+              },
               {
                 $project: {
-                  _id: 1,
+                  _id: 0,
+                  id: '$_id',
                   name: 1,
                   firstName: 1,
                   lastName: 1,
@@ -305,6 +306,7 @@ export default class MessageDao implements IMessageDao {
                 $project: {
                   _id: 0,
                   id: '$_id',
+                  username: 1,
                   name: 1,
                   firstName: 1,
                   lastName: 1,
