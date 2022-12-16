@@ -1,7 +1,8 @@
+import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
 import { ResponseError } from '../interfaces/IError';
 import { isError } from '../services/helpers';
 import { setResponseError } from './alertSlice';
-// @ts-ignore
+import { clearChat } from './chatSlice';
 import { clearUser } from './userSlice';
 
 /**
@@ -9,21 +10,28 @@ import { clearUser } from './userSlice';
  */
 export const dataOrStateError = <T>(
   APIdata: T | ResponseError,
-  ThunkAPI: any
+  dispatchAction: ThunkDispatch<unknown, unknown, AnyAction>
 ): T => {
   if (isError(APIdata)) {
     if (APIdata.error.code === 403 || APIdata.error.code === 401) {
-      ThunkAPI.dispatch(clearUser());
+      dispatchAction(clearUser());
     } else {
       const userFriendlyError = {
         error: {
           message: 'Ooops! Something went wrong. Try again later.',
         },
       };
-      ThunkAPI.dispatch(setResponseError(userFriendlyError)); //update errors
+      dispatchAction(setResponseError(userFriendlyError)); //update errors
     }
     throw Error('Thunk error: ' + APIdata.error.message);
   } else {
     return APIdata;
   }
+};
+
+export const clearAllUserData = (
+  dispatchAction: ThunkDispatch<unknown, unknown, AnyAction>
+) => {
+  dispatchAction(clearChat());
+  dispatchAction(clearUser());
 };

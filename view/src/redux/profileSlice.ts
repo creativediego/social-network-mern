@@ -15,13 +15,13 @@ import {
 import { findTuitsByUser } from '../services/tuits-service';
 import { findUserByUsername } from '../services/users-service';
 import { dataOrStateError } from './helpers';
-import { RootState } from './store';
+import type { RootState } from './store';
 
 export const findProfileThunk = createAsyncThunk(
   'profile/findProfile',
   async (username: string, ThunkAPI) => {
     const user = await findUserByUsername(username);
-    return dataOrStateError(user, ThunkAPI);
+    return dataOrStateError(user, ThunkAPI.dispatch);
   }
 );
 
@@ -29,7 +29,7 @@ export const findMyTuitsThunk = createAsyncThunk(
   'profile/findMyTuits',
   async (userId: string, ThunkAPI) => {
     const tuits = await findTuitsByUser(userId);
-    return dataOrStateError(tuits, ThunkAPI);
+    return dataOrStateError(tuits, ThunkAPI.dispatch);
   }
 );
 
@@ -38,7 +38,7 @@ export const findLikedTuitsThunk = createAsyncThunk(
   async (userId: string, ThunkAPI) => {
     let tuits = await findAllTuitsLikedByUser(userId);
     tuits = tuits.filter((tuit: ITuit) => tuit !== null);
-    return dataOrStateError(tuits, ThunkAPI);
+    return dataOrStateError(tuits, ThunkAPI.dispatch);
   }
 );
 
@@ -47,7 +47,7 @@ export const findDislikedTuitsThunk = createAsyncThunk(
   async (userId: string, ThunkAPI) => {
     let tuits = await findAllTuitsDislikedByUser(userId);
     tuits = tuits.filter((tuit: ITuit) => tuit !== null);
-    return dataOrStateError(tuits, ThunkAPI);
+    return dataOrStateError(tuits, ThunkAPI.dispatch);
   }
 );
 

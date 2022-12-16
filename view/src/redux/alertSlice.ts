@@ -1,6 +1,6 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IAlert, ResponseError } from '../interfaces/IError';
-import { RootState } from './store';
+import type { RootState } from './store';
 
 /**
  * Handles global error state for the app. Used to display error messages in higher level parent components.

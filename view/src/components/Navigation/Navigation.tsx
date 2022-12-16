@@ -2,7 +2,10 @@ import React from 'react';
 import './navigation.css';
 import { useLocation, Link } from 'react-router-dom';
 import { useEffect } from 'react';
-import { findUnreadNotificationsThunk } from '../../redux/notificationSlice';
+import {
+  findUnreadNotificationsThunk,
+  selectAllNotifications,
+} from '../../redux/notificationSlice';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 
 /**
@@ -12,16 +15,14 @@ const Navigation = (): JSX.Element => {
   const { pathname } = useLocation();
   const authUser = useAppSelector((state: any) => state.user.data);
   const dispatch = useAppDispatch();
-  const unreadNotifications = useAppSelector(
-    (state: any) => state.notifications.unread
-  );
+  const noitications = useAppSelector(selectAllNotifications);
 
-  let notificationColor;
-  if (unreadNotifications.length > 0) {
-    notificationColor = '#2a9fd6';
-  } else {
-    notificationColor = 'white';
-  }
+  // let notificationColor;
+  // if (unreadNotifications.length > 0) {
+  //   notificationColor = '#2a9fd6';
+  // } else {
+  //   notificationColor = 'white';
+  // }
 
   useEffect(() => {
     dispatch(findUnreadNotificationsThunk());
@@ -35,7 +36,7 @@ const Navigation = (): JSX.Element => {
       label: 'Notifications',
       icon: 'fa-bell',
       path: '/notifications',
-      color: notificationColor,
+      color: '#2a9fd6',
     },
     {
       label: 'Messages',
@@ -91,12 +92,12 @@ const Navigation = (): JSX.Element => {
                     style={{ color: link.color }}
                   >
                     {link.label === 'Notifications' &&
-                    unreadNotifications.length > 0 ? (
+                    noitications.length > 0 ? (
                       <span
                         className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger'
                         style={{ fontSize: '.7rem' }}
                       >
-                        {unreadNotifications.length}
+                        {noitications.length}
                       </span>
                     ) : null}
                   </i>

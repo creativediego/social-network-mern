@@ -3,6 +3,7 @@
  */
 import {
   createAsyncThunk,
+  createEntityAdapter,
   createSelector,
   createSlice,
   PayloadAction,
@@ -14,7 +15,7 @@ import {
   markNotificationAsRead,
 } from '../services/notifications-service';
 import { INotification } from '../interfaces/INotification';
-import { RootState } from './store';
+import type { RootState } from './store';
 
 export const findNotificationsThunk = createAsyncThunk(
   'notifications/findNotifications',
@@ -48,29 +49,17 @@ export interface NotificationsState {
   loading: boolean;
 }
 
-const initialState: NotificationsState = {
-  all: [],
-  unread: [],
-  loading: false,
-};
+const notificationAdapter = createEntityAdapter<INotification>({
+  selectId: (notification: INotification) => notification.id,
+  sortComparer: (a, b) => b.createdAt.localeCompare(a.createdAt),
+});
 
 const notificationSlice = createSlice({
   name: 'notifications',
-  initialState,
+  initialState: notificationAdapter.getInitialState({ loading: false }),
   reducers: {
-    updateNotifications: (state, action) => {
-      const notification = action.payload;
-      if (state.all.some((e) => e.id === notification.id)) {
-        return;
-      }
-      state.all.unshift(notification);
-      if (!notification.read) state.unread.unshift(notification);
-    },
-    setUnreadNotifications: (state, action) => {
-      state.unread = action.payload;
-    },
-    clearUnreadNotifications: (state) => {
-      state.unread = [];
+    upsertNotification: (state, action: PayloadAction<INotification>) => {
+      notificationAdapter.addOne(state, action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -81,7 +70,7 @@ const notificationSlice = createSlice({
       findNotificationsThunk.fulfilled,
       (state, action: PayloadAction<INotification[]>) => {
         state.loading = false;
-        state.all = action.payload;
+        notificationAdapter.setAll(state, action.payload);
       }
     );
     builder.addCase(findNotificationsThunk.rejected, (state) => {
@@ -93,8 +82,9 @@ const notificationSlice = createSlice({
     builder.addCase(
       findUnreadNotificationsThunk.fulfilled,
       (state, action: PayloadAction<INotification[]>) => {
+        console.log(action.payload);
         state.loading = false;
-        state.all = action.payload;
+        notificationAdapter.setAll(state, action.payload);
       }
     );
     builder.addCase(findUnreadNotificationsThunk.rejected, (state) => {
@@ -107,14 +97,7 @@ const notificationSlice = createSlice({
       markNotificationReadThunk.fulfilled,
       (state, action: PayloadAction<INotification>) => {
         state.loading = false;
-        const readNotification = action.payload;
-        state.unread = state.unread.filter(
-          (notification) => notification.id !== readNotification.id
-        );
-        state.all = state.all.map((notification) => {
-          if (notification.id === readNotification.id) return readNotification;
-          else return notification;
-        });
+        notificationAdapter.upsertOne(state, action.payload);
       }
     );
     builder.addCase(markNotificationReadThunk.rejected, (state) => {
@@ -124,8 +107,15 @@ const notificationSlice = createSlice({
 });
 
 export const selectAllNotifications = createSelector(
-  (state: RootState) => state.notifications.all,
+  (state: RootState) =>
+    notificationAdapter.getSelectors().selectAll(state.notifications),
   (notifications) => notifications
+);
+
+export const selectUnreadNotifications = createSelector(
+  (state: RootState) =>
+    notificationAdapter.getSelectors().selectAll(state.notifications),
+  (notifications) => notifications.filter((notification) => !notification.read)
 );
 
 export const selectNotificationsLoading = createSelector(
@@ -133,9 +123,5 @@ export const selectNotificationsLoading = createSelector(
   (loading) => loading
 );
 
-export const {
-  setUnreadNotifications,
-  clearUnreadNotifications,
-  updateNotifications,
-} = notificationSlice.actions;
+export const { upsertNotification } = notificationSlice.actions;
 export default notificationSlice.reducer;

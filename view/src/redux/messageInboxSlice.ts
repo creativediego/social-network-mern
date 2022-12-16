@@ -8,7 +8,7 @@ import {
 import { IConversation } from '../interfaces/IConversation';
 import { IMessage } from '../interfaces/IMessage';
 import * as messageAPI from '../services/messages-service';
-import { RootState } from './store';
+import type { RootState } from './store';
 import { dataOrStateError } from './helpers';
 
 /**
@@ -20,7 +20,7 @@ export const findInboxMessagesThunk = createAsyncThunk(
     const state = ThunkAPI.getState() as RootState;
     const userId = state.user.data.id;
     let inboxMessages = await messageAPI.findInboxMessages(userId);
-    return dataOrStateError(inboxMessages, ThunkAPI);
+    return dataOrStateError(inboxMessages, ThunkAPI.dispatch);
   }
 );
 
@@ -33,7 +33,7 @@ export const deleteConversationThunk = createAsyncThunk(
       userId,
       conversationId
     );
-    return dataOrStateError(deletedConversation, ThunkAPI);
+    return dataOrStateError(deletedConversation, ThunkAPI.dispatch);
   }
 );
 

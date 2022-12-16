@@ -24,7 +24,7 @@ import {
   removeLikedTuit,
   removeMyTuit,
 } from './profileSlice';
-import { RootState } from './store';
+import type { RootState } from './store';
 
 /**
  * Uses tuits service to update state with all tuits. Also keeps track of loading status of requests.
@@ -33,7 +33,7 @@ export const findAllTuitsThunk = createAsyncThunk(
   'tuits/findAllTuits',
   async (data, ThunkAPI) => {
     const tuits = await findAllTuits();
-    return dataOrStateError(tuits, ThunkAPI);
+    return dataOrStateError(tuits, ThunkAPI.dispatch);
   }
 );
 
@@ -82,7 +82,7 @@ export const deleteTuitThunk = createAsyncThunk(
       ThunkAPI.dispatch(removeLikedTuit(deletedTuit));
       ThunkAPI.dispatch(removeDislikedTuit(deletedTuit));
     }
-    return dataOrStateError(deletedTuit, ThunkAPI);
+    return dataOrStateError(deletedTuit, ThunkAPI.dispatch);
   }
 );
 
@@ -94,7 +94,7 @@ export const userLikesTuitThunk = createAsyncThunk(
     const likedTuit = await userLikesTuit(userId, tuitId);
     ThunkAPI.dispatch(updateLikedTuits(likedTuit));
     ThunkAPI.dispatch(updateMyTuits(likedTuit));
-    return dataOrStateError(likedTuit, ThunkAPI);
+    return dataOrStateError(likedTuit, ThunkAPI.dispatch);
   }
 );
 
@@ -106,7 +106,7 @@ export const userDislikesTuitThunk = createAsyncThunk(
     const dislikedTuit = await userDislikesTuit(userId, tuitId);
     ThunkAPI.dispatch(updateDislikedTuits(dislikedTuit));
     ThunkAPI.dispatch(updateMyTuits(dislikedTuit));
-    return dataOrStateError(dislikedTuit, ThunkAPI);
+    return dataOrStateError(dislikedTuit, ThunkAPI.dispatch);
   }
 );
 

@@ -36,7 +36,9 @@ const useNewTuit = () => {
   }, []);
 
   const createTuit = async (tuit: ITuit) => {
-    if (!tuit.tuit) return;
+    if (!tuit.tuit) {
+      return;
+    }
     setTuit({ ...tuit, tuit: '', image: '', hashtags: [] });
     dispatch(createTuitThunk({ userId: authUser.id, tuit, imageFile }));
     setImagePreview('');

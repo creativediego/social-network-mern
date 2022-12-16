@@ -12,8 +12,8 @@ import {
   MorePage,
   ListsPage,
   SearchPage,
+  MessagesPage,
 } from '../index';
-import MessagesView from '../MessagesPage/MessagesPage';
 import { useAlert } from '../../hooks/useAlert';
 
 /**
@@ -38,7 +38,7 @@ const TuiterView = (): JSX.Element => {
             <Route path='/bookmarks' element={<BookmarksPage />} />
             <Route path='/lists' element={<ListsPage />} />
             <Route path='/more' element={<MorePage />} />
-            <Route path='/messages/*' element={<MessagesView />} />
+            <Route path='/messages/*' element={<MessagesPage />} />
             <Route path='/search/*' element={<SearchPage />} />
           </Routes>
           {error && <AlertBox message={error.message} />}

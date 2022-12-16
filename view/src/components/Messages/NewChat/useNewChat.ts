@@ -37,31 +37,36 @@ export const useNewChat = () => {
     [selectedUsers]
   );
 
-  const createNewChat = () => {
+  const createNewChat = useCallback(async () => {
     if (selectedUsers.length < 1) {
       return;
     }
     setLoading(true);
+    setSelectedUsers([]);
+
     const conversation: IConversation = {
       id: '',
       participants: [...selectedUsers, authUser],
       createdBy: authUser,
     };
+    console.log(conversation);
     dispatch(createConversationThunk(conversation));
-    if (!isMounted.current) {
-      return;
+    if (isMounted.current) {
+      setLoading(false);
     }
-    setLoading(false);
-    setSelectedUsers([]);
-  };
 
-  useEffect(() => {
-    setLoading(false);
-    navigate(`/messages/${activeChatId}`);
     return () => {
       isMounted.current = false;
     };
-  }, [activeChatId, navigate]);
+  }, [authUser, dispatch, selectedUsers]);
+
+  useEffect(() => {
+    if (isMounted.current && activeChatId) {
+      console.log('from componenet', activeChatId);
+      navigate(`/messages/${activeChatId}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeChatId]);
 
   return {
     newChatLoading: loading,
@@ -69,5 +74,6 @@ export const useNewChat = () => {
     selectUsersForChat,
     removeSelectedUser,
     createNewChat,
+    activeChatId,
   };
 };

@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import {
   findNotificationsThunk,
+  findUnreadNotificationsThunk,
   markNotificationReadThunk,
   selectAllNotifications,
   selectNotificationsLoading,
@@ -17,13 +18,13 @@ const useNotifications = () => {
 
   const handleMarkAsRead = useCallback(
     async (notificationId: string) => {
-      dispatch(markNotificationReadThunk(notificationId));
+      await dispatch(markNotificationReadThunk(notificationId));
     },
     [dispatch]
   );
 
   useEffect(() => {
-    dispatch(findNotificationsThunk());
+    dispatch(findUnreadNotificationsThunk());
   }, [dispatch]);
 
   return {

@@ -8,9 +8,9 @@ import {
 import { IConversation } from '../interfaces/IConversation';
 import { IMessage } from '../interfaces/IMessage';
 import { IUser } from '../interfaces/IUser';
-import { dataOrStateError as dataOrSetError } from './helpers';
+import { dataOrStateError as getDataOrError } from './helpers';
 import * as messageAPI from '../services/messages-service';
-import { RootState } from './store';
+import type { RootState } from './store';
 
 /**
  * Fetch a specific conversation and all messages related to it.
@@ -20,6 +20,8 @@ export const findMessagesByConversationThunk = createAsyncThunk(
   async (conversationId: string, ThunkAPI) => {
     const state = ThunkAPI.getState() as RootState;
     const userId = state.user.data.id;
+    console.log('userId', userId);
+    console.log('conversationIUd', conversationId);
     const conversationOrError = await messageAPI.findConversation(
       userId,
       conversationId
@@ -28,8 +30,8 @@ export const findMessagesByConversationThunk = createAsyncThunk(
       userId,
       conversationId
     );
-    const conversation = dataOrSetError(conversationOrError, ThunkAPI);
-    const messages = dataOrSetError(messagesOrError, ThunkAPI);
+    const conversation = getDataOrError(conversationOrError, ThunkAPI.dispatch);
+    const messages = getDataOrError(messagesOrError, ThunkAPI.dispatch);
     return { conversation, messages };
   }
 );
@@ -47,12 +49,10 @@ export const sendMessageThunk = createAsyncThunk(
     }: { sender: string; conversationId: string; message: string },
     ThunkAPI
   ) => {
-    const newMessage = await messageAPI.sendMessage(
-      sender,
-      conversationId,
-      message
-    );
-    return dataOrSetError(newMessage, ThunkAPI);
+    const state = ThunkAPI.getState() as RootState;
+    const chatId = state.chat.id;
+    const newMessage = await messageAPI.sendMessage(sender, chatId, message);
+    return getDataOrError(newMessage, ThunkAPI.dispatch);
   }
 );
 
@@ -63,7 +63,7 @@ export const deleteMessageThunk = createAsyncThunk(
     ThunkAPI
   ) => {
     const deletedMessage = await messageAPI.deleteMessage(userId, messageId);
-    return dataOrSetError(deletedMessage, ThunkAPI);
+    return getDataOrError(deletedMessage, ThunkAPI.dispatch);
   }
 );
 
@@ -79,7 +79,7 @@ export const createConversationThunk = createAsyncThunk(
       userId,
       conversation
     );
-    return dataOrSetError(newConversation, ThunkAPI);
+    return getDataOrError(newConversation, ThunkAPI.dispatch);
   }
 );
 
@@ -104,8 +104,11 @@ const chatSlice = createSlice({
   }),
   reducers: {
     upsertChatMessage: (state, action: PayloadAction<IMessage>) => {
-      console.log('UPSERT CHAT MESSAGE', action.payload);
       chatAdapter.upsertOne(state, action.payload);
+    },
+    clearChat: (state) => {
+      chatAdapter.removeAll(state);
+      state.id = '';
     },
   },
   extraReducers: (builder) => {
@@ -155,7 +158,7 @@ const chatSlice = createSlice({
     builder.addCase(
       sendMessageThunk.fulfilled,
       (state, action: PayloadAction<IMessage>) => {
-        console.log('MESSAGE PAYLOAD', action.payload);
+        state.id = action.payload.conversationId;
         state.loading = false;
         chatAdapter.upsertOne(state, action.payload);
       }
@@ -169,6 +172,8 @@ const chatSlice = createSlice({
     builder.addCase(
       createConversationThunk.fulfilled,
       (state, action: PayloadAction<IConversation>) => {
+        console.log('from thunk', action.payload);
+        console.log('from thunk', action.payload.id);
         state.loading = false;
         state.id = action.payload.id;
         chatAdapter.removeAll(state);
@@ -200,5 +205,5 @@ export const { selectAll: selectAllParticipants } =
   participantsAdapter.getSelectors(
     (state: RootState) => state.chat.participants
   );
-export const { upsertChatMessage } = chatSlice.actions;
+export const { upsertChatMessage, clearChat } = chatSlice.actions;
 export default chatSlice.reducer;

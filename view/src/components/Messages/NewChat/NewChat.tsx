@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ActionButton, Loader, PopupModal, Search } from '../..';
 import useToggleBoolean from '../../../hooks/useToggleBoolean';
 import { IUser } from '../../../interfaces/IUser';
@@ -19,6 +20,7 @@ const NewChat = () => {
     selectUsersForChat,
     removeSelectedUser,
     createNewChat,
+    activeChatId,
   } = useNewChat();
   return (
     <>
@@ -63,15 +65,21 @@ const NewChat = () => {
             <div className='d-flex justify-content-between align-items-center'>
               <h6 className='mt-4'>Results</h6>
               {selectedUsers && (
-                <ActionButton
-                  submitAction={() => {
-                    toggleModal();
-                    createNewChat();
-                  }}
-                  position='right'
-                  label='Create'
-                  loading={newChatLoading}
-                />
+                <Link
+                  to={`/messages/${activeChatId}`}
+                  id={activeChatId}
+                  className='text-decoration-none text-white'
+                >
+                  <ActionButton
+                    submitAction={() => {
+                      createNewChat();
+                      toggleModal();
+                    }}
+                    position='right'
+                    label='Create'
+                    loading={newChatLoading}
+                  />
+                </Link>
               )}
             </div>
 

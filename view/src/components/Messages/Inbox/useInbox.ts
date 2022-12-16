@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from 'react';
+import { clearChat } from '../../../redux/chatSlice';
 import { useAppSelector, useAppDispatch } from '../../../redux/hooks';
 import {
   inboxLoadingSelector,
@@ -25,6 +26,7 @@ const useInbox = () => {
   );
 
   useEffect(() => {
+    dispatch(clearChat());
     dispatch(findInboxMessagesThunk());
   }, [dispatch]);
   return {

@@ -9,9 +9,9 @@ import {
 } from '@reduxjs/toolkit';
 import { getProfile } from '../services/auth-service';
 import { updateUser } from '../services/users-service';
-import { dataOrStateError } from './helpers';
+import { clearAllUserData, dataOrStateError } from './helpers';
 import { clearToken } from '../services/helpers';
-import * as socketService from '../services/socket-service';
+import * as socketService from './redux-socket-service';
 import {
   firebaseLoginWithEmail,
   firebaseLogout,
@@ -20,7 +20,7 @@ import {
 } from '../services/firebase-auth';
 import { IUser } from '../interfaces/IUser';
 import { INotification } from '../interfaces/INotification';
-import { RootState } from './store';
+import type { RootState } from './store';
 import { setGlobalError, setSuccessAlert } from './alertSlice';
 import { IAlert } from '../interfaces/IError';
 import { setProfileUser } from './profileSlice';
@@ -33,9 +33,9 @@ export const fetchProfileThunk = createAsyncThunk(
   async (data, ThunkAPI) => {
     const profile = await getProfile();
     if (!profile.error) {
-      socketService.enableListeners(ThunkAPI);
+      socketService.enableListeners(ThunkAPI.dispatch);
     }
-    return dataOrStateError(profile, ThunkAPI);
+    return dataOrStateError(profile, ThunkAPI.dispatch);
   }
 );
 
@@ -57,9 +57,9 @@ export const registerThunk = createAsyncThunk(
     }
     const authUser = await getProfile();
     if (!authUser.error) {
-      socketService.enableListeners(ThunkAPI);
+      socketService.enableListeners(ThunkAPI.dispatch);
     }
-    return dataOrStateError(authUser, ThunkAPI);
+    return dataOrStateError(authUser, ThunkAPI.dispatch);
   }
 );
 
@@ -82,9 +82,9 @@ export const loginThunk = createAsyncThunk(
     }
     const authUser = await getProfile();
     if (!authUser.error) {
-      socketService.enableListeners(ThunkAPI);
+      socketService.enableListeners(ThunkAPI.dispatch);
     }
-    return dataOrStateError(authUser, ThunkAPI);
+    return dataOrStateError(authUser, ThunkAPI.dispatch);
   }
 );
 
@@ -93,9 +93,9 @@ export const loginWithGoogleThunk = createAsyncThunk(
   async (user, ThunkAPI) => {
     const profile = await loginWithGoogle();
     if (!profile.error) {
-      socketService.enableListeners(ThunkAPI);
+      socketService.enableListeners(ThunkAPI.dispatch);
     }
-    return dataOrStateError(profile, ThunkAPI);
+    return dataOrStateError(profile, ThunkAPI.dispatch);
   }
 );
 
@@ -109,6 +109,7 @@ export const logoutThunk = createAsyncThunk(
     socketService.disconnect();
     clearUser();
     await firebaseLogout();
+    clearAllUserData(ThunkAPI.dispatch);
     return;
   }
 );
@@ -123,9 +124,9 @@ export const updateUserThunk = createAsyncThunk(
     ThunkAPI.dispatch(
       setSuccessAlert({ message: 'Profile updated successfully.' })
     );
-    updatedUser = dataOrStateError(updatedUser, ThunkAPI);
+    updatedUser = dataOrStateError(updatedUser, ThunkAPI.dispatch);
     ThunkAPI.dispatch(setProfileUser(updatedUser));
-    return dataOrStateError(updatedUser, ThunkAPI);
+    return dataOrStateError(updatedUser, ThunkAPI.dispatch);
   }
 );
 export interface UserState {

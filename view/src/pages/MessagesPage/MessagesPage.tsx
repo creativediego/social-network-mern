@@ -20,7 +20,7 @@ const MessagesPage = () => {
       </div>
       <Routes>
         <Route path={`/`} element={<InboxList />} />
-        <Route path={`/*`} element={<Chat />} />
+        <Route path={`/:urlChatId/*`} element={<Chat />} />
       </Routes>
     </div>
   );

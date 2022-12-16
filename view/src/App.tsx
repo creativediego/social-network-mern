@@ -8,13 +8,17 @@ import { Routes, Route, HashRouter } from 'react-router-dom';
 import { useAuthUser } from './hooks/useAuthUser';
 import { onFirebaseAuthStateChange } from './services/firebase-auth';
 import { clearUser, fetchProfileThunk } from './redux/userSlice';
+import { clearChat } from './redux/chatSlice';
 
 function App() {
   const { profileComplete, isLoggedIn } = useAuthUser();
   const dispatch = useAppDispatch();
   useEffect(() => {
     const actionOnValidLogin = () => dispatch(fetchProfileThunk());
-    const actionOnLoginExpiration = () => dispatch(clearUser());
+    const actionOnLoginExpiration = () => {
+      dispatch(clearUser());
+      dispatch(clearChat());
+    };
     onFirebaseAuthStateChange(actionOnValidLogin, actionOnLoginExpiration);
   }, [dispatch]);
   return (

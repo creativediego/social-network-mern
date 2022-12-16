@@ -18,6 +18,7 @@ import ProfileInfo from './Profile/ProfileInfo/ProfileInfo';
 import ProfileTuits from './Profile/ProfileTuits/ProfileTuits';
 import { AvatarImage } from './AvatarImage/AvatarImage';
 import Notification from './Notifications/Notification';
+import Notifications from './Notifications/index';
 export {
   AlertBox,
   GenericError,
@@ -39,4 +40,5 @@ export {
   ProfileTuits,
   AvatarImage,
   Notification,
+  Notifications,
 };

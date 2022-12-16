@@ -8,4 +8,5 @@ export interface INotification {
   userActing: IUser;
   resourceId?: string;
   read: string;
+  createdAt: string;
 }

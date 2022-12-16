@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { INotification } from '../../interfaces/INotification';
-import useNotifications from './useNotifications';
+import './Notification.scss';
 
 /**
  * A component to render one notification.
@@ -9,14 +9,18 @@ import useNotifications from './useNotifications';
 
 interface NotificationProps {
   notification: INotification;
+  handleMarkAsRead: (notificationId: string) => void;
 }
 
 interface NotificationLink {
   [key: string]: { link: string; content: string };
 }
 
-const Notification = ({ notification }: NotificationProps) => {
-  const { handleMarkAsRead } = useNotifications();
+const Notification = ({
+  notification,
+  handleMarkAsRead,
+}: NotificationProps) => {
+  console.log(notification.read);
 
   // create a notification message depending on the type of notification
   let notificationLink: NotificationLink = {
@@ -34,30 +38,23 @@ const Notification = ({ notification }: NotificationProps) => {
     },
   };
 
-  let boxColor = '';
-  if (notification.read) {
-    boxColor = 'black';
-  } else {
-    boxColor = '#0f2d3c';
-  }
-
   return (
     <>
       <Link
-        to={notificationLink[notification.type].link}
+        to=''
         className='text-decoration-none'
+        onClick={() => handleMarkAsRead(notification.id)}
       >
         <li
-          className={
-            'p-2 list-group-item d-flex rounded-0 align-items-center text-decoration-none'
-          }
+          className={`p-2 list-group-item d-flex rounded-0 align-items-center text-decoration-none ${
+            !notification.read ? 'ttr-notification-unread' : ''
+          }`}
           data-testid='ttr-notification-component'
-          onClick={() => handleMarkAsRead(notification.id)}
-          ref={(el) => {
-            if (el) {
-              el.style.setProperty('background-color', boxColor, 'important');
-            }
-          }}
+          // ref={(el) => {
+          //   if (el) {
+          //     el.style.setProperty('background-color', boxColor, 'important');
+          //   }
+          // }}
         >
           <div className='pe-2'>
             {notification.userActing && (
@@ -88,4 +85,4 @@ const Notification = ({ notification }: NotificationProps) => {
     </>
   );
 };
-export default Notification;
+export default memo(Notification);
