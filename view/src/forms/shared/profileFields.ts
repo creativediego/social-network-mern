@@ -7,9 +7,9 @@ export const profileFields: InputFieldI = {
     type: 'text',
     placeholder: 'name',
     errorMessage:
-      "Name should be 3-15 characters and shouldn't include any special character!",
+      "Name should be 3-20 characters and shouldn't include any special character!",
     label: 'name',
-    pattern: "^[A-Za-z0-9 ,.'-]{3,15}$",
+    pattern: "^[A-Za-z0-9 ,.'-]{3,20}$",
     required: true,
     value: '',
   },
@@ -89,7 +89,7 @@ export const profileFields: InputFieldI = {
       'Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character!',
     label: 'password',
     pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
-    required: true,
+    required: false,
     value: '',
   },
 };

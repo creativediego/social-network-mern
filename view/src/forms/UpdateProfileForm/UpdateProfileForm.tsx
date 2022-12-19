@@ -8,7 +8,14 @@ import HeaderImageUpload from './HeaderImageUpload';
 /**
  * Displays the form to update user's profile, including fields and images. Uses custom hook to manage state and submit form.
  */
-const UpdateProfileForm = (): JSX.Element => {
+interface UpdateProfileFormProps {
+  showOptional: boolean;
+  submitCallBack?: () => void;
+}
+const UpdateProfileForm = ({
+  showOptional,
+  submitCallBack,
+}: UpdateProfileFormProps): JSX.Element => {
   const {
     loading,
     inputFields,
@@ -17,7 +24,6 @@ const UpdateProfileForm = (): JSX.Element => {
     uploadProfileImage,
     submitForm,
   } = useUpdateProfile();
-
   return (
     <div>
       <div className='mb-5 position-relative bg-white'>
@@ -39,7 +45,9 @@ const UpdateProfileForm = (): JSX.Element => {
         )}
       </div>
       {Object.values(inputFields).map((input) =>
-        input.name !== 'headerImage' && input.name !== 'profilePhoto' ? (
+        input.name !== 'headerImage' &&
+        input.name !== 'profilePhoto' &&
+        (showOptional || (!showOptional && input.required)) ? (
           <FormInput
             key={input.id}
             {...input}
@@ -49,7 +57,12 @@ const UpdateProfileForm = (): JSX.Element => {
         ) : null
       )}
       <ActionButton
-        submitAction={submitForm}
+        submitAction={() => {
+          submitForm();
+          if (submitCallBack) {
+            submitCallBack();
+          }
+        }}
         position={'right'}
         loading={loading}
       />

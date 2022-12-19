@@ -6,6 +6,7 @@ import useToggleBoolean from '../../../hooks/useToggleBoolean';
 import PopupModal from '../../PopupModal/PopupModal';
 import FollowButton from '../../FollowButton/FollowButton';
 import { IUser } from '../../../interfaces/IUser';
+import { useAlert } from '../../../hooks/useAlert';
 
 interface ProfileInfoProps {
   profileUser: IUser;
@@ -55,7 +56,10 @@ const ProfileInfo = ({
                   size='lg'
                   closeButton={true}
                 >
-                  <UpdateProfileForm />
+                  <UpdateProfileForm
+                    showOptional={false}
+                    submitCallBack={setShowEditProfile}
+                  />
                 </PopupModal>
               </span>
             )}

@@ -141,6 +141,12 @@ const profileSlice = createSlice({
     setProfileUser: (state, action: PayloadAction<IUser>) => {
       state.user = action.payload;
     },
+    clearProfile: (state) => {
+      state.user = null;
+      myTuitsAdapter.removeAll(state.likes);
+      dislikedTuitsAdapter.removeAll(state.dislikes);
+      likedTuitsAdapter.removeAll(state.likes);
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(findProfileThunk.pending, (state) => {
@@ -237,5 +243,6 @@ export const {
   removeDislikedTuit,
   removeLikedTuit,
   setProfileUser,
+  clearProfile,
 } = profileSlice.actions;
 export default profileSlice.reducer;

@@ -3,6 +3,7 @@ import { ResponseError } from '../interfaces/IError';
 import { isError } from '../services/helpers';
 import { setResponseError } from './alertSlice';
 import { clearChat } from './chatSlice';
+import { clearProfile } from './profileSlice';
 import { clearUser } from './userSlice';
 
 /**
@@ -34,4 +35,5 @@ export const clearAllUserData = (
 ) => {
   dispatchAction(clearChat());
   dispatchAction(clearUser());
+  dispatchAction(clearProfile());
 };

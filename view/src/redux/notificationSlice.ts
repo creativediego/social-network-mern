@@ -82,7 +82,6 @@ const notificationSlice = createSlice({
     builder.addCase(
       findUnreadNotificationsThunk.fulfilled,
       (state, action: PayloadAction<INotification[]>) => {
-        console.log(action.payload);
         state.loading = false;
         notificationAdapter.setAll(state, action.payload);
       }

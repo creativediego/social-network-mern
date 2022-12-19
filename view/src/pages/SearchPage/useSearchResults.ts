@@ -22,7 +22,8 @@ const useSearchResults = (defaultQueryType: string) => {
 
   useEffect(() => {
     setSearchParams({ q: searchValue });
-  }, [searchValue, setSearchParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchValue]);
 
   /**
    * Redux state of tuits needs updating because results from useSearch are not stored in redux.

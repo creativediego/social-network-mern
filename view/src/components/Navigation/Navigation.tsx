@@ -29,14 +29,14 @@ const Navigation = (): JSX.Element => {
   }, [dispatch]);
 
   const links = [
-    { label: 'Tuiter', icon: 'fa-square-t', path: '/tuiter', color: 'white' },
+    // { label: 'Tuiter', icon: 'fa-square-t', path: '/tuiter', color: 'white' },
     { label: 'Home', icon: 'fa-home', path: '/home', color: 'white' },
     // { label: 'Explore', icon: 'fa-hashtag', path: '/explore', color: 'white' },
     {
       label: 'Notifications',
       icon: 'fa-bell',
       path: '/notifications',
-      color: '#2a9fd6',
+      // color: '#2a9fd6',
     },
     {
       label: 'Messages',

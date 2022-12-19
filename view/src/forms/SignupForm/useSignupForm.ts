@@ -27,7 +27,7 @@ const useSignupForm = () => {
       label: 'password',
       pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
       required: true,
-      value: 'Pass123!',
+      value: '',
     },
   });
 
@@ -43,7 +43,7 @@ const useSignupForm = () => {
         label: 'confirm password',
         required: true,
         pattern: fields.password.value,
-        value: 'Pass123!',
+        value: '',
       },
     }));
   }, [fields.password.value]);

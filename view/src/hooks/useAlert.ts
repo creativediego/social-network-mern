@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { ResponseError } from '../interfaces/IError';
 import {
   clearAll,
@@ -34,6 +34,14 @@ export const useAlert = () => {
   const clearAllAlerts = useCallback(() => {
     dispatch(clearAll());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (error.message || success.message) {
+      setTimeout(() => {
+        dispatch(clearAll());
+      }, 3000);
+    }
+  }, [error, success, dispatch]);
 
   return {
     error,
