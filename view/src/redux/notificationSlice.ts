@@ -45,7 +45,6 @@ export const markNotificationReadThunk = createAsyncThunk(
 
 export interface NotificationsState {
   all: INotification[];
-  unread: INotification[];
   loading: boolean;
 }
 

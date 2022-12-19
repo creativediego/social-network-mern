@@ -4,7 +4,7 @@ import { useLocation, Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import {
   findUnreadNotificationsThunk,
-  selectAllNotifications,
+  selectUnreadNotifications,
 } from '../../redux/notificationSlice';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 
@@ -15,14 +15,14 @@ const Navigation = (): JSX.Element => {
   const { pathname } = useLocation();
   const authUser = useAppSelector((state: any) => state.user.data);
   const dispatch = useAppDispatch();
-  const noitications = useAppSelector(selectAllNotifications);
+  const notifications = useAppSelector(selectUnreadNotifications);
 
-  // let notificationColor;
-  // if (unreadNotifications.length > 0) {
-  //   notificationColor = '#2a9fd6';
-  // } else {
-  //   notificationColor = 'white';
-  // }
+  let notificationColor;
+  if (notifications.length > 0) {
+    notificationColor = '#2a9fd6';
+  } else {
+    notificationColor = 'white';
+  }
 
   useEffect(() => {
     dispatch(findUnreadNotificationsThunk());
@@ -36,6 +36,7 @@ const Navigation = (): JSX.Element => {
       label: 'Notifications',
       icon: 'fa-bell',
       path: '/notifications',
+      color: notificationColor,
       // color: '#2a9fd6',
     },
     {
@@ -92,12 +93,12 @@ const Navigation = (): JSX.Element => {
                     style={{ color: link.color }}
                   >
                     {link.label === 'Notifications' &&
-                    noitications.length > 0 ? (
+                    notifications.length > 0 ? (
                       <span
                         className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger'
                         style={{ fontSize: '.7rem' }}
                       >
-                        {noitications.length}
+                        {notifications.length}
                       </span>
                     ) : null}
                   </i>
