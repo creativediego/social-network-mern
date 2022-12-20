@@ -1,13 +1,13 @@
 import React from 'react';
 import TuitImage from '../TuitImage/TuitImage';
-import TuitImageUpload from './TuitImageUpload';
-import useNewPost from './useNewTuit';
+import PostImageUpload from './PostImageUpload';
+import useNewPost from './useNewPost';
 
 /**
- * Displays form for a user to submit a new tuit.
+ * Displays form for a user to submit a new post.
  */
 const NewPost = () => {
-  const { tuit, setInput, setImageFile, createTuit, imagePreview } =
+  const { post, setInput, setImageFile, createPost, imagePreview } =
     useNewPost();
   return (
     <div className='p-2 w-100'>
@@ -15,11 +15,11 @@ const NewPost = () => {
         onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInput(e)}
         placeholder="What's happening?"
         className='w-100 border-0 p-2'
-        value={tuit.tuit}
+        value={post.post}
       ></textarea>
-      {tuit.hashtags && (
+      {post.hashtags && (
         <div>
-          {tuit.hashtags.map((hashtag, index) => (
+          {post.hashtags.map((hashtag, index) => (
             <span
               key={index}
               className='text-primary fw-bold fs-5'
@@ -33,7 +33,7 @@ const NewPost = () => {
       {<TuitImage imageURL={imagePreview} deletable={true} />}
       <div className='row'>
         <div className='col-10 ttr-font-size-150pc text-primary mt-4'>
-          <TuitImageUpload setImageFile={setImageFile} />
+          <PostImageUpload setImageFile={setImageFile} />
           {/* <i className='fas fa-image me-3'></i> */}
           {/* <i className='far fa-gif me-3'></i>
           <i className='far fa-bar-chart me-3'></i>
@@ -43,7 +43,7 @@ const NewPost = () => {
         </div>
         <div className='col-2 mt-4'>
           <button
-            onClick={() => createTuit(tuit)}
+            onClick={() => createPost(post)}
             className={`btn btn-primary rounded-pill fa-pull-right
                                   fw-bold ps-4 pe-4`}
           >

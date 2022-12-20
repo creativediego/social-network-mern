@@ -55,7 +55,7 @@ const Navigation = (): JSX.Element => {
     {
       label: 'Profile',
       icon: 'fa-user',
-      path: `/${authUser.username}/tuits`,
+      path: `/${authUser.username}/posts`,
       color: 'white',
     },
     {

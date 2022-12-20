@@ -4,7 +4,7 @@ interface TuitImageUploadProps {
   setImageFile: (file: File | null) => void;
 }
 
-const TuitImageUpload: React.FC<TuitImageUploadProps> = ({
+const PostImageUpload: React.FC<TuitImageUploadProps> = ({
   setImageFile,
 }): JSX.Element => {
   return (
@@ -27,4 +27,4 @@ const TuitImageUpload: React.FC<TuitImageUploadProps> = ({
   );
 };
 
-export default memo(TuitImageUpload);
+export default memo(PostImageUpload);

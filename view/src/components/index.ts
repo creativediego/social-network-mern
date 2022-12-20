@@ -3,7 +3,7 @@ import GenericError from './GenericError/GenericError';
 import Tuits from './Tuits';
 import AlertBox from './AlertBox/AlertBox';
 import Navigation from './Navigation/Navigation';
-import NewPost from './NewTuit/NewTuit';
+import NewPost from './NewPost/NewPost';
 import Loader from './Loader/Loader';
 import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 import TuitImage from './TuitImage/TuitImage';

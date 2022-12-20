@@ -8,13 +8,13 @@ const USERS_API = `${process.env.REACT_APP_API_URL}/users`;
 const api = axios.create();
 api.interceptors.request.use(loadRequestInterceptors);
 
-export const findAllTuitsByKeyword = (keyword: string) =>
+export const findAllPostsByKeyword = (keyword: string) =>
   api
     .get(`${TUITS_API}/search/${keyword}`)
     .then((response) => response.data)
     .catch((err) => processError(err));
 
-export const findAllTuits = () =>
+export const findAllPosts = () =>
   api
     .get(TUITS_API)
     .then((response) => response.data)

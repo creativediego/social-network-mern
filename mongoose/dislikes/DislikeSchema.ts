@@ -2,16 +2,16 @@ import mongoose, { Schema } from 'mongoose';
 
 import MongooseException from '../../errors/MongooseException';
 import ILike from '../../models/likes/ILike';
-import ITuit from '../../models/tuits/ITuit';
+import IPost from '../../models/posts/IPost';
 import IUser from '../../models/users/IUser';
-import TuitModel from '../tuits/TuitModel';
+import PostModel from '../posts/PostModel';
 import UserModel from '../users/UserModel';
 import { formatJSON } from '../util/formatJSON';
 
 const DislikeSchema = new mongoose.Schema<ILike>(
   {
     user: { type: Schema.Types.ObjectId, ref: 'UserModel', required: true },
-    tuit: { type: Schema.Types.ObjectId, ref: 'TuitModel', required: true },
+    post: { type: Schema.Types.ObjectId, ref: 'PostModel', required: true },
   },
   {
     timestamps: true,
@@ -20,12 +20,12 @@ const DislikeSchema = new mongoose.Schema<ILike>(
 );
 
 /**
- * A like document be unique by user and tuit to avoid duplicates.
+ * A like document be unique by user and post to avoid duplicates.
  */
 DislikeSchema.index(
   {
     user: 1,
-    tuit: 1,
+    post: 1,
   },
   { unique: true }
 );
@@ -37,11 +37,11 @@ DislikeSchema.pre('save', async function (next): Promise<void> {
   if (existingUser === null) {
     throw new MongooseException('User not found.');
   }
-  const existingTuit: ITuit | null = await TuitModel.findOne({
-    _id: this.tuit,
+  const existingPost: IPost | null = await PostModel.findOne({
+    _id: this.post,
   });
-  if (existingTuit === null) {
-    throw new MongooseException('Tuit not found.');
+  if (existingPost === null) {
+    throw new MongooseException('Post not found.');
   }
 });
 

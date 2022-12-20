@@ -3,14 +3,14 @@ import IUser from '../users/IUser';
 /**
  * Model interface for a tuit.
  */
-export default interface ITuit {
-  tuit: string;
+export default interface IPost {
+  post: string;
   author: IUser;
   stats?: {
     likes: number;
     dislikes: number;
     replies: number;
-    retuits: number;
+    reposts: number;
   };
   image?: string;
   gif?: string;

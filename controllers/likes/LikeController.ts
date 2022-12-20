@@ -7,7 +7,7 @@ import { Server } from 'socket.io';
 import { adaptRequest } from '../shared/adaptRequest';
 import { okResponse as okResponse } from '../shared/createResponse';
 import { isAuthenticated } from '../auth/isAuthenticated';
-import ITuit from '../../models/tuits/ITuit';
+import IPost from '../../models/posts/IPost';
 import IDao from '../../daos/shared/IDao';
 import NotificationDao from '../../daos/notifications/NotificationsDao';
 import INotification from '../../models/notifications/INotification';
@@ -81,7 +81,7 @@ export default class LikeController implements ILikeController {
 
     if (existingLike) {
       //undo previous like
-      const updatedTuit: ITuit = await this.likeDao.deleteLike(userId, tuitId);
+      const updatedTuit: IPost = await this.likeDao.deleteLike(userId, tuitId);
       return okResponse(updatedTuit);
     }
     // new like
@@ -127,14 +127,14 @@ export default class LikeController implements ILikeController {
 
     if (existingDislike) {
       // undo dislike
-      const updatedTuit: ITuit = await this.likeDao.deleteDislike(
+      const updatedTuit: IPost = await this.likeDao.deleteDislike(
         userId,
         tuitId
       );
       return okResponse(updatedTuit);
     }
     // new dislike
-    let updatedTuit: ITuit = await this.likeDao.createDislike(userId, tuitId);
+    let updatedTuit: IPost = await this.likeDao.createDislike(userId, tuitId);
 
     if (existingLike) {
       // undo previous like
@@ -162,7 +162,7 @@ export default class LikeController implements ILikeController {
    * @returns {HttpResponse} the response data to be sent to the client
    */
   findAllTuitsLikedByUser = async (req: HttpRequest): Promise<HttpResponse> => {
-    const likedTuits: ITuit[] = await this.likeDao.findAllTuitsLikedByUser(
+    const likedTuits: IPost[] = await this.likeDao.findAllTuitsLikedByUser(
       req.params.userId
     );
     return okResponse(likedTuits);
@@ -171,7 +171,7 @@ export default class LikeController implements ILikeController {
   findAllTuitsDislikedByUser = async (
     req: HttpRequest
   ): Promise<HttpResponse> => {
-    const likedTuits: ITuit[] = await this.likeDao.findAllTuitsDislikedByUser(
+    const likedTuits: IPost[] = await this.likeDao.findAllTuitsDislikedByUser(
       req.params.userId
     );
     return okResponse(likedTuits);

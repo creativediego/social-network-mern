@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Nav } from 'react-bootstrap';
 import { Search, Loader, Tuits } from '../../components';
 import { useAppSelector } from '../../redux/hooks';
-import { selectAllTuits } from '../../redux/tuitSlice';
+import { selectAllTuits } from '../../redux/postSlice';
 import PeopleSearchResults from './PeopleSearchResults';
 import useSearchResults from './useSearchResults';
 
@@ -48,7 +48,7 @@ const SearchPage = (): JSX.Element => {
 
           {queryValue &&
             results &&
-            results.tuits.length < 1 &&
+            results.posts.length < 1 &&
             results.users.length < 1 && <p>Sorry, no results</p>}
 
           {results &&
@@ -62,8 +62,8 @@ const SearchPage = (): JSX.Element => {
             )}
 
           {results &&
-            results.tuits &&
-            results.tuits.length > 0 &&
+            results.posts &&
+            results.posts.length > 0 &&
             (queryType === 'top' || queryType === 'tuits') && (
               <div>
                 <h5>Tuits</h5>

@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import userReducer from './userSlice';
-import tuitReducer from './tuitSlice';
+import postsReducer from './postSlice';
 import alertReducer from './alertSlice';
 import messageReducer from './chatSlice';
 import notificationsReducer from './notificationSlice';
@@ -10,7 +10,7 @@ import profileReducer from './profileSlice';
 
 export const rootReducer = combineReducers({
   user: userReducer,
-  tuits: tuitReducer,
+  posts: postsReducer,
   profile: profileReducer,
   alert: alertReducer,
   messages: messageReducer,

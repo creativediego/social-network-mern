@@ -49,7 +49,7 @@ const UserSchema = new mongoose.Schema<IUser>(
     },
     followerCount: { type: Number, default: 0 },
     followeeCount: { type: Number, default: 0 },
-    tuitCount: { type: Number, default: 0 },
+    postCount: { type: Number, default: 0 },
   },
 
   { timestamps: true, collection: 'users' }

@@ -1,13 +1,13 @@
 import mongoose from 'mongoose';
 import { mockUser } from './mockUsers';
 
-export const mockTuits = [
+export const mockPosts = [
   {
-    tuit: 'hello world!',
+    post: 'hello world!',
     author: mockUser._id,
   },
   {
-    tuit: 'goodbye, world...',
+    post: 'goodbye, world...',
     author: mockUser._id,
   },
 ];

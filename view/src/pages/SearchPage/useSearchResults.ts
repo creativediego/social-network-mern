@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useSearch } from '../../components/Search/useSearch';
 import { useAppDispatch } from '../../redux/hooks';
-import { setAllTuits } from '../../redux/tuitSlice';
+import { setAllTuits } from '../../redux/postSlice';
 import { findAllByKeyword } from '../../services/search-service';
 
 const useSearchResults = (defaultQueryType: string) => {
@@ -29,11 +29,11 @@ const useSearchResults = (defaultQueryType: string) => {
    * Redux state of tuits needs updating because results from useSearch are not stored in redux.
    */
   useEffect(() => {
-    if (searchResults && searchResults.tuits.length > 0) {
-      dispatch(setAllTuits(searchResults.tuits));
+    if (searchResults && searchResults.posts.length > 0) {
+      dispatch(setAllTuits(searchResults.posts));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchResults?.tuits, dispatch]);
+  }, [searchResults?.posts, dispatch]);
 
   return {
     queryValue: searchValue,

@@ -12,7 +12,7 @@ import {
   findAllTuitsDislikedByUser,
   findAllTuitsLikedByUser,
 } from '../services/likes-service';
-import { findTuitsByUser } from '../services/tuits-service';
+import { findTuitsByUser } from '../services/posts-service';
 import { findUserByUsername } from '../services/users-service';
 import { dataOrStateError } from './helpers';
 import type { RootState } from './store';

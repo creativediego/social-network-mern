@@ -9,14 +9,14 @@ import { IPost } from '../interfaces/IPost';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 
 import {
-  findAllTuitsThunk,
+  findAllPostsThunk,
   selectTuitsLoading,
   selectAllTuits,
-  userLikesTuitThunk,
-  userDislikesTuitThunk,
-  deleteTuitThunk,
+  userLikesPostThunk,
+  userDislikesPostThunk,
+  deletePostThunk,
   removeAllTuits,
-} from '../redux/tuitSlice';
+} from '../redux/postSlice';
 
 const TuitContext = createContext<IPost | null>(null);
 
@@ -42,7 +42,7 @@ export const useAllTuits = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(findAllTuitsThunk());
+    dispatch(findAllPostsThunk());
   }, [dispatch]);
 
   useEffect(() => {

@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { IPost } from '../../interfaces/IPost';
-import { createTuitThunk } from '../../redux/tuitSlice';
+import { createPostThunk } from '../../redux/postSlice';
 import { selectAuthUser } from '../../redux/userSlice';
 import { IUser } from '../../interfaces/IUser';
 
 /**
- * Displays form where user can submit a new tuit.
+ * Displays form where user can submit a new post.
  *
  */
 const useNewPost = () => {
@@ -18,14 +18,14 @@ const useNewPost = () => {
     id: '',
     author: authUser,
     createdAt: '',
-    tuit: '',
+    post: '',
     image: '',
     likedBy: [],
     dislikedBy: [],
     stats: {
       likes: 0,
       dislikes: 0,
-      retuits: 0,
+      reposts: 0,
       replies: 0,
     },
   });
@@ -35,31 +35,31 @@ const useNewPost = () => {
     setImageFile(file);
   }, []);
 
-  const createTuit = async (tuit: IPost) => {
-    if (!tuit.tuit) {
+  const createPost = async (post: IPost) => {
+    if (!post.post) {
       return;
     }
-    setPost({ ...tuit, tuit: '', image: '', hashtags: [] });
-    dispatch(createTuitThunk({ userId: authUser.id, tuit, imageFile }));
+    setPost({ ...post, post: '', image: '', hashtags: [] });
+    dispatch(createPostThunk({ userId: authUser.id, post, imageFile }));
     setImagePreview('');
     setImageFile(null);
   };
 
-  const parseHashtags = (tuit: string): string[] | null => {
-    return tuit.toLowerCase().match(/\B(#[a-zA-Z]+\b)(?!;)/g);
+  const parseHashtags = (post: string): string[] | null => {
+    return post.toLowerCase().match(/\B(#[a-zA-Z]+\b)(?!;)/g);
   };
 
   const setInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const tuitContent: string = e.target.value;
-    const updatedTuit = { ...post, tuit: tuitContent };
-    const hashtags = parseHashtags(tuitContent);
+    const postContent: string = e.target.value;
+    const updatedPost = { ...post, post: postContent };
+    const hashtags = parseHashtags(postContent);
 
     if (hashtags) {
-      updatedTuit.hashtags = hashtags;
+      updatedPost.hashtags = hashtags;
     } else {
-      updatedTuit.hashtags = [];
+      updatedPost.hashtags = [];
     }
-    setPost({ ...post, ...updatedTuit });
+    setPost({ ...post, ...updatedPost });
   };
   // Create an image preview when image is selected.
   useEffect(() => {
@@ -75,12 +75,12 @@ const useNewPost = () => {
   }, [imageFile]);
 
   return {
-    tuit: post,
-    setTuit: setPost,
+    post,
+    setPost,
     setImageFile: handleSetImageFile,
     imagePreview,
     setInput,
-    createTuit,
+    createPost,
   };
 };
 

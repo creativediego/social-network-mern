@@ -8,10 +8,10 @@ import IMessageDao from '../daos/messages/IMessageDao';
 import MessageDao from '../daos/messages/MessageDao';
 import NotificationDao from '../daos/notifications/NotificationsDao';
 import IDao from '../daos/shared/IDao';
-import TuitDao from '../daos/tuits/TuitDao';
+import PostDao from '../daos/posts/PostDao';
 import UserDao from '../daos/users/UserDao';
 import DaoErrorHandler from '../errors/DaoErrorHandler';
-import ITuit from '../models/tuits/ITuit';
+import IPost from '../models/posts/IPost';
 import IUser from '../models/users/IUser';
 import BookmarkModel from '../mongoose/bookmarks/BookmarkModel';
 import DislikeModel from '../mongoose/dislikes/DislikeModel';
@@ -20,7 +20,7 @@ import HashtagModel from '../mongoose/hashtags/HashtagModel';
 import LikeModel from '../mongoose/likes/LikeModel';
 import ConversationModel from '../mongoose/messages/ConversationModel';
 import MessageModel from '../mongoose/messages/MessageModel';
-import TuitModel from '../mongoose/tuits/TuitModel';
+import TuitModel from '../mongoose/posts/PostModel';
 import UserModel from '../mongoose/users/UserModel';
 /**
  * @file
@@ -42,7 +42,7 @@ export const likeDao: ILikeDao = new LikeDao(
   TuitModel,
   daoErrorHandler
 );
-export const tuitDao: IDao<ITuit> = new TuitDao(
+export const tuitDao: IDao<IPost> = new PostDao(
   TuitModel,
   UserModel,
   HashtagModel,

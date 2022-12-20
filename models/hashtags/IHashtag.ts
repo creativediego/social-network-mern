@@ -1,4 +1,4 @@
-import ITuit from '../tuits/ITuit';
+import IPost from '../posts/IPost';
 import IUser from '../users/IUser';
 
 /**
@@ -6,5 +6,5 @@ import IUser from '../users/IUser';
  */
 export default interface IHashtag {
   hashtag: string;
-  tuit: ITuit;
+  post: IPost;
 }

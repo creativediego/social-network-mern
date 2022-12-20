@@ -10,10 +10,10 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 
 import {
   selectTuitsLoading,
-  userLikesTuitThunk,
-  userDislikesTuitThunk,
-  deleteTuitThunk,
-} from '../redux/tuitSlice';
+  userLikesPostThunk,
+  userDislikesPostThunk,
+  deletePostThunk,
+} from '../redux/postSlice';
 
 const TuitContext = createContext<IPost | null>(null);
 
@@ -48,21 +48,21 @@ export const useTuit = () => {
 
   const handleLikeTuit = useCallback(
     async (tuitId: string) => {
-      await dispatch(userLikesTuitThunk(tuitId));
+      await dispatch(userLikesPostThunk(tuitId));
     },
     [dispatch]
   );
 
   const handleDislikeTuit = useCallback(
     (tuitId: string) => {
-      dispatch(userDislikesTuitThunk(tuitId));
+      dispatch(userDislikesPostThunk(tuitId));
     },
     [dispatch]
   );
 
   const handleDeleteTuit = useCallback(
     async (tuitId: string) => {
-      await dispatch(deleteTuitThunk(tuitId));
+      await dispatch(deletePostThunk(tuitId));
     },
     [dispatch]
   );

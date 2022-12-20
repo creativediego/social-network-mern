@@ -1,10 +1,10 @@
-import ITuitDao from './ITuitDao';
+import IPostDao from './IPostDao';
 import { Model } from 'mongoose';
-import ITuit from '../../models/tuits/ITuit';
+import IPost from '../../models/posts/IPost';
 import IErrorHandler from '../../errors/IErrorHandler';
-import { TuitDaoErrors } from './TuitDaoErrors';
+import { PostDaoErrors } from './PostDaoErrors';
 import IUser from '../../models/users/IUser';
-import Tuit from '../../models/tuits/Tuit';
+import Post from '../../models/posts/Post';
 import DaoNullException from '../../errors/DaoNullException';
 import IDao from '../shared/IDao';
 import IHashtag from '../../models/hashtags/IHashtag';
@@ -12,8 +12,8 @@ import IHashtag from '../../models/hashtags/IHashtag';
 /**
  * DAO database CRUD operations for the tuit resource. Takes the injected dependencies of a {@link Model<ITuit>} ORM model and an {@link IErrorHandler} error handler.
  */
-export default class TuitDao implements IDao<ITuit> {
-  private readonly tuitModel: Model<ITuit>;
+export default class PostDao implements IDao<IPost> {
+  private readonly tuitModel: Model<IPost>;
   private readonly userModel: Model<IUser>;
   private readonly hashtagModel: Model<IHashtag>;
   private readonly errorHandler: IErrorHandler;
@@ -24,7 +24,7 @@ export default class TuitDao implements IDao<ITuit> {
    * @param {IErrorHandler} errorHandler the error handler to deal with all errors that might occur
    */
   public constructor(
-    tuitModel: Model<ITuit>,
+    tuitModel: Model<IPost>,
     userModel: Model<IUser>,
     hashtagModel: Model<IHashtag>,
     errorHandler: IErrorHandler
@@ -36,19 +36,19 @@ export default class TuitDao implements IDao<ITuit> {
     Object.freeze(this); // Make this object immutable.
   }
   findAllByField = async (keyword: string): Promise<any> => {
-    const output: ITuit[] = [];
+    const output: IPost[] = [];
     const hashtagsWithTuits = await this.hashtagModel
       .find({ hashtag: keyword })
       .sort({ createdAt: 'descending' })
       .populate({ path: 'tuit', populate: { path: 'author' } });
     if (hashtagsWithTuits) {
       for (const hashTag of hashtagsWithTuits) {
-        output.push(hashTag.tuit);
+        output.push(hashTag.post);
       }
     }
     const tuitsByKeyword = await this.tuitModel
       .find({
-        tuit: { $regex: keyword, $options: 'i' },
+        post: { $regex: keyword, $options: 'i' },
       })
       .sort({ createdAt: 'descending' })
       .populate('author');
@@ -66,7 +66,7 @@ export default class TuitDao implements IDao<ITuit> {
    * @returns an array of all tuits by the user id, with author user populated
    */
 
-  findByField = async (userId: string): Promise<ITuit[]> => {
+  findByField = async (userId: string): Promise<IPost[]> => {
     try {
       const tuits = await this.tuitModel
         .find({ author: userId })
@@ -74,11 +74,11 @@ export default class TuitDao implements IDao<ITuit> {
         .populate('author');
       return this.errorHandler.objectOrNullException(
         tuits,
-        TuitDaoErrors.TUIT_NOT_FOUND
+        PostDaoErrors.TUIT_NOT_FOUND
       );
     } catch (err) {
       throw this.errorHandler.handleError(
-        TuitDaoErrors.DB_ERROR_FINDING_TUITS,
+        PostDaoErrors.DB_ERROR_FINDING_TUITS,
         err
       );
     }
@@ -88,7 +88,7 @@ export default class TuitDao implements IDao<ITuit> {
    * Finds all tuits in the database.
    * @returns an array of tuits
    */
-  findAll = async (): Promise<ITuit[]> => {
+  findAll = async (): Promise<IPost[]> => {
     try {
       return await this.tuitModel
         .find()
@@ -96,7 +96,7 @@ export default class TuitDao implements IDao<ITuit> {
         .populate('author');
     } catch (err) {
       throw this.errorHandler.handleError(
-        TuitDaoErrors.DB_ERROR_FINDING_TUITS,
+        PostDaoErrors.DB_ERROR_FINDING_TUITS,
         err
       );
     }
@@ -107,40 +107,40 @@ export default class TuitDao implements IDao<ITuit> {
    * @param {string} tuitId the id of the tuit
    * @returns the tuit
    */
-  findById = async (tuitId: string): Promise<ITuit> => {
+  findById = async (tuitId: string): Promise<IPost> => {
     try {
       const tuit = await this.tuitModel.findById(tuitId).populate('author');
       return this.errorHandler.objectOrNullException(
         tuit,
-        TuitDaoErrors.TUIT_NOT_FOUND
+        PostDaoErrors.TUIT_NOT_FOUND
       );
     } catch (err) {
       throw this.errorHandler.handleError(
-        TuitDaoErrors.DB_ERROR_FINDING_TUITS,
+        PostDaoErrors.DB_ERROR_FINDING_TUITS,
         err
       );
     }
   };
 
-  exists = async (tuit: ITuit): Promise<boolean> => {
+  exists = async (tuit: IPost): Promise<boolean> => {
     try {
       const dbTuit: IUser | null = await this.tuitModel.findOne({
-        tuit: tuit.tuit,
+        post: tuit.post,
         author: tuit.author,
       });
       if (dbTuit === null) return false;
       else return true;
     } catch (err) {
-      throw this.errorHandler.handleError(TuitDaoErrors.DB_ERROR_EXISTS, err);
+      throw this.errorHandler.handleError(PostDaoErrors.DB_ERROR_EXISTS, err);
     }
   };
 
   /**
    * Create a new tuit document with all its data by calling the Mongoose TuitModel.
-   * @param {ITuit} tuitData the new tuit
+   * @param {IPost} tuitData the new tuit
    * @returns the newly created tuit
    */
-  create = async (tuitData: ITuit): Promise<ITuit> => {
+  create = async (tuitData: IPost): Promise<IPost> => {
     try {
       // Check if user exists first.
       const existingUser: IUser | null = await this.userModel.findById(
@@ -148,10 +148,10 @@ export default class TuitDao implements IDao<ITuit> {
       );
 
       if (existingUser === null) {
-        throw new DaoNullException(TuitDaoErrors.NO_USER_FOUND);
+        throw new DaoNullException(PostDaoErrors.NO_USER_FOUND);
       } else {
         // Validate tuit and create.
-        const validatedTuit: ITuit = new Tuit(tuitData.tuit, existingUser);
+        const validatedTuit: IPost = new Post(tuitData.post, existingUser);
         const newTuit = await (
           await this.tuitModel.create(validatedTuit)
         ).populate('author');
@@ -170,7 +170,7 @@ export default class TuitDao implements IDao<ITuit> {
       }
     } catch (err) {
       throw this.errorHandler.handleError(
-        TuitDaoErrors.DB_ERROR_CREATING_TUIT,
+        PostDaoErrors.DB_ERROR_CREATING_TUIT,
         err
       );
     }
@@ -179,23 +179,23 @@ export default class TuitDao implements IDao<ITuit> {
   /**
    * Updates a tuit in the database by its id.
    * @param {string} tuitId the id of the tuit
-   * @param {ITuit} tuit the tuit with the information used for the update.
+   * @param {IPost} tuit the tuit with the information used for the update.
    * @returns the updated tuit
    */
-  update = async (tuitId: string, tuit: ITuit): Promise<ITuit> => {
+  update = async (tuitId: string, tuit: IPost): Promise<IPost> => {
     try {
-      const updatedTuit: ITuit | null = await this.tuitModel
+      const updatedTuit: IPost | null = await this.tuitModel
         .findOneAndUpdate({ _id: tuitId }, tuit, {
           new: true,
         })
         .populate('author');
       return this.errorHandler.objectOrNullException(
         updatedTuit,
-        TuitDaoErrors.TUIT_NOT_FOUND
+        PostDaoErrors.TUIT_NOT_FOUND
       );
     } catch (err) {
       throw this.errorHandler.handleError(
-        TuitDaoErrors.DB_ERROR_UPDATING_TUIT,
+        PostDaoErrors.DB_ERROR_UPDATING_TUIT,
         err
       );
     }
@@ -206,7 +206,7 @@ export default class TuitDao implements IDao<ITuit> {
    * @param {string} tuitId the id of the tuit.
    * @returns the deleted tuit
    */
-  delete = async (tuitId: string): Promise<ITuit> => {
+  delete = async (tuitId: string): Promise<IPost> => {
     try {
       const tuitToDelete = await this.tuitModel
         .findOneAndDelete({
@@ -215,11 +215,11 @@ export default class TuitDao implements IDao<ITuit> {
         .populate('author');
       return this.errorHandler.objectOrNullException(
         tuitToDelete,
-        TuitDaoErrors.TUIT_NOT_FOUND
+        PostDaoErrors.TUIT_NOT_FOUND
       );
     } catch (err) {
       throw this.errorHandler.handleError(
-        TuitDaoErrors.DB_ERROR_DELETING_TUIT,
+        PostDaoErrors.DB_ERROR_DELETING_TUIT,
         err
       );
     }

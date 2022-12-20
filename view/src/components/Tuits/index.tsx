@@ -3,7 +3,7 @@ import './Tuits.scss';
 import Tuit from './Tuit';
 import { IPost } from '../../interfaces/IPost';
 import { useAppDispatch } from '../../redux/hooks';
-import { removeAllTuits } from '../../redux/tuitSlice';
+import { removeAllTuits } from '../../redux/postSlice';
 
 interface TuitsProps {
   tuits: IPost[];

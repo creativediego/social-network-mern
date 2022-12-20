@@ -1,5 +1,5 @@
 import React from 'react';
-import './TuiterView.css';
+import './MainView.css';
 import { Routes, Route } from 'react-router-dom';
 import { AlertBox, Navigation } from '../../components';
 import {
@@ -30,7 +30,6 @@ const TuiterView = (): JSX.Element => {
         <div className='ttr-center-column'>
           <Routes>
             <Route path='/' element={<HomePage />} />
-            <Route path='/tuiter' element={<HomePage />} />
             <Route path='/:username/*' element={<ProfilePage />} />
             <Route path='/home' element={<HomePage />} />
             <Route path='/explore' element={<ExplorePage />} />

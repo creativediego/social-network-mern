@@ -6,7 +6,7 @@ import HttpRequest from '../shared/HttpRequest';
 /**
  * Represents the interface functionality of a tuit controller to handle requests and responses for the tuit resource.
  */
-export default interface ITuitController extends IGenericController {
+export default interface IPostController extends IGenericController {
   findByUser(req: HttpRequest): Promise<HttpResponse>;
   findAllByKeyword(req: HttpRequest): Promise<HttpResponse>;
 }

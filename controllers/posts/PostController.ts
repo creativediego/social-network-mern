@@ -1,12 +1,12 @@
-import ITuitController from './ITuitController';
+import IPostController from './IPostController';
 import HttpRequest from '../shared/HttpRequest';
 import HttpResponse from '../shared/HttpResponse';
 import { Express, Router } from 'express';
 import { adaptRequest } from '../shared/adaptRequest';
 import IDao from '../../daos/shared/IDao';
-import ITuit from '../../models/tuits/ITuit';
+import IPost from '../../models/posts/IPost';
 import { isAuthenticated } from '../auth/isAuthenticated';
-import { validateTuit } from '../middleware/validateTuit';
+import { validatePost } from '../middleware/validatePost';
 import { validateResults } from '../middleware/validateResults';
 import AuthException from '../auth/AuthException';
 import { okResponse } from '../shared/createResponse';
@@ -14,46 +14,46 @@ import ISocketService from '../../services/ISocketService';
 import DaoDatabaseException from '../../errors/DaoDatabseException';
 
 /**
- * Handles CRUD requests and responses for the Tuit resource.  Implements {@link ITuitController}.
+ * Handles CRUD requests and responses for the Tuit resource.  Implements {@link IPostController}.
  */
-export default class TuitController implements ITuitController {
-  private readonly tuitDao: IDao<ITuit>;
+export default class PostController implements IPostController {
+  private readonly postDao: IDao<IPost>;
   private readonly socketService: ISocketService;
   /**
    * Constructs the controller by calling the super abstract, setting the dao, and configuring the endpoint paths.
-   * @param tuitDao a tuit dao that implements {@link ITuitDao}
+   * @param postDao a post dao that implements {@link ITuitDao}
    */
   public constructor(
     path: string,
     app: Express,
-    dao: IDao<ITuit>,
+    dao: IDao<IPost>,
     socketService: ISocketService
   ) {
-    this.tuitDao = dao;
+    this.postDao = dao;
     this.socketService = socketService;
     const router: Router = Router();
     // router.use(isAuthenticated);
-    router.get('/tuits', isAuthenticated, adaptRequest(this.findAll));
+    router.get('/posts', isAuthenticated, adaptRequest(this.findAll));
     router.get(
-      '/tuits/search/:keyword',
+      '/posts/search/:keyword',
       isAuthenticated,
       adaptRequest(this.findByField)
     );
-    router.get('/tuits/:tuitId', isAuthenticated, adaptRequest(this.findById));
+    router.get('/posts/:postId', isAuthenticated, adaptRequest(this.findById));
     router.get(
-      '/users/:userId/tuits',
+      '/users/:userId/posts',
       isAuthenticated,
       adaptRequest(this.findByUser)
     );
     router.post(
-      '/users/:userId/tuits',
+      '/users/:userId/posts',
       isAuthenticated,
-      validateTuit,
+      validatePost,
       validateResults,
       adaptRequest(this.create)
     );
-    router.put('/tuits/:tuitId', isAuthenticated, adaptRequest(this.update));
-    router.delete('/tuits/:tuitId', isAuthenticated, adaptRequest(this.delete));
+    router.put('/posts/:postId', isAuthenticated, adaptRequest(this.update));
+    router.delete('/posts/:postId', isAuthenticated, adaptRequest(this.delete));
     app.use(path, router);
     Object.freeze(this); // Make this object immutable.
   }
@@ -62,10 +62,10 @@ export default class TuitController implements ITuitController {
   }
 
   findByField = async (req: HttpRequest): Promise<HttpResponse> => {
-    const tuits: ITuit[] = await this.tuitDao.findAllByField(
+    const posts: IPost[] = await this.postDao.findAllByField(
       req.params.keyword
     );
-    return okResponse(tuits);
+    return okResponse(posts);
   };
 
   /**
@@ -75,74 +75,74 @@ export default class TuitController implements ITuitController {
    */
   findByUser = async (req: HttpRequest): Promise<HttpResponse> => {
     if (req.params.userId === 'me') {
-      const tuits: ITuit[] = await this.tuitDao.findByField(req.user.id);
-      return okResponse(tuits);
+      const posts: IPost[] = await this.postDao.findByField(req.user.id);
+      return okResponse(posts);
     }
-    const tuits: ITuit[] = await this.tuitDao.findByField(req.params.userId);
-    return okResponse(tuits);
+    const posts: IPost[] = await this.postDao.findByField(req.params.userId);
+    return okResponse(posts);
   };
 
   /**
-   * Calls the dao to find all tuits and returns them in the response. Passes errors to the next middleware.
+   * Calls the dao to find all posts and returns them in the response. Passes errors to the next middleware.
    * @returns {HttpResponse} the response data to be sent to the client
    */
   findAll = async (): Promise<HttpResponse> => {
-    const tuits: ITuit[] = await this.tuitDao.findAll();
-    return okResponse(tuits);
+    const posts: IPost[] = await this.postDao.findAll();
+    return okResponse(posts);
   };
 
   /**
-   * Takes the tuitId from the request params and calls the dao to find the tuit. Sends the tuit back to the client, or passes any errors to the next middleware.
+   * Takes the postId from the request params and calls the dao to find the post. Sends the post back to the client, or passes any errors to the next middleware.
    * @param {HttpRequest} req the request data containing client data
    * @returns {HttpResponse} the response data to be sent to the client
    */
   findById = async (req: HttpRequest): Promise<HttpResponse> => {
     console.log('FIND BY ID', req.params);
-    const tuit: ITuit = await this.tuitDao.findById(req.params.tuitId);
-    return okResponse(tuit);
+    const post: IPost = await this.postDao.findById(req.params.postId);
+    return okResponse(post);
   };
 
   /**
-   * Takes the details of a tuit from the client request and calls the dao to create a new tuit object using the request body. Sends back the new tuit, or passes any errors to the next function middleware.
+   * Takes the details of a post from the client request and calls the dao to create a new post object using the request body. Sends back the new post, or passes any errors to the next function middleware.
    * @param {HttpRequest} req the request data containing client data
    * @returns {HttpResponse} the response data to be sent to the client
    */
   create = async (req: HttpRequest): Promise<HttpResponse> => {
-    const tuit = await this.tuitDao.create({
+    const post = await this.postDao.create({
       ...req.body,
       author: req.user.id,
     });
-    this.socketService.emitToAll('NEW_TUIT', tuit);
-    return okResponse(tuit);
+    this.socketService.emitToAll('NEW_POST', post);
+    return okResponse(post);
   };
 
   /**
-   * Processes updating a tuit by calling the dao with the tuit id and update body from the request object. Sends the updated tuit object back to the client, or passes any errors to the next function middleware.
+   * Processes updating a post by calling the dao with the post id and update body from the request object. Sends the updated post object back to the client, or passes any errors to the next function middleware.
    * @param {HttpRequest} req the request data containing client data
    * @returns {HttpResponse} the response data to be sent to the client
    */
   update = async (req: HttpRequest): Promise<HttpResponse> => {
-    let tuit: any = {
+    let post: any = {
       ...req.body,
     };
-    delete tuit.author;
+    delete post.author;
 
-    const updateTuit = await this.tuitDao.update(req.params.tuitId, tuit);
-    this.socketService.emitToAll('UPDATED_TUIT', tuit);
+    const updateTuit = await this.postDao.update(req.params.postId, post);
+    this.socketService.emitToAll('UPDATED_TUIT', post);
     return okResponse(updateTuit);
   };
 
   /**
-   * Takes the tuit id from the request param and calls the dao to delete the tuit by id. Sends back the deleted tuit to the client once it is deleted and returned from the dao. Sends any errors to the next function middleware.
+   * Takes the post id from the request param and calls the dao to delete the post by id. Sends back the deleted post to the client once it is deleted and returned from the dao. Sends any errors to the next function middleware.
    * @param {HttpRequest} req the request data containing client data
    * @returns {HttpResponse} the response data to be sent to the client
    */
   delete = async (req: HttpRequest): Promise<HttpResponse> => {
-    const tuit: ITuit = await this.tuitDao.findById(req.params.tuitId);
-    if (req.user.id !== tuit.author.id) {
-      throw new AuthException('User not authorized to delete tuit.');
+    const post: IPost = await this.postDao.findById(req.params.postId);
+    if (req.user.id !== post.author.id) {
+      throw new AuthException('User not authorized to delete post.');
     }
-    const deletedTuit: ITuit = await this.tuitDao.delete(req.params.tuitId);
+    const deletedTuit: IPost = await this.postDao.delete(req.params.postId);
     return okResponse(deletedTuit);
   };
 }

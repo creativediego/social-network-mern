@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useAppDispatch } from './redux/hooks';
 import { GenericError } from './components';
 import './styles.css';
-import TuiterView from './pages/TuiterView/TuiterView';
+import TuiterView from './pages/MainView/MainView';
 import { LoginPage, LandingPage } from './pages';
 import { Routes, Route, HashRouter } from 'react-router-dom';
 import { useAuthUser } from './hooks/useAuthUser';

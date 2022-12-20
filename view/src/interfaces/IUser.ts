@@ -13,5 +13,5 @@ export interface IUser {
   accountStatus?: string;
   followerCount?: number;
   followeeCount?: number;
-  tuitCount?: number;
+  postCount?: number;
 }

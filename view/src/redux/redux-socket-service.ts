@@ -2,7 +2,7 @@ import io, { Socket } from 'socket.io-client';
 import axios from 'axios';
 import { processError } from '../services/helpers';
 import { upsertNotification } from './notificationSlice';
-import { addTuit, updateTuits } from './tuitSlice';
+import { addTuit, updateTuits } from './postSlice';
 import { findInboxMessagesThunk } from './messageInboxSlice';
 import { upsertChatMessage } from './chatSlice';
 import { IMessage } from '../interfaces/IMessage';

@@ -3,10 +3,10 @@ import { Model } from 'mongoose';
 import ILikeDao from './ILikeDao';
 import ILike from '../../models/likes/ILike';
 import IUser from '../../models/users/IUser';
-import ITuit from '../../models/tuits/ITuit';
+import IPost from '../../models/posts/IPost';
 import IErrorHandler from '../../errors/IErrorHandler';
 import { LikeDaoErrors } from './LikeDaoErrors';
-import Tuit from '../../models/tuits/Tuit';
+import Post from '../../models/posts/Post';
 import DaoDatabaseException from '../../errors/DaoDatabseException';
 
 /**
@@ -15,7 +15,7 @@ import DaoDatabaseException from '../../errors/DaoDatabseException';
 export class LikeDao implements ILikeDao {
   private readonly likeModel: Model<ILike>;
   private readonly dislikeModel: Model<ILike>;
-  private readonly tuitModel: Model<ITuit>;
+  private readonly tuitModel: Model<IPost>;
   private readonly errorHandler: IErrorHandler;
 
   /**
@@ -26,7 +26,7 @@ export class LikeDao implements ILikeDao {
   public constructor(
     likeModel: Model<ILike>,
     dislikeModel: Model<ILike>,
-    tuitModel: Model<ITuit>,
+    tuitModel: Model<IPost>,
     errorHandler: IErrorHandler
   ) {
     this.likeModel = likeModel;
@@ -36,11 +36,11 @@ export class LikeDao implements ILikeDao {
     Object.freeze(this); // Make this object immutable.
   }
 
-  createLike = async (userId: string, tuitId: string): Promise<ITuit> => {
+  createLike = async (userId: string, tuitId: string): Promise<IPost> => {
     try {
       await this.likeModel.create({
         user: userId,
-        tuit: tuitId,
+        post: tuitId,
       });
       const updatedTuit = await this.tuitModel
         .findOneAndUpdate(
@@ -58,11 +58,11 @@ export class LikeDao implements ILikeDao {
     }
   };
 
-  createDislike = async (userId: string, tuitId: string): Promise<ITuit> => {
+  createDislike = async (userId: string, tuitId: string): Promise<IPost> => {
     try {
       await this.dislikeModel.create({
         user: userId,
-        tuit: tuitId,
+        post: tuitId,
       });
       const updatedTuit = await this.tuitModel
         .findOneAndUpdate(
@@ -85,7 +85,7 @@ export class LikeDao implements ILikeDao {
 
   findLike = async (userId: string, tuitId: string): Promise<ILike | null> => {
     try {
-      return await this.likeModel.findOne({ user: userId, tuit: tuitId });
+      return await this.likeModel.findOne({ user: userId, post: tuitId });
     } catch (err) {
       throw new DaoDatabaseException('Failed to find like.', err);
     }
@@ -96,16 +96,16 @@ export class LikeDao implements ILikeDao {
     tuitId: string
   ): Promise<ILike | null> => {
     try {
-      return await this.dislikeModel.findOne({ user: userId, tuit: tuitId });
+      return await this.dislikeModel.findOne({ user: userId, post: tuitId });
     } catch (err) {
       throw new DaoDatabaseException('Failed to find dislike.', err);
     }
   };
 
-  deleteLike = async (userId: string, tuitId: string): Promise<ITuit> => {
+  deleteLike = async (userId: string, tuitId: string): Promise<IPost> => {
     try {
       const deletedLike = await this.likeModel.deleteOne(
-        { user: userId, tuit: tuitId },
+        { user: userId, post: tuitId },
         { new: true }
       );
       const updatedTuit = await this.tuitModel
@@ -127,10 +127,10 @@ export class LikeDao implements ILikeDao {
     }
   };
 
-  deleteDislike = async (userId: string, tuitId: string): Promise<ITuit> => {
+  deleteDislike = async (userId: string, tuitId: string): Promise<IPost> => {
     try {
       const deletedDislike = await this.dislikeModel.deleteOne(
-        { user: userId, tuit: tuitId },
+        { user: userId, post: tuitId },
         { new: true }
       );
       const updatedTuit = await this.tuitModel
@@ -161,7 +161,7 @@ export class LikeDao implements ILikeDao {
     try {
       // Get the likes.
       const likes: ILike[] = await this.likeModel
-        .find({ tuit: tuitId })
+        .find({ post: tuitId })
         .populate('user')
         .exec();
       // Now that we have all the likes, let's extract just the users.
@@ -184,17 +184,17 @@ export class LikeDao implements ILikeDao {
   /**
    * Finds all tuits that a user liked by calling the likeModel. Also Populates the liked tuit.
    * @param {string} userId the id of the user
-   * @returns an array of {@link ILike} documents with populated {@link ITuit} tuits
+   * @returns an array of {@link ILike} documents with populated {@link IPost} tuits
    */
-  findAllTuitsLikedByUser = async (userId: string): Promise<ITuit[]> => {
+  findAllTuitsLikedByUser = async (userId: string): Promise<IPost[]> => {
     try {
       const likes: ILike[] = await this.likeModel
         .find({ user: userId })
         .populate({ path: 'tuit', populate: { path: 'author' } })
         .exec();
-      const tuits: ITuit[] = [];
+      const tuits: IPost[] = [];
       likes.map((like) => {
-        tuits.push(like.tuit);
+        tuits.push(like.post);
       });
       return this.errorHandler.objectOrNullException(
         tuits,
@@ -207,15 +207,15 @@ export class LikeDao implements ILikeDao {
       );
     }
   };
-  findAllTuitsDislikedByUser = async (userId: string): Promise<ITuit[]> => {
+  findAllTuitsDislikedByUser = async (userId: string): Promise<IPost[]> => {
     try {
       const likes: ILike[] = await this.dislikeModel
         .find({ user: userId })
         .populate({ path: 'tuit', populate: { path: 'author' } })
         .exec();
-      const tuits: ITuit[] = [];
+      const tuits: IPost[] = [];
       likes.map((like) => {
-        tuits.push(like.tuit);
+        tuits.push(like.post);
       });
       return this.errorHandler.objectOrNullException(
         tuits,

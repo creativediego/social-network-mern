@@ -8,8 +8,8 @@ import LikeController from '../controllers/likes/LikeController';
 import IMessageController from '../controllers/messages/IMessageController';
 import MessageController from '../controllers/messages/MessageController';
 import IGenericController from '../controllers/shared/IGenericController';
-import ITuitController from '../controllers/tuits/ITuitController';
-import TuitController from '../controllers/tuits/TuitController';
+import IPostController from '../controllers/posts/IPostController';
+import PostController from '../controllers/posts/PostController';
 import { UserController } from '../controllers/users/UserController';
 import NotificationController from '../controllers/notifications/NotificationController';
 import SearchController from '../controllers/search/SearchController';
@@ -55,7 +55,7 @@ const createControllers = (app: Express): void => {
     hasher,
     firebaseJWTService
   );
-  const tuitController: ITuitController = new TuitController(
+  const tuitController: IPostController = new PostController(
     '/api/v1',
     app,
     tuitDao,

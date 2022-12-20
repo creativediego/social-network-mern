@@ -17,7 +17,7 @@ interface TuitProps {
  * Displays a tuit with all of its information, including Author, time, and stats (likes, dislikes, etc).
  */
 const Tuit = ({ tuit }: TuitProps): JSX.Element => {
-  const tuitWordArray = tuit.tuit.split(' ');
+  const tuitWordArray = tuit.post.split(' ');
   const { user } = useAuthUser();
   return (
     tuit && (

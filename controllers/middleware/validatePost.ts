@@ -1,7 +1,7 @@
 import { param, body, validationResult } from 'express-validator';
 
-export const validateTuit = [
-  body('tuit')
+export const validatePost = [
+  body('post')
     .exists()
     .trim()
     .isString()

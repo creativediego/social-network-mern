@@ -4,11 +4,11 @@ export interface IPostStats {
   replies: number;
   likes: number;
   dislikes: number;
-  retuits: number;
+  reposts: number;
 }
 export interface IPost {
   id: string;
-  tuit: string;
+  post: string;
   author: IUser;
   createdAt: string;
   image?: string;

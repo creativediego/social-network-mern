@@ -5,7 +5,7 @@ import { formatJSON } from '../util/formatJSON';
 const HashtagSchema = new mongoose.Schema<IHashtag>(
   {
     hashtag: { type: String, required: true },
-    tuit: { type: Schema.Types.ObjectId, ref: 'TuitModel', required: true },
+    post: { type: Schema.Types.ObjectId, ref: 'PostModel', required: true },
   },
   {
     timestamps: true,
