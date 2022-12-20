@@ -1,0 +1,48 @@
+.ttr-posts .ttr-post-avatar-logo {
+  width: 48px;
+}
+
+.ttr-posts .ttr-post-image-overlay {
+  left: 10px;
+}
+
+.ttr-posts .ttr-responsive-video::after {
+  display: block;
+  content: '';
+  padding-top: 56.25%;
+}
+
+.ttr-heart {
+  transition: color 0.4s ease-in-out;
+  transition: font 0.4s ease-in-out;
+}
+.ttr-heart-animated {
+  font-size: 1.5rem !important;
+}
+
+.ttr-stat-icon {
+  font-size: 0.85rem;
+}
+
+.ttr-post-title {
+  font-size: .9rem;
+}
+
+.ttr-dismiss-layer {
+  position: fixed;
+  right: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  z-index: 1;
+}
+
+.dropdown-menu {
+  display: block !important;
+  cursor: pointer;
+}
+
+.trr-post-more-button {
+  right: 0
+}

@@ -1,0 +1,13 @@
+.ttr-posts .ttr-post-avatar-logo {
+    width: 48px;
+}
+
+.ttr-posts .ttr-post-image-overlay {
+    left: 10px;
+}
+
+.ttr-posts .ttr-responsive-video::after {
+    display: block;
+    content: "";
+    padding-top: 56.25%;
+}
