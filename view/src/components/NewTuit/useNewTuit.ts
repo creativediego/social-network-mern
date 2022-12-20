@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { ITuit } from '../../interfaces/ITuit';
+import { IPost } from '../../interfaces/IPost';
 import { createTuitThunk } from '../../redux/tuitSlice';
 import { selectAuthUser } from '../../redux/userSlice';
 import { IUser } from '../../interfaces/IUser';
@@ -9,12 +9,12 @@ import { IUser } from '../../interfaces/IUser';
  * Displays form where user can submit a new tuit.
  *
  */
-const useNewTuit = () => {
+const useNewPost = () => {
   const authUser: IUser = useAppSelector(selectAuthUser);
   const dispatch = useAppDispatch();
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState('');
-  const [tuit, setTuit] = React.useState<ITuit>({
+  const [post, setPost] = React.useState<IPost>({
     id: '',
     author: authUser,
     createdAt: '',
@@ -35,11 +35,11 @@ const useNewTuit = () => {
     setImageFile(file);
   }, []);
 
-  const createTuit = async (tuit: ITuit) => {
+  const createTuit = async (tuit: IPost) => {
     if (!tuit.tuit) {
       return;
     }
-    setTuit({ ...tuit, tuit: '', image: '', hashtags: [] });
+    setPost({ ...tuit, tuit: '', image: '', hashtags: [] });
     dispatch(createTuitThunk({ userId: authUser.id, tuit, imageFile }));
     setImagePreview('');
     setImageFile(null);
@@ -51,7 +51,7 @@ const useNewTuit = () => {
 
   const setInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const tuitContent: string = e.target.value;
-    const updatedTuit = { ...tuit, tuit: tuitContent };
+    const updatedTuit = { ...post, tuit: tuitContent };
     const hashtags = parseHashtags(tuitContent);
 
     if (hashtags) {
@@ -59,7 +59,7 @@ const useNewTuit = () => {
     } else {
       updatedTuit.hashtags = [];
     }
-    setTuit({ ...tuit, ...updatedTuit });
+    setPost({ ...post, ...updatedTuit });
   };
   // Create an image preview when image is selected.
   useEffect(() => {
@@ -75,8 +75,8 @@ const useNewTuit = () => {
   }, [imageFile]);
 
   return {
-    tuit,
-    setTuit,
+    tuit: post,
+    setTuit: setPost,
     setImageFile: handleSetImageFile,
     imagePreview,
     setInput,
@@ -84,4 +84,4 @@ const useNewTuit = () => {
   };
 };
 
-export default useNewTuit;
+export default useNewPost;

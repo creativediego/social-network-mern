@@ -5,7 +5,7 @@ import React, {
   useCallback,
   useState,
 } from 'react';
-import { ITuit } from '../interfaces/ITuit';
+import { IPost } from '../interfaces/IPost';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 
 import {
@@ -15,7 +15,7 @@ import {
   deleteTuitThunk,
 } from '../redux/tuitSlice';
 
-const TuitContext = createContext<ITuit | null>(null);
+const TuitContext = createContext<IPost | null>(null);
 
 /**
  * Context for a single tuit to give nested components (such as stats) access to its data.
@@ -24,7 +24,7 @@ export const TuitProvider = ({
   tuit,
   children,
 }: {
-  tuit: ITuit;
+  tuit: IPost;
   children: ReactNode;
 }) => {
   return <TuitContext.Provider value={tuit}>{children}</TuitContext.Provider>;

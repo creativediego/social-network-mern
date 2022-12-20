@@ -1,7 +1,7 @@
-import { ITuit } from './ITuit';
+import { IPost } from './IPost';
 import { IUser } from './IUser';
 
 export interface ISearchResults {
-  tuits: ITuit[];
+  tuits: IPost[];
   users: IUser[];
 }

@@ -5,7 +5,7 @@ import {
   createSlice,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { ITuit } from '../interfaces/ITuit';
+import { IPost } from '../interfaces/IPost';
 import { userDislikesTuit, userLikesTuit } from '../services/likes-service';
 import { uploadTuitImage } from '../services/storage-service';
 import {
@@ -47,7 +47,7 @@ export const createTuitThunk = createAsyncThunk(
       userId,
       tuit,
       imageFile,
-    }: { userId: string; tuit: ITuit; imageFile: File | null },
+    }: { userId: string; tuit: IPost; imageFile: File | null },
     ThunkAPI
   ) => {
     let resultTuit = await createTuit(userId, tuit);
@@ -111,12 +111,12 @@ export const userDislikesTuitThunk = createAsyncThunk(
 );
 
 export interface TuitsState {
-  byAllUsers: ITuit[];
+  byAllUsers: IPost[];
   loading: boolean;
 }
 
-const tuitsAdapter = createEntityAdapter<ITuit>({
-  selectId: (tuit: ITuit) => tuit.id,
+const tuitsAdapter = createEntityAdapter<IPost>({
+  selectId: (tuit: IPost) => tuit.id,
   sortComparer: (a, b) => b.createdAt.localeCompare(a.createdAt),
 });
 
@@ -138,7 +138,7 @@ const tuitSlice = createSlice({
     selectTuit: (state, action) => {
       tuitsAdapter.setOne(state, action.payload);
     },
-    setAllTuits: (state, action: PayloadAction<ITuit[]>) => {
+    setAllTuits: (state, action: PayloadAction<IPost[]>) => {
       tuitsAdapter.setAll(state, action.payload);
     },
   },
@@ -148,7 +148,7 @@ const tuitSlice = createSlice({
     });
     builder.addCase(
       findAllTuitsThunk.fulfilled,
-      (state, action: PayloadAction<ITuit[]>) => {
+      (state, action: PayloadAction<IPost[]>) => {
         state.loading = false;
         tuitsAdapter.setAll(state, action.payload);
       }
@@ -161,7 +161,7 @@ const tuitSlice = createSlice({
     });
     builder.addCase(
       createTuitThunk.fulfilled,
-      (state, action: PayloadAction<ITuit>) => {
+      (state, action: PayloadAction<IPost>) => {
         state.loading = false;
         tuitsAdapter.upsertOne(state, action.payload);
       }
@@ -180,7 +180,7 @@ const tuitSlice = createSlice({
     });
     builder.addCase(
       userLikesTuitThunk.fulfilled,
-      (state, action: PayloadAction<ITuit>) => {
+      (state, action: PayloadAction<IPost>) => {
         state.loading = false;
         tuitsAdapter.upsertOne(state, action.payload);
       }
@@ -191,7 +191,7 @@ const tuitSlice = createSlice({
 
     builder.addCase(
       userDislikesTuitThunk.fulfilled,
-      (state, action: PayloadAction<ITuit>) => {
+      (state, action: PayloadAction<IPost>) => {
         state.loading = false;
         tuitsAdapter.upsertOne(state, action.payload);
       }

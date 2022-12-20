@@ -1,12 +1,12 @@
 import React, { memo, useEffect } from 'react';
 import './Tuits.scss';
 import Tuit from './Tuit';
-import { ITuit } from '../../interfaces/ITuit';
+import { IPost } from '../../interfaces/IPost';
 import { useAppDispatch } from '../../redux/hooks';
 import { removeAllTuits } from '../../redux/tuitSlice';
 
 interface TuitsProps {
-  tuits: ITuit[];
+  tuits: IPost[];
   showOptions?: boolean;
 }
 /**
@@ -17,7 +17,7 @@ const Tuits = ({ tuits }: TuitsProps): JSX.Element => {
     <div>
       <ul className='ttr-tuits list-group'>
         {tuits &&
-          Object.values(tuits).map((tuit: ITuit) => {
+          Object.values(tuits).map((tuit: IPost) => {
             return tuit ? <Tuit key={tuit.id} tuit={tuit} /> : null;
           })}
       </ul>

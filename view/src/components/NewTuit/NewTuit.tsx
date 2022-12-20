@@ -1,14 +1,14 @@
 import React from 'react';
 import TuitImage from '../TuitImage/TuitImage';
 import TuitImageUpload from './TuitImageUpload';
-import useNewTuit from './useNewTuit';
+import useNewPost from './useNewTuit';
 
 /**
  * Displays form for a user to submit a new tuit.
  */
-const NewTuit = () => {
+const NewPost = () => {
   const { tuit, setInput, setImageFile, createTuit, imagePreview } =
-    useNewTuit();
+    useNewPost();
   return (
     <div className='p-2 w-100'>
       <textarea
@@ -55,4 +55,4 @@ const NewTuit = () => {
   );
 };
 
-export default NewTuit;
+export default NewPost;

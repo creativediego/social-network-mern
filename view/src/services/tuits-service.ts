@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ITuit } from '../interfaces/ITuit';
+import { IPost } from '../interfaces/IPost';
 import { processError } from './helpers';
 import { loadRequestInterceptors } from './helpers';
 const TUITS_API = `${process.env.REACT_APP_API_URL}/tuits`;
@@ -26,13 +26,13 @@ export const findTuitsByUser = (userId: string) =>
     .then((response) => response.data)
     .catch((err) => processError(err));
 
-export const createTuit = (userId: string, tuit: ITuit) =>
+export const createTuit = (userId: string, tuit: IPost) =>
   api
     .post(`${USERS_API}/${userId}/tuits`, tuit)
     .then((response) => response.data)
     .catch((err) => processError(err));
 
-export const updateTuit = (tuitId: string, tuit: ITuit) =>
+export const updateTuit = (tuitId: string, tuit: IPost) =>
   api
     .put(`${TUITS_API}/${tuitId}`, tuit)
     .then((response) => response.data)

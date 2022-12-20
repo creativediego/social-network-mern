@@ -6,7 +6,7 @@ import {
   EntityState,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { ITuit } from '../interfaces/ITuit';
+import { IPost } from '../interfaces/IPost';
 import { IUser } from '../interfaces/IUser';
 import {
   findAllTuitsDislikedByUser,
@@ -37,7 +37,7 @@ export const findLikedTuitsThunk = createAsyncThunk(
   'profile/findMyLikes',
   async (userId: string, ThunkAPI) => {
     let tuits = await findAllTuitsLikedByUser(userId);
-    tuits = tuits.filter((tuit: ITuit) => tuit !== null);
+    tuits = tuits.filter((tuit: IPost) => tuit !== null);
     return dataOrStateError(tuits, ThunkAPI.dispatch);
   }
 );
@@ -46,31 +46,31 @@ export const findDislikedTuitsThunk = createAsyncThunk(
   'profile/findMydislikes',
   async (userId: string, ThunkAPI) => {
     let tuits = await findAllTuitsDislikedByUser(userId);
-    tuits = tuits.filter((tuit: ITuit) => tuit !== null);
+    tuits = tuits.filter((tuit: IPost) => tuit !== null);
     return dataOrStateError(tuits, ThunkAPI.dispatch);
   }
 );
 
 interface ProfileState {
   user: IUser | null;
-  myTuits: EntityState<ITuit>;
-  likes: EntityState<ITuit>;
-  dislikes: EntityState<ITuit>;
+  myTuits: EntityState<IPost>;
+  likes: EntityState<IPost>;
+  dislikes: EntityState<IPost>;
   loading: boolean;
 }
 
-const myTuitsAdapter = createEntityAdapter<ITuit>({
-  selectId: (tuit: ITuit) => tuit.id,
+const myTuitsAdapter = createEntityAdapter<IPost>({
+  selectId: (tuit: IPost) => tuit.id,
   sortComparer: (a, b) => b.createdAt.localeCompare(a.createdAt),
 });
 
-const likedTuitsAdapter = createEntityAdapter<ITuit>({
-  selectId: (tuit: ITuit) => tuit.id,
+const likedTuitsAdapter = createEntityAdapter<IPost>({
+  selectId: (tuit: IPost) => tuit.id,
   sortComparer: (a, b) => b.createdAt.localeCompare(a.createdAt),
 });
 
-const dislikedTuitsAdapter = createEntityAdapter<ITuit>({
-  selectId: (tuit: ITuit) => tuit.id,
+const dislikedTuitsAdapter = createEntityAdapter<IPost>({
+  selectId: (tuit: IPost) => tuit.id,
   sortComparer: (a, b) => b.createdAt.localeCompare(a.createdAt),
 });
 
@@ -86,7 +86,7 @@ const profileSlice = createSlice({
   name: 'profile',
   initialState,
   reducers: {
-    updateMyTuits: (state, action: PayloadAction<ITuit>) => {
+    updateMyTuits: (state, action: PayloadAction<IPost>) => {
       const existingTuit = myTuitsAdapter
         .getSelectors()
         .selectById(state.myTuits, action.payload.id);
@@ -94,7 +94,7 @@ const profileSlice = createSlice({
         myTuitsAdapter.upsertOne(state.myTuits, action.payload);
       }
     },
-    updateLikedTuits: (state, action: PayloadAction<ITuit>) => {
+    updateLikedTuits: (state, action: PayloadAction<IPost>) => {
       const existingTuit = likedTuitsAdapter
         .getSelectors()
         .selectById(state.likes, action.payload.id);
@@ -104,7 +104,7 @@ const profileSlice = createSlice({
         likedTuitsAdapter.upsertOne(state.likes, action.payload);
       }
     },
-    updateDislikedTuits: (state, action: PayloadAction<ITuit>) => {
+    updateDislikedTuits: (state, action: PayloadAction<IPost>) => {
       const existingTuit = dislikedTuitsAdapter
         .getSelectors()
         .selectById(state.dislikes, action.payload.id);
@@ -114,7 +114,7 @@ const profileSlice = createSlice({
         dislikedTuitsAdapter.upsertOne(state.dislikes, action.payload);
       }
     },
-    removeMyTuit: (state, action: PayloadAction<ITuit>) => {
+    removeMyTuit: (state, action: PayloadAction<IPost>) => {
       const existingTuit = myTuitsAdapter
         .getSelectors()
         .selectById(state.myTuits, action.payload.id);
@@ -122,7 +122,7 @@ const profileSlice = createSlice({
         myTuitsAdapter.removeOne(state.myTuits, action.payload.id);
       }
     },
-    removeLikedTuit: (state, action: PayloadAction<ITuit>) => {
+    removeLikedTuit: (state, action: PayloadAction<IPost>) => {
       const existingTuit = likedTuitsAdapter
         .getSelectors()
         .selectById(state.likes, action.payload.id);
@@ -130,7 +130,7 @@ const profileSlice = createSlice({
         likedTuitsAdapter.removeOne(state.likes, action.payload.id);
       }
     },
-    removeDislikedTuit: (state, action: PayloadAction<ITuit>) => {
+    removeDislikedTuit: (state, action: PayloadAction<IPost>) => {
       const existingTuit = dislikedTuitsAdapter
         .getSelectors()
         .selectById(state.dislikes, action.payload.id);
@@ -168,7 +168,7 @@ const profileSlice = createSlice({
     });
     builder.addCase(
       findMyTuitsThunk.fulfilled,
-      (state, action: PayloadAction<ITuit[]>) => {
+      (state, action: PayloadAction<IPost[]>) => {
         state.loading = false;
 
         myTuitsAdapter.setAll(state.myTuits, action.payload);
@@ -183,7 +183,7 @@ const profileSlice = createSlice({
     });
     builder.addCase(
       findLikedTuitsThunk.fulfilled,
-      (state, action: PayloadAction<ITuit[]>) => {
+      (state, action: PayloadAction<IPost[]>) => {
         state.loading = false;
         likedTuitsAdapter.setAll(state.likes, action.payload);
       }
@@ -197,7 +197,7 @@ const profileSlice = createSlice({
     });
     builder.addCase(
       findDislikedTuitsThunk.fulfilled,
-      (state, action: PayloadAction<ITuit[]>) => {
+      (state, action: PayloadAction<IPost[]>) => {
         state.loading = false;
         dislikedTuitsAdapter.setAll(state.dislikes, action.payload);
       }

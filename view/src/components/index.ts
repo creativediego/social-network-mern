@@ -3,7 +3,7 @@ import GenericError from './GenericError/GenericError';
 import Tuits from './Tuits';
 import AlertBox from './AlertBox/AlertBox';
 import Navigation from './Navigation/Navigation';
-import NewTuit from './NewTuit/NewTuit';
+import NewPost from './NewTuit/NewTuit';
 import Loader from './Loader/Loader';
 import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 import TuitImage from './TuitImage/TuitImage';
@@ -26,7 +26,7 @@ export {
   TuitImage,
   Tuits,
   Navigation,
-  NewTuit,
+  NewPost as NewTuit,
   Loader,
   Search,
   FollowButton,

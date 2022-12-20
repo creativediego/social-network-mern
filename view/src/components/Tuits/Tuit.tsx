@@ -4,14 +4,14 @@ import TuitImage from '../TuitImage/TuitImage';
 import TuitVideo from './TuitVideo';
 import { Link } from 'react-router-dom';
 import { AvatarImage } from '../AvatarImage/AvatarImage';
-import { ITuit } from '../../interfaces/ITuit';
+import { IPost } from '../../interfaces/IPost';
 import moment from 'moment';
 import { TuitProvider } from '../../hooks/useTuit';
 import TuitMoreButton from './TuitMoreButton';
 import { useAuthUser } from '../../hooks/useAuthUser';
 
 interface TuitProps {
-  tuit: ITuit;
+  tuit: IPost;
 }
 /**
  * Displays a tuit with all of its information, including Author, time, and stats (likes, dislikes, etc).

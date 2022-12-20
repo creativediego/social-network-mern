@@ -1,12 +1,12 @@
 import { IUser } from './IUser';
 
-export interface ITuitStats {
+export interface IPostStats {
   replies: number;
   likes: number;
   dislikes: number;
   retuits: number;
 }
-export interface ITuit {
+export interface IPost {
   id: string;
   tuit: string;
   author: IUser;
@@ -15,7 +15,7 @@ export interface ITuit {
   imageFile?: File;
   youtube?: string;
   hashtags?: string[];
-  stats: ITuitStats;
+  stats: IPostStats;
   likedBy: string[];
   dislikedBy: string[];
 }

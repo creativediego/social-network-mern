@@ -14,7 +14,7 @@ const LandingPage = ({ children }: LandingViewProps): JSX.Element => {
         </div>
         <div className='col-lg-6 order-lg-1 bg-primary d-flex justify-content-center align-items-center'>
           <p
-            className='text-center fa-brands fa-twitter text-white'
+            className='text-center fa-duotone fa-bullhorn text-white'
             style={{ fontSize: '20rem' }}
           ></p>
         </div>
