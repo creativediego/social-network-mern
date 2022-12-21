@@ -6,10 +6,10 @@
         "node": "18.x"
       },
     "scripts": {
-        "start": "pwd && node api/build/server.js",
+        "start": "node api/build/server.js",
         "install-client": "cd client && npm install && npm run build && cd ..",
-        "install-api": "cd api && npm install && npm run build",
-        "heroku-postbuild": "npm run install-api"
+        "install-api": "cd api && npm install && npm run build && cd ..",
+        "heroku-postbuild": "npm run install-client && npm run install-api"
     }
 
 }
