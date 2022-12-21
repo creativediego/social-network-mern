@@ -17,7 +17,7 @@ createControllers(app);
 handleUncaughtException();
 app.use(handleCentralError);
 
-if (process.env.NODE_ENV! === 'PRODUCTION') {
+if (process.env.NODE_ENV! === 'production') {
   app.set('trust proxy', 1); // trust first proxy
   app.use(express.static(path.join(__dirname, '../../client/build'))); // serve react app
   app.get('*', (req: Request, res: Response) => {
