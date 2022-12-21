@@ -6,10 +6,10 @@
         "node": "18.x"
       },
     "scripts": {
-        "start": "yarn start --prefix server",
-        "install-client": "cd client && yarn install && yarn run build && cd ..",
-        "install-server": "cd server && yarn install && yarn run build && cd .. ",
-        "heroku-postbuild": "yarn run install-client && yarn run install-server"
+        "start": "npm start --prefix server",
+        "install-client": "cd client && npm install && npm run build && cd ..",
+        "install-server": "cd server && npm install && npm run build && cd .. ",
+        "heroku-postbuild": "npm run install-client && npm run install-server"
     }
 
 }
