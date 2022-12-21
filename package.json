@@ -9,7 +9,7 @@
         "start": "npm start --prefix api",
         "install-client": "cd client && npm install && npm run build && cd ..",
         "install-api": "cd api && npm install && npm run build && cd .. ",
-        "heroku-postbuild": "npm run install-client && npm run install-api"
+        "heroku-postbuild": "npm run install-api"
     }
 
 }
