@@ -4,9 +4,9 @@
   "description": "Social Network API built in Node, Mongo, Express, and Typescript.",
   "main": "index.js",
   "scripts": {
-    "heroku-postbuild": "cd view && yarn install && yarn build",
+    "heroku-postbuild": "cd client && yarn install && yarn build",
     "start": "node build/server.js",
-    "dev": "nodemon ./server.ts  --ignore ./view/",
+    "dev": "nodemon ./server.ts  --ignore ./client/",
     "build": "tsc --project ./",
     "test": "jest --watchAll --detectOpenHandles --verbose --coverage",
     "postinstall": "npm run build",
