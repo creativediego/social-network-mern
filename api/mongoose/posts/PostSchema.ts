@@ -5,7 +5,6 @@ import BookmarkModel from '../bookmarks/BookmarkModel';
 import DislikeModel from '../dislikes/DislikeModel';
 import LikeModel from '../likes/LikeModel';
 import UserModel from '../users/UserModel';
-import UserSchema from '../users/UserSchema';
 import { formatJSON } from '../util/formatJSON';
 
 /**
@@ -40,7 +39,7 @@ const PostSchema = new mongoose.Schema<IPost>(
  * Check if user/author FK is valid before creating post.
  */
 PostSchema.pre('save', async function (next) {
-  const existingUser = await UserModel.findById(this.author._id);
+  const existingUser = await UserModel.findById(this.author.id);
   if (existingUser === null) {
     throw new MongooseException('Author is not an existing user.');
   }

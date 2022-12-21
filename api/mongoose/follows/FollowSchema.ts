@@ -70,7 +70,7 @@ FollowSchema.post('findOneAndUpdate', async function (next): Promise<void> {
   }
 });
 
-FollowSchema.pre('remove', async function (next): Promise<void> {
+FollowSchema.pre<IFollow>('remove', async function (next): Promise<void> {
   await UserModel.updateOne(
     { _id: this.follower },
     { $inc: { followeeCount: -1 } }
