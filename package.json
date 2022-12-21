@@ -4,7 +4,7 @@
   "description": "Social Network API built in Node, Mongo, Express, and Typescript.",
   "main": "index.js",
   "scripts": {
-    "heroku-postbuild": "cd client && npm install && npm build",
+    "heroku-postbuild": "cd client && npm install && npm run build",
     "start": "node build/server.js",
     "dev": "nodemon ./server.ts  --ignore ./client/",
     "build": "tsc --project ./",
