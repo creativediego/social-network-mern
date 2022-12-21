@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "main": "",
     "engines": {
-        "node": "10.x"
+        "node": "18.x"
       },
     "scripts": {
         "start": "yarn start --prefix server",
