@@ -1,9 +1,9 @@
 {
   "name": "social-network-node-api",
   "version": "1.0.0",
-  "engines": {
-    "node": "18.x"
-  },
+   "engines": {
+        "node": "18.x"
+      },
   "description": "Social Network API built in Node, Mongo, Express, and Typescript.",
   "main": "index.js",
   "scripts": {

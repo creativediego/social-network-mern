@@ -19,7 +19,7 @@ import { useAlert } from '../../hooks/useAlert';
 /**
  * Main middle column view of the app where all pages are displayed.
  */
-const PosterView = (): JSX.Element => {
+const MainView = (): JSX.Element => {
   const { error, success } = useAlert();
   return (
     <div className='container'>
@@ -51,4 +51,4 @@ const PosterView = (): JSX.Element => {
   );
 };
 
-export default PosterView;
+export default MainView;

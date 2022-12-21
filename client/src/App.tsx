@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useAppDispatch } from './redux/hooks';
 import { GenericError } from './components';
 import './styles.css';
-import PosterView from './pages/MainView/MainView';
+import MainView from './pages/MainView/MainView';
 import { LoginPage, LandingPage } from './pages';
 import { Routes, Route, HashRouter } from 'react-router-dom';
 import { useAuthUser } from './hooks/useAuthUser';
@@ -29,7 +29,7 @@ function App() {
             path='/*'
             element={
               profileComplete && isLoggedIn ? (
-                <PosterView />
+                <MainView />
               ) : (
                 <LandingPage>
                   <LoginPage />
