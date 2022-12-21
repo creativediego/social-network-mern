@@ -10,5 +10,12 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "moduleResolution": "node",
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "public",
+    "typings/browser.d.ts",
+    "typings/browser/**",
+    "client"
+]
 }
