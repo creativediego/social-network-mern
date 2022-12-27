@@ -20,8 +20,7 @@ export const findMessagesByConversationThunk = createAsyncThunk(
   async (conversationId: string, ThunkAPI) => {
     const state = ThunkAPI.getState() as RootState;
     const userId = state.user.data.id;
-    console.log('userId', userId);
-    console.log('conversationIUd', conversationId);
+
     const conversationOrError = await messageAPI.findConversation(
       userId,
       conversationId
@@ -172,8 +171,6 @@ const chatSlice = createSlice({
     builder.addCase(
       createConversationThunk.fulfilled,
       (state, action: PayloadAction<IConversation>) => {
-        console.log('from thunk', action.payload);
-        console.log('from thunk', action.payload.id);
         state.loading = false;
         state.id = action.payload.id;
         chatAdapter.removeAll(state);

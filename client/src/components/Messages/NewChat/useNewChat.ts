@@ -49,7 +49,7 @@ export const useNewChat = () => {
       participants: [...selectedUsers, authUser],
       createdBy: authUser,
     };
-    console.log(conversation);
+
     dispatch(createConversationThunk(conversation));
     if (isMounted.current) {
       setLoading(false);
@@ -62,7 +62,6 @@ export const useNewChat = () => {
 
   useEffect(() => {
     if (isMounted.current && activeChatId) {
-      console.log('from componenet', activeChatId);
       navigate(`/messages/${activeChatId}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

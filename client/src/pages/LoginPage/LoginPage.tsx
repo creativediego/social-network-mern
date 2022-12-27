@@ -26,10 +26,11 @@ const LoginPage = () => {
 
   return (
     <div>
-      <h1 className='fs-1'>Wassup Social</h1>
+      <h1 className='fs-1'>Bullhorn</h1>
+      <h2 className='fs-3'>Share what's happening</h2>
       <div className='col-md-7'>
         <div className='mt-3'>
-          <h3 className='fs-4'>Join Wassup Today</h3>
+          <h3 className='fs-5'>Join Bullhorn today</h3>
           <Button
             className='rounded-pill w-100'
             variant='primary'

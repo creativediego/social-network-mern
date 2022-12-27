@@ -31,7 +31,6 @@ const useNewPost = () => {
   });
 
   const handleSetImageFile = useCallback((file: File | null) => {
-    console.log(file);
     setImageFile(file);
   }, []);
 

@@ -53,7 +53,7 @@ FollowSchema.index(
  */
 FollowSchema.post('findOneAndUpdate', async function (next): Promise<void> {
   const doc: IFollow | null = await FollowModel.findOne(this.getQuery());
-  // console.log(doc);
+  //
   const existingFollower: IUser | null = await UserModel.findOneAndUpdate(
     { _id: doc?.follower },
     { $inc: { followeeCount: 1 } }

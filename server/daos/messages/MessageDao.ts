@@ -39,7 +39,6 @@ export default class MessageDao implements IMessageDao {
   createConversation = async (
     conversation: IConversation
   ): Promise<IConversation> => {
-    console.log(conversation);
     let participants = conversation.participants.map((user) => user.id);
     // if (!conversation.participants.includes(conversation.createdBy)) {
     //   participants.push(conversation.createdBy.id);

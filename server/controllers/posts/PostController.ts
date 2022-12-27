@@ -97,7 +97,6 @@ export default class PostController implements IPostController {
    * @returns {HttpResponse} the response data to be sent to the client
    */
   findById = async (req: HttpRequest): Promise<HttpResponse> => {
-    console.log('FIND BY ID', req.params);
     const post: IPost = await this.postDao.findById(req.params.postId);
     return okResponse(post);
   };
