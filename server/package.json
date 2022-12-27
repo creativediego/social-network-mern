@@ -7,14 +7,13 @@
   "description": "Social Network API built in Node, Mongo, Express, and Typescript.",
   "main": "index.js",
   "scripts": {
-    "heroku-postbuilddd": "cd client && npm install && npm run build",
+    "heroku-postbuild": "cd client && npm install && npm run build",
     "install-client": "cd .. && cd client && npm install && npm run build",
     "start": "node build/server.js",
     "dev": "nodemon -L ./server.ts",
     "build": "tsc --project ./",
-    "postbuild": "npm run install-client",
+    "postbuildddd": "npm run install-client",
     "test": "jest --watchAll --detectOpenHandles --verbose --coverage",
-    "postinstall": "npm run build",
     "docs": "rm -r build;  tsc --project ./; jsdoc --configure jsdoc.json --verbose"
   },
   "author": "",

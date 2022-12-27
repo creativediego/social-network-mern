@@ -6,8 +6,8 @@
         "node": "18.x"
       },
     "scripts": {
-        "start": "node api/build/server.js",
-        "build": "cd api && npm install && npm run build"
+        "start": "node server/build/server.js",
+        "build": "cd server && npm install && npm run build"
     }
 
 }
