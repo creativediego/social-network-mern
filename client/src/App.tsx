@@ -9,7 +9,7 @@ import { useAuthUser } from './hooks/useAuthUser';
 import { onFirebaseAuthStateChange } from './services/firebase-auth';
 import { clearUser, fetchProfileThunk } from './redux/userSlice';
 import { clearChat } from './redux/chatSlice';
-
+// Main app entry point
 function App() {
   const { profileComplete, isLoggedIn } = useAuthUser();
   const dispatch = useAppDispatch();

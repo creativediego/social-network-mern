@@ -1,5 +1,5 @@
 import { NotificationType } from './NotificationType';
-import IUser from './../users/IUser';
+import IUser from '../users/IUser';
 
 /**
  * Model interface for a notification.

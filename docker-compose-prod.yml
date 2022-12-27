@@ -1,0 +1,27 @@
+version: '3'
+services:
+  client:
+    image: client-production
+    restart: unless-stopped
+    # by default, when you rum the creat react app server, sometimes it will immediately exit, so this a workaround.
+    stdin_open: true
+    ports:
+      - '80:80' # http
+      - '443:443' # https
+    depends_on:
+      - server
+    networks:
+      - 'bullhorn-social'
+  server:
+    image: server-production
+    restart: unless-stopped
+    stdin_open: true
+    ports:
+      - '5500:5500'
+    networks:
+      - bullhorn-social
+   
+networks:
+  bullhorn-social:
+    driver: bridge
+

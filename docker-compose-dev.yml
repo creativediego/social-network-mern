@@ -1,0 +1,34 @@
+version: '3'
+services:
+  client:
+    image: client
+    build: ./client
+    # by default, when you rum the creat react app server, sometimes it will immediately exit, so this a workaround.
+    stdin_open: true
+    ports:
+      - '3000:3000' # map port in the container to docker host
+    depends_on:
+      - server
+    networks:
+      - 'bullhorn-social'
+    volumes:
+      - ./client/:/usr/src/client #map client to app WORKDIR
+      - /usr/src/client/node_modules #ignore 
+  server:
+    image: server
+    stdin_open: true
+    build:
+      context: ./server
+    ports:
+      - '4000:4000'
+    networks:
+      - bullhorn-social
+    volumes:
+      - ./server/:/usr/src/server #map host server dir to server container WORKDIR
+      - /usr/src/server/node_modules #anonymous volume: to ignore 
+      - /usr/src/server/build #anonymous volume: to ignore 
+
+networks:
+  bullhorn-social:
+    driver: bridge
+

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
-    "rootDir": "./",
+    "rootDir": ".",
     "outDir": "./build",
     "esModuleInterop": true,
     "strict": true,
@@ -16,6 +16,7 @@
     "public",
     "typings/browser.d.ts",
     "typings/browser/**",
-    "client"
+    "client",
+    "react-client"
 ]
 }

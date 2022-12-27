@@ -1,0 +1,16 @@
+{
+    "name": "social-media-app",
+    "version": "1.0.0",
+    "main": "",
+    "engines": {
+        "node": "18.x"
+      },
+    "scripts": {
+        "start": "node api/build/server.js",
+        "build": "run install-api",
+        "install-client": "cd client && npm install && npm run build",
+        "install-api": "cd api && npm install && npm run build",
+        "heroku-postbuild": "npm run install-client"
+    }
+
+}

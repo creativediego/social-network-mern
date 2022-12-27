@@ -1,0 +1,31 @@
+# First State to take care of dependencies
+FROM node:18.12.0 AS builer
+
+WORKDIR /usr/src/client
+
+#src to working dir
+COPY ./package.json ./ 
+
+RUN npm install
+
+COPY . .
+
+ARG API_URL
+ENV REACT_APP_API_URL={API_URL}
+
+RUN npm run build
+
+# Second stage: Copy into secondary Caddy stage
+FROM caddy:2.1.1-alpine
+
+# only available during build time
+# pass a caddy config file for local or prod build
+# https will not be running locally
+ARG CADDYFILE
+COPY ${CADDYFILE} /etc/caddy/Caffyfile
+
+# Copy react build folder to the srv public dir
+COPY --from=builder /usr/src/client/build /srv
+
+EXPOSE 80
+EXPOSE 443
