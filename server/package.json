@@ -8,11 +8,13 @@
   "main": "index.js",
   "scripts": {
     "heroku-postbuilddd": "cd client && npm install && npm run build",
+    "install-client": "cd .. && cd client && npm install && npm run build",
     "start": "node build/server.js",
     "dev": "nodemon -L ./server.ts",
     "build": "tsc --project ./",
+    "postbuild": "npm run install-client",
     "test": "jest --watchAll --detectOpenHandles --verbose --coverage",
-    "_postinstalll": "npm run build",
+    "postinstall": "npm run build",
     "docs": "rm -r build;  tsc --project ./; jsdoc --configure jsdoc.json --verbose"
   },
   "author": "",
