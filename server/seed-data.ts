@@ -58,9 +58,9 @@ const profiles = [
     profilePhoto: randomWomenProfilePhotos[0],
   },
   {
-    username: 'michaelbrown',
+    username: 'michaeljames',
     password: 'ghi789',
-    name: 'Michael Brown',
+    name: 'Michael James',
     email: 'michael.brown@gmail.com',
     bio: 'I am a marketer who specializes in creating and executing effective marketing campaigns. In my free time, I enjoy running, watching movies, and playing the guitar.',
     birthday: '1990-03-21',

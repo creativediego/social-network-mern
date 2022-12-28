@@ -1,5 +1,6 @@
 {
     "name": "social-media-app",
+    "description": "dummy entry point json for heroku deployment",
     "version": "1.0.0",
     "main": "",
     "engines": {
