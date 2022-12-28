@@ -31,7 +31,6 @@ import { setProfileUser } from './profileSlice';
 export const fetchProfileThunk = createAsyncThunk(
   'users/fetchProfile',
   async (data, ThunkAPI) => {
-    console.log('fetchprofile');
     const profile = await getProfile();
     const state = ThunkAPI.getState() as RootState;
     if (!profile.error && state.user.socketConnected) {

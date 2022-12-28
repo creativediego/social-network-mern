@@ -32,9 +32,6 @@ export const createNotification = async (
   userId: string,
   notification: INotification
 ) => {
-  // Prevent self notifications.
-  console.log(notification);
-
   try {
     const res = await api.post(
       `${USERS_API}/${userId}/notifications`,
