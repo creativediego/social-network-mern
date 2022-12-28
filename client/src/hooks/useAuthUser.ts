@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import {
   loginThunk,
@@ -16,15 +16,26 @@ export const useAuthUser = () => {
   const loading = useAppSelector(selectAuthUserLoading);
   const dispatch = useAppDispatch();
 
-  const login = useCallback(
-    async (email: string, password: string) => {
-      if (!email || !password) {
-        return;
-      }
-      dispatch(loginThunk({ email, password }));
+  const [loginUser, setLoginUser] = useState<{
+    email: string;
+    password: string;
+  }>({ email: '', password: '' });
+
+  const handleSetLoginUser = useCallback(
+    (e: React.FormEvent<HTMLInputElement>) => {
+      const element: HTMLInputElement = e.currentTarget;
+      setLoginUser({ ...loginUser, [element.name]: element.value });
     },
-    [dispatch]
+    [loginUser]
   );
+
+  const login = useCallback(async () => {
+    const { email, password } = loginUser;
+    if (!email || !password) {
+      return;
+    }
+    dispatch(loginThunk({ email, password }));
+  }, [dispatch, loginUser]);
 
   const logout = useCallback(async () => {
     dispatch(logoutThunk());
@@ -36,6 +47,8 @@ export const useAuthUser = () => {
     isLoggedIn,
     logout,
     login,
+    handleSetLoginUser,
     loading,
+    loginUser,
   };
 };

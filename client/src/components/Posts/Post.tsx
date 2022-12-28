@@ -9,6 +9,7 @@ import moment from 'moment';
 import { PostProvider } from '../../hooks/usePost';
 import PostMoreButton from './PostMoreButton';
 import { useAuthUser } from '../../hooks/useAuthUser';
+import PostContent from './PostContent';
 
 interface PostProps {
   post: IPost;
@@ -59,22 +60,7 @@ const Post = ({ post }: PostProps): JSX.Element => {
                 </div>
                 {user.id === post.author.id && <PostMoreButton />}
               </div>
-              {postWordArray.map((word, index) =>
-                word[0] === '#' ? ( // style the hashtag word and create link
-                  <Link
-                    to={`/search/?q=${word.split('#')[1]}`} // exclude hash from url
-                    className='text-decoration-none'
-                    key={index}
-                  >
-                    <span key={index} className='text-primary'>
-                      {' '}
-                      {word}
-                    </span>
-                  </Link>
-                ) : (
-                  <span key={index}> {word}</span>
-                )
-              )}
+              <PostContent content={postWordArray} />
               {post.youtube && <PostVideo />}
               {post.image && (
                 <PostImage imageURL={post.image} deletable={false} />

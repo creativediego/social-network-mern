@@ -11,16 +11,7 @@ import { useAlert } from '../../hooks/useAlert';
  */
 const LoginForm = (): JSX.Element => {
   const { error } = useAlert();
-  const { login, loading } = useAuthUser();
-
-  const [loginUser, setLoginUser] = useState({
-    email: 'createideas@hotmail.com',
-    password: 'Hello123!',
-  });
-
-  const submit = () => {
-    login(loginUser.email, loginUser.password);
-  };
+  const { login, loading, handleSetLoginUser, loginUser } = useAuthUser();
 
   return (
     <div>
@@ -31,7 +22,7 @@ const LoginForm = (): JSX.Element => {
           placeholder='email'
           value={loginUser.email}
           onChange={(e: React.FormEvent<HTMLInputElement>) =>
-            setLoginUser({ ...loginUser, email: e.currentTarget.value })
+            handleSetLoginUser(e)
           }
         />
         <FormInput
@@ -42,7 +33,7 @@ const LoginForm = (): JSX.Element => {
           placeholder='password'
           value={loginUser.password}
           onChange={(e) =>
-            setLoginUser({ ...loginUser, password: e.currentTarget.value })
+            handleSetLoginUser(e)
           }
         />
       </form>
@@ -52,7 +43,7 @@ const LoginForm = (): JSX.Element => {
           className='rounded-pill'
           variant='primary'
           onClick={() => {
-            submit();
+            login();
           }}
         >
           {loading ? <Loader loading={loading} /> : <>Log in</>}

@@ -2,7 +2,7 @@ import HomePage from './HomePage/HomePage';
 import LandingPage from './LandingPage/LandingPage';
 import LoginPage from './LoginPage/LoginPage';
 import MessagesPage from './MessagesPage/MessagesPage';
-import WhatsHappeningWidget from './WhatsHappeningWidget/WhatsHappeningWidget';
+import PopularPostsWidget from './WhatsHappeningWidget/WhatsHappeningWidget';
 import ProfilePage from './ProfilePage/ProfilePage';
 import ExplorePage from './ExplorePage/ExplorePage';
 import BookmarksPage from './BookmarksPage/BookmarksPage';
@@ -16,7 +16,7 @@ export {
   HomePage,
   LoginPage,
   MessagesPage,
-  WhatsHappeningWidget,
+  PopularPostsWidget as WhatsHappeningWidget,
   LandingPage,
   ProfilePage,
   ExplorePage,

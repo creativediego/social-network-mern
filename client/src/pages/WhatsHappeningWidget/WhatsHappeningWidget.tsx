@@ -1,8 +1,21 @@
 import React from 'react';
-import whatsHappening from './whats-happening-data';
+import { useAllPosts } from '../../hooks/useAllPosts';
+import { IPost } from '../../interfaces/IPost';
 import './WhatsHappeningView.css';
+import moment from 'moment';
+import PostContent from '../../components/Posts/PostContent';
 
 const WhatsHappeningWidget = (): JSX.Element => {
+  const { posts } = useAllPosts();
+  const sortByLikes = (a: IPost, b: IPost) => {
+    if (a.stats.likes < b.stats.likes) {
+      return 1;
+    }
+    if (a.stats.likes < b.stats.likes) {
+      return -1;
+    }
+    return 0;
+  };
   return (
     <div className='ttr-whats-happening p-2'>
       {/* <div className='ttr-search position-relative'>
@@ -13,27 +26,38 @@ const WhatsHappeningWidget = (): JSX.Element => {
         />
       </div> */}
       <div className='bg-secondary bg-opacity-10 ttr-rounded-15px mt-2 p-2'>
-        <h5>What's happening</h5>
-        {whatsHappening.map((wh) => {
-          return (
-            <div key={wh._id} className='ttr-whats-happening-post d-flex mb-3'>
-              <div className='flex-grow-1'>
-                <h3 className='fs-6 fw-lighter'>
-                  {wh.topic} - {wh['hours-ago']} hours ago
-                </h3>
-                <div className='fw-bold mb-2 pe-1'>{wh.content}</div>
-                <h4 className='fs-6 fw-lighter'>{wh.likes} likes</h4>
+        <h5>Popular Posts</h5>
+        {posts
+          .sort(sortByLikes)
+          .slice(0, 3)
+          .map((post) => {
+            return (
+              <div
+                key={post.id}
+                className='ttr-whats-happening-post d-flex mb-3'
+              >
+                <div className='flex-grow-1'>
+                  <h3 className='fs-6 fw-lighter'>
+                    {moment(post.createdAt).fromNow()}
+                  </h3>
+                  <div className='fw-bold mb-2 pe-1'>
+                    <PostContent content={post.post.split(' ')} />
+                  </div>
+                  <h4 className='fs-6 fw-lighter'>
+                    <i className='far fa-heart ttr-stat-icon'></i>{' '}
+                    {post.stats.likes} likes
+                  </h4>
+                </div>
+                <div>
+                  <img
+                    alt='user avatar'
+                    src={post.author.profilePhoto}
+                    className='ttr-rounded-15px ttr-user-logo'
+                  />
+                </div>
               </div>
-              <div>
-                <img
-                  alt='user avatar'
-                  src={`../images/${wh['user-logo']}`}
-                  className='ttr-rounded-15px ttr-user-logo'
-                />
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
       </div>
     </div>
   );
