@@ -19,7 +19,7 @@ export const dataOrStateError = <T>(
     } else {
       const userFriendlyError = {
         error: {
-          message: 'Ooops! Something went wrong. Try again later.',
+          message: 'Error: ' + APIdata.error.message,
         },
       };
       dispatchAction(setResponseError(userFriendlyError)); //update errors

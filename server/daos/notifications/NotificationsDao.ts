@@ -48,8 +48,10 @@ export default class NotificationDao {
     notification: INotification
   ): Promise<INotification> =>
     await (
-      await INotificationModel.create(notification)
-    ).populate('userActing');
+      await (
+        await INotificationModel.create(notification)
+      ).populate('userActing')
+    ).populate('userNotified');
   /**
    * Marks a notification as read.
    * @param nid

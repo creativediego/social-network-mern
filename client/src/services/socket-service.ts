@@ -3,10 +3,7 @@ import axios from 'axios';
 import { processError } from './helpers';
 import { upsertNotification } from '../redux/notificationSlice';
 import { addPost, updatePosts } from '../redux/postSlice';
-import {
-  findInboxMessagesThunk,
-  updateInbox,
-} from '../redux/messageInboxSlice';
+import { findInboxMessagesThunk } from '../redux/messageInboxSlice';
 import { upsertChatMessage } from '../redux/chatSlice';
 import { IMessage } from '../interfaces/IMessage';
 import store from '../redux/store';
@@ -14,7 +11,7 @@ const SECURITY_API = `${process.env.REACT_APP_API_URL}/auth`;
 const api = axios.create();
 const SOCKET_URL = process.env.REACT_APP_SOCKET_URL;
 
-let socket: any;
+export let socket: any;
 let listening = false;
 
 const listenForNewMessages = (socket: Socket, ThunkAPI: any) => {
@@ -49,9 +46,9 @@ const listenForUpdatedPosts = (socket: Socket, ThunkAPI: any) => {
 
 const listeners = ['NEW_MESSAGE', 'NEW_NOTIFICATION', 'NEW_TUIT'];
 
-export const enableListeners = (ThunkAPI: any) => {
+export const enableListeners = (ThunkAPI: any): Socket => {
   if (listening) {
-    return;
+    return socket;
   }
   socket = io(`${SOCKET_URL}`, {
     // cors: {
@@ -71,6 +68,8 @@ export const enableListeners = (ThunkAPI: any) => {
   socket.on('disconnect', () => {
     disableListeners();
   });
+
+  return socket;
 };
 
 const disableListeners = () => {
@@ -80,7 +79,7 @@ const disableListeners = () => {
   listening = false;
 };
 
-export const disconnect = () => {
+export const disconnectSocket = () => {
   socket.disconnect();
   listening = false;
 };

@@ -29,7 +29,7 @@ const ProfileInfo = ({
           </h5>
           {/* <span className='ps-2'>{user.postCount} Posts</span> */}
           <div
-            className='mb-5 position-relative bg-dark'
+            className='mb-5 position-relative bg-primary'
             style={{
               backgroundImage: `url('${profileUser.headerImage})`,
               backgroundSize: 'cover',

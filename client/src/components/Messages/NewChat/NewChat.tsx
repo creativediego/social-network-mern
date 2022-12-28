@@ -86,7 +86,10 @@ const NewChat = () => {
             <div style={{ overflowY: 'scroll', height: '50vh' }}>
               {searchResults.map((user: IUser) => (
                 <div key={user.id}>
-                  <p className='btn' onClick={() => selectUsersForChat(user)}>
+                  <p
+                    className='btn p-1'
+                    onClick={() => selectUsersForChat(user)}
+                  >
                     {user.name || user.firstName} @{user.username}
                   </p>
                 </div>

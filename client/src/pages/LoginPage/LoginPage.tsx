@@ -16,7 +16,6 @@ const LoginPage = () => {
   const [showLoginModal, setShowLoginModal] = useToggleBoolean(false);
   const [showUpdateProfileModal, setShowUpdateProfileModal] =
     useToggleBoolean(true);
-
   // Clears user session if user closes the complete signup modal.
   useEffect(() => {
     if (!showUpdateProfileModal) {

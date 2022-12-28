@@ -94,12 +94,12 @@ export default class LikeController implements ILikeController {
       userActing: userId,
       resourceId: postId,
     };
-    let likeNotification: INotification =
-      await this.notificationDao.createNotification(notification);
+    if (notification.userActing !== notification.userNotified) {
+      let likeNotification: INotification =
+        await this.notificationDao.createNotification(notification);
 
-    // Emit an update to the socket server that there's a new like notification
-    // check if author of post is not logged in user
-    if (req.user.id !== updatedPost.author.id.toString()) {
+      // Emit an update to the socket server that there's a new like notification
+      // check if author of post is not logged in user
       this.socketService.emitToRoom(
         updatedPost.author.id.toString(),
         'NEW_NOTIFICATION',

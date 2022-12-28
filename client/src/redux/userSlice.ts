@@ -31,8 +31,10 @@ import { setProfileUser } from './profileSlice';
 export const fetchProfileThunk = createAsyncThunk(
   'users/fetchProfile',
   async (data, ThunkAPI) => {
+    console.log('fetchprofile');
     const profile = await getProfile();
-    if (!profile.error) {
+    const state = ThunkAPI.getState() as RootState;
+    if (!profile.error && state.user.socketConnected) {
       socketService.enableListeners(ThunkAPI.dispatch);
     }
     return dataOrStateError(profile, ThunkAPI.dispatch);
@@ -77,11 +79,13 @@ export const loginThunk = createAsyncThunk(
       await firebaseLoginWithEmail(email, password);
     } catch (err: unknown) {
       const error = err as IAlert;
+
       ThunkAPI.dispatch(setGlobalError({ message: error.message }));
       return ThunkAPI.rejectWithValue({ message: error.message });
     }
     const authUser = await getProfile();
-    if (!authUser.error) {
+    const state = ThunkAPI.getState() as RootState;
+    if (!authUser.error && !state.user.socketConnected) {
       socketService.enableListeners(ThunkAPI.dispatch);
     }
     return dataOrStateError(authUser, ThunkAPI.dispatch);
@@ -92,7 +96,8 @@ export const loginWithGoogleThunk = createAsyncThunk(
   'users/loginWithGoogle',
   async (user, ThunkAPI) => {
     const profile = await loginWithGoogle();
-    if (!profile.error) {
+    const state = ThunkAPI.getState() as RootState;
+    if (!profile.error && !state.user.socketConnected) {
       socketService.enableListeners(ThunkAPI.dispatch);
     }
     return dataOrStateError(profile, ThunkAPI.dispatch);
@@ -107,9 +112,10 @@ export const logoutThunk = createAsyncThunk(
   async (_: void, ThunkAPI) => {
     clearToken();
     socketService.disconnect();
-    clearUser();
+    ThunkAPI.dispatch(clearUser());
     await firebaseLogout();
     clearAllUserData(ThunkAPI.dispatch);
+    socketService.disconnect();
     return;
   }
 );
@@ -132,6 +138,7 @@ export const updateUserThunk = createAsyncThunk(
 export interface UserState {
   data: IUser;
   loading: boolean;
+  socketConnected: boolean;
   profileComplete: boolean;
   isLoggedIn: boolean;
   notifications: INotification[];
@@ -153,6 +160,7 @@ const initialUser: IUser = {
 const initialState: UserState = {
   data: initialUser,
   isLoggedIn: false,
+  socketConnected: false,
   profileComplete: false,
   notifications: [],
   unreadNotifications: [],
@@ -182,6 +190,9 @@ const userSlice = createSlice({
     setAuthUser: (state, action: PayloadAction<IUser>) => {
       state.data = action.payload;
     },
+    connectSocket: (state) => {
+      state.socketConnected = true;
+    },
     setUnreadNotifications: (state, action) => {
       state.unreadNotifications = action.payload;
     },
@@ -191,6 +202,7 @@ const userSlice = createSlice({
       state.profileComplete = false;
       clearToken();
       firebaseLogout();
+      state.socketConnected = false;
     },
     updateAuthUser: (state, action: PayloadAction<IUser>) => {
       state.data = { ...state.data, ...action.payload };
@@ -205,12 +217,12 @@ const userSlice = createSlice({
       (state, action: PayloadAction<IUser>) => {
         state.loading = false;
         state.isLoggedIn = true;
+        state.socketConnected = true;
         checkProfileComplete(state, action.payload);
       }
     );
     builder.addCase(fetchProfileThunk.rejected, (state) => {
       state.loading = false;
-      clearUser();
       firebaseLogout();
     });
 
@@ -251,6 +263,7 @@ const userSlice = createSlice({
       (state, action: PayloadAction<IUser>) => {
         state.loading = false;
         state.isLoggedIn = true;
+        state.socketConnected = true;
         checkProfileComplete(state, action.payload);
       }
     );
@@ -264,7 +277,11 @@ const userSlice = createSlice({
     builder.addCase(logoutThunk.fulfilled, (state) => {
       state.loading = false;
       state.data = initialUser;
+      state.isLoggedIn = false;
       state.profileComplete = false;
+      clearToken();
+      firebaseLogout();
+      state.socketConnected = false;
     });
     builder.addCase(logoutThunk.rejected, (state) => {
       state.loading = false;
@@ -277,6 +294,7 @@ const userSlice = createSlice({
     });
     builder.addCase(loginWithGoogleThunk.fulfilled, (state) => {
       state.loading = false;
+      state.socketConnected = true;
     });
     builder.addCase(loginWithGoogleThunk.rejected, (state) => {
       state.loading = false;

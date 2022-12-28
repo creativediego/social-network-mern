@@ -51,6 +51,7 @@ export const createPostThunk = createAsyncThunk(
     ThunkAPI
   ) => {
     let resultPost = await createPost(userId, post);
+    resultPost = dataOrStateError(resultPost, ThunkAPI.dispatch);
     if (imageFile) {
       try {
         const postImageURL = await uploadPostImage(imageFile, resultPost.id);
