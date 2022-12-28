@@ -4,6 +4,7 @@ import { IPost } from '../../interfaces/IPost';
 import './WhatsHappeningView.css';
 import moment from 'moment';
 import PostContent from '../../components/Posts/PostContent';
+import { Link } from 'react-router-dom';
 
 const WhatsHappeningWidget = (): JSX.Element => {
   const { posts } = useAllPosts();
@@ -48,13 +49,15 @@ const WhatsHappeningWidget = (): JSX.Element => {
                     {post.stats.likes} likes
                   </h4>
                 </div>
-                <div>
-                  <img
-                    alt='user avatar'
-                    src={post.author.profilePhoto}
-                    className='ttr-rounded-15px ttr-user-logo'
-                  />
-                </div>
+                <Link to={`/${post.author.username}/posts`}>
+                  <div>
+                    <img
+                      alt='user avatar'
+                      src={post.author.profilePhoto}
+                      className='ttr-rounded-15px ttr-user-logo'
+                    />
+                  </div>
+                </Link>
               </div>
             );
           })}
