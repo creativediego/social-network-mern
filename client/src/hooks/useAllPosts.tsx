@@ -36,13 +36,6 @@ export const useAllPosts = () => {
     dispatch(findAllPostsThunk());
   }, [dispatch]);
 
-  useEffect(() => {
-    // Remove all posts when component unmounts.
-    return () => {
-      dispatch(removeAllPosts());
-    };
-  }, [dispatch]);
-
   return {
     posts,
     loading,
