@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import configDatabase from './config/configDatabase';
 import UserModel from './mongoose/users/UserModel';
 import PostModel from './mongoose/posts/PostModel';
-import mongoose, { ObjectId } from 'mongoose';
+import mongoose from 'mongoose';
 import { AccountType } from './models/users/AccoutType';
 import { exit } from 'process';
 

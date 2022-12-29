@@ -12,5 +12,7 @@ export const validateResults = (
   // result.map((error) => {
   //   errors.push({ message: error.msg, field: error.param });
   // }),
-  res.status(StatusCode.badRequest).json({ error: result[0].msg });
+  res
+    .status(StatusCode.badRequest)
+    .json({ error: { message: result[0].msg, code: StatusCode.badRequest } });
 };
