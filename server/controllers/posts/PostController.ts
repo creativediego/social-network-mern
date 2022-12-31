@@ -127,7 +127,7 @@ export default class PostController implements IPostController {
     delete post.author;
 
     const updatePost = await this.postDao.update(req.params.postId, post);
-    this.socketService.emitToAll('UPDATED_TUIT', post);
+    this.socketService.emitToAll('UPDATED_POST', post);
     return okResponse(updatePost);
   };
 

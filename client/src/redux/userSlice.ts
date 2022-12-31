@@ -275,12 +275,12 @@ const userSlice = createSlice({
     });
     builder.addCase(logoutThunk.fulfilled, (state) => {
       state.loading = false;
-      state.data = initialUser;
-      state.isLoggedIn = false;
-      state.profileComplete = false;
-      clearToken();
-      firebaseLogout();
-      state.socketConnected = false;
+      // state.data = initialUser;
+      // state.isLoggedIn = false;
+      // state.profileComplete = false;
+      // clearToken();
+      // firebaseLogout();
+      // state.socketConnected = false;
     });
     builder.addCase(logoutThunk.rejected, (state) => {
       state.loading = false;

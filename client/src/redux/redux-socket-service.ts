@@ -42,7 +42,7 @@ const listenForNewPosts = (
   socket: Socket,
   dispatchAction: ThunkDispatch<unknown, unknown, AnyAction>
 ) => {
-  socket.on('NEW_TUIT', (post) => {
+  socket.on('NEW_POST', (post) => {
     dispatchAction(addPost(post));
   });
 };
@@ -51,12 +51,12 @@ const listenForUpdatedPosts = (
   socket: Socket,
   dispatchAction: ThunkDispatch<unknown, unknown, AnyAction>
 ) => {
-  socket.on('UPDATED_TUIT', (post) => {
+  socket.on('UPDATED_POST', (post) => {
     dispatchAction(updatePosts(post));
   });
 };
 
-const listeners = ['NEW_MESSAGE', 'NEW_NOTIFICATION', 'NEW_TUIT'];
+const listeners = ['NEW_MESSAGE', 'NEW_NOTIFICATION', 'NEW_POST'];
 
 export const enableListeners = (
   dispatchAction: ThunkDispatch<unknown, unknown, AnyAction>
@@ -70,7 +70,7 @@ export const enableListeners = (
     // },
     query: { token: localStorage.getItem('token') },
     transports: ['polling'],
-    reconnection: false,
+    reconnection: true,
   });
   socket.once('connect', () => {
     listenForNewMessages(socket, dispatchAction);
