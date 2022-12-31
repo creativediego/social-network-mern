@@ -9,4 +9,5 @@ export default interface IMessage {
   conversation: IConversation;
   message: string;
   removeFor?: IUser[];
+  // readFor?: IUser[];
 }

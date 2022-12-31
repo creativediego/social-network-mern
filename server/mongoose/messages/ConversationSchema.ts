@@ -36,6 +36,12 @@ const ConversationSchema = new mongoose.Schema<IConversation>(
         ref: 'UserModel',
       },
     ],
+    readFor: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'UserModel',
+      },
+    ],
   },
   { timestamps: true, collection: 'conversations' }
 );

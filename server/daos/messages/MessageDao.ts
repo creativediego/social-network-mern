@@ -96,7 +96,7 @@ export default class MessageDao implements IMessageDao {
           _id: message.conversation,
           participants: { $in: [sender] },
         },
-        { removeFor: [] },
+        { readFor: [sender], removeFor: [] },
         { new: true }
       );
       this.errorHandler.objectOrNullException(
@@ -155,10 +155,15 @@ export default class MessageDao implements IMessageDao {
   ): Promise<IMessage[]> => {
     // First, make sure user is a participant in the conversation for which they're trying to get all messages from.
     try {
-      const existingConvo = await this.conversationModel.exists({
-        _id: conversationId,
-        participants: { $in: [userId] },
-      });
+      const existingConvo = await this.conversationModel.findOneAndUpdate(
+        {
+          _id: conversationId,
+          participants: { $in: [userId] },
+        },
+        {
+          $addToSet: { readFor: userId }, // mark convo read. only unique entries in the array allowed
+        }
+      );
 
       this.errorHandler.objectOrNullException(
         existingConvo,
@@ -275,6 +280,9 @@ export default class MessageDao implements IMessageDao {
             recipients: {
               $first: '$recipients',
             },
+            readFor: {
+              $first: '$readFor',
+            },
             latestMessage: {
               $first: '$messages.message',
             },
@@ -330,6 +338,7 @@ export default class MessageDao implements IMessageDao {
             sender: '$sender',
             conversationId: '$_id',
             removeFor: '$removeFor',
+            readFor: '$readFor',
             recipients: '$recipients',
             createdAt: '$createdAt',
           },

@@ -7,6 +7,7 @@ import {
   selectUnreadNotifications,
 } from '../../redux/notificationSlice';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { selectUnreadCount } from '../../redux/messageInboxSlice';
 
 /**
  * Displays the main navigation menu of the app.
@@ -16,12 +17,20 @@ const Navigation = (): JSX.Element => {
   const authUser = useAppSelector((state: any) => state.user.data);
   const dispatch = useAppDispatch();
   const notifications = useAppSelector(selectUnreadNotifications);
+  const unreadMessageCount = useAppSelector(selectUnreadCount);
 
   let notificationColor;
+  let messageColor;
+
   if (notifications.length > 0) {
     notificationColor = '#2a9fd6';
   } else {
     notificationColor = 'white';
+  }
+  if (unreadMessageCount > 0) {
+    messageColor = '#2a9fd6';
+  } else {
+    messageColor = 'white';
   }
 
   useEffect(() => {
@@ -43,7 +52,7 @@ const Navigation = (): JSX.Element => {
       label: 'Messages',
       icon: 'fa-envelope',
       path: '/messages',
-      color: 'white',
+      color: messageColor,
     },
     // {
     //   label: 'Bookmarks',
@@ -99,6 +108,15 @@ const Navigation = (): JSX.Element => {
                         style={{ fontSize: '.7rem' }}
                       >
                         {notifications.length}
+                      </span>
+                    ) : null}
+
+                    {link.label === 'Messages' && unreadMessageCount > 0 ? (
+                      <span
+                        className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger'
+                        style={{ fontSize: '.7rem' }}
+                      >
+                        {unreadMessageCount}
                       </span>
                     ) : null}
                   </i>

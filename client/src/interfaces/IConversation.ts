@@ -7,4 +7,5 @@ export interface IConversation {
   cid?: string;
   participants: IUser[];
   removeFor?: IUser[];
+  readFor?: IUser[];
 }

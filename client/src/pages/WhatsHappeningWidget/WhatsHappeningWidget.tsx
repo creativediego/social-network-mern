@@ -12,7 +12,7 @@ const WhatsHappeningWidget = (): JSX.Element => {
     if (a.stats.likes < b.stats.likes) {
       return 1;
     }
-    if (a.stats.likes < b.stats.likes) {
+    if (a.stats.likes > b.stats.likes) {
       return -1;
     }
     return 0;

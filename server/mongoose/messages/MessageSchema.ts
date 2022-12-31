@@ -27,6 +27,12 @@ const MessageSchema = new mongoose.Schema<IMessage>(
         ref: 'UserModel',
       },
     ],
+    // readFor: [
+    //   {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'UserModel',
+    //   },
+    // ],
   },
   { timestamps: true, collection: 'messages' }
 );

@@ -11,7 +11,8 @@ import { clearUser } from './userSlice';
  */
 export const dataOrStateError = <T>(
   APIdata: T | ResponseError,
-  dispatchAction: ThunkDispatch<unknown, unknown, AnyAction>
+  dispatchAction: ThunkDispatch<unknown, unknown, AnyAction>,
+  errorMessage?: string
 ): T => {
   if (isError(APIdata)) {
     if (APIdata.error.code === 403 || APIdata.error.code === 401) {
@@ -19,7 +20,9 @@ export const dataOrStateError = <T>(
     } else {
       const userFriendlyError = {
         error: {
-          message: 'Error: ' + APIdata.error.message,
+          message:
+            'Error: ' +
+            (errorMessage ? errorMessage : 'Sorry! Something went wrong.'),
         },
       };
       dispatchAction(setResponseError(userFriendlyError)); //update errors

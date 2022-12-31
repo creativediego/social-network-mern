@@ -157,7 +157,7 @@ const chatSlice = createSlice({
     builder.addCase(
       sendMessageThunk.fulfilled,
       (state, action: PayloadAction<IMessage>) => {
-        state.id = action.payload.conversationId;
+        state.id = action.payload.conversation.id;
         state.loading = false;
         chatAdapter.upsertOne(state, action.payload);
       }

@@ -23,13 +23,9 @@ const listenForNewMessages = (
   socket: Socket,
   dispatchAction: ThunkDispatch<unknown, unknown, AnyAction>
 ) => {
-  socket.on('NEW_MESSAGE', (message) => {
-    const newMessage: IMessage = {
-      ...message,
-      conversationId: message.conversation.id,
-    };
+  socket.on('NEW_MESSAGE', (message: IMessage) => {
     dispatchAction(findInboxMessagesThunk());
-    dispatchAction(upsertChatMessage(newMessage));
+    dispatchAction(upsertChatMessage(message));
   });
 };
 

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { PopupModal } from '../../components';
+import { AlertBox, PopupModal } from '../../components';
 import UpdateProfileForm from '../../forms/UpdateProfileForm/UpdateProfileForm';
 import { Button } from 'react-bootstrap';
 import { SignupForm } from '../../forms';
@@ -7,10 +7,12 @@ import { LoginForm } from '../../forms';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { clearUser, loginWithGoogleThunk } from '../../redux/userSlice';
 import useToggleBoolean from '../../hooks/useToggleBoolean';
+import { useAlert } from '../../hooks/useAlert';
 
 const LoginPage = () => {
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
   const profileComplete = useAppSelector((state) => state.user.profileComplete);
+  const { error } = useAlert();
   const dispatch = useAppDispatch();
   const [showSignupModal, setShowSignupModal] = useToggleBoolean(false);
   const [showLoginModal, setShowLoginModal] = useToggleBoolean(false);
@@ -77,6 +79,7 @@ const LoginPage = () => {
               size='lg'
             >
               <LoginForm />
+              <AlertBox message={error.message} />
             </PopupModal>
           )}
         </div>

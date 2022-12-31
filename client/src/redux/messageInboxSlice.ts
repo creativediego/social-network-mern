@@ -20,7 +20,8 @@ export const findInboxMessagesThunk = createAsyncThunk(
     const state = ThunkAPI.getState() as RootState;
     const userId = state.user.data.id;
     let inboxMessages = await messageAPI.findInboxMessages(userId);
-    return dataOrStateError(inboxMessages, ThunkAPI.dispatch);
+    inboxMessages = dataOrStateError(inboxMessages, ThunkAPI.dispatch);
+    return inboxMessages;
   }
 );
 
@@ -41,16 +42,22 @@ export const deleteConversationThunk = createAsyncThunk(
  * Manages the state dealing with messages, including inbox and current active chat.
  */
 const inboxAdapter = createEntityAdapter<IMessage>({
-  selectId: (message: IMessage) => message.conversationId,
+  selectId: (message: IMessage) => message.conversationId!,
   sortComparer: (a, b) => b.createdAt.localeCompare(a.createdAt),
 });
 
 const messageInboxSlice = createSlice({
   name: 'messagesInbox',
-  initialState: inboxAdapter.getInitialState({ loading: false }),
+  initialState: inboxAdapter.getInitialState({
+    loading: false,
+    unreadCount: 0,
+  }),
   reducers: {
     updateInbox: (state, action: PayloadAction<IMessage>) => {
       inboxAdapter.upsertOne(state, action.payload);
+    },
+    decreaseUnreadCount: (state) => {
+      state.unreadCount--;
     },
   },
   // Manages the async call states for creating conversations.
@@ -87,6 +94,23 @@ const messageInboxSlice = createSlice({
 export const inboxLoadingSelector = createSelector(
   (state: RootState) => state.messagesInbox,
   (inbox) => inbox.loading
+);
+
+export const selectUnreadCount = createSelector(
+  (state: RootState) => state,
+  (state) => {
+    const userId = state.user.data.id;
+    let unreadCount = 0;
+    inboxAdapter
+      .getSelectors()
+      .selectAll(state.messagesInbox)
+      .forEach((message) => {
+        if (message.readFor && !message.readFor.includes(userId)) {
+          unreadCount++;
+        }
+      });
+    return unreadCount;
+  }
 );
 
 export const { selectAll: selectAllInboxMessages } = inboxAdapter.getSelectors(

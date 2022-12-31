@@ -18,7 +18,6 @@ interface PostProps {
  * Displays a post with all of its information, including Author, time, and stats (likes, dislikes, etc).
  */
 const Post = ({ post }: PostProps): JSX.Element => {
-  console.log(post);
   const postWordArray = post.post.split(' ');
   const { user } = useAuthUser();
   return (

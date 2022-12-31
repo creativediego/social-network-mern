@@ -1,12 +1,14 @@
-import { IConversation as string } from './IConversation';
+import { IConversation } from './IConversation';
 import { IUser } from './IUser';
 
 export interface IMessage {
   id: string;
   sender?: IUser;
   recipients: IUser[];
-  conversationId: string;
+  conversationId?: string;
+  conversation: IConversation;
   message: string;
   removeFor?: IUser[];
+  readFor?: string[];
   createdAt: string;
 }
