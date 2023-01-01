@@ -23,7 +23,8 @@ import { INotification } from '../interfaces/INotification';
 import type { RootState } from './store';
 import { setGlobalError, setSuccessAlert } from './alertSlice';
 import { IAlert } from '../interfaces/IError';
-import { setProfileUser } from './profileSlice';
+import { clearProfile, setProfileUser } from './profileSlice';
+import { clearChat } from './chatSlice';
 
 /**
  * Updates redux state with user profile after calling getProfile from user service.
@@ -109,11 +110,11 @@ export const loginWithGoogleThunk = createAsyncThunk(
 export const logoutThunk = createAsyncThunk(
   'users/logout',
   async (_: void, ThunkAPI) => {
-    clearToken();
-    socketService.disconnect();
-    ThunkAPI.dispatch(clearUser());
     await firebaseLogout();
-    clearAllUserData(ThunkAPI.dispatch);
+    clearToken();
+    ThunkAPI.dispatch(clearChat());
+    ThunkAPI.dispatch(clearUser());
+    ThunkAPI.dispatch(clearProfile());
     socketService.disconnect();
     return;
   }
@@ -196,11 +197,10 @@ const userSlice = createSlice({
       state.unreadNotifications = action.payload;
     },
     clearUser: (state) => {
-      state.data = initialUser;
       state.isLoggedIn = false;
-      state.profileComplete = false;
-      clearToken();
+      state.data = initialUser;
       firebaseLogout();
+      clearToken();
       state.socketConnected = false;
     },
     updateAuthUser: (state, action: PayloadAction<IUser>) => {

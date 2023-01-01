@@ -3,6 +3,7 @@ import './ChatMessage.scss';
 import moment from 'moment';
 import { IMessage } from '../../../interfaces/IMessage';
 import { useChatMessage } from './useChatMessage';
+import { Link } from 'react-router-dom';
 
 interface MessageProps {
   message: IMessage;
@@ -28,11 +29,13 @@ const ChatMessage = ({ message }: MessageProps) => {
     >
       {displayAvatar && (
         <span style={{ width: '8%' }}>
-          <img
-            className='img-fluid rounded-circle'
-            src={message.sender && message.sender.profilePhoto}
-            alt='profile'
-          />
+          <Link to={`/${message.sender && message.sender.username}/posts`}>
+            <img
+              className='img-fluid rounded-circle'
+              src={message.sender && message.sender.profilePhoto}
+              alt='profile'
+            />
+          </Link>
         </span>
       )}
 
