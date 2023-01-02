@@ -2,11 +2,12 @@ import io, { Socket } from 'socket.io-client';
 import axios from 'axios';
 import { processError } from '../services/helpers';
 import { upsertNotification } from './notificationSlice';
-import { addPost, updatePosts } from './postSlice';
+import { addPost, removePost, updatePosts } from './postSlice';
 import { findInboxMessagesThunk } from './messageInboxSlice';
 import { upsertChatMessage } from './chatSlice';
 import { IMessage } from '../interfaces/IMessage';
 import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
+import { IPost } from '../interfaces/IPost';
 
 /**
  * Redux and socket io helpers for firing off redux state changes on certain socket actions. Helpers are called from inside CreateAsyncThunk slices.
@@ -51,8 +52,12 @@ const listenForUpdatedPosts = (
   socket: Socket,
   dispatchAction: ThunkDispatch<unknown, unknown, AnyAction>
 ) => {
-  socket.on('UPDATED_POST', (post) => {
+  socket.on('UPDATED_POST', (post: IPost) => {
     dispatchAction(updatePosts(post));
+  });
+
+  socket.on('DELETED_POST', (post: IPost) => {
+    dispatchAction(removePost(post.id));
   });
 };
 

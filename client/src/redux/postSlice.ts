@@ -127,11 +127,14 @@ const postSlice = createSlice({
   initialState: postAdapter.getInitialState({ loading: false }),
   reducers: {
     addPost: postAdapter.upsertOne,
-    removePost: (state, action) => {
+    removePost: (state, action: PayloadAction<string>) => {
       postAdapter.removeOne(state, action.payload);
     },
-    updatePosts: (state, action) => {
-      postAdapter.updateOne(state, action.payload);
+    updatePosts: (state, action: PayloadAction<IPost>) => {
+      postAdapter.updateOne(state, {
+        id: action.payload.id,
+        changes: action.payload,
+      });
     },
     removeAllPosts: (state) => {
       postAdapter.removeAll(state);

@@ -82,6 +82,7 @@ export default class LikeController implements ILikeController {
     if (existingLike) {
       //undo previous like
       const updatedPost: IPost = await this.likeDao.deleteLike(userId, postId);
+      this.socketService.emitToAll('UPDATED_POST', updatedPost);
       return okResponse(updatedPost);
     }
     // new like
@@ -103,7 +104,7 @@ export default class LikeController implements ILikeController {
       this.socketService.emitToRoom(
         updatedPost.author.id.toString(),
         'NEW_NOTIFICATION',
-        likeNotification
+        { likeNotification }
       );
     }
 
@@ -111,7 +112,8 @@ export default class LikeController implements ILikeController {
       // undo previous dislike
       updatedPost = await this.likeDao.deleteDislike(userId, postId);
     }
-
+    // Send updated post to all users.
+    this.socketService.emitToAll('UPDATED_POST', updatedPost);
     return okResponse(updatedPost);
   };
   /**
@@ -131,6 +133,8 @@ export default class LikeController implements ILikeController {
         userId,
         postId
       );
+      // Send updated post to all users.
+      this.socketService.emitToAll('UPDATED_POST', updatedPost);
       return okResponse(updatedPost);
     }
     // new dislike
@@ -141,6 +145,7 @@ export default class LikeController implements ILikeController {
       updatedPost = await this.likeDao.deleteLike(userId, postId);
     }
 
+    this.socketService.emitToAll('UPDATED_POST', updatedPost);
     return okResponse(updatedPost);
   };
 

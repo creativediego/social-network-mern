@@ -142,6 +142,7 @@ export default class PostController implements IPostController {
       throw new AuthException('User not authorized to delete post.');
     }
     const deletedPost: IPost = await this.postDao.delete(req.params.postId);
+    this.socketService.emitToAll('DELETED_POST', post);
     return okResponse(deletedPost);
   };
 }
