@@ -10,7 +10,7 @@ import {
 import { getProfile } from '../services/auth-service';
 import { updateUser } from '../services/users-service';
 import { clearAllUserData, dataOrStateError } from './helpers';
-import { clearToken } from '../services/helpers';
+import { clearToken, setAuthToken } from '../services/helpers';
 import * as socketService from './redux-socket-service';
 import {
   firebaseLoginWithEmail,
@@ -34,7 +34,7 @@ export const fetchProfileThunk = createAsyncThunk(
   async (data, ThunkAPI) => {
     const profile = await getProfile();
     const state = ThunkAPI.getState() as RootState;
-    if (!profile.error && state.user.socketConnected) {
+    if (!profile.error && !state.user.socketConnected) {
       socketService.enableListeners(ThunkAPI.dispatch);
     }
     return dataOrStateError(profile, ThunkAPI.dispatch);
@@ -79,16 +79,15 @@ export const loginThunk = createAsyncThunk(
       await firebaseLoginWithEmail(email, password);
     } catch (err: unknown) {
       const error = err as IAlert;
-
       ThunkAPI.dispatch(setGlobalError({ message: error.message }));
       return ThunkAPI.rejectWithValue({ message: error.message });
     }
-    const authUser = await getProfile();
-    const state = ThunkAPI.getState() as RootState;
-    if (!authUser.error && !state.user.socketConnected) {
-      socketService.enableListeners(ThunkAPI.dispatch);
-    }
-    return dataOrStateError(authUser, ThunkAPI.dispatch);
+    // const authUser = await getProfile();
+    // const state = ThunkAPI.getState() as RootState;
+    // if (!authUser.error && !state.user.socketConnected) {
+    //   socketService.enableListeners(ThunkAPI.dispatch);
+    // }
+    return;
   }
 );
 
@@ -257,15 +256,9 @@ const userSlice = createSlice({
     builder.addCase(loginThunk.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(
-      loginThunk.fulfilled,
-      (state, action: PayloadAction<IUser>) => {
-        state.loading = false;
-        state.isLoggedIn = true;
-        state.socketConnected = true;
-        checkProfileComplete(state, action.payload);
-      }
-    );
+    builder.addCase(loginThunk.fulfilled, (state) => {
+      state.loading = false;
+    });
     builder.addCase(loginThunk.rejected, (state) => {
       state.loading = false;
     });
@@ -284,8 +277,8 @@ const userSlice = createSlice({
     });
     builder.addCase(logoutThunk.rejected, (state) => {
       state.loading = false;
-      state.data = initialUser;
-      state.profileComplete = false;
+      // state.data = initialUser;
+      // state.profileComplete = false;
     });
 
     builder.addCase(loginWithGoogleThunk.pending, (state) => {

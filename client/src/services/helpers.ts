@@ -35,7 +35,7 @@ export const setHeaders = function (config: any) {
   return config;
 };
 
-export const setAuthToken = (token: any) => {
+export const setAuthToken = (token: string) => {
   localStorage.setItem('token', token);
 };
 

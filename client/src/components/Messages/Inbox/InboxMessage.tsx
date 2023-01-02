@@ -31,6 +31,7 @@ const InboxMessage = ({ message }: InboxMessageProps) => {
           className='text-decoration-none text-white'
         >
           <div className={`w-100 d-flex`}>
+            
             <div className='pe-2'>
               {message.recipients && message.recipients.length > 0 && (
                 <img
@@ -44,6 +45,7 @@ const InboxMessage = ({ message }: InboxMessageProps) => {
                 />
               )}
               {message.recipients && message.recipients.length === 0 && (
+                
                 <img
                   src={user.profilePhoto}
                   className='ttr-post-avatar-logo rounded-circle'

@@ -77,6 +77,7 @@ export default class NotificationController {
       await this.notificationDao.createNotification(req.body);
 
     // Emit an update to the socket server that there's a new like notification
+  
     this.socketService.emitToRoom(
       req.body.userNotified,
       'NEW_NOTIFICATION',

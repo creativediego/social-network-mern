@@ -163,7 +163,6 @@ const postSlice = createSlice({
     builder.addCase(
       createPostThunk.fulfilled,
       (state, action: PayloadAction<IPost>) => {
-        console.log('fulfilled');
         state.loading = false;
         postAdapter.upsertOne(state, action.payload);
       }

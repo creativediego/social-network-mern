@@ -25,11 +25,11 @@ export const loginWithGoogle = async () => {
 export const firebaseLoginWithEmail = async (
   email: string,
   password: string
-) => {
+): Promise<User> => {
   try {
     const result = await signInWithEmailAndPassword(auth, email, password);
     const user = result.user;
-    return { uid: user.uid, email: user.email, name: user.displayName };
+    return user;
   } catch (error: any) {
     if (error.code === 'auth/wrong-password' || 'auth/wrong-email') {
       throw new Error('Wrong email or password.');

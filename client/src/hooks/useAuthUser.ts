@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import {
+  fetchProfileThunk,
   loginThunk,
   selectAuthUser,
   selectAuthUserLoading,
@@ -34,7 +35,8 @@ export const useAuthUser = () => {
     if (!email || !password) {
       return;
     }
-    dispatch(loginThunk({ email, password }));
+    await dispatch(loginThunk({ email, password }));
+    dispatch(fetchProfileThunk());
   }, [dispatch, loginUser]);
 
   const logout = useCallback(async () => {
