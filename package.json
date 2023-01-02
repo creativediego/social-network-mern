@@ -5,10 +5,9 @@
     "main": "",
     "engines": {
         "node": "18.x"
-      },
+    },
     "scripts": {
         "start": "node server/build/server.js",
         "build": "cd server && npm install && npm run build"
     }
-
 }
