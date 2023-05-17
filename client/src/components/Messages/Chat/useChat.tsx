@@ -4,8 +4,8 @@ import {
   selectChatLoading,
   findMessagesByConversationThunk,
   selectAllParticipants,
-  clearChat,
   selectActiveChatId,
+  clearChat,
 } from '../../../redux/chatSlice';
 
 import { selectAllChatMessages } from '../../../redux/chatSlice';
@@ -14,7 +14,7 @@ import { findInboxMessagesThunk } from '../../../redux/messageInboxSlice';
 
 /**
  * Manages the state of an active chat, including messages, the participants, and loading state.
- *
+ * Custom hook that returns an object with the active chat id, messages, participants, and loading state. Also dispatches actions to fetch messages and participants. Will fetch messages on mount and when the chat id changes. Will fetch participants on mount. Will fetch inbox messages when messages are loaded. Will clear chat on unmount.
  */
 const useChat = () => {
   // Get chat id from url path or redux state.
@@ -32,9 +32,9 @@ const useChat = () => {
       dispatch(findMessagesByConversationThunk(chatId));
       dispatch(findInboxMessagesThunk());
     }
-    // return () => {
-    //   dispatch(clearChat());
-    // };
+    return () => {
+      dispatch(clearChat());
+    };
   }, [dispatch, chatId]);
 
   // When messages are loaded, will make a call to fetch the inbox again, which will updated unread message count in navigation.

@@ -9,8 +9,8 @@ import {
 } from '@reduxjs/toolkit';
 import { getProfile } from '../services/auth-service';
 import { updateUser } from '../services/users-service';
-import { clearAllUserData, dataOrStateError } from './helpers';
-import { clearToken, setAuthToken } from '../services/helpers';
+import { dataOrStateError } from './helpers';
+import { clearToken } from '../services/helpers';
 import * as socketService from './redux-socket-service';
 import {
   firebaseLoginWithEmail,

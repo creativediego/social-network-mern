@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { Button } from 'react-bootstrap';
 import Loader from '../Loader/Loader';
 
-interface ActionButtonProps {
+export interface ActionButtonProps {
   label?: string;
   submitAction: () => void;
   position: 'right' | 'left';
@@ -29,6 +29,7 @@ const ActionButton = ({
         onClick={() => {
           submitAction();
         }}
+        data-testid='action-button'
       >
         {loading ? <Loader loading={loading} /> : <>{label || 'Submit'}</>}
       </Button>

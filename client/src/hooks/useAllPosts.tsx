@@ -6,13 +6,12 @@ import {
   findAllPostsThunk,
   selectPostsLoading,
   selectAllPosts,
-  removeAllPosts,
 } from '../redux/postSlice';
 
 const PostContext = createContext<IPost | null>(null);
 
 /**
- * Context for a single post to give nested components (such as stats) access to its data.
+ * Custom hook that returns the post from the PostContext. Creates context for a single post to give nested components (such as stats) access to its data.
  */
 export const PostProvider = ({
   post,

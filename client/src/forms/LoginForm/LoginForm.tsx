@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from 'react-bootstrap';
 import { AlertBox, Loader } from '../../components';
 import FormInput from '../FormInput/FormInput';
@@ -7,7 +7,7 @@ import { useAuthUser } from '../../hooks/useAuthUser';
 import { useAlert } from '../../hooks/useAlert';
 
 /**
- * User login form that uses a redux async loginThunk to log user in. Displays loading button when login in being processed.
+ * User login form component: Displays loading button when login in being processed. Displays error message if login fails. Uses useAuthUser hook to manage login state. Uses useAlert hook to display error message. Uses FormInput component to display form inputs. Uses profileFields to display form input fields.
  */
 const LoginForm = (): JSX.Element => {
   const { error } = useAlert();
@@ -32,9 +32,7 @@ const LoginForm = (): JSX.Element => {
           dataTestId='login-password'
           placeholder='password'
           value={loginUser.password}
-          onChange={(e) =>
-            handleSetLoginUser(e)
-          }
+          onChange={(e) => handleSetLoginUser(e)}
         />
       </form>
       <span className='fa-pull-right mt-2'>
