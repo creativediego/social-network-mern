@@ -1,8 +1,8 @@
 ### DEV
 # Build client and server
 build-dev:
-	cd server && docker build -f Dockerfile.dev -t bullhorn-api-server .
-	cd client && docker build -f Dockerfile.dev -t bullhorn-client .
+	cd server && docker build -f Dockerfile.dev -t bullhorn-api-dev .
+	cd client && docker build -f Dockerfile.dev -t bullhorn-client-dev .
 # Build just the client
 build-dev-client:
 	cd server && docker build -f Dockerfile.dev -t bullhorn-api-server .
@@ -14,10 +14,11 @@ run-dev:
 	docker-compose -f docker-compose.dev.yml up
 
 ### LOCAL (prod config)
-
 build-local:
-	# cd client && $(MAKE) build-local
-	cd server && $(MAKE) build
+	cd server && docker build \
+	--build-arg CADDYFILE=Caddyfile.local \
+	-f Dockerfile.prod -t bullhorn-api-dev:local .
+	cd client && docker build -f Dockerfile.prod -t bullhorn-client-dev:local .
 run-local:
 	ENV=local docker-compose -f docker-compose.production.yml up
 		

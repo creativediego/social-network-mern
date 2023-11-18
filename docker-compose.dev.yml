@@ -1,17 +1,19 @@
 version: "3"
 services:
-  bullhorn-react-client:
-    image: bullhorn-client
+  bullhorn-client-dev:
+    image: bullhorn-client-dev
     env_file: ./client/dev.env
     stdin_open: true
     ports: 
       - "3000:3000"
+    depends_on:
+      - bullhorn-api-dev
     # To persist local data for dev outside the container
     volumes:
       - ./client/:/usr/src/app # local_folder:destination_on_container
       - /usr/src/app/node_modules # don't include the local node modules so that the modules added from the dockerfiles can be used
-  bullhorn-api-server:
-    image: bullhorn-api-server # named in the dockerfile 
+  bullhorn-api-dev:
+    image: bullhorn-api-dev # named in the dockerfile 
     env_file: ./server/dev.env
     ports:
       - "4000:4000"
@@ -20,8 +22,8 @@ services:
       - ./server/:/usr/src/app
       - /usr/src/app/node_modules
     depends_on:
-      - bullhorn-mongo
-  bullhorn-mongo:
+      - bullhorn-mongo-dev
+  bullhorn-mongo-dev:
     image: mongo:4.4-bionic
     ports:
       - "27017:27017"

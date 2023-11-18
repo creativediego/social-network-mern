@@ -1,49 +1,27 @@
-version: '3.8'
-
+version: '3'
 services:
-  client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    environment:
-      - NODE_ENV=production
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./client:/app
-      - /app/node_modules
-
-  server:
-    build:
-      context: ./server
-      dockerfile: Dockerfile
-    environment:
-      - NODE_ENV=production
-    ports:
-      - "5000:5000"
-    volumes:
-      - ./server:/app
-      - /app/node_modules
-    depends_on:
-      - mongodb
-
-  nginx:
-    image: nginx:latest
+  bullhorn-client-prod:
+    image: bullhorn-client-prod
+    restart: unless-stopped # restart on failure
+    stdin_open: true # allow input from terminal
     ports:
       - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-    depends_on:
-      - client
-      - server
-
-  mongodb:
-    image: mongo
+      - "443:443"
+  bullhorn-api-prod:
+    image: api-server-prod
+    env_file: ./server/prod.env
+    restart: unless-stopped
     ports:
-      - "27017:27017"
+      - "4000:4000"
+  nginx:
+    image: bullhorn-nginx
+    environment:
+      - API_PORT=4000
     volumes:
-      - mongo-data:/data/db
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf  # Mount NGINX configuration
+    ports:
+      - "80:80"
+    depends_on:
+      - bullhorn-client-prod
+      - api-server-prod
 
-volumes:
-  mongo-data:
-    driver: local
