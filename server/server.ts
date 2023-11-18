@@ -2,16 +2,23 @@ import dotenv from 'dotenv';
 import express, { Request, Response } from 'express';
 import configGlobalMiddleware from './config/configGlobalMiddleware';
 import createControllers from './config/createControllers';
-import configDatabase from './config/configDatabase';
+import connectToDatabase from './config/configDatabase';
 import {
   handleCentralError,
   handleUncaughtException,
 } from './errors/handleCentralError';
 import path from 'path';
 import { app, httpServer } from './config/configExpress';
+import { Connection } from 'mongoose';
 dotenv.config();
 
-configDatabase(process.env.MONGO_URL!);
+// Set up db
+let db: Connection;
+(async () => {
+    db = await connectToDatabase(process.env.MONGO_URI!);
+}
+)();
+// Set up middleware
 configGlobalMiddleware(app);
 createControllers(app);
 handleUncaughtException();
@@ -24,4 +31,23 @@ if (process.env.NODE_ENV! === 'production') {
 
 httpServer.listen(process.env.PORT! || 4000, () => {
   console.log(`Up and running on port: ${process.env.PORT! || 4000}`);
+});
+
+// Graceful shutdown
+process.on('SIGINT', async () => {
+  console.log('Server shutting down...');
+  try {
+    // Close the MongoDB connection gracefully.
+    db.close();
+    console.log('Database connection closed.');
+
+    // Close the HTTP server gracefully.
+    httpServer.close(() => {
+      console.log('HTTP server closed.');
+      process.exit(0);
+    });
+  } catch (error) {
+    console.error('Error during shutdown:', error);
+    process.exit(1);
+  }
 });

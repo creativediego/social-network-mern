@@ -1,18 +1,19 @@
-import mongoose from 'mongoose';
-import { exit } from 'process';
-/**
- * Connects Mongoose to MongoDB.
- * @param uri db URL/URI
- */
-export const configDatabase = async (uri: string) =>
-  mongoose
-    .connect(uri)
-    .then(() => {
-      console.log('db connection successful.');
-    })
-    .catch((err) => {
-      console.log('Error connecting to database.');
-      exit(1);
-    });
+import mongoose, { Connection } from 'mongoose';
+import { ConnectionOptions } from 'tls';
 
-export default configDatabase;
+async function connectToDatabase(dbURI: string, options?: ConnectionOptions): Promise<Connection> {
+  try {
+    // Establishing connection to MongoDB
+    await mongoose.connect(dbURI);
+
+    // Connection successful, returning the database object
+    const db: Connection = mongoose.connection;
+    return db;
+  } catch (error) {
+    // Handle connection errors here
+    console.error('Error connecting to database:', error);
+    throw error; // Rethrow the error for handling at the calling end
+  }
+}
+
+export default connectToDatabase;

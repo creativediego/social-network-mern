@@ -1,10 +1,9 @@
 import dotenv from 'dotenv';
-import configDatabase from './config/configDatabase';
+import connectToDatabase from './config/configDatabase';
 import UserModel from './mongoose/users/UserModel';
 import PostModel from './mongoose/posts/PostModel';
-import mongoose from 'mongoose';
+import mongoose, { Connection } from 'mongoose';
 import { AccountType } from './models/users/AccoutType';
-import { exit } from 'process';
 
 dotenv.config();
 
@@ -175,16 +174,14 @@ for (let i = 0; i < posts.length; i++) {
   postSeeds.push(post);
 }
 
-configDatabase(process.env.MONGO_URL!).then(async () => {
-  console.log('Dropping user collection.');
-  await UserModel.collection.drop();
-  console.log('Dropping posts collection.');
-  await PostModel.collection.drop();
-  console.log('Seeding users.');
+// Conect to mongoDB and then drop all collections, and then seed the users and posts collections
+let db: Connection;
+(async () => {
+  db = await connectToDatabase(process.env.MONGO_URI!);
+  await db.dropCollection('users');
+  await db.dropCollection('posts');
   await UserModel.insertMany(userSeeds);
-  console.log('Seeding posts.');
   await PostModel.insertMany(postSeeds);
-  exit(1);
-});
-
-// PostModel.insertMany(postData);
+  console.log('Seeded database!');
+  process.exit(0);
+})();
