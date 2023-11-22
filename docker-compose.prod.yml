@@ -1,27 +1,29 @@
 version: '3'
 services:
-  bullhorn-client-prod:
-    image: bullhorn-client-prod
+  social-client-prod:
+    image: social-client-prod:${ENV}
+    env_file: ./client/.env.production
+    environment:
+      - REACT_APP_CLIENT_URL=${REACT_APP_CLIENT_URL}
     restart: unless-stopped # restart on failure
     stdin_open: true # allow input from terminal
     ports:
       - "80:80"
       - "443:443"
-  bullhorn-api-prod:
-    image: api-server-prod
-    env_file: ./server/prod.env
+    volumes: # to store tsl certificate configuration
+      - caddy-data:/data
+      - caddy-config:/config
+  social-api-prod:
+    image: social-api-prod:${ENV}
+    env_file: ./server/.env.production
+    environment:
+      - CLIENT_URL=${CLIENT_URL}
     restart: unless-stopped
     ports:
       - "4000:4000"
-  nginx:
-    image: bullhorn-nginx
-    environment:
-      - API_PORT=4000
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf  # Mount NGINX configuration
-    ports:
-      - "80:80"
-    depends_on:
-      - bullhorn-client-prod
-      - api-server-prod
+volumes:
+  caddy-data:
+    driver: local
+  caddy-config:
+    driver: local
 

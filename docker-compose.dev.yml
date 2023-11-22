@@ -1,20 +1,20 @@
 version: "3"
 services:
-  bullhorn-client-dev:
-    image: bullhorn-client-dev
-    env_file: ./client/dev.env
+  social-client-dev:
+    image: social-client-dev
+    env_file: ./client/.env.development
     stdin_open: true
     ports: 
       - "3000:3000"
     depends_on:
-      - bullhorn-api-dev
+      - social-api-dev
     # To persist local data for dev outside the container
     volumes:
       - ./client/:/usr/src/app # local_folder:destination_on_container
       - /usr/src/app/node_modules # don't include the local node modules so that the modules added from the dockerfiles can be used
-  bullhorn-api-dev:
-    image: bullhorn-api-dev # named in the dockerfile 
-    env_file: ./server/dev.env
+  social-api-dev:
+    image: social-api-dev # named in the dockerfile 
+    env_file: ./server/.env.development
     ports:
       - "4000:4000"
     # persist local data for dev on container. see comments from react app
@@ -22,13 +22,13 @@ services:
       - ./server/:/usr/src/app
       - /usr/src/app/node_modules
     depends_on:
-      - bullhorn-mongo-dev
-  bullhorn-mongo-dev:
+      - social-mongo-dev
+  social-mongo-dev:
     image: mongo:4.4-bionic
     ports:
       - "27017:27017"
     volumes: # persist local db data onto container
-      - bullhorn-mongo-data:/data/db
+      - social-mongo-data:/data/db
 volumes:
-  bullhorn-mongo-data:
+  social-mongo-data:
     driver: local

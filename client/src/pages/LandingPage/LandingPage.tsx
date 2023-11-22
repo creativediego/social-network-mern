@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
 import './LandingPage.scss';
+import AppConfig from '../../config';
 
 export interface LandingViewProps {
   children: ReactElement;
@@ -14,7 +15,7 @@ const LandingPage = ({ children }: LandingViewProps): JSX.Element => {
         </div>
         <div className='col-lg-6 order-lg-1 bg-primary d-flex justify-content-center align-items-center'>
           <p
-            className='text-center fa-duotone fa-bullhorn text-white'
+            className={`text-center ${AppConfig.brand.iconClass} text-white`}
             style={{ fontSize: '20rem' }}
           ></p>
         </div>

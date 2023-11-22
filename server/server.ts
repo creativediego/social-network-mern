@@ -1,12 +1,6 @@
 import dotenv from 'dotenv';
-import express, { Request, Response } from 'express';
-import configGlobalMiddleware from './config/configGlobalMiddleware';
-import createControllers from './config/createControllers';
+import express from 'express';
 import connectToDatabase from './config/configDatabase';
-import {
-  handleCentralError,
-  handleUncaughtException,
-} from './errors/handleCentralError';
 import path from 'path';
 import { app, httpServer } from './config/configExpress';
 import { Connection } from 'mongoose';
@@ -15,14 +9,8 @@ dotenv.config();
 // Set up db
 let db: Connection;
 (async () => {
-    db = await connectToDatabase(process.env.MONGO_URI!);
-}
-)();
-// Set up middleware
-configGlobalMiddleware(app);
-createControllers(app);
-handleUncaughtException();
-app.use(handleCentralError);
+  db = await connectToDatabase(process.env.MONGO_URI!);
+})();
 
 if (process.env.NODE_ENV! === 'production') {
   app.set('trust proxy', 1); // trust first proxy

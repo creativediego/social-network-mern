@@ -8,13 +8,14 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Clean Install client-side dependencies from package-lock file, excluding dev dependencies
+# RUN npm install
 RUN npm ci --only=production
 
 # Copy all client-side files to the working directory
 COPY . .
 
-# Build the production version of the client application
-RUN npm run build
+# Build the static React files
+RUN  npm run build
 
 # Setup Caddy Server to serve static files
 FROM caddy:2.1.1-alpine
@@ -22,7 +23,7 @@ FROM caddy:2.1.1-alpine
 ARG CADDYFILE
 COPY ${CADDYFILE} /etc/caddy/Caddyfile
 
-COPY --from=builder /usr/src/app/build /serve
+COPY --from=builder /usr/src/app/build /srv
 
 EXPOSE 80
 EXPOSE 443

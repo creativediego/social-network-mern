@@ -1,8 +1,8 @@
 http://localhost:80 {
-    root = /srv
-    route {
-        reverse_proxy /api* bullhorn-api-prod:4000
-        try_files {path} {path}/ /index.html
-        file_server
-    }
+  root * /srv
+  route {    
+    reverse_proxy /api* social-api-server:5000
+    try_files {path} {path}/ /index.html
+    file_server
+  }
 }

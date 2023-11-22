@@ -12,7 +12,6 @@
     "start": "node build/server.js",
     "dev": "nodemon -L ./server.ts",
     "build": "tsc --project ./",
-    "postbuild": "npm run install-client",
     "test": "jest --watchAll --detectOpenHandles --verbose --coverage",
     "docs": "rm -r build;  tsc --project ./; jsdoc --configure jsdoc.json --verbose"
   },

@@ -1,3 +1,6 @@
+:root {
+    --primary: #bc9c05;
+  }
 body {
     overflow-x: hidden;
 }
