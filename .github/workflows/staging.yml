@@ -24,7 +24,7 @@ jobs:
       - name: Build and Push Server Image to ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: buzzcentral_server
+          ECR_REPOSITORY: buzzcentral_server_staging
           IMAGE_TAG: staging
         run: |
           cd server
@@ -34,7 +34,7 @@ jobs:
       - name: Build and Push Client Image to ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: buzzcentral_client
+          ECR_REPOSITORY: buzzcentral_client_staging
           IMAGE_TAG: staging
         run: |
           cd client
