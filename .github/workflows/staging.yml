@@ -24,8 +24,8 @@ jobs:
       - name: Build and Push Server Image to ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: buzzcentral_server_staging
-          IMAGE_TAG: staging
+          ECR_REPOSITORY: buzzcentral
+          IMAGE_TAG: server_staging
         run: |
           cd server
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile.prod .
@@ -34,8 +34,8 @@ jobs:
       - name: Build and Push Client Image to ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: buzzcentral_client_staging
-          IMAGE_TAG: staging
+          ECR_REPOSITORY: buzzcentral
+          IMAGE_TAG: server_staging
         run: |
           cd client
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile.prod .
