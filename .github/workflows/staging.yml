@@ -27,11 +27,7 @@ jobs:
           ECR_REPOSITORY: buzzcentral
           IMAGE_TAG: client_staging
         run: |
-          cd client
-          docker build \
-          --build-arg CADDYFILE=Caddyfile.production \
-          -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile.prod .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          make -f Makefile build-client-production
 
       - name: Build and Push Server Image to ECR
         env:
@@ -39,7 +35,4 @@ jobs:
           ECR_REPOSITORY: buzzcentral
           IMAGE_TAG: server_staging
         run: |
-          cd server
-          docker build \
-          -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile.prod .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          make -f Makefile build-server-production
