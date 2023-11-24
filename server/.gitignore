@@ -1,5 +1,6 @@
 .idea
-.env.*
+.env.development
+.env.production
 lib-cov
 *.seed
 *.log
