@@ -18,6 +18,5 @@ build
 node_modules
 coverage
 out
-package-lock.json
 serviceAccount.json
 serviceAccount.js
