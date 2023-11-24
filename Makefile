@@ -28,12 +28,14 @@ run-local:
 ### PRODUCTION
 # Builds client and server with prod config for Amazon ECR
 build-client-production:
-	cd client && docker build \
+	cd client 
+	docker build \
     --build-arg CADDYFILE=Caddyfile.production \
     -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile.prod . \
     docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 build-server-production:
-	cd server && docker build \
+	cd server
+	docker build \
 	-t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile.prod . \
 	docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 run-production:
