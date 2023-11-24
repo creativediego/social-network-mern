@@ -18,7 +18,7 @@ if (process.env.NODE_ENV! === 'production') {
 }
 
 httpServer.listen(process.env.PORT! || 4000, () => {
-  console.log(`Up and running on port: ${process.env.PORT! || 4000}`);
+  console.log(`Server running on port: ${process.env.PORT! || 4000}`);
 });
 
 // Graceful shutdown
