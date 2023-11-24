@@ -21,6 +21,7 @@ RUN  npm run build
 FROM caddy:2.1.1-alpine
 
 ARG CADDYFILE
+RUN echo "CADDYFILE value is: ${CADDYFILE}"
 COPY ${CADDYFILE} /etc/caddy/Caddyfile
 
 COPY --from=builder /usr/src/app/build /srv
