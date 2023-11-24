@@ -2,7 +2,7 @@
 name: Build and Push BuzzCentral image to AWS ECR
 on:
   push:
-    branches: [deployment]
+    branches: [staging]
 jobs:
   build-and-push:
     name: Build and Push to ECR
@@ -32,7 +32,7 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: buzzcentral.app
-          IMAGE_TAG: latest
+          IMAGE_TAG: staging
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
