@@ -1,11 +1,10 @@
----
-name: Build and Push BuzzCentral image to AWS ECR
+name: Build and Deploy BuzzCentral App
 on:
   push:
     branches: [staging]
 jobs:
-  build-and-push:
-    name: Build and Push to ECR
+  build-and-deploy:
+    name: Build and Deploy to Production
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -22,17 +21,22 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      # - name: Automatic Tagging of Releases
-      #   id: increment-git-tag
-      #   run: |
-      #     bash ./build/git_update.sh -v major
-
-      - name: Build, Tag, and Push the Image to Amazon ECR
-        id: build-image
+      - name: Build and Push Server Image to ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: buzzcentral.app
+          ECR_REPOSITORY: buzzcentral_server
           IMAGE_TAG: staging
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          cd server
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile.prod .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Build and Push Client Image to ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: buzzcentral_client
+          IMAGE_TAG: staging
+        run: |
+          cd client
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile.prod .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
