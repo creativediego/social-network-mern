@@ -1,7 +1,8 @@
 name: Build, Push to Docker Hub, and Deploy to EC2
 on:
   push:
-    branches: [staging]
+    branches:
+      - staging
 jobs:
   build-and-push:
     name: Build and Push to Docker Hub
