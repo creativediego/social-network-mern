@@ -30,10 +30,10 @@ run-local:
 build-client-production:
 	cd client && docker build \
 	--build-arg CADDYFILE=Caddyfile.production \
-	-f Dockerfile.prod -t social-client:production .
+	-f Dockerfile.prod -t social-app:client-production:latest .
 build-server-production:
 	cd server && docker build \
-	-f Dockerfile.prod -t social-api:production .
+	-f Dockerfile.prod -t social-app:server-production:latest .
 run-production:
 	ENV=production CLIENT_URL=localhost:80 REACT_APP_CLIENT_URL=localhost:80 \
 	docker-compose -f docker-compose.prod.yml up 

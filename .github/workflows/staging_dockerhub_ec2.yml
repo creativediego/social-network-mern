@@ -18,16 +18,16 @@ jobs:
         run: |
           make -f Makefile build-client-production
 
-      - name: Build Docker image for client
-        run: |
-          make -f Makefile build-server-production
+      # - name: Build Docker image for server
+      #   run: |
+      #     make -f Makefile build-server-production
 
       # Push client and server images to Docker Hub
       - name: Push client Docker image to Docker Hub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/social-app:client
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/social-app:client-production:latest
 
-      - name: Push server Docker image to Docker Hub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/social-app:server
+      # - name: Push server Docker image to Docker Hub
+      #   run: docker push ${{ secrets.DOCKER_USERNAME }}/social-app:server
 
   # deploy-to-ec2:
   #   name: Deploy to EC2

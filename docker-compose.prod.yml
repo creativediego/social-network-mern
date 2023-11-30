@@ -1,7 +1,7 @@
 version: '3'
 services:
   social-client-prod:
-    image: social-client:${ENV}
+    image: social-app:client-${ENV}
     env_file: ./client/.env.production
     environment:
       - REACT_APP_CLIENT_URL=${REACT_APP_CLIENT_URL}
@@ -14,7 +14,7 @@ services:
       - caddy-data:/data
       - caddy-config:/config
   social-api-prod:
-    image: social-api:${ENV}
+    image: social-app:server-${ENV}
     env_file: ./server/.env.production
     environment:
       - CLIENT_URL=${CLIENT_URL}
