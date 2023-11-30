@@ -1,29 +1,25 @@
-# Use a node base image
-FROM node:18.12.0 AS builder
+# Use a smaller node base image for building the client app
+FROM node:18.12.0-alpine AS builder
 
-# Set the working directory in the container
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
-# Clean Install client-side dependencies from package-lock file, excluding dev dependencies
-# RUN npm install
+# Install client-side dependencies excluding dev dependencies
 RUN npm ci --only=production
 
-# Copy all client-side files to the working directory
 COPY . .
 
 # Build the static React files
-RUN  npm run build
+RUN npm run build
 
-# Setup Caddy Server to serve static files
-FROM caddy:2.1.1-alpine
+# Use a smaller Caddy base image for serving static files
+FROM caddy:2.4.3-alpine
 
 ARG CADDYFILE
-RUN echo "CADDYFILE value is: ${CADDYFILE}"
 COPY ${CADDYFILE} /etc/caddy/Caddyfile
 
+# Copy only the necessary built files from the builder stage
 COPY --from=builder /usr/src/app/build /srv
 
 EXPOSE 80

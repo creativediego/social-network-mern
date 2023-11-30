@@ -1,38 +1,38 @@
-name: Build and Deploy BuzzCentral App
-on:
-  push:
-    branches: [staging]
-jobs:
-  build-and-deploy:
-    name: Build and Deploy to Production
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+# name: Build and Deploy BuzzCentral App
+# on:
+#   push:
+#     branches: [staging]
+# jobs:
+#   build-and-deploy:
+#     name: Build and Deploy to Production
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v2
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+#       - name: Configure AWS credentials
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-region: us-east-1
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+#       - name: Login to Amazon ECR
+#         id: login-ecr
+#         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build and Push Client Image to ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: buzzcentral
-          IMAGE_TAG: client_staging
-        run: |
-          make -f Makefile build-client-production
+#       - name: Build and Push Client Image to ECR
+#         env:
+#           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#           ECR_REPOSITORY: buzzcentral
+#           IMAGE_TAG: client_staging
+#         run: |
+#           make -f Makefile build-client-production
 
-      - name: Build and Push Server Image to ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: buzzcentral
-          IMAGE_TAG: server_staging
-        run: |
-          make -f Makefile build-server-production
+#       - name: Build and Push Server Image to ECR
+#         env:
+#           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#           ECR_REPOSITORY: buzzcentral
+#           IMAGE_TAG: server_staging
+#         run: |
+#           make -f Makefile build-server-production

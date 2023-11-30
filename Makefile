@@ -26,18 +26,14 @@ run-local:
 	docker-compose -f docker-compose.prod.yml up 
 		
 ### PRODUCTION
-# Builds client and server with prod config for Amazon ECR
+# Builds client and server with prod config 
 build-client-production:
-	cd client 
-	docker build \
-    --build-arg CADDYFILE=Caddyfile.production \
-    -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile.prod . \
-    docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+	cd client && docker build \
+	--build-arg CADDYFILE=Caddyfile.production \
+	-f Dockerfile.prod -t social-client:production .
 build-server-production:
-	cd server
-	docker build \
-	-t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile.prod . \
-	docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+	cd server && docker build \
+	-f Dockerfile.prod -t social-api:production .
 run-production:
 	ENV=production CLIENT_URL=localhost:80 REACT_APP_CLIENT_URL=localhost:80 \
 	docker-compose -f docker-compose.prod.yml up 
