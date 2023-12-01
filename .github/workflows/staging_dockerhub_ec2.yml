@@ -10,7 +10,7 @@ jobs:
       # Build and push client Docker image
       - name: Login to Docker Hub
         uses: actions/checkout@v3
-        env:
+        with:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
