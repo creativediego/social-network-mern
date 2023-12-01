@@ -16,7 +16,7 @@ jobs:
 
       - name: Build Docker image for client
         run: |
-          make -f Makefile build-client-production
+          make -f Makefile build-client-production DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
 
       # - name: Build Docker image for server
       #   run: |

@@ -30,7 +30,7 @@ run-local:
 build-client-production:
 	cd client && docker build \
 	--build-arg CADDYFILE=Caddyfile.production \
-	-f Dockerfile.prod -t ${{ secrets.DOCKER_USERNAME }}/social-app:client-production-latest .
+	-f Dockerfile.prod -t  $(DOCKER_USERNAME)/social-app:client-production-latest .
 build-server-production:
 	cd server && docker build \
 	-f Dockerfile.prod -t social-app:server-production-latest .
