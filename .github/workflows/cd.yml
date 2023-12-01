@@ -9,24 +9,37 @@ on:
       - success
 
 jobs:
-  build:
-    runs-on: self-hosted
+  build-and-push:
+    name: Build and Push to Docker Hub
+    runs-on: ubuntu-latest
     steps:
-      - name: Pull client Docker image from Docker Hub
-        run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:client-production-latest
+      # Build and push client Docker image
+      - uses: actions/checkout@v3
+      - name: Login to Docker Hub
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        # Passing password via stdin for better security, avoiding leaking it in the CLI
+        run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+# jobs:
+#   build:
+#     runs-on: self-hosted
+#     steps:
+#       - name: Pull client Docker image from Docker Hub
+#         run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:client-production-latest
 
-      - name: Pull server Docker image from Docker Hub
-        run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:server-production-latest
+#       - name: Pull server Docker image from Docker Hub
+#         run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:server-production-latest
 
-      - name: Stop and remove old client container
-        run: |
-          sudo docker stop social-app:client-production-latest || true
-          sudo docker rm social-app:client-production-latest || true
+#       - name: Stop and remove old client container
+#         run: |
+#           sudo docker stop social-app:client-production-latest || true
+#           sudo docker rm social-app:client-production-latest || true
 
-      - name: Stop and remove old server container
-        run: |
-          sudo docker stop social-app:server-production-latest || true
-          sudo docker rm social-app:server-production-latest || true
+#       - name: Stop and remove old server container
+#         run: |
+#           sudo docker stop social-app:server-production-latest || true
+#           sudo docker rm social-app:server-production-latest || true
 
-      - name: Run client and server container with Makefile command
-        run: make -f Makefile run-production DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+#       - name: Run client and server container with Makefile command
+#         run: make -f Makefile run-production DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
