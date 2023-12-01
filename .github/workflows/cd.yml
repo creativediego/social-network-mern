@@ -1,8 +1,9 @@
-name: CD Pipeline
+name: CD
 
 on:
   workflow_run:
-    workflows: [CI]
+    workflows:
+      - CI
     types:
       - completed
       - success
