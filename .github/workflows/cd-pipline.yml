@@ -1,0 +1,21 @@
+name: Build, Push to Docker Hub, and Deploy to EC2
+on:
+  workflow_run:
+    workflows: ['CI Pipeline']
+    types:
+      - completed
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - name: Pull client Docker image from Docker Hub
+        run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:client-production-latest
+      - name: Pull server Docker image from Docker Hub
+        run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:server-production-latest
+      - name: Delete old client container
+        run: sudo docker rm -f social-app:client-production-latest || true
+      - name: Delete old server container
+        run: sudo docker rm -f social-app:server-production-latest || true
+      - name: Run client and server container with Makefile command
+        run: |
+          make -f Makefile run-production DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}

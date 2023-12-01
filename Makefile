@@ -18,11 +18,12 @@ run-dev:
 build-local:
 	cd client && docker build \
 	--build-arg CADDYFILE=Caddyfile.local \
-	-f Dockerfile.prod -t social-client-prod:local .
+	-f Dockerfile.prod -t social-app:client-local-latest .
 	cd server && docker build \
-	-f Dockerfile.prod -t social-api-prod:local .
+	-f Dockerfile.prod -t social-app:server-local-latest .
 run-local:
-	ENV=local CLIENT_URL=localhost:80 REACT_APP_CLIENT_URL=localhost:80 \
+	ENV=local DOCKER_USERNAME="" \
+	CLIENT_URL=localhost:80 REACT_APP_CLIENT_URL=localhost:80 \
 	docker-compose -f docker-compose.prod.yml up 
 		
 ### PRODUCTION
@@ -30,12 +31,13 @@ run-local:
 build-client-production:
 	cd client && docker build \
 	--build-arg CADDYFILE=Caddyfile.production \
-	-f Dockerfile.prod -t  $(DOCKER_USERNAME)/social-app:client-production-latest .
+	-f Dockerfile.prod -t $(DOCKER_USERNAME)/social-app:client-production-latest .
 build-server-production:
 	cd server && docker build \
 	-f Dockerfile.prod -t $(DOCKER_USERNAME)/social-app:server-production-latest .
 run-production:
-	ENV=production CLIENT_URL=localhost:80 REACT_APP_CLIENT_URL=localhost:80 \
+	ENV=production DOCKER_USERNAME=$(DOCKER_USERNAME) \ 
+	CLIENT_URL=localhost:80 REACT_APP_CLIENT_URL=localhost:80 \
 	docker-compose -f docker-compose.prod.yml up 
 stop:
 	docker-compose down
