@@ -3,20 +3,27 @@ name: CD Pipeline
 on:
   workflow_run:
     workflows: [CI Pipeline]
-    types:
-      - completed
+    types: [success]
+
 jobs:
   build:
     runs-on: self-hosted
     steps:
       - name: Pull client Docker image from Docker Hub
         run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:client-production-latest
+
       - name: Pull server Docker image from Docker Hub
         run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:server-production-latest
-      - name: Delete old client container
-        run: sudo docker rm -f social-app:client-production-latest || true
-      - name: Delete old server container
-        run: sudo docker rm -f social-app:server-production-latest || true
-      - name: Run client and server container with Makefile command
+
+      - name: Stop and remove old client container
         run: |
-          make -f Makefile run-production DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+          sudo docker stop social-app:client-production-latest || true
+          sudo docker rm social-app:client-production-latest || true
+
+      - name: Stop and remove old server container
+        run: |
+          sudo docker stop social-app:server-production-latest || true
+          sudo docker rm social-app:server-production-latest || true
+
+      - name: Run client and server container with Makefile command
+        run: make -f Makefile run-production DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
