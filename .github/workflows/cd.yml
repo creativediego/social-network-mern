@@ -14,6 +14,9 @@ jobs:
       run:
         working-directory: /home/ec2-user/buzzcentral
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
       - name: Pull client Docker image from Docker Hub
         run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:client-production-latest
 
@@ -35,9 +38,6 @@ jobs:
 
       - name: cur dir
         run: pwd
-
-      - name: Checkout repo
-        uses: actions/checkout@v3
 
       - name: cur dir file
         run: ls -a
