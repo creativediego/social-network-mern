@@ -1,4 +1,5 @@
 name: CD Pipeline
+
 on:
   workflow_run:
     workflows:
@@ -30,14 +31,14 @@ jobs:
           path: 'docker'
 
       - name: Pull client Docker image from Docker Hub
-        run: | 
-        DOCKER_CLIENT_IMAGE=$DOCKER_USERNAME/social-app:client-production-latest
-        sudo docker pull $DOCKER_CLIENT_IMAGE
+        run: |
+          DOCKER_CLIENT_IMAGE=$DOCKER_USERNAME/social-app:client-production-latest
+          sudo docker pull $DOCKER_CLIENT_IMAGE
 
       - name: Pull server Docker image from Docker Hub
         run: |
-        DOCKER_SEVER_IMAGE=$DOCKER_USERNAME/social-app:server-production-latest
-        sudo docker pull $DOCKER_SERVER_IMAGE
+          DOCKER_SERVER_IMAGE=$DOCKER_USERNAME/social-app:server-production-latest
+          sudo docker pull $DOCKER_SERVER_IMAGE
 
       - name: Stop and remove old client container
         run: |
