@@ -12,7 +12,9 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Clean existing app directory
-        run: rm -rf "/home/ec2-user/app"
+        run: |
+          rm -rf /home/ec2-user/app
+          mkdir /home/ec2-user/app
 
       - name: Checkout repo
         uses: actions/checkout@v3
