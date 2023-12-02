@@ -33,5 +33,9 @@ jobs:
         with:
           path: 'docker/'
 
+      - name: List working directory
+        run: pwd
+
       - name: Run client and server container with Makefile command
+        working-directory: docker/
         run: make -f ./docker/Makefile run-production DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
