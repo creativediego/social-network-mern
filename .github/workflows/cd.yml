@@ -29,7 +29,9 @@ jobs:
           sudo docker rm social-app:server-production-latest || true
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
+        with:
+          path: 'docker/'
 
       - name: Run client and server container with Makefile command
         run: make -f Makefile run-production DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
