@@ -22,23 +22,15 @@ jobs:
           source .env
           set +o allexport
 
-      - name: Clean existing 'docker' directory
-        run: rm -rf /home/$EC2_USERNAME/buzzcentral/docker
-
-      - name: Checkout 'docker' directory
-        uses: actions/checkout@v3
-        with:
-          path: 'docker'
-
       - name: Pull client Docker image from Docker Hub
         run: |
-          DOCKER_CLIENT_IMAGE="$DOCKER_USERNAME/social-app:client-production-latest"
-          sudo docker pull $DOCKER_CLIENT_IMAGE
+          DOCKER_CLIENT_IMAGE="${DOCKER_USERNAME}/social-app:client-production-latest"
+          sudo docker pull "$DOCKER_CLIENT_IMAGE"
 
       - name: Pull server Docker image from Docker Hub
         run: |
-          DOCKER_SERVER_IMAGE="$DOCKER_USERNAME/social-app:server-production-latest"
-          sudo docker pull $DOCKER_SERVER_IMAGE
+          DOCKER_SERVER_IMAGE="${DOCKER_USERNAME}/social-app:server-production-latest"
+          sudo docker pull "$DOCKER_SERVER_IMAGE"
 
       - name: Stop and remove old client container
         run: |
@@ -51,5 +43,4 @@ jobs:
           sudo docker rm server-production-latest || true
 
       - name: Run client and server container with Makefile command
-        working-directory: ./docker
-        run: make -f compose.prod.yml run-production DOCKER_USERNAME=$DOCKER_USERNAME
+        run: make -f compose.prod.yml run-production DOCKER_USERNAME=${DOCKER_USERNAME}
