@@ -14,8 +14,12 @@ jobs:
       run:
         working-directory: /home/ec2-user/buzzcentral
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - name: Change directory and checkout
+        run: |
+          git init
+          git remote add origin https://github.com/creativediego/social-network-mern.git
+          git fetch
+          git checkout main
 
       - name: cur dir
         run: pwd
