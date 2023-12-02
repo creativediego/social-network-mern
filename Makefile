@@ -35,10 +35,10 @@ build-client-production:
 build-server-production:
 	cd server && docker build \
 	-f Dockerfile.prod -t $(DOCKER_USERNAME)/social-app:server-production-latest .
+	
 run-production:
-	ENV=production DOCKER_USERNAME=$(DOCKER_USERNAME) \ 
-	CLIENT_URL=localhost:80 REACT_APP_CLIENT_URL=localhost:80 \
-	docker-compose -f docker-compose.prod.yml up 
+	ENV=production DOCKER_USERNAME=$(DOCKER_USERNAME) CLIENT_URL=localhost:80 REACT_APP_CLIENT_URL=localhost:80 \
+	docker-compose -f docker-compose.prod.yml up
 stop:
 	docker-compose down
 
