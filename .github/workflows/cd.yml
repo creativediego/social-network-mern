@@ -20,8 +20,8 @@ jobs:
       - name: cur dir
         run: pwd
 
-      - name: cur dir file
-        run: ls
+      - name: List directory contents
+        run: ls -a
 
       # - name: Pull client Docker image from Docker Hub
       #   run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:client-production-latest
