@@ -33,11 +33,8 @@ jobs:
       - name: Clean existing 'docker' directory
         run: rm -rf "/home/ec2-user/buzzcentral/docker"
 
-      - name: Checkout 'docker' directory
+      - name: Checkout repo
         uses: actions/checkout@v3
-        with:
-          path: 'docker'
 
       - name: Run client and server container with Makefile command
-        working-directory: './docker'
         run: ls && make -f Makefile run-production DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
