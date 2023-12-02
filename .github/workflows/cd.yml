@@ -13,14 +13,14 @@ jobs:
     steps:
       - name: Change directory and checkout
         run: |
-            rm -r home/ec2-user/buzzcentral
-            mkdir home/ec2-user/buzzcentral
-            cd home/ec2-user/buzzcentral
-            git init
-            git remote add origin https://github.com/creativediego/social-network-mern.git
-            git fetch
-            git checkout main
-          working-directory: /home/ec2-user/buzzcentral
+          rm -r home/ec2-user/buzzcentral
+          mkdir home/ec2-user/buzzcentral
+          cd home/ec2-user/buzzcentral
+          git init
+          git remote add origin https://github.com/creativediego/social-network-mern.git
+          git fetch
+          git checkout main
+        working-directory: /home/ec2-user/buzzcentral
 
       - name: cur dir
         run: pwd
