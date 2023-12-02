@@ -17,30 +17,31 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Pull client Docker image from Docker Hub
-        run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:client-production-latest
-
-      - name: Pull server Docker image from Docker Hub
-        run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:client-production-latest
-
-      - name: Stop and remove old client container
-        run: |
-          sudo docker stop client-production-latest || true
-          sudo docker rm client-production-latest || true
-
-      - name: Stop and remove old server container
-        run: |
-          sudo docker stop server-production-latest || true
-          sudo docker rm server-production-latest || true
-
-      - name: Clean existing 'docker' directory
-        run: rm -rf "/home/ec2-user/buzzcentral/docker"
-
-      - name: cur dir
+       - name: cur dir
         run: pwd
 
       - name: cur dir file
-        run: ls -a
+        run: ls 
 
-      - name: Run client and server container with Makefile command
-        run: make -f Makefile run-production DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+
+      # - name: Pull client Docker image from Docker Hub
+      #   run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:client-production-latest
+
+      # - name: Pull server Docker image from Docker Hub
+      #   run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:client-production-latest
+
+      # - name: Stop and remove old client container
+      #   run: |
+      #     sudo docker stop client-production-latest || true
+      #     sudo docker rm client-production-latest || true
+
+      # - name: Stop and remove old server container
+      #   run: |
+      #     sudo docker stop server-production-latest || true
+      #     sudo docker rm server-production-latest || true
+
+      # - name: Clean existing 'docker' directory
+      #   run: rm -rf "/home/ec2-user/buzzcentral/docker"
+
+      # - name: Run client and server container with Makefile command
+      #   run: make -f Makefile run-production DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
