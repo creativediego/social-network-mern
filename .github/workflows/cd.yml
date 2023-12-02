@@ -21,7 +21,7 @@ jobs:
 
       # Move the checked-out repository to the desired directory
       - name: Move repository to target directory
-        run: cp $GITHUB_WORKSPACE /home/ec2-user/app
+        run: cp -r $GITHUB_WORKSPACE /home/ec2-user/app
 
       - name: Pull client Docker image from Docker Hub
         run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:client-production-latest
