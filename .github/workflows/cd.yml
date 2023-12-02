@@ -12,12 +12,6 @@ jobs:
   build:
     runs-on: self-hosted
     steps:
-      - name: Login to Docker Hub
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        # Passing password via stdin for better security, avoiding leaking it in the CLI
-        run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
       - name: Pull client Docker image from Docker Hub
         run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:client-production-latest
 
@@ -35,4 +29,5 @@ jobs:
           sudo docker rm social-app:server-production-latest || true
 
       - name: Run client and server container with Makefile command
+      - uses: actions/checkout@v3
         run: make -f Makefile run-production DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
