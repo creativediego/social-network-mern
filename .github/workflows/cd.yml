@@ -10,12 +10,21 @@ on:
 jobs:
   build:
     runs-on: self-hosted
+
+    # Set up environment variables before defining the working directory
+    steps:
+      - name: Load .env file
+        run: |
+          set -o allexport
+          source buzzcentral/.env
+          set +o allexport
+
     defaults:
       run:
-        working-directory: /home/${{ secrets.EC2_USER }}/${{ secrets.APP_FOLDER }}
+        working-directory: /home/$EC2_USERNAME/buzzcentral
     steps:
       - name: Clean existing 'docker' directory
-        run: rm -rf /home/${{ secrets.EC2_USER }}/${{ secrets.APP_FOLDER }}/docker
+        run: rm -rf /home/$EC2_USERNAME/buzzcentral/docker
 
       - name: Checkout 'docker' directory
         uses: actions/checkout@v3
@@ -23,10 +32,10 @@ jobs:
           path: 'docker'
 
       - name: Pull client Docker image from Docker Hub
-        run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:client-production-latest
+        run: sudo docker pull $DOCKER_USERNAME/social-app:client-production-latest
 
       - name: Pull server Docker image from Docker Hub
-        run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:server-production-latest
+        run: sudo docker pull $DOCKER_USERNAME/social-app:server-production-latest
 
       - name: Stop and remove old client container
         run: |
@@ -40,4 +49,4 @@ jobs:
 
       - name: Run client and server container with Makefile command
         working-directory: ./docker
-        run: make -f compose.prod.yml run-production DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+        run: make -f compose.prod.yml run-production DOCKER_USERNAME=$DOCKER_USERNAME
