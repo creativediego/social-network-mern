@@ -30,5 +30,17 @@ jobs:
           sudo docker stop server-production-latest || true
           sudo docker rm server-production-latest || true
 
+      - name: Clean existing 'docker' directory
+        run: rm -rf "/home/ec2-user/buzzcentral/docker"
+
+      - name: Checkout 'docker' directory
+        uses: actions/checkout@v3
+        with:
+          path: 'docker'
+
+      - name: Print pwd
+        run: pwd
+
       - name: Run client and server container with Makefile command
+        working-directory: './docker'
         run: make -f compose.prod.yml run-production DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
