@@ -11,18 +11,15 @@ jobs:
   build:
     runs-on: self-hosted
     steps:
+      - name: Clean existing app directory
+        run: rm -rf "/home/ec2-user/buzzcentral"
+
       - name: Checkout repo
         uses: actions/checkout@v3
 
       # Move the checked-out repository to the desired directory
       - name: Move repository to target directory
         run: mv $GITHUB_WORKSPACE /home/ec2-user/buzzcentral
-
-      - name: cur dir
-        run: pwd
-
-      - name: List directory contents
-        run: ls -a
 
       # - name: Pull client Docker image from Docker Hub
       #   run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:client-production-latest
