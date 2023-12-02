@@ -40,4 +40,4 @@ jobs:
 
       - name: Run client and server container with Makefile command
         working-directory: './docker'
-        run: make -f Makefile run-production DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+        run: ls && make -f Makefile run-production DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
