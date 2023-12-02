@@ -12,7 +12,7 @@ jobs:
     runs-on: self-hosted
     defaults:
       run:
-        working-directory: /home/${{ secrets.EC2_USERNAME}}/buzzcentral
+        working-directory: /home/${{ secrets.EC2_USER}}/buzzcentral
     steps:
       - name: Pull client Docker image from Docker Hub
         run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:client-production-latest
