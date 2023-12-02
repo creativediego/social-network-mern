@@ -40,4 +40,4 @@ jobs:
 
       - name: Run client and server container with Makefile command
         working-directory: './docker'
-        run: make -f compose.prod.yml run-production DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+        run: make -f docker-compose.prod.yml run-production DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
