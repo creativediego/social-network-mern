@@ -40,5 +40,4 @@ jobs:
           sudo docker rm server-production-latest || true
 
       - name: Run client and server container with Makefile command
-        working-directory: /home/ec2-user/app
-        run: make -f Makefile run-production DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+        run: make -f /home/ec2-user/app/Makefile run-production DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
