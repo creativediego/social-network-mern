@@ -60,15 +60,15 @@ jobs:
 
       # Move the checked-out repository to the desired directory
       - name: Move repository to target directory
-        run: cp -r $GITHUB_WORKSPACE/* APP_DIR
+        run: cp -r $GITHUB_WORKSPACE/* $APP_DIR
 
       - name: Run client and server container with Makefile command
         run: make run-production ENV_FILE=temp_env_file.env DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
-        working-directory: APP_DIR
+        working-directory: $APP_DIR
 
       - name: Cleanup temporary env file
         run: |
-          rm APP_DIR/temp_env_file.env
+          rm $APP_DIR/temp_env_file.env
         # Prevent logging of the deletion command
         env:
           ACTIONS_STEP_DEBUG: false
