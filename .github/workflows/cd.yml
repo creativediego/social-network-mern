@@ -20,6 +20,7 @@ jobs:
 
       - name: Create temporary env file to store github secrets
         run: |
+          touch $APP_DIR/temp_env_file.env
           printf "ENV=production\n\
           DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}\n\
           API_PORT = 4000\n\
