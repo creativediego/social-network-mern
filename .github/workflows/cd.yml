@@ -10,7 +10,14 @@ on:
 jobs:
   build:
     runs-on: self-hosted
+    env:
+      APP_DIR: /home/${{ secrets.EC2_USER }}/app
     steps:
+      - name: Clean existing app directory
+        run: |
+          rm -rf $APP_DIR
+          mkdir $APP_DIR
+
       - name: Create temporary env file to store github secrets
         run: |
           printf "ENV=production\n\
@@ -25,7 +32,7 @@ jobs:
           REACT_APP_FIREBASE_MEASUREMENT_ID=${{ secrets.REACT_APP_FIREBASE_MEASUREMENT_ID }}\n\
           REACT_APP_FIREBASE_MESSAGING_ID=${{ secrets.REACT_APP_FIREBASE_MESSAGING_ID }}\n\
           REACT_APP_FIREBASE_PROJECT_ID=${{ secrets.REACT_APP_FIREBASE_PROJECT_ID }}\n\
-          REACT_APP_FIREBASE_STORAGE_BUCKET=${{ secrets.REACT_APP_FIREBASE_STORAGE_BUCKET }}" > temp_env_file.env
+          REACT_APP_FIREBASE_STORAGE_BUCKET=${{ secrets.REACT_APP_FIREBASE_STORAGE_BUCKET }}" > $APP_DIR/temp_env_file.env
           chmod 600 temp_env_file.env  # Adjust permissions to restrict access
         # Prevent the file from being logged
         env:
@@ -50,25 +57,17 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Clean existing app directory
-        run: |
-          rm -rf /home/${{ secrets.EC2_USER }}/app
-          mkdir /home/${{ secrets.EC2_USER }}/app
-
       # Move the checked-out repository to the desired directory
       - name: Move repository to target directory
-        run: cp -r $GITHUB_WORKSPACE/* /home/${{ secrets.EC2_USER }}/app
-
-      - name: Move the temp env file to the app dir where compose will run
-        run: mv temp_env_file.env /home/${{ secrets.EC2_USER }}/app
+        run: cp -r $GITHUB_WORKSPACE/* APP_DIR
 
       - name: Run client and server container with Makefile command
         run: make run-production ENV_FILE=temp_env_file.env DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
-        working-directory: /home/${{ secrets.EC2_USER }}/app
+        working-directory: APP_DIR
 
       - name: Cleanup temporary env file
         run: |
-          rm /home/${{ secrets.EC2_USER }}/app/temp_env_file.env
+          rm APP_DIR/temp_env_file.env
         # Prevent logging of the deletion command
         env:
           ACTIONS_STEP_DEBUG: false
