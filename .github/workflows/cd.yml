@@ -9,6 +9,9 @@ on:
       - success
 jobs:
   build:
+    defaults:
+      run:
+        working-directory: /home/${{ secrets.EC2_USER }}/app
     runs-on: self-hosted
     steps:
       - name: Create temporary env file to store github secrets
@@ -47,17 +50,13 @@ jobs:
           sudo docker stop server-production-latest || true
           sudo docker rm server-production-latest || true
 
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
       - name: Clean existing app directory
         run: |
           rm -rf /home/${{ secrets.EC2_USER }}/app
           mkdir /home/${{ secrets.EC2_USER }}/app
 
-      # Move the checked-out repository to the desired directory
-      - name: Move repository to target directory
-        run: cp -r $GITHUB_WORKSPACE/* /home/${{ secrets.EC2_USER }}/app
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
       - name: Move the temp env file to the app dir where compose will run
         run: mv temp_env_file.env /home/${{ secrets.EC2_USER }}/app
