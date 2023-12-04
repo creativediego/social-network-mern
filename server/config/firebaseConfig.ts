@@ -4,7 +4,7 @@ dotenv.config();
 
 admin.initializeApp({
   credential: admin.credential.cert(
-    JSON.parse(process.env.FIREBASE_CREDENTIALS!)
+    JSON.parse(process.env.API_FIREBASE_CREDENTIALS!)
   ),
 });
 

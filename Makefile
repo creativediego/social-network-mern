@@ -18,13 +18,12 @@ run-dev:
 build-local:
 	cd client && docker build \
 	--build-arg CADDYFILE=Caddyfile.local \
-	-f Dockerfile.prod -t social-app:client-local-latest .
+	-f Dockerfile.prod -t $(DOCKER_USERNAME)/social-app:client-local-latest .
 	cd server && docker build \
-	-f Dockerfile.prod -t social-app:server-local-latest .
+	-f Dockerfile.prod -t $(DOCKER_USERNAME)/social-app:server-local-latest .
 run-local:
-	ENV=local DOCKER_USERNAME="" \
-	CLIENT_URL=localhost:80 REACT_APP_CLIENT_URL=localhost:80 \
-	docker-compose -f docker-compose.prod.yml up 
+	ENV=local DOCKER_USERNAME=$(DOCKER_USERNAME) \
+    docker-compose --env-file $(ENV_FILE) -f docker-compose.prod.yml up
 		
 ### PRODUCTION
 # Builds client and server with prod config 
@@ -37,23 +36,7 @@ build-server-production:
 	-f Dockerfile.prod -t $(DOCKER_USERNAME)/social-app:server-production-latest .
 	
 run-production:
-	ENV=production DOCKER_USERNAME=$(DOCKER_USERNAME) CLIENT_URL=localhost:80 REACT_APP_CLIENT_URL=localhost:80 \
-	docker-compose -f docker-compose.prod.yml up
+	ENV=production DOCKER_USERNAME=$(DOCKER_USERNAME) \
+	docker-compose --env-file $(ENV_FILE) -f docker-compose.prod.yml up
 stop:
 	docker-compose down
-
-# ### REMOTE SSH INTO DEPLOYMENT SERVER
-# SSH_STRING:=root@161.35.104.130
-
-# ssh:
-# 	ssh $(SSH_STRING)
-
-
-# # apt install make
-
-# copy-files:
-# 	scp -r ./* $(SSH_STRING):/root/
-
-# # when you add firewall rule, have to add SSH on port 22 or it will stop working
-
-# # run challenge with cloudflare on flexible, then bump to full

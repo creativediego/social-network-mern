@@ -2,25 +2,20 @@ version: '3'
 services:
   social-client-prod:
     image: ${DOCKER_USERNAME}/social-app:client-${ENV}-latest
-    env_file: ./client/.env.production
-    environment:
-      - REACT_APP_CLIENT_URL=${REACT_APP_CLIENT_URL}
+    env_file: ${ENV_FILE}
     restart: unless-stopped # restart on failure
     stdin_open: true # allow input from terminal
     ports:
-      - "80:80"
-      - "443:443"
+      - "${REACT_APP_CLIENT_PORT}:${REACT_APP_CLIENT_PORT}"
     volumes: # to store tsl certificate configuration
       - caddy-data:/data
       - caddy-config:/config
   social-api-prod:
     image: ${DOCKER_USERNAME}/social-app:server-${ENV}-latest
-    env_file: ./server/.env.production
-    environment:
-      - CLIENT_URL=${CLIENT_URL}
+    env_file: ${ENV_FILE}
     restart: unless-stopped
     ports:
-      - "4000:4000"
+      - "${API_PORT}:${API_PORT}"
 volumes:
   caddy-data:
     driver: local

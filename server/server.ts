@@ -9,16 +9,16 @@ dotenv.config();
 // Set up db
 let db: Connection;
 (async () => {
-  db = await connectToDatabase(process.env.MONGO_URI!);
+  db = await connectToDatabase(process.env.API_MONGO_URI!);
 })();
 
-if (process.env.NODE_ENV! === 'production') {
+if (process.env.ENV! === 'production') {
   app.set('trust proxy', 1); // trust first proxy
   app.use(express.static(path.join(__dirname, '../../client/build'))); // serve react app
 }
 
-httpServer.listen(process.env.PORT! || 4000, () => {
-  console.log(`Server running on port: ${process.env.PORT! || 4000}`);
+httpServer.listen(process.env.API_PORT!, () => {
+  console.log(`Server running on port: ${process.env.API_PORT!}`);
 });
 
 // Graceful shutdown

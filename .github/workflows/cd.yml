@@ -11,17 +11,33 @@ jobs:
   build:
     runs-on: self-hosted
     steps:
-      - name: Clean existing app directory
+      - name: Create temporary env file to store github secrets
         run: |
-          rm -rf /home/ec2-user/app
-          mkdir /home/ec2-user/app
+          printf "ENV=production\n\
+          API_PORT = 4000\n\
+          MONGO_URI=${{ secrets.MONGO_URI }}\n\
+          CLIENT_URL=${{ secrets.REACT_APP_CLIENT_URL }}\n\
+          REACT_APP_CLIENT_URL=${{ secrets.REACT_APP_CLIENT_URL }}\n\
+          DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}\n\
+          REACT_APP_CLIENT_PORT = 80\n\
+          REACT_APP_FIREBASE_APP_ID=${{ secrets.REACT_APP_FIREBASE_APP_ID }}\n\
+          REACT_APP_FIREBASE_DOMAIN=${{ secrets.REACT_APP_FIREBASE_DOMAIN }}\n\
+          REACT_APP_FIREBASE_KEY=${{ secrets.REACT_APP_FIREBASE_KEY }}\n\
+          REACT_APP_FIREBASE_MEASUREMENT_ID=${{ secrets.REACT_APP_FIREBASE_MEASUREMENT_ID }}\n\
+          REACT_APP_FIREBASE_MESSAGING_ID=${{ secrets.REACT_APP_FIREBASE_MESSAGING_ID }}\n\
+          REACT_APP_FIREBASE_PROJECT_ID=${{ secrets.REACT_APP_FIREBASE_PROJECT_ID }}\n\
+          REACT_APP_FIREBASE_STORAGE_BUCKET=${{ secrets.REACT_APP_FIREBASE_STORAGE_BUCKET }}" > temp_env_file.env
+          chmod 600 temp_env_file.env  # Adjust permissions to restrict access
+        # Prevent the file from being logged
+        env:
+          ACTIONS_STEP_DEBUG: false
 
       - name: Checkout repo
         uses: actions/checkout@v3
 
       # Move the checked-out repository to the desired directory
       - name: Move repository to target directory
-        run: cp -r $GITHUB_WORKSPACE/* /home/ec2-user/app
+        run: cp -r $GITHUB_WORKSPACE/* /home/${{ secrets.EC2_USER }}/app
 
       - name: Pull client Docker image from Docker Hub
         run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:client-production-latest
@@ -39,5 +55,18 @@ jobs:
           sudo docker stop server-production-latest || true
           sudo docker rm server-production-latest || true
 
+      - name: Clean existing app directory
+        run: |
+          rm -rf /home/${{ secrets.EC2_USER }}/app
+          mkdir /home/${{ secrets.EC2_USER }}/app
+
       - name: Run client and server container with Makefile command
-        run: make run-production DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+        run: make run-production ENV_FILE=temp_env_file.env DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+        working-directory: /home/${{ secrets.EC2_USER }}/app
+
+      - name: Cleanup temporary env file
+        run: |
+          rm temp_env_file.env
+        # Prevent logging of the deletion command
+        env:
+          ACTIONS_STEP_DEBUG: false

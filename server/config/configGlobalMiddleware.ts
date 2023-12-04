@@ -4,7 +4,7 @@ import cors from 'cors';
 const createGlobalMiddleware = (app: Express) => {
   app.use(express.json());
 
-  const allowedOrigins = [process.env.CLIENT_URL!, 'http://localhost'];
+  const allowedOrigins = [process.env.API_CLIENT_URL!, 'http://localhost'];
 
   app.use(
     cors({
