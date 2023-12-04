@@ -25,6 +25,7 @@ jobs:
           DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}\n\
           API_PORT = 4000\n\
           API_MONGO_URI=${{ secrets.MONGO_URI }}\n\
+          API_FIREBASE_CREDENTIALS=${{ secrets.API_FIREBASE_CREDENTIALS }}\n\
           REACT_APP_CLIENT_URL=${{ secrets.REACT_APP_CLIENT_URL }}\n\
           REACT_APP_CLIENT_PORT = 80\n\
           REACT_APP_FIREBASE_APP_ID=${{ secrets.REACT_APP_FIREBASE_APP_ID }}\n\
