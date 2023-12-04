@@ -29,7 +29,7 @@ run-local:
 # Builds client and server with prod config 
 build-client-production:
 	cd client && docker build \
-	--build-arg CADDYFILE=Caddyfile.production \
+	--build-arg CADDYFILE=Caddyfile.local \
 	-f Dockerfile.prod -t $(DOCKER_USERNAME)/social-app:client-production-latest .
 build-server-production:
 	cd server && docker build \
