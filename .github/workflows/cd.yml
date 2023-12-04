@@ -34,7 +34,7 @@ jobs:
           REACT_APP_FIREBASE_MESSAGING_ID=${{ secrets.REACT_APP_FIREBASE_MESSAGING_ID }}\n\
           REACT_APP_FIREBASE_PROJECT_ID=${{ secrets.REACT_APP_FIREBASE_PROJECT_ID }}\n\
           REACT_APP_FIREBASE_STORAGE_BUCKET=${{ secrets.REACT_APP_FIREBASE_STORAGE_BUCKET }}" > $APP_DIR/temp_env_file.env
-          chmod 600 temp_env_file.env  # Adjust permissions to restrict access
+          chmod 600 $APP_DIR/temp_env_file.env  # Adjust permissions to restrict access
         # Prevent the file from being logged
         env:
           ACTIONS_STEP_DEBUG: false
