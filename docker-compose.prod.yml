@@ -3,7 +3,7 @@ services:
   social-client-prod:
     image: ${DOCKER_USERNAME}/social-app:client-${ENV}-latest
     env_file: ${ENV_FILE}
-    # restart: unless-stopped # restart on failure
+    restart: unless-stopped # restart on failure
     stdin_open: true # allow input from terminal
     ports:
       - "${REACT_APP_CLIENT_PORT}:${REACT_APP_CLIENT_PORT}"
@@ -13,7 +13,7 @@ services:
   social-api-prod:
     image: ${DOCKER_USERNAME}/social-app:server-${ENV}-latest
     env_file: ${ENV_FILE}
-    # restart: unless-stopped
+    restart: unless-stopped
     ports:
       - "${API_PORT}:${API_PORT}"
 volumes:
