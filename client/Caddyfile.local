@@ -1,7 +1,7 @@
-http://localhost:80 {
+:80 {
   root * /srv
   route {    
-    reverse_proxy /api* social-api-server:5000
+    reverse_proxy /api* social-api-server:4000
     try_files {path} {path}/ /index.html
     file_server
   }
