@@ -22,7 +22,7 @@ build-local:
 	cd server && docker build \
 	-f Dockerfile.prod -t $(DOCKER_USERNAME)/social-app:server-local-latest .
 run-local:
-	ENV=local DOCKER_USERNAME=$(DOCKER_USERNAME) \
+	ENV=local DOCKER_USERNAME=$(DOCKER_USERNAME) REACT_APP_CLIENT_PORT=80 API_PORT=4000 \
     docker-compose --env-file $(ENV_FILE) -f docker-compose.prod.yml up
 		
 ### PRODUCTION
