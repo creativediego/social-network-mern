@@ -29,7 +29,7 @@ run-local:
 # Builds client and server with prod config 
 build-client-production:
 	cd client && docker build \
-	--build-arg CADDYFILE=Caddyfile.local \
+	--build-arg CADDYFILE=Caddyfile.production \
 	-f Dockerfile.prod -t $(DOCKER_USERNAME)/social-app:client-production-latest .
 build-server-production:
 	cd server && docker build \
@@ -40,3 +40,10 @@ run-production:
 	docker-compose --env-file $(ENV_FILE) -f docker-compose.prod.yml up
 stop:
 	docker-compose down
+
+copy-files:
+	echo "Compressing local files..."
+	tar czf ../app_file.tar.gz --exclude='node_modules' -C ./ .
+	echo "Uploading app tar file to server..."
+	scp -i $(PEM) ../app_file.tar.gz $(SERVER):$(BASE_DIR)
+
