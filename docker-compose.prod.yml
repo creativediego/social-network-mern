@@ -6,7 +6,7 @@ services:
     # restart: unless-stopped # restart on failure
     stdin_open: true # allow input from terminal
     ports:
-      - "${REACT_APP_CLIENT_PORT}:${REACT_APP_CLIENT_PORT}"
+      - "${CLIENT_PORT}:${CLIENT_PORT}"
     volumes: # to store tsl certificate configuration
       - caddy-data:/data
       - caddy-config:/config
