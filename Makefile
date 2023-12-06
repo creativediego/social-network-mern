@@ -36,7 +36,7 @@ build-server-production:
 	-f Dockerfile.prod -t $(DOCKER_USERNAME)/social-app:server-production-latest .
 	
 run-production:
-	ENV=production DOCKER_USERNAME=$(DOCKER_USERNAME) REACT_APP_CLIENT_PORT=80 API_PORT=4000 \
+	ENV=production DOCKER_USERNAME=$(DOCKER_USERNAME) REACT_APP_CLIENT_PORT=443 API_PORT=4000 \
 	docker-compose --env-file $(ENV_FILE) -f docker-compose.prod.yml up
 stop:
 	docker-compose down
