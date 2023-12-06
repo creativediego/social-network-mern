@@ -64,7 +64,7 @@ jobs:
         run: cp -r $GITHUB_WORKSPACE/* $APP_DIR
 
       - name: Run client and server container with Makefile command
-        run: make run-local ENV_FILE=$APP_DIR/temp_env_file.env DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+        run: make run-production ENV_FILE=$APP_DIR/temp_env_file.env DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
         working-directory: /home/${{ secrets.EC2_USER }}/app
 
       - name: Cleanup temporary env file
