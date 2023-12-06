@@ -1,5 +1,4 @@
-:443 {
-  tls 
+:443 { 
   root * /srv
   route {    
     reverse_proxy /api* social-api-server:4000

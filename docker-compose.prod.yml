@@ -10,12 +10,12 @@ services:
     volumes: # to store tsl certificate configuration
       - caddy-data:/data
       - caddy-config:/config
-  social-api-prod:
-    image: ${DOCKER_USERNAME}/social-app:server-${ENV}-latest
-    env_file: ${ENV_FILE}
-    # restart: unless-stopped
-    ports:
-      - "${API_PORT}:${API_PORT}"
+  # social-api-prod:
+  #   image: ${DOCKER_USERNAME}/social-app:server-${ENV}-latest
+  #   env_file: ${ENV_FILE}
+  #   # restart: unless-stopped
+  #   ports:
+  #     - "${API_PORT}:${API_PORT}"
 volumes:
   caddy-data:
     driver: local
