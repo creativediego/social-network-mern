@@ -1,4 +1,4 @@
-buzzcentral.app:443 {
+:443 {
   tls 
   root * /srv
   route {    
