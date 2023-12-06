@@ -24,7 +24,7 @@ jobs:
 
       # Push client and server images to Docker Hub
       - name: Push client Docker image to Docker Hub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/social-app:client-production-latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/social-app:client-local-latest
 
       - name: Push server Docker image to Docker Hub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/social-app:server-production-latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/social-app:server-local-latest
