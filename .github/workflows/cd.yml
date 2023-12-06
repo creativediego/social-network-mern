@@ -23,10 +23,12 @@ jobs:
           touch $APP_DIR/temp_env_file.env
           printf "ENV=production\n\
           DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}\n\
+          API_PORT = 4000\n\
           API_MONGO_URI=${{ secrets.MONGO_URI }}\n\
           API_CLIENT_URL = ${{ secrets.API_CLIENT_URL }}\n\
           API_FIREBASE_CREDENTIALS=${{ secrets.API_FIREBASE_CREDENTIALS }}\n\
           REACT_APP_CLIENT_URL=${{ secrets.REACT_APP_CLIENT_URL }}\n\
+          REACT_APP_CLIENT_PORT = 443\n\
           REACT_APP_FIREBASE_APP_ID=${{ secrets.REACT_APP_FIREBASE_APP_ID }}\n\
           REACT_APP_FIREBASE_DOMAIN=${{ secrets.REACT_APP_FIREBASE_DOMAIN }}\n\
           REACT_APP_FIREBASE_KEY=${{ secrets.REACT_APP_FIREBASE_KEY }}\n\
