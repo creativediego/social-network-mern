@@ -37,7 +37,7 @@ build-server-production:
 	
 run-production:
 	ENV=production DOCKER_USERNAME=$(DOCKER_USERNAME) API_PORT=4000 CLIENT_PORT=80 \
-	docker-compose --env-file $(ENV_FILE) -f docker-compose.prod.yml up
+	docker-compose -v --env-file $(ENV_FILE) -f docker-compose.prod.yml up
 stop:
 	docker-compose down
 
