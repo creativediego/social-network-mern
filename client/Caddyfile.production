@@ -1,4 +1,5 @@
-buzzcentral.app:80 { 
+buzzcentral.app:443 {
+  tls /certs/tls_cert.pem /certs/tls_key.pem 
   root * /srv
   route {    
     reverse_proxy /api* social-api-server:4000

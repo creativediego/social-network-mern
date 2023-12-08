@@ -17,26 +17,24 @@ run-dev:
 # Builds client and server with prod config but with local port 80 caddy client srv.
 build-local:
 	cd client && docker build \
-	--build-arg CADDYFILE=Caddyfile.local \
 	-f Dockerfile.prod -t $(DOCKER_USERNAME)/social-app:client-local-latest .
 	cd server && docker build \
 	-f Dockerfile.prod -t $(DOCKER_USERNAME)/social-app:server-local-latest .
 run-local:
-	ENV=local DOCKER_USERNAME=$(DOCKER_USERNAME) REACT_APP_CLIENT_PORT=80 API_PORT=4000 \
+	ENV=local DOCKER_USERNAME=local CLIENT_PORT=80 API_PORT=4000 TLS_CERT_FILE=./tls_cert.pem TLS_KEY_FILE=./tls_key.pem \
     docker-compose --env-file $(ENV_FILE) -f docker-compose.prod.yml up
 		
 ### PRODUCTION
 # Builds client and server with prod config 
 build-client-production:
 	cd client && docker build \
-	--build-arg CADDYFILE=Caddyfile.production \
 	-f Dockerfile.prod -t $(DOCKER_USERNAME)/social-app:client-production-latest .
 build-server-production:
 	cd server && docker build \
 	-f Dockerfile.prod -t $(DOCKER_USERNAME)/social-app:server-production-latest .
 	
 run-production:
-	ENV=production DOCKER_USERNAME=$(DOCKER_USERNAME) API_PORT=4000 CLIENT_PORT=80 \
+	ENV=production DOCKER_USERNAME=$(DOCKER_USERNAME) API_PORT=4000 CLIENT_PORT=443 TLS_CERT_FILE=$(TLS_CERT_FILE) TLS_KEY_FILE=$(TLS_KEY_FILE)  \
 	docker-compose -v --env-file $(ENV_FILE) -f docker-compose.prod.yml up
 stop:
 	docker-compose down

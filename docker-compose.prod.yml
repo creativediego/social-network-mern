@@ -5,20 +5,25 @@ services:
     env_file: ${ENV_FILE}
     # restart: unless-stopped # restart on failure
     stdin_open: true # allow input from terminal
+    volumes:
+      - client_build:/usr/src/app/build  # Mount built client files from the named volume
+  caddy:
+    image: caddy:2.4.3-alpine
+    volumes:
+      - ${TLS_CERT_FILE}:/certs/tls_cert.pem  # Mount SSL/TLS certificate
+      - ${TLS_KEY_FILE}:/certs/tls_key.pem
+      - ./client/Caddyfile.${ENV}:/etc/caddy/Caddyfile
+      - client_build:/srv
     ports:
       - "${CLIENT_PORT}:${CLIENT_PORT}"
-    volumes: # to store tsl certificate configuration
-      - caddy-data:/data
-      - caddy-config:/config
-  # social-api-prod:
-  #   image: ${DOCKER_USERNAME}/social-app:server-${ENV}-latest
-  #   env_file: ${ENV_FILE}
-  #   # restart: unless-stopped
-  #   ports:
-  #     - "${API_PORT}:${API_PORT}"
+    depends_on:
+      - social-client-prod
+  social-api-prod:
+    image: ${DOCKER_USERNAME}/social-app:server-${ENV}-latest
+    env_file: ${ENV_FILE}
+    # restart: unless-stopped
+    ports:
+      - "${API_PORT}:${API_PORT}"
 volumes:
-  caddy-data:
-    driver: local
-  caddy-config:
-    driver: local
+  client_build: {}
 
