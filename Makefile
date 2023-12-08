@@ -35,7 +35,7 @@ build-server-production:
 	
 run-production:
 	ENV=production DOCKER_USERNAME=$(DOCKER_USERNAME) API_PORT=4000 CLIENT_PORT=443 TLS_CERT_FILE=$(TLS_CERT_FILE) TLS_KEY_FILE=$(TLS_KEY_FILE)  \
-	docker-compose --env-file $(ENV_FILE) -f docker-compose.prod.yml up -v
+	docker-compose --env-file $(ENV_FILE) -f docker-compose.prod.yml --verbose up
 stop:
 	docker-compose down
 
