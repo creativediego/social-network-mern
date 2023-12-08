@@ -1,8 +1,16 @@
 buzzcentral.app:80 {
   root * /srv
-  route {    
-    reverse_proxy /api* social-api-server:4000
-    try_files {path} /index.html
-    file_server
+  route {
+    handle /api* {
+      reverse_proxy social-api-server:4000
+    }
+    @notApi {
+      file {
+        try_files {path} /index.html
+      }
+    }
+    handle @notApi {
+      file_server
+    }
   }
 }
