@@ -45,8 +45,8 @@ jobs:
       - name: Create temporary TSL certificate and key files
         run: |
           touch  $APP_DIR/temp_tls_cert.pem  $APP_DIR/temp_tls_key.pem
-          printf "${{secrets.TLS_CERT}}" > $APP_DIR/temp_tls_cert.pem
-          printf "${{secrets.TLS_KEY}}" > $APP_DIR/temp_tls_key.pem
+          printf "%s" ${{ secrets.TLS_CERT }} > $APP_DIR/temp_tls_cert.pem
+          printf "%s" ${{ secrets.TLS_KEY }} > $APP_DIR/temp_tls_key.pem
           chmod 600 $APP_DIR/temp_tls_cert.pem $APP_DIR/temp_tls_key.pem
         # Prevent the file from being logged
         env:
