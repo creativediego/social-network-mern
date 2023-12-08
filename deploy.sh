@@ -23,15 +23,15 @@ rm -rf $BASE_DIR/app_file.tar.gz
 
 echo "Stopping and removing old docker containers..."
 docker-compose down
-
-echo "Building docker containers..."
-cd $BASE_DIR/app
-make build-client-production DOCKER_USERNAME=creative
-make build-server-production DOCKER_USERNAME=creative
-
-echo "Running docker containers..."
-make run-production DOCKER_USERNAME=creative ENV_FILE=.env.production
 EOF
+# echo "Building docker containers..."
+# cd $BASE_DIR/app
+# make build-client-production DOCKER_USERNAME=creative
+# make build-server-production DOCKER_USERNAME=creative
+
+# echo "Running docker containers..."
+# make run-production DOCKER_USERNAME=creative ENV_FILE=.env.production
+
 
 
 
