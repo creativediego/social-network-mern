@@ -77,7 +77,7 @@ jobs:
 
       - name: Run client and server container with Makefile command
         run: |
-          make run-production ENV_FILE=temp_env_file.env TLS_CERT_FILE=temp_tls_cert.pem TLS_KEY_FILE=temp_tls_key.pem DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+          make run-production ENV_FILE=temp_env_file.env TLS_CERT_FILE=$APP_DIR/temp_tls_cert.pem TLS_KEY_FILE=$APP_DIR/temp_tls_key.pem DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
         working-directory: /home/${{ secrets.EC2_USER }}/app
 
       - name: Cleanup temporary env files
