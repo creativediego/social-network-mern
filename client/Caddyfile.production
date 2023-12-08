@@ -1,4 +1,4 @@
-buzzcentral.app:443 {
+buzzcentral.app:80 {
   tls /certs/tls_cert.pem /certs/tls_key.pem 
   root * /srv
   route {    
