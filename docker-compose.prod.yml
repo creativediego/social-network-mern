@@ -19,7 +19,6 @@ services:
       - "${CLIENT_PORT}:${CLIENT_PORT}"
     depends_on:
       - social-client-prod
-    command: ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile", "--log", "stdout", "--log-level", "debug"]
   # social-api-prod:
   #   image: ${DOCKER_USERNAME}/social-app:server-${ENV}-latest
   #   env_file: ${ENV_FILE}
