@@ -9,6 +9,7 @@ services:
       - client_build:/usr/src/app/build  # Mount built client files from the named volume
   caddy:
     image: caddy:2.4.3-alpine
+    stdin_open: true # allow input from terminal
     volumes:
       - ${TLS_CERT_FILE}:/certs/tls_cert.pem  # Mount SSL/TLS certificate
       - ${TLS_KEY_FILE}:/certs/tls_key.pem
