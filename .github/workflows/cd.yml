@@ -8,7 +8,7 @@ on:
       - completed
       - success
 jobs:
-  build:
+  deploy:
     runs-on: self-hosted
     env:
       APP_DIR: /home/${{ secrets.EC2_USER }}/app
