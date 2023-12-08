@@ -18,12 +18,12 @@ services:
       - "${CLIENT_PORT}:${CLIENT_PORT}"
     depends_on:
       - social-client-prod
-  social-api-prod:
-    image: ${DOCKER_USERNAME}/social-app:server-${ENV}-latest
-    env_file: ${ENV_FILE}
-    # restart: unless-stopped
-    ports:
-      - "${API_PORT}:${API_PORT}"
+  # social-api-prod:
+  #   image: ${DOCKER_USERNAME}/social-app:server-${ENV}-latest
+  #   env_file: ${ENV_FILE}
+  #   # restart: unless-stopped
+  #   ports:
+  #     - "${API_PORT}:${API_PORT}"
 volumes:
   client_build: {}
 
