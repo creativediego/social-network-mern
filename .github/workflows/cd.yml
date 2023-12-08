@@ -55,18 +55,18 @@ jobs:
       - name: Pull client Docker image from Docker Hub
         run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:client-production-latest
 
-      # - name: Pull server Docker image from Docker Hub
-      #   run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:client-production-latest
+      - name: Pull server Docker image from Docker Hub
+        run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/social-app:client-production-latest
 
       - name: Stop and remove old client container
         run: |
           sudo docker stop client-production-latest || true
           sudo docker rm client-production-latest || true
 
-      # - name: Stop and remove old server container
-      #   run: |
-      #     sudo docker stop server-production-latest || true
-      #     sudo docker rm server-production-latest || true
+      - name: Stop and remove old server container
+        run: |
+          sudo docker stop server-production-latest || true
+          sudo docker rm server-production-latest || true
 
       - name: Checkout repo
         uses: actions/checkout@v3
