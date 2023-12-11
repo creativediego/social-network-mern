@@ -1,21 +1,23 @@
 version: '3'
 services:
   social-client-prod:
-    image: ${DOCKER_USERNAME}/social-app:client-${ENV}-latest
+    image: ${REPO_NAME}:client-${ENV}-latest
     env_file: ${ENV_FILE}
     # restart: unless-stopped # restart on failure
     stdin_open: true # allow input from terminal
     ports:
       - "${CLIENT_PORT}:${CLIENT_PORT}"
     volumes: # to store tsl certificate configuration
-      - caddy-data:/data
-      - caddy-config:/config
-  # social-api-prod:
-  #   image: ${DOCKER_USERNAME}/social-app:server-${ENV}-latest
-  #   env_file: ${ENV_FILE}
-  #   # restart: unless-stopped
-  #   ports:
-  #     - "${API_PORT}:${API_PORT}"
+      - ${TLS_CERT_FILE}:/keys/tls_cert.pem
+      - ${TLS_KEY_FILE}:/keys/tls_key.pem
+  
+  social-api-prod:
+    image: ${REPO_NAME}:server-${ENV}-latest
+    env_file: ${ENV_FILE}
+    # restart: unless-stopped
+    ports:
+      - "${API_PORT}:${API_PORT}"
+
 volumes:
   caddy-data:
     driver: local

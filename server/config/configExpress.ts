@@ -1,24 +1,32 @@
-import express from 'express';
+import express, { Express } from 'express';
 import { Server, createServer } from 'http';
-import configGlobalMiddleware from './configGlobalMiddleware';
-import createControllers from './createControllers';
+import { Server as ioServer } from 'socket.io';
+import { configCors } from './configCors';
+import { createControllers } from './createControllers';
 import {
   handleCentralError,
   handleUncaughtException,
 } from '../errors/handleCentralError';
+import FirebaseJWTService from '../services/FirebaseJWTService';
+import { IJWTService } from '../services/IJWTService';
+import { ISocketService } from '../services/ISocketService';
+import JWTService from '../services/JWTService';
+import SocketService from '../services/SocketService';
+import { userDao } from './configDaos';
 
 /**
  * Instantiates Express app and configures global middleware.
  * @returns Express app
  */
-const createApp = () => {
-  const app = express();
-  configGlobalMiddleware(app);
-  createControllers(app);
+const configMiddleWare = (app: Express) => {
+  configCors(app);
   handleUncaughtException();
   app.use(handleCentralError);
   return app;
 };
 
-export const app = createApp();
-export const httpServer: Server = createServer(app); // used for sockets
+export const app = express();
+export const httpServer: Server = createServer(app); // used for sockets; init before controllers & services
+
+configMiddleWare(app); // must declare before controllers
+createControllers(app);

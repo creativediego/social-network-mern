@@ -12,7 +12,7 @@ import IDao from '../../daos/shared/IDao';
 import NotificationDao from '../../daos/notifications/NotificationsDao';
 import INotification from '../../models/notifications/INotification';
 import { NotificationType } from '../../models/notifications/NotificationType';
-import ISocketService from '../../services/ISocketService';
+import { ISocketService } from '../../services/ISocketService';
 import IUser from '../../models/users/IUser';
 
 /**

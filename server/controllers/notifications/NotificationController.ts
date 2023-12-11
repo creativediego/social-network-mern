@@ -7,8 +7,7 @@ import { isAuthenticated } from '../auth/isAuthenticated';
 import INotification from '../../models/notifications/INotification';
 import NotificationDao from '../../daos/notifications/NotificationsDao';
 import { Server } from 'socket.io';
-import ISocketService from '../../services/ISocketService';
-
+import { ISocketService } from '../../services/ISocketService';
 /**
  * Represents the implementation for handling the notifications resource api.
  * @class
@@ -77,7 +76,7 @@ export default class NotificationController {
       await this.notificationDao.createNotification(req.body);
 
     // Emit an update to the socket server that there's a new like notification
-  
+
     this.socketService.emitToRoom(
       req.body.userNotified,
       'NEW_NOTIFICATION',

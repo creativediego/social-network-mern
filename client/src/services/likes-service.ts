@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { loadRequestInterceptors } from './helpers';
+import { config } from '../config/appConfig';
 
-const BASE_URL = process.env.REACT_APP_API_URL;
+const BASE_URL = config.apiURL;
 const USERS_API = `${BASE_URL}/users`;
 const TUITS_API = `${BASE_URL}/posts`;
 

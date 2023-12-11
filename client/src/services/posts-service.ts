@@ -2,8 +2,10 @@ import axios from 'axios';
 import { IPost } from '../interfaces/IPost';
 import { processError } from './helpers';
 import { loadRequestInterceptors } from './helpers';
-const TUITS_API = `${process.env.REACT_APP_API_URL}/posts`;
-const USERS_API = `${process.env.REACT_APP_API_URL}/users`;
+import { config } from '../config/appConfig';
+
+const TUITS_API = `${config.apiURL}/posts`;
+const USERS_API = `${config.apiURL}/users`;
 
 const api = axios.create();
 api.interceptors.request.use(loadRequestInterceptors);

@@ -12,7 +12,7 @@ import NotificationDao from '../../daos/notifications/NotificationsDao';
 import INotification from '../../models/notifications/INotification';
 import { isAuthenticated } from '../auth/isAuthenticated';
 import { NotificationType } from '../../models/notifications/NotificationType';
-import ISocketService from '../../services/ISocketService';
+import { ISocketService } from '../../services/ISocketService';
 
 /**
  *  Controller that implements the path, routes, and methods for managing the  for the follows resource. Implements {@link IFollowController}. Takes {@link IFollow} DAO as dependency.

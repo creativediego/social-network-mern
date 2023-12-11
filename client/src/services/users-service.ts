@@ -1,10 +1,10 @@
 import { IUser } from '../interfaces/IUser';
 import { makeAPICall } from './helpers';
 import { Requests } from './helpers';
+import { config } from '../config/appConfig';
 
-const BASE_URL = process.env.REACT_APP_API_URL;
-const LOGIN_API = `${BASE_URL}/login`;
-const USERS_API = `${BASE_URL}/users`;
+const LOGIN_API = `${config.apiURL}/login`;
+const USERS_API = `${config.apiURL}/users`;
 
 // Create a user based on the given user object
 export const createUser = (user: IUser) =>

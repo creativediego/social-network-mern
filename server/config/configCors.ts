@@ -1,7 +1,7 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 
-const configCors = (app: Express) => {
+export const configCors = (app: Express) => {
   app.use(express.json());
 
   const allowedOrigins = [process.env.API_CLIENT_URL!];
@@ -37,5 +37,3 @@ const configCors = (app: Express) => {
   //   }
   // });
 };
-
-export default configCors;

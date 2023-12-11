@@ -2,9 +2,9 @@ import axios from 'axios';
 import { IConversation } from '../interfaces/IConversation';
 import { IMessage } from '../interfaces/IMessage';
 import { loadRequestInterceptors, makeAPICall, Requests } from './helpers';
+import { config } from '../config/appConfig';
 
-const BASE_URL = process.env.REACT_APP_API_URL;
-const MESSAGES_API = `${BASE_URL}/users`;
+const MESSAGES_API = `${config.apiURL}/users`;
 
 const api = axios.create();
 // api.defaults.headers.common['authorization'] = localStorage.getItem('token');

@@ -5,6 +5,7 @@ async function connectToDatabase(
   dbURI: string,
   options?: ConnectionOptions
 ): Promise<Connection> {
+  console.log(dbURI);
   try {
     // Establishing connection to MongoDB
     await mongoose.connect(dbURI);

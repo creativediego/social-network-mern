@@ -1,29 +1,37 @@
 import { Server as ioServer, Socket } from 'socket.io';
 import { Server } from 'http';
 import dotenv from 'dotenv';
-import ISocketService from './ISocketService';
-import IJWTService from './IJWTService';
+import { ISocketService } from './ISocketService';
+import { IJWTService } from './IJWTService';
 import IDao from '../daos/shared/IDao';
 import IUser from '../models/users/IUser';
+
 dotenv.config();
 
 export default class SocketService implements ISocketService {
-  private readonly io: ioServer;
-  private readonly userDao: IDao<IUser>;
+  private readonly io: ioServer; // Instance of the Socket.IO server
+  private readonly userDao: IDao<IUser>; // User data access object
+
   public constructor(
-    jwtService: IJWTService,
-    httpServer: Server,
-    userDao: IDao<IUser>
+    jwtService: IJWTService, // Service for handling JSON Web Tokens
+    httpServer: Server, // HTTP server instance
+    userDao: IDao<IUser> // Data Access Object for user data
   ) {
     this.userDao = userDao;
+
+    // Initializing Socket.IO server with provided HTTP server instance
     this.io = new ioServer(httpServer, {
       cors: {
-        origin: process.env.CLIENT_URL!,
+        origin: process.env.API_CLIENT_URL!, // Configuring CORS for client URL
         credentials: true,
+        methods: ['GET', 'POST'],
       },
     });
+
+    // Middleware for socket connections
     this.io
       .use(async (socket: any, next) => {
+        // Authenticating connections based on token provided in the query parameters
         if (!socket.handshake.query || !socket.handshake.query.token) {
           return;
         }
@@ -32,35 +40,40 @@ export default class SocketService implements ISocketService {
             socket.handshake.query.token
           );
           if (!decodedToken) {
-            // null or undefined token; i.e. no token present
+            // If token is invalid or missing, return without authentication
             return;
           } else {
+            // Valid token: Fetch user from DAO using the token's email
             const existingUser = await userDao.findByField(decodedToken.email);
-            socket.user = existingUser;
-            return next();
+            socket.user = existingUser; // Attach user data to the socket for reference
+            return next(); // Continue with connection
           }
         } catch (err) {
-          return next();
+          return next(); // If error occurs during token verification, proceed without authentication
         }
       })
 
+      // Event listener for new socket connections
       .on('connection', (socket: any) => {
-        // Connection now authenticated to receive further events
-        if (!socket.user) return;
-        this.handleOnConnect(socket);
-        this.handleOnDisconnect(socket);
+        // When a connection is authenticated, handle connection events
+        if (!socket.user) return; // If socket doesn't have user data, skip handling
+        this.handleOnConnect(socket); // Handle socket connection events
+        this.handleOnDisconnect(socket); // Handle socket disconnection events
       });
-    Object.freeze(this);
+
+    Object.freeze(this); // Freeze the SocketService instance to prevent modifications
   }
 
+  // Method to handle actions upon socket connection
   handleOnConnect = (socket: any): void => {
     console.log(
       `Socket connected to user: ${socket.user.username}. Socket id: ${socket.id}`
     );
     const socketWithUser: any = socket;
-    socket.join(socketWithUser.user.id); // room to emit events privately to user
+    socket.join(socketWithUser.user.id); // Join a room to emit events privately to the user
   };
 
+  // Method to handle actions upon socket disconnection
   handleOnDisconnect = (socket: any): void => {
     socket.on('disconnect', (reason: any) => {
       console.log(
@@ -69,9 +82,12 @@ export default class SocketService implements ISocketService {
     });
   };
 
+  // Method to emit events to a specific room
   emitToRoom = (room: string, type: string, payload: any): void => {
     this.io.to(room).emit(type, payload);
   };
+
+  // Method to emit events to all connected sockets
   emitToAll = (type: string, payload: any): void => {
     this.io.emit(type, payload);
   };

@@ -8,8 +8,9 @@ import {
   User,
 } from 'firebase/auth';
 import { setAuthToken } from './helpers';
+import { config } from '../config/appConfig';
 
-const CLIENT_URL = `${process.env.REACT_APP_CLIENT_URL}`;
+const CLIENT_URL = `${config.baseURL}`;
 
 export const loginWithGoogle = async () => {
   const provider = new GoogleAuthProvider();

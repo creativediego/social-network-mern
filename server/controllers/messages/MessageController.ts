@@ -8,7 +8,7 @@ import { adaptRequest } from '../shared/adaptRequest';
 import { Server } from 'socket.io';
 import { okResponse } from '../shared/createResponse';
 import { isAuthenticated } from '../auth/isAuthenticated';
-import ISocketService from '../../services/ISocketService';
+import { ISocketService } from '../../services/ISocketService';
 import IConversation from '../../models/messages/IConversation';
 
 /**

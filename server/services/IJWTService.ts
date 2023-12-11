@@ -1,4 +1,4 @@
-export default interface IJWTService {
+export interface IJWTService {
   verifyToken(token: string): any;
   signToken(payload: any): any;
 }

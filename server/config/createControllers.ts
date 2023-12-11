@@ -26,11 +26,7 @@ import BcryptHasher from '../controllers/auth/BcryptHasher';
 import { handleCentralError } from '../errors/handleCentralError';
 import AuthController from '../controllers/auth/AuthController';
 import IAuthController from '../controllers/auth/IAuthController';
-import {
-  jwtService,
-  socketService,
-  firebaseJWTService,
-} from './configServices';
+import { socketService, firebaseJWTService } from './configServices';
 import ISearchController from '../controllers/search/ISearchController';
 
 let alreadyCreated = false;
@@ -40,12 +36,12 @@ const hasher = new BcryptHasher(10);
  * Instantiates all controllers.
  * @param app the express app to pass as dependency to controllers to declare routes.
  */
-const createControllers = (app: Express): void => {
+export const createControllers = (app: Express): void => {
   if (alreadyCreated) {
     return;
   }
   const userController: IGenericController = new UserController(
-    '/api/v1/users',
+    '/api/users',
     app,
     userDao
   );
@@ -56,18 +52,18 @@ const createControllers = (app: Express): void => {
     firebaseJWTService
   );
   const postController: IPostController = new PostController(
-    '/api/v1',
+    '/api',
     app,
     postDao,
     socketService
   );
   const bookmarkController: IBookMarkController = new BookMarkController(
-    '/api/v1/users',
+    '/api/users',
     app,
     bookmarkDao
   );
   const followController: IFollowController = new FollowController(
-    '/api/v1/users/',
+    '/api/users/',
     app,
     followDao,
     userDao,
@@ -75,24 +71,24 @@ const createControllers = (app: Express): void => {
     socketService
   );
   const likeController: ILikeController = new LikeController(
-    '/api/v1/',
+    '/api',
     app,
     likeDao,
     notificationDao,
     socketService
   );
   const messageController: IMessageController = new MessageController(
-    '/api/v1/users',
+    '/api/users',
     app,
     messageDao,
     socketService
   );
 
   const notificationController: NotificationController =
-    new NotificationController('/api/v1', app, notificationDao, socketService);
+    new NotificationController('/api', app, notificationDao, socketService);
 
   const searchController: ISearchController = new SearchController(
-    '/api/v1',
+    '/api',
     app,
     userDao,
     postDao
@@ -101,5 +97,3 @@ const createControllers = (app: Express): void => {
   app.use(handleCentralError);
   alreadyCreated = true;
 };
-
-export default createControllers;

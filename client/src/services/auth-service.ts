@@ -2,7 +2,9 @@ import axios from 'axios';
 import { IUser } from '../interfaces/IUser';
 import { processError } from './helpers';
 import { loadRequestInterceptors } from './helpers';
-const SECURITY_API = `${process.env.REACT_APP_API_URL}/auth`;
+import { config } from '../config/appConfig';
+
+const SECURITY_API = config.authApi;
 
 const api = axios.create();
 // api.defaults.headers.common['authorization'] = localStorage.getItem('token');

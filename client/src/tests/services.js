@@ -1,9 +1,8 @@
 import axios from 'axios';
+import { config } from '../config/appConfig';
 
-const BASE_URL = process.env.CREATE_REACT_APP_API_URL;
-
-const LOGIN_API = `${BASE_URL}/login`;
-const USERS_API = `${BASE_URL}/users`;
+const LOGIN_API = `${config.apiURL}/login`;
+const USERS_API = `${config.apiURL}/users`;
 
 export const createUser = (user) =>
   axios.post(`${USERS_API}`, user).then((response) => response.data);

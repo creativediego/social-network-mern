@@ -7,9 +7,10 @@ import axios from 'axios';
 import { INotification } from '../interfaces/INotification';
 import { loadRequestInterceptors } from './helpers';
 import { processError } from './helpers';
+import { config } from '../config/appConfig';
 
-const NOTIFICATIONS_API = `${process.env.REACT_APP_API_URL}/notifications`;
-const USERS_API = `${process.env.REACT_APP_API_URL}/users`;
+const NOTIFICATIONS_API = `${config.apiURL}/notifications`;
+const USERS_API = `${config.apiURL}/users`;
 
 const api = axios.create();
 // api.defaults.headers.common['authorization'] = localStorage.getItem('token');

@@ -11,10 +11,9 @@ import { isAuthenticated } from './isAuthenticated';
 import { okResponse, unauthorizedResponse } from '../shared/createResponse';
 import HttpResponse from '../shared/HttpResponse';
 import { adaptRequest } from '../shared/adaptRequest';
-import jwt from 'jsonwebtoken';
 import HttpRequest from '../shared/HttpRequest';
 import IAuthController from './IAuthController';
-import IJWTService from '../../services/IJWTService';
+import { IJWTService } from '../../services/IJWTService';
 dotenv.config();
 
 /**
@@ -36,7 +35,7 @@ export default class AuthController implements IAuthController {
     this.jwtService = jwtService;
     this.hasher = hasher;
 
-    this.path = '/api/v1/auth';
+    this.path = '/api/auth';
     const router = Router();
     router.get('/profile', isAuthenticated, adaptRequest(this.getProfile));
     router.post('/login', adaptRequest(this.login));

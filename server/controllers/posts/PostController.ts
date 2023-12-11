@@ -10,7 +10,7 @@ import { validatePost } from '../middleware/validatePost';
 import { validateResults } from '../middleware/validateResults';
 import AuthException from '../auth/AuthException';
 import { okResponse } from '../shared/createResponse';
-import ISocketService from '../../services/ISocketService';
+import { ISocketService } from '../../services/ISocketService';
 import DaoDatabaseException from '../../errors/DaoDatabseException';
 
 /**

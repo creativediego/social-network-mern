@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { loadRequestInterceptors } from './helpers';
-const BASE_URL = process.env.REACT_APP_API_URL;
+import { config } from '../config/appConfig';
 
-const USERS_API = `${BASE_URL}/users`;
+const USERS_API = `${config.apiURL}/users`;
 
 const api = axios.create();
 api.interceptors.request.use(loadRequestInterceptors);

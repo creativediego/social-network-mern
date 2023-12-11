@@ -8,14 +8,14 @@ import { upsertChatMessage } from './chatSlice';
 import { IMessage } from '../interfaces/IMessage';
 import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
 import { IPost } from '../interfaces/IPost';
-
+import { config } from '../config/appConfig';
 /**
  * Redux and socket io helpers for firing off redux state changes on certain socket actions. Helpers are called from inside CreateAsyncThunk slices.
  */
 
-const SECURITY_API = `${process.env.REACT_APP_API_URL}/auth`;
+const SECURITY_API = `${config.authApi}`;
 const api = axios.create();
-const SOCKET_URL = process.env.REACT_APP_SOCKET_URL;
+const SOCKET_URL = config.serverURL;
 
 let socket: any;
 let listening = false;
@@ -77,16 +77,16 @@ export const enableListeners = (
     transports: ['polling'],
     reconnection: true,
   });
-  socket.once('connect', () => {
-    listenForNewMessages(socket, dispatchAction);
-    listenForNewNotifications(socket, dispatchAction);
-    listenForNewPosts(socket, dispatchAction);
-    listenForUpdatedPosts(socket, dispatchAction);
-    listening = true;
-  });
-  socket.on('disconnect', () => {
-    disableListeners();
-  });
+  // socket.once('connect', () => {
+  //   // listenForNewMessages(socket, dispatchAction);
+  //   // listenForNewNotifications(socket, dispatchAction);
+  //   // listenForNewPosts(socket, dispatchAction);
+  //   // listenForUpdatedPosts(socket, dispatchAction);
+  //   listening = true;
+  // });
+  // socket.on('disconnect', () => {
+  //   disableListeners();
+  // });
 };
 
 const disableListeners = () => {

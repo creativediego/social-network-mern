@@ -1,4 +1,4 @@
-import IJWTService from './IJWTService';
+import { IJWTService } from './IJWTService';
 import admin from '../config/firebaseConfig';
 
 export default class FirebaseJWTService implements IJWTService {
