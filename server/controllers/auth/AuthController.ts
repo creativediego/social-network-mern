@@ -2,10 +2,9 @@ import dotenv from 'dotenv';
 import IDao from '../../daos/shared/IDao';
 import IUser from '../../models/users/IUser';
 import { Express, Router } from 'express';
-import UnauthorizedException from './UnauthorizedException';
+import { UnauthorizedException } from './UnauthorizedException';
 import UserExistsException from './UserExistsException';
 import IHasher from './IHasher';
-import { validateRegistration } from '../middleware/validateUser';
 import { validateResults } from '../middleware/validateResults';
 import { isAuthenticated } from './isAuthenticated';
 import { okResponse, unauthorizedResponse } from '../shared/createResponse';
@@ -40,12 +39,7 @@ export default class AuthController implements IAuthController {
     router.get('/profile', isAuthenticated, adaptRequest(this.getProfile));
     router.post('/login', adaptRequest(this.login));
 
-    router.post(
-      '/register',
-      validateRegistration,
-      validateResults,
-      this.register
-    );
+    router.post('/register', validateResults, this.register);
     app.use(this.path, router);
     Object.freeze(this); // Make this object immutable.
   }

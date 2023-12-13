@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { loadRequestInterceptors } from './helpers';
+import { Requests, callAPI, loadRequestInterceptors } from './api-helpers';
 import { config } from '../config/appConfig';
 
 const BASE_URL = config.apiURL;
@@ -10,29 +10,16 @@ const api = axios.create();
 // api.defaults.headers.common['Authorization'] = localStorage.getItem('token');
 api.interceptors.request.use(loadRequestInterceptors);
 export const findAllPostsLikedByUser = (userId: string) =>
-  api
-    .get(`${USERS_API}/${userId}/likes`)
-    .then((response) => response.data)
-    .catch((err) => err.response.data);
+  callAPI(`${USERS_API}/${userId}/likes`, Requests.GET);
 
 export const findAllPostsDislikedByUser = (userId: string) =>
-  api
-    .get(`${USERS_API}/${userId}/dislikes`)
-    .then((response) => response.data)
-    .catch((err) => err.response.data);
+  callAPI(`${USERS_API}/${userId}/dislikes`, Requests.GET);
 
 export const findAllUsersThatLikedPost = (tid: string) =>
-  api.get(`${TUITS_API}/${tid}/likes`).then((response) => response.data);
+  callAPI(`${TUITS_API}/${tid}/likes`, Requests.GET);
 
-export const userLikesPost = (userId: string, postId: string) => {
-  return api
-    .post(`${USERS_API}/${userId}/posts/${postId}/likes`)
-    .then((response) => response.data)
-    .catch((err) => err.response.data);
-};
+export const userLikesPost = (userId: string, postId: string) =>
+  callAPI(`${USERS_API}/${userId}/posts/${postId}/likes`, Requests.POST);
 
 export const userDislikesPost = (userId: string, postId: string) =>
-  api
-    .post(`${USERS_API}/${userId}/posts/${postId}/dislikes`)
-    .then((response) => response.data)
-    .catch((err) => err.response.data);
+  callAPI(`${USERS_API}/${userId}/posts/${postId}/dislikes`, Requests.POST);

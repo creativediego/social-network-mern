@@ -9,21 +9,20 @@ import {
 } from '@reduxjs/toolkit';
 import { getProfile } from '../services/auth-service';
 import { updateUser } from '../services/users-service';
-import { dataOrStateError } from './helpers';
-import { clearToken } from '../services/helpers';
+import { dataOrThrowError } from './helpers';
+import { clearLocalAuthToken, isError } from '../services/api-helpers';
 import * as socketService from './redux-socket-service';
 import {
   firebaseLoginWithEmail,
   firebaseLogout,
   fireBaseRegisterUser,
-  loginWithGoogle,
+  firebaseGoogleLogin,
 } from '../services/firebase-auth';
 import { IUser } from '../interfaces/IUser';
 import { INotification } from '../interfaces/INotification';
 import type { RootState } from './store';
-import { setGlobalError, setSuccessAlert } from './alertSlice';
-import { IAlert } from '../interfaces/IError';
-import { clearProfile, setProfileUser } from './profileSlice';
+import { setSuccessAlert } from './alertSlice';
+import { clearProfile } from './profileSlice';
 import { clearChat } from './chatSlice';
 
 /**
@@ -31,13 +30,14 @@ import { clearChat } from './chatSlice';
  */
 export const fetchProfileThunk = createAsyncThunk(
   'users/fetchProfile',
-  async (data, ThunkAPI) => {
+  async (_, ThunkAPI) => {
     const profile = await getProfile();
+    console.log(profile);
     const state = ThunkAPI.getState() as RootState;
-    if (!profile.error && !state.user.socketConnected) {
-      socketService.enableListeners(ThunkAPI.dispatch);
-    }
-    return dataOrStateError(profile, ThunkAPI.dispatch);
+    // if (!state.user.socketConnected) {
+    //   socketService.enableListeners(ThunkAPI.dispatch);
+    // }
+    return dataOrThrowError(profile, ThunkAPI.dispatch);
   }
 );
 
@@ -47,21 +47,9 @@ export const registerThunk = createAsyncThunk(
     { email, password }: { email: string; password: string },
     ThunkAPI
   ) => {
-    if (!email || !password) {
-      throw new Error('Email and password required for registration.');
-    }
-    try {
-      await fireBaseRegisterUser(email, password);
-    } catch (err: unknown) {
-      const error = err as IAlert;
-      ThunkAPI.dispatch(setGlobalError({ message: error.message }));
-      return ThunkAPI.rejectWithValue({ message: error.message });
-    }
-    const authUser = await getProfile();
-    if (!authUser.error) {
-      socketService.enableListeners(ThunkAPI.dispatch);
-    }
-    return dataOrStateError(authUser, ThunkAPI.dispatch);
+    await fireBaseRegisterUser(email, password);
+    ThunkAPI.dispatch(fetchProfileThunk());
+    return;
   }
 );
 
@@ -71,35 +59,18 @@ export const registerThunk = createAsyncThunk(
  */
 export const loginThunk = createAsyncThunk(
   'users/login',
-  async (
-    { email, password }: { email: string; password: string },
-    ThunkAPI
-  ) => {
-    try {
-      await firebaseLoginWithEmail(email, password);
-    } catch (err: unknown) {
-      const error = err as IAlert;
-      ThunkAPI.dispatch(setGlobalError({ message: error.message }));
-      return ThunkAPI.rejectWithValue({ message: error.message });
-    }
-    // const authUser = await getProfile();
-    // const state = ThunkAPI.getState() as RootState;
-    // if (!authUser.error && !state.user.socketConnected) {
-    //   socketService.enableListeners(ThunkAPI.dispatch);
-    // }
+  async ({ email, password }: { email: string; password: string }, _) => {
+    await firebaseLoginWithEmail(email, password);
     return;
   }
 );
 
 export const loginWithGoogleThunk = createAsyncThunk(
   'users/loginWithGoogle',
-  async (user, ThunkAPI) => {
-    const profile = await loginWithGoogle();
-    const state = ThunkAPI.getState() as RootState;
-    if (!profile.error && !state.user.socketConnected) {
-      socketService.enableListeners(ThunkAPI.dispatch);
-    }
-    return dataOrStateError(profile, ThunkAPI.dispatch);
+  async (_, ThunkAPI) => {
+    await firebaseGoogleLogin();
+    ThunkAPI.dispatch(fetchProfileThunk());
+    return;
   }
 );
 
@@ -110,7 +81,7 @@ export const logoutThunk = createAsyncThunk(
   'users/logout',
   async (_: void, ThunkAPI) => {
     await firebaseLogout();
-    clearToken();
+    clearLocalAuthToken();
     ThunkAPI.dispatch(clearChat());
     ThunkAPI.dispatch(clearUser());
     ThunkAPI.dispatch(clearProfile());
@@ -125,13 +96,13 @@ export const logoutThunk = createAsyncThunk(
 export const updateUserThunk = createAsyncThunk(
   'users/update',
   async (user: IUser, ThunkAPI) => {
-    let updatedUser = await updateUser(user);
-    ThunkAPI.dispatch(
-      setSuccessAlert({ message: 'Profile updated successfully.' })
-    );
-    updatedUser = dataOrStateError(updatedUser, ThunkAPI.dispatch);
-    ThunkAPI.dispatch(setProfileUser(updatedUser));
-    return dataOrStateError(updatedUser, ThunkAPI.dispatch);
+    const updatedUser = await updateUser(user);
+    if (!isError(updatedUser)) {
+      ThunkAPI.dispatch(
+        setSuccessAlert({ message: 'Profile updated successfully.' })
+      );
+    }
+    return dataOrThrowError(updatedUser, ThunkAPI.dispatch);
   }
 );
 export interface UserState {
@@ -170,7 +141,7 @@ const initialState: UserState = {
  * Helper: Checks if the logged in user in state has complete their profile.
  */
 const checkProfileComplete = (state: UserState, user: IUser) => {
-  if (!user || !user.username || !user.birthday) {
+  if (!user || !user.username) {
     state.profileComplete = false;
   } else {
     state.profileComplete = true;
@@ -199,7 +170,7 @@ const userSlice = createSlice({
       state.isLoggedIn = false;
       state.data = initialUser;
       firebaseLogout();
-      clearToken();
+      clearLocalAuthToken();
       state.socketConnected = false;
     },
     updateAuthUser: (state, action: PayloadAction<IUser>) => {
@@ -214,11 +185,13 @@ const userSlice = createSlice({
       fetchProfileThunk.fulfilled,
       (state, action: PayloadAction<IUser>) => {
         state.loading = false;
+        state.data = action.payload;
         state.isLoggedIn = true;
         state.socketConnected = true;
         checkProfileComplete(state, action.payload);
       }
     );
+
     builder.addCase(fetchProfileThunk.rejected, (state) => {
       state.loading = false;
       firebaseLogout();
@@ -242,13 +215,9 @@ const userSlice = createSlice({
     builder.addCase(registerThunk.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(
-      registerThunk.fulfilled,
-      (state, action: PayloadAction<IUser>) => {
-        state.loading = false;
-        checkProfileComplete(state, action.payload);
-      }
-    );
+    builder.addCase(registerThunk.fulfilled, (state) => {
+      state.loading = false;
+    });
     builder.addCase(registerThunk.rejected, (state) => {
       state.loading = false;
     });
@@ -268,12 +237,12 @@ const userSlice = createSlice({
     });
     builder.addCase(logoutThunk.fulfilled, (state) => {
       state.loading = false;
-      // state.data = initialUser;
-      // state.isLoggedIn = false;
-      // state.profileComplete = false;
-      // clearToken();
-      // firebaseLogout();
-      // state.socketConnected = false;
+      state.data = initialUser;
+      state.isLoggedIn = false;
+      state.profileComplete = false;
+      clearLocalAuthToken();
+      firebaseLogout();
+      state.socketConnected = false;
     });
     builder.addCase(logoutThunk.rejected, (state) => {
       state.loading = false;
@@ -286,7 +255,6 @@ const userSlice = createSlice({
     });
     builder.addCase(loginWithGoogleThunk.fulfilled, (state) => {
       state.loading = false;
-      state.socketConnected = true;
     });
     builder.addCase(loginWithGoogleThunk.rejected, (state) => {
       state.loading = false;

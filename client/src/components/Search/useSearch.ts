@@ -1,11 +1,11 @@
 import { useState, useCallback, useEffect } from 'react';
-import { ResponseError } from '../../interfaces/IError';
+import { FriendlyError, IGlobalError } from '../../interfaces/IError';
 import { setGlobalError } from '../../redux/alertSlice';
 import { useAppDispatch } from '../../redux/hooks';
-import { isError } from '../../services/helpers';
+import { isError } from '../../services/api-helpers';
 
 export const useSearch = <T>(
-  APICall: (searchValue: string) => Promise<T | ResponseError>,
+  APICall: (searchValue: string) => Promise<T | IGlobalError>,
   initialSearchValue?: string
 ) => {
   const dispatch = useAppDispatch();
@@ -32,7 +32,7 @@ export const useSearch = <T>(
       }
       setLoading(false);
       if (isError(data)) {
-        dispatch(setGlobalError(data.error));
+        dispatch(setGlobalError(new FriendlyError(data.error.message, 500)));
       } else {
         setResults(data);
       }

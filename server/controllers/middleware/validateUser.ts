@@ -1,13 +1,17 @@
-import { param, body, validationResult } from 'express-validator';
-import { Request, Response, NextFunction } from 'express';
-import { ResourceLimits } from 'worker_threads';
-import { StatusCode } from '../shared/HttpStatusCode';
+import { param, body } from 'express-validator';
 import { UserErrorMessages as UserValidationMessages } from '../../models/users/UserErrorMessages';
-import IUser from '../../models/users/IUser';
 import { AccountType } from '../../models/users/AccoutType';
 
-export const validateRegistration = [
-  body('email').trim().isEmail(),
+export const validateProfile = [
+  param('userId').trim().isString(),
+  param('uid').trim().isString(),
+  body('email')
+    .trim()
+    .isEmail()
+    .withMessage(UserValidationMessages.INVALID_EMAIL)
+    .not()
+    .isEmpty()
+    .withMessage(UserValidationMessages.INVALID_EMAIL),
   body('username')
     .trim()
     .not()
@@ -19,7 +23,7 @@ export const validateRegistration = [
     .trim()
     .isLength({ min: 0, max: 160 })
     .withMessage(UserValidationMessages.INVALID_BIO),
-  body('birthday').trim().isDate(),
+  // body('birthday').trim().isDate(),
   body('accountType')
     .trim()
     .toUpperCase()
@@ -37,30 +41,9 @@ export const validateRegistration = [
   //   .withMessage('Profile photo invalid.'),
 ];
 
-export const validateProfile = [
-  // param('userId').isString(),
-  ...validateRegistration,
-];
-
 export const validatePassword = [
   body('password')
     .trim()
     .matches(/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})/)
     .withMessage(UserValidationMessages.INVALID_PASSWORD),
-];
-
-export const validateLogin = [
-  body('password')
-    .exists()
-    .withMessage(UserValidationMessages.NO_PASSWORD)
-    .trim()
-    .isString()
-    .isLength({ min: 1 })
-    .withMessage(UserValidationMessages.NO_PASSWORD),
-
-  body('username')
-    .exists()
-    .withMessage(UserValidationMessages.NO_USERNAME_EMAIL)
-    .trim()
-    .isString(),
 ];

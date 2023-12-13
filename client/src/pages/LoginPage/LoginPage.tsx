@@ -94,6 +94,7 @@ const LoginPage = () => {
           </div>
         </div>
       </div>
+      {error && <AlertBox message={error.message} />}
     </div>
   );
 };

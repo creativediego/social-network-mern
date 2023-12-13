@@ -74,10 +74,6 @@ export default class PostController implements IPostController {
    * @returns {HttpResponse} the response data to be sent to the client
    */
   findByUser = async (req: HttpRequest): Promise<HttpResponse> => {
-    if (req.params.userId === 'me') {
-      const posts: IPost[] = await this.postDao.findByField(req.user.id);
-      return okResponse(posts);
-    }
     const posts: IPost[] = await this.postDao.findByField(req.params.userId);
     return okResponse(posts);
   };
@@ -109,7 +105,9 @@ export default class PostController implements IPostController {
   create = async (req: HttpRequest): Promise<HttpResponse> => {
     const post = await this.postDao.create({
       ...req.body,
-      author: req.user.id,
+      author: {
+        uid: req.user.uid,
+      },
     });
     this.socketService.emitToAll('NEW_POST', post);
     return okResponse(post);
@@ -138,7 +136,7 @@ export default class PostController implements IPostController {
    */
   delete = async (req: HttpRequest): Promise<HttpResponse> => {
     const post: IPost = await this.postDao.findById(req.params.postId);
-    if (req.user.id !== post.author.id) {
+    if (req.user.uid !== post.author.uid) {
       throw new AuthException('User not authorized to delete post.');
     }
     const deletedPost: IPost = await this.postDao.delete(req.params.postId);

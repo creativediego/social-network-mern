@@ -202,140 +202,80 @@ export default class MessageDao implements IMessageDao {
        * Aggregation piping steps to get latest message per conversation:
        */
       const convo = await this.conversationModel.aggregate([
-        // Find all conversations where the user is a participant and where the user has not deleted/removed the conversation.
+        // Match conversations where user is a participant and conversation is not removed for the user
         {
           $match: {
-            participants: {
-              $in: [userId],
-            },
-            removeFor: {
-              $nin: [userId],
-            },
+            participants: { $in: [userId] },
+            removeFor: { $ne: userId },
           },
         },
-        /**
-         * Populate the participants foreign key arrays by looking up the FKs in the user table/document. Filter the results with pipeline to only display necessary user info.
-         */
+        // Lookup recipients' details. What we are doing here is looking up the user details for each participant in the conversation.
         {
           $lookup: {
-            from: 'users',
-            localField: 'participants',
-            foreignField: '_id',
-            pipeline: [
-              {
-                $match: {
-                  _id: { $ne: userId }, // exclude logged in user
-                },
-              },
-              {
-                $project: {
-                  _id: 0,
-                  id: '$_id',
-                  name: 1,
-                  firstName: 1,
-                  lastName: 1,
-                  profilePhoto: 1,
-                },
-              },
-            ],
-            as: 'recipients',
+            from: 'users', // user collection
+            localField: 'participants', // field in conversation model. this is an array of user ids
+            foreignField: '_id', // field in user model
+            as: 'recipients', //
           },
         },
-
-        // With the found conversations, look up messages from message collection that match the conversation id.
+        // Lookup messages for the conversation. We are looking up all messages for the conversation.
         {
           $lookup: {
             from: 'messages',
             localField: '_id',
             foreignField: 'conversation',
             as: 'messages',
-            // Match the messages where the user has not removed/deleted the message.
-            pipeline: [
-              {
-                $match: {
-                  removeFor: {
-                    $ne: [userId],
-                  },
-                },
-              },
-            ],
           },
         },
-
+        // Unwind messages array. Unwinds simply flattens the array of messages so that we can work with each message individually.
         {
-          $unwind: {
-            path: '$messages',
+          $unwind: { path: '$messages' },
+        },
+        // Filter messages not removed for the user. This is so that we don't return messages that the user has deleted for themselves.
+        {
+          $match: {
+            'messages.removeFor': { $ne: userId },
           },
         },
-        // Sort each conversation document in descending order by date of message creation.
+        // Sort conversations by the latest message date
         {
           $sort: {
             'messages.createdAt': -1,
           },
         },
-        // Group each result into a newly formatted document that only contains the message id, sender, and message content. This helps us get rid of all conversation document meta data we do not need.
+        // Group conversation details and latest message. This is so that we can group all the messages for a conversation together and then get the latest message for that conversation.
         {
           $group: {
             _id: '$_id',
-            recipients: {
-              $first: '$recipients',
-            },
-            readFor: {
-              $first: '$readFor',
-            },
-            latestMessage: {
-              $first: '$messages.message',
-            },
-            latestMessageId: {
-              $first: '$messages._id',
-            },
-            sender: {
-              $first: '$messages.sender',
-            },
-            createdAt: {
-              $first: '$messages.createdAt',
-            },
-            removeFor: {
-              $first: '$messages.removeFor',
-            },
+            recipients: { $first: '$recipients' },
+            readFor: { $first: '$readFor' },
+            latestMessage: { $first: '$messages.message' },
+            latestMessageId: { $first: '$messages._id' },
+            sender: { $first: '$messages.sender' },
+            createdAt: { $first: '$messages.createdAt' },
+            removeFor: { $first: '$messages.removeFor' },
           },
         },
-
-        //  Look up the sender to populate the message object with all info of the sender.
+        // Lookup sender details. What we are doing here is looking up the user details for the sender of the latest message.
         {
           $lookup: {
             from: 'users',
             localField: 'sender',
             foreignField: '_id',
-            pipeline: [
-              // Filter results to only include relevant sender info.
-              {
-                $project: {
-                  _id: 0,
-                  id: '$_id',
-                  username: 1,
-                  name: 1,
-                  firstName: 1,
-                  lastName: 1,
-                  profilePhoto: 1,
-                },
-              },
-            ],
-            as: 'sender',
+            as: 'senderInfo',
           },
         },
-        // Do an unwind to split the documents by sender.
+        // Unwind sender details array. By this point, the sender details array should only have one element, so we can unwind it to get the sender details object.
         {
-          $unwind: {
-            path: '$sender',
-          },
+          $unwind: { path: '$senderInfo' },
         },
+        // Project fields to shape the final output. This is so that we can rename fields and remove fields we don't need.
         {
           $project: {
             _id: 0,
             id: '$latestMessageId',
             message: '$latestMessage',
-            sender: '$sender',
+            sender: '$senderInfo',
             conversationId: '$_id',
             removeFor: '$removeFor',
             readFor: '$readFor',
@@ -343,13 +283,14 @@ export default class MessageDao implements IMessageDao {
             createdAt: '$createdAt',
           },
         },
+        // Sort conversations by date of creation
         {
-          // Sort all results by descending order.
           $sort: {
             createdAt: -1,
           },
         },
       ]);
+
       return convo;
     } catch (err) {
       throw this.errorHandler.handleError(

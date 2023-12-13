@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { IConversation } from '../interfaces/IConversation';
 import { IMessage } from '../interfaces/IMessage';
-import { loadRequestInterceptors, makeAPICall, Requests } from './helpers';
+import { loadRequestInterceptors, callAPI, Requests } from './api-helpers';
 import { config } from '../config/appConfig';
 
 const MESSAGES_API = `${config.apiURL}/users`;
@@ -20,7 +20,7 @@ export const sendMessage = async (
   conversationId: string,
   message: string
 ) =>
-  makeAPICall<IMessage>(
+  callAPI<IMessage>(
     `${MESSAGES_API}/${userId}/conversations/${conversationId}/messages`,
     Requests.POST,
     { message }
@@ -37,7 +37,7 @@ export const createConversation = async (
   userId: string,
   conversation: IConversation
 ) =>
-  makeAPICall<IConversation>(
+  callAPI<IConversation>(
     `${MESSAGES_API}/${userId}/conversations`,
     Requests.POST,
     conversation
@@ -51,13 +51,13 @@ export const createConversation = async (
  * and to format the returned output.
  */
 export const findInboxMessages = async (userId: string) =>
-  makeAPICall<IMessage[]>(`${MESSAGES_API}/${userId}/messages/`, Requests.GET);
+  callAPI<IMessage[]>(`${MESSAGES_API}/${userId}/messages/`, Requests.GET);
 
 export const findConversation = async (
   userId: string,
   conversationId: string
 ) =>
-  makeAPICall<IConversation>(
+  callAPI<IConversation>(
     `${MESSAGES_API}/${userId}/conversations/${conversationId}`,
     Requests.GET
   );
@@ -72,7 +72,7 @@ export const findMessagesByConversation = async (
   userId: string,
   conversationId: string
 ) =>
-  makeAPICall<IMessage[]>(
+  callAPI<IMessage[]>(
     `${MESSAGES_API}/${userId}/conversations/${conversationId}/messages`,
     Requests.GET
   );
@@ -81,10 +81,7 @@ export const findMessagesByConversation = async (
  * Finds all the messages sent by the specified user.
  */
 export const findAllMessagesSentByUser = async (userId: string) =>
-  makeAPICall<IMessage[]>(
-    `${MESSAGES_API}/${userId}/messages/sent`,
-    Requests.GET
-  );
+  callAPI<IMessage[]>(`${MESSAGES_API}/${userId}/messages/sent`, Requests.GET);
 
 /**
  * Remove a message for a particular user by finding the message in the database,
@@ -95,7 +92,7 @@ export const findAllMessagesSentByUser = async (userId: string) =>
  * @returns {Promise<{message}>} the deleted message
  */
 export const deleteMessage = async (userId: string, messageId: string) =>
-  makeAPICall<IMessage>(
+  callAPI<IMessage>(
     `${MESSAGES_API}/${userId}/messages/${messageId}`,
     Requests.DELETE
   );
@@ -110,7 +107,7 @@ export const deleteConversation = async (
   userId: string,
   conversationId: string
 ) =>
-  makeAPICall<IConversation>(
+  callAPI<IConversation>(
     `${MESSAGES_API}/${userId}/conversations/${conversationId}`,
     Requests.DELETE
   );

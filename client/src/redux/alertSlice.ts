@@ -1,5 +1,5 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IAlert, ResponseError } from '../interfaces/IError';
+import { IAlert, IGlobalError } from '../interfaces/IError';
 import type { RootState } from './store';
 
 /**
@@ -29,16 +29,11 @@ const alertSlice = createSlice({
   name: 'error',
   initialState,
   reducers: {
-    setGlobalError: (state, action: PayloadAction<IAlert>) => {
-      state.error.message = action.payload.message;
-      state.error.code = action.payload.code;
+    setGlobalError: (state, action: PayloadAction<IGlobalError>) => {
+      state.error = action.payload.error;
     },
     setPageError: (state, action: PayloadAction<IAlert>) => {
       state.pageError = action.payload;
-    },
-    setResponseError: (state, action: PayloadAction<ResponseError>) => {
-      state.error.message = action.payload.error.message;
-      state.error.code = action.payload.error.code;
     },
     setSuccessAlert: (state, action: PayloadAction<IAlert>) => {
       state.success.message = action.payload.message;
@@ -81,7 +76,6 @@ export const selectGlobalErrorMessage = createSelector(
 
 export const {
   setGlobalError,
-  setResponseError,
   clearAllErrors,
   setSuccessAlert,
   clearSuccess,

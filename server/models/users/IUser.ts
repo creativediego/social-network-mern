@@ -6,15 +6,15 @@ import { AccountType } from './AccoutType';
  */
 export default interface IUser {
   id?: string;
-  username: string;
-  password: string;
-  name: string;
+  uid?: string;
   email: string;
-  bio: string;
-  birthday: Date;
-  headerImage: string;
-  profilePhoto: string;
-  accountType: AccountType;
+  name?: string;
+  username?: string;
+  password?: string;
+  bio?: string;
+  headerImage?: string;
+  profilePhoto?: string;
+  accountType?: AccountType;
   accountStatus?: AccountStatus;
   followerCount?: number;
   followeeCount?: number;

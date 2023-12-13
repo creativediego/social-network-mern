@@ -64,7 +64,7 @@ export default class UserDao implements IDao<IUser> {
   exists = async (user: IUser): Promise<boolean> => {
     try {
       const dbUser: IUser | null = await this.model.findOne({
-        email: user.email,
+        uid: user.uid,
       });
       if (dbUser === null) return false;
       else return true;
@@ -79,7 +79,7 @@ export default class UserDao implements IDao<IUser> {
    */
   findById = async (id: string): Promise<IUser> => {
     try {
-      const dbUser: IUser | null = await this.model.findOne({ _id: id });
+      const dbUser: IUser | null = await this.model.findOne({ uid: id });
       return this.errorHandler.objectOrNullException(
         dbUser,
         UserDaoErrors.USER_DOES_NOT_EXIST_ID
@@ -138,7 +138,7 @@ export default class UserDao implements IDao<IUser> {
   create = async (user: IUser): Promise<IUser> => {
     try {
       const newUser: IUser | null = await this.model.findOneAndUpdate(
-        { email: user.email },
+        { uid: user.uid },
         { ...user },
         {
           upsert: true,
@@ -167,7 +167,7 @@ export default class UserDao implements IDao<IUser> {
     await this.checkUniqueFields(user);
     try {
       const updatedUser: IUser | null = await this.model.findOneAndUpdate(
-        { _id: uid },
+        { uid },
         { ...user },
         {
           new: true,

@@ -19,5 +19,6 @@ export const validateResults = (
     message: result[0].msg,
     code: StatusCode.badRequest,
   };
+  console.log(result);
   res.status(StatusCode.badRequest).json({ error: errorContent });
 };

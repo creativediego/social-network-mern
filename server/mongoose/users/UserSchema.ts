@@ -18,19 +18,18 @@ import { formatUserJSON } from '../util/formatUserJSON';
  * @param {AccountType} accountType account type
  * @param {AccountStatus} accountStatus account status
  * @param {String} bio biography
- * @param {Date} dateOfBirth date of birth
  * @param {String} longitude longitude
  * @param {String} latitude latitude
  * @module UserSchema
  */
 const UserSchema = new mongoose.Schema<IUser>(
   {
-    username: { type: String, unique: true },
+    uid: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
+    username: { type: String, required: true },
     name: { type: String, required: true },
     password: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
     bio: { type: String },
-    birthday: { type: Date },
     headerImage: { type: String },
     profilePhoto: {
       type: String,

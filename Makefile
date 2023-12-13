@@ -1,10 +1,10 @@
 ### DEVEVLOPMENT
 # Build just the client
 build-dev-client:
-	cd server && docker build -f Dockerfile.dev -t social-api-server .
+	cd client && docker build -f Dockerfile.dev -t social-client-dev .
 # Build just the server
 build-dev-server:
-	cd server && docker build -f Dockerfile.dev -t social-api-server .
+	cd server && docker build -f Dockerfile.dev -t social-api-dev .
 build-dev: build-dev-client build-dev-server
 # Run the whole app
 run-dev:

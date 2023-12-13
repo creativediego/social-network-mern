@@ -7,6 +7,7 @@ import { updateUserThunk } from '../../redux/userSlice';
 import { firebaseUploadProfileImage } from '../../services/storage-service';
 import { ImageTypes } from '../../interfaces/ImageTypes';
 import { setGlobalError } from '../../redux/alertSlice';
+import { FriendlyError } from '../../interfaces/IError';
 
 /**
  * Custom hook that Mmnages the state of the update/edit profile form, including form fields, image uploads, and submitting the form.
@@ -54,7 +55,7 @@ const useUpdateProfile = () => {
       } catch (err) {
         const message =
           'Sorry, we ran into an error uploading your profile image. Try again later.';
-        dispatch(setGlobalError({ code: 500, message }));
+        dispatch(setGlobalError(new FriendlyError(message, 500)));
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -102,7 +103,7 @@ const useUpdateProfile = () => {
     for (const field of Object.values(inputFields)) {
       const regexPattern = new RegExp(field.pattern);
       if (field.required && !regexPattern.test(field.value)) {
-        dispatch(setGlobalError({ message: field.errorMessage }));
+        dispatch(setGlobalError(new FriendlyError(field.errorMessage)));
         return false;
       }
     }

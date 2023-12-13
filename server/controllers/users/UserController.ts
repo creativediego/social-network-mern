@@ -7,7 +7,7 @@ import { okResponse } from '../shared/createResponse';
 import { Express, Router } from 'express';
 import { adaptRequest } from '../shared/adaptRequest';
 import { isAuthenticated } from '../auth/isAuthenticated';
-import { validatePassword, validateProfile } from '../middleware/validateUser';
+import { validateProfile } from '../middleware/validateUser';
 import { body, validationResult } from 'express-validator';
 import { validateResults } from '../middleware/validateResults';
 
@@ -27,7 +27,7 @@ export class UserController implements IGenericController {
     const router = Router();
     router.get('/', adaptRequest(this.findAll));
     router.post('/:nameOrUsername', adaptRequest(this.findAllByField));
-    router.post('/', validateProfile, adaptRequest(this.create));
+    // router.post('/', validateProfile, adaptRequest(this.create));
     router.get('/:userId', adaptRequest(this.findById));
     router.get('/profile/:username', adaptRequest(this.findByField));
     router.put(
@@ -89,7 +89,7 @@ export class UserController implements IGenericController {
    * @returns {HttpResponse} the response data to be sent to the client
    */
   update = async (req: HttpRequest): Promise<HttpResponse> => {
-    const updatedUser = await this.dao.update(req.params.userId, req.body);
+    const updatedUser = await this.dao.update(req.user.uid, req.body);
     return okResponse(updatedUser);
   };
 
@@ -99,7 +99,7 @@ export class UserController implements IGenericController {
    * @returns {HttpResponse} the response data to be sent to the client
    */
   delete = async (req: HttpRequest): Promise<HttpResponse> => {
-    const deleteCount: number = await this.dao.delete(req.params.userId);
+    const deleteCount: number = await this.dao.delete(req.user.uid);
     return okResponse(deleteCount);
   };
 }

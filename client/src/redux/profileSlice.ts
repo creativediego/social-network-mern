@@ -14,14 +14,14 @@ import {
 } from '../services/likes-service';
 import { findPostsByUser } from '../services/posts-service';
 import { findUserByUsername } from '../services/users-service';
-import { dataOrStateError } from './helpers';
+import { dataOrThrowError } from './helpers';
 import type { RootState } from './store';
 
 export const findProfileThunk = createAsyncThunk(
   'profile/findProfile',
   async (username: string, ThunkAPI) => {
     const user = await findUserByUsername(username);
-    return dataOrStateError(user, ThunkAPI.dispatch);
+    return dataOrThrowError(user, ThunkAPI.dispatch);
   }
 );
 
@@ -29,7 +29,7 @@ export const findMyPostsThunk = createAsyncThunk(
   'profile/findMyPosts',
   async (userId: string, ThunkAPI) => {
     const posts = await findPostsByUser(userId);
-    return dataOrStateError(posts, ThunkAPI.dispatch);
+    return dataOrThrowError(posts, ThunkAPI.dispatch);
   }
 );
 
@@ -38,7 +38,7 @@ export const findLikedPostsThunk = createAsyncThunk(
   async (userId: string, ThunkAPI) => {
     let posts = await findAllPostsLikedByUser(userId);
     posts = posts.filter((post: IPost) => post !== null);
-    return dataOrStateError(posts, ThunkAPI.dispatch);
+    return dataOrThrowError(posts, ThunkAPI.dispatch);
   }
 );
 
@@ -47,7 +47,7 @@ export const findDislikedPostsThunk = createAsyncThunk(
   async (userId: string, ThunkAPI) => {
     let posts = await findAllPostsDislikedByUser(userId);
     posts = posts.filter((post: IPost) => post !== null);
-    return dataOrStateError(posts, ThunkAPI.dispatch);
+    return dataOrThrowError(posts, ThunkAPI.dispatch);
   }
 );
 

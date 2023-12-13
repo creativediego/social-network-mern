@@ -4,8 +4,11 @@ import UserModel from './mongoose/users/UserModel';
 import PostModel from './mongoose/posts/PostModel';
 import mongoose, { Connection } from 'mongoose';
 import { AccountType } from './models/users/AccoutType';
+import { ConversationType } from './models/messages/ConversationType';
+import ConversationModel from './mongoose/messages/ConversationModel';
+import MessageModel from './mongoose/messages/MessageModel';
 
-dotenv.config();
+dotenv.config({ path: './.env.development' });
 
 function getRandomNumberBetween(min: number, max: number) {
   return Math.floor(Math.random() * (max - min) + min);
@@ -37,6 +40,17 @@ const randomMenProfilePhotos = getRandomImageURLs('men', 100);
 const randomWomenProfilePhotos = getRandomImageURLs('women', 100);
 
 const profiles = [
+  {
+    email: 'createideas@hotmail.com',
+    password: 'pass123!',
+    bio: 'life is a dream!',
+    birthday: '1980-01-01',
+    name: 'Creative Dev',
+    profilePhoto: randomMenProfilePhotos[2],
+    username: 'creatived',
+    headerImage:
+      'https://firebasestorage.googleapis.com/v0/b/tuiter-2e307.appspot.com/o/users%2FXxgohUN2Uudo83BEZwgrXA1J76E3%2Fprofile%2FXxgohUN2Uudo83BEZwgrXA1J76E3-header?alt=media&token=b5448fae-b14e-4857-b9ad-10a50c0e824a',
+  },
   {
     username: 'johnsmith',
     password: 'abc123',
@@ -83,17 +97,7 @@ const profiles = [
     birthday: '2000-05-05',
     profilePhoto: randomWomenProfilePhotos[2],
   },
-  {
-    email: 'createideas@hotmail.com',
-    password: 'pass123!',
-    bio: 'life is a dream!',
-    birthday: '1980-01-01',
-    name: 'Creative Dev',
-    profilePhoto: randomMenProfilePhotos[2],
-    username: 'creatived',
-    headerImage:
-      'https://firebasestorage.googleapis.com/v0/b/tuiter-2e307.appspot.com/o/users%2FXxgohUN2Uudo83BEZwgrXA1J76E3%2Fprofile%2FXxgohUN2Uudo83BEZwgrXA1J76E3-header?alt=media&token=b5448fae-b14e-4857-b9ad-10a50c0e824a',
-  },
+
   {
     email: 'creativehtml5@gmail.com',
     password: 'pass123!',
@@ -110,6 +114,7 @@ const profiles = [
 const createSeedUser = () => {
   return {
     _id: new mongoose.Types.ObjectId(),
+    uid: new mongoose.Types.ObjectId(),
     accountType: AccountType.Personal,
     followerCount: getRandomNumberBetween(0, 100),
     followeeCount: getRandomNumberBetween(0, 100),
@@ -174,14 +179,88 @@ for (let i = 0; i < posts.length; i++) {
   postSeeds.push(post);
 }
 
+// Your existing code for users and posts seed data...
+
+// Find the user with the specified email
+const creatorUser = userSeeds[0];
+
+// Generating seed data for conversations
+const conversationSeeds = [
+  {
+    cid: new mongoose.Types.ObjectId(),
+    type: ConversationType.Group,
+    createdBy: creatorUser._id,
+    participants: [userSeeds[1]._id, userSeeds[2]._id],
+  },
+  {
+    cid: new mongoose.Types.ObjectId(),
+    type: ConversationType.Private,
+    createdBy: creatorUser._id,
+    participants: [userSeeds[0]._id],
+  },
+  // Add more conversation seed objects as needed...
+];
+
+// Generating seed data for messages
+const messageSeeds = [
+  {
+    sender: userSeeds[1]._id,
+    conversation: conversationSeeds[0].createdBy,
+    message: 'Hey there, how are you?',
+  },
+  {
+    sender: userSeeds[2]._id,
+    conversation: conversationSeeds[0].createdBy,
+    message: 'I am doing great, thanks!',
+  },
+  {
+    sender: userSeeds[0]._id,
+    conversation: conversationSeeds[1].createdBy,
+    message: 'Hello! How can I help you?',
+  },
+  {
+    sender: userSeeds[1]._id,
+    conversation: conversationSeeds[1].createdBy,
+    message: 'I have a question about our project deadline.',
+  },
+  // Add more message seed objects as needed...
+];
+
+// Function to create seed conversations and messages
+const createSeedConversationsAndMessages = async () => {
+  // Connect to the MongoDB database
+  // Insert seed conversations into the conversations collection
+  const insertedConversations = await ConversationModel.insertMany(
+    conversationSeeds
+  );
+
+  // Update message seeds with inserted conversation IDs
+  messageSeeds.forEach((messageSeed, index) => {
+    messageSeed.conversation =
+      insertedConversations[index % insertedConversations.length]._id;
+  });
+
+  // Insert seed messages into the messages collection
+  await MessageModel.insertMany(messageSeeds);
+
+  console.log('Seeded conversations and messages!');
+  process.exit(0);
+};
+
+// Call the function to create seed conversations and messages
+
 // Conect to mongoDB and then drop all collections, and then seed the users and posts collections
 let db: Connection;
 (async () => {
-  db = await connectToDatabase(process.env.MONGO_URI!);
-  await db.dropCollection('users');
-  await db.dropCollection('posts');
+  db = await connectToDatabase(process.env.API_MONGO_URI!);
+  console.log('Dropping database...');
+  await db.dropDatabase();
+  console.log('Seeding database...');
   await UserModel.insertMany(userSeeds);
   await PostModel.insertMany(postSeeds);
+  await createSeedConversationsAndMessages();
+  console.log('=================');
   console.log('Seeded database!');
+  console.log('=================');
   process.exit(0);
 })();

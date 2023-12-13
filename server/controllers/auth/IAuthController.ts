@@ -6,5 +6,4 @@ import HttpResponse from '../shared/HttpResponse';
 export default interface IAuthController {
   login(req: HttpRequest): Promise<HttpResponse>;
   register(req: HttpRequest): Promise<HttpResponse>;
-  getProfile(req: HttpRequest): Promise<HttpResponse>;
 }

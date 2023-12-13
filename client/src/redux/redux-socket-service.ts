@@ -1,6 +1,6 @@
 import io, { Socket } from 'socket.io-client';
 import axios from 'axios';
-import { processError } from '../services/helpers';
+import { processError } from '../services/api-helpers';
 import { upsertNotification } from './notificationSlice';
 import { addPost, removePost, updatePosts } from './postSlice';
 import { findInboxMessagesThunk } from './messageInboxSlice';

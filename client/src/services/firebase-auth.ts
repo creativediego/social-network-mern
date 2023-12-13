@@ -7,19 +7,19 @@ import {
   sendEmailVerification,
   User,
 } from 'firebase/auth';
-import { setAuthToken } from './helpers';
+import { setLocalAuthToken } from './api-helpers';
 import { config } from '../config/appConfig';
 
 const CLIENT_URL = `${config.baseURL}`;
 
-export const loginWithGoogle = async () => {
+export const firebaseGoogleLogin = async (): Promise<User> => {
   const provider = new GoogleAuthProvider();
   try {
     const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    return { uid: user.uid, email: user.email, name: user.displayName };
+    setLocalAuthToken(await result.user.getIdToken());
+    return result.user;
   } catch (error) {
-    return { error: 'Login with Google error: Please try logging in later.' };
+    throw new Error('Login with Google error: Please try logging in later.');
   }
 };
 
@@ -30,6 +30,7 @@ export const firebaseLoginWithEmail = async (
   try {
     const result = await signInWithEmailAndPassword(auth, email, password);
     const user = result.user;
+    setLocalAuthToken(await result.user.getIdToken());
     return user;
   } catch (error: any) {
     if (error.code === 'auth/wrong-password' || 'auth/wrong-email') {
@@ -52,6 +53,7 @@ export const fireBaseRegisterUser = async (
     );
     const user = credentials.user; // signed in
     await sendEmailVerification(user, { url: CLIENT_URL });
+    setLocalAuthToken(await user.getIdToken());
     return user;
   } catch (err: any) {
     if (err.code === 'auth/email-already-in-use') {
@@ -67,8 +69,7 @@ export const onFirebaseAuthStateChange = async (
 ) => {
   auth.onAuthStateChanged(function (user: any) {
     if (user) {
-      setAuthToken(user.accessToken);
-
+      setLocalAuthToken(user.accessToken);
       return activeAction();
     } else {
       return expiredAction();

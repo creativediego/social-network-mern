@@ -11,11 +11,6 @@ export const handleCentralError = (
 ): void => {
   console.log('Central error handler: ', err); // TODO: Add logger here.
 
-  // if (err instanceof AuthException) {
-  //   res.redirect(`${process.env.CLIENT_URL!}/error`);
-  //   return;
-  // }
-
   let errorResponse = {
     timestamp: Date.now,
     code: StatusCode.internalError,
@@ -27,17 +22,7 @@ export const handleCentralError = (
     errorResponse.message = err.message;
   }
 
-  // if (err instanceof BaseError && err.code === StatusCode.notFound) {
-  //   clientResponse.error = 'Sorry, resource not found!';
-  // }
-
-  // if (err instanceof BaseError && err.isOperational) {
   res.status(errorResponse.code).json({ error: errorResponse });
-  // }
-
-  // if (!(err instanceof BaseError && err.isOperational)) {
-  //   exit(1); // exit in the case of uncaught unexpected errors
-  // }
 };
 
 export const handleUncaughtException = () => {

@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { ResponseError } from '../interfaces/IError';
+import { IGlobalError } from '../interfaces/IError';
 import {
   clearAll,
   clearAllErrors,
@@ -7,7 +7,7 @@ import {
   selectGlobalError,
   selectPageError,
   selectSuccessAlert,
-  setResponseError,
+  setGlobalError,
 } from '../redux/alertSlice';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 
@@ -17,8 +17,8 @@ export const useAlert = () => {
   const success = useAppSelector(selectSuccessAlert);
   const dispatch = useAppDispatch();
   const setError = useCallback(
-    (error: ResponseError) => {
-      dispatch(setResponseError(error));
+    (error: IGlobalError) => {
+      dispatch(setGlobalError(error));
     },
     [dispatch]
   );
@@ -39,7 +39,7 @@ export const useAlert = () => {
     if (error.message || success.message) {
       setTimeout(() => {
         dispatch(clearAll());
-      }, 3000);
+      }, 9000);
     }
   }, [error, success, dispatch]);
 

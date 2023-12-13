@@ -10,7 +10,8 @@ import { Loader } from '..';
 import { setGlobalError } from '../../redux/alertSlice';
 import { findUserById } from '../../services/users-service';
 import { IUser } from '../../interfaces/IUser';
-import { isError } from '../../services/helpers';
+import { isError } from '../../services/api-helpers';
+import { FriendlyError } from '../../interfaces/IError';
 
 interface FollowButtonProps {
   userToFollow: IUser;
@@ -33,11 +34,9 @@ const FollowButton = ({
     setLoading(false);
     if (isError(res) || isError(updatedUser)) {
       dispatch(
-        setGlobalError({
-          code: 500,
-          message:
-            'We ran into an issue following the user. Please try again later.',
-        })
+        setGlobalError(
+          new FriendlyError('We ran into an issue following user.')
+        )
       );
     }
     checkIfFollowing();
@@ -52,11 +51,11 @@ const FollowButton = ({
     setLoading(false);
     if (isError(unfollowedUser) || isError(updatedUser)) {
       return dispatch(
-        setGlobalError({
-          code: 500,
-          message:
-            'We ran into an issue unfollowing the user. Please try again later.',
-        })
+        setGlobalError(
+          new FriendlyError(
+            'We ran into an issue unfollowing the user. Please try again later.'
+          )
+        )
       );
     }
     checkIfFollowing();
