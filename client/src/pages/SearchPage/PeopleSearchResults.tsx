@@ -27,9 +27,9 @@ const getPersonElement = (user: IUser) => (
         </div>
       </div>
     </Link>
-    <div className='ms-auto position-relative' style={{ zIndex: '22' }}>
+    {/* <div className='ms-auto position-relative' style={{ zIndex: '22' }}>
       <FollowButton userToFollow={user} />
-    </div>
+    </div> */}
     <hr />
   </div>
 );

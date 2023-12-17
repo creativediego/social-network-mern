@@ -22,6 +22,11 @@ const FormInput = (props: FormInputProps) => {
   const { errorMessage, onChange, label, dataTestId, cssClass, ...inputProps } =
     props;
   const [error, setError] = useState('');
+
+  const clearError = () => {
+    setError('');
+  };
+
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     if (
       e.target.pattern &&
@@ -29,8 +34,13 @@ const FormInput = (props: FormInputProps) => {
     ) {
       setError(errorMessage);
     } else {
-      setError('');
+      clearError();
     }
+  };
+
+  const handleOnChange = (e: React.FormEvent<HTMLInputElement>) => {
+    clearError();
+    onChange(e);
   };
 
   return (
@@ -41,7 +51,7 @@ const FormInput = (props: FormInputProps) => {
       <input
         className={`form-control mb-2 ${cssClass && cssClass}`}
         data-testid={dataTestId}
-        onChange={onChange}
+        onChange={handleOnChange}
         {...inputProps}
         onBlur={handleBlur}
         autoFocus

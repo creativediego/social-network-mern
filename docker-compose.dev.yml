@@ -2,7 +2,7 @@ version: "3"
 services:
   social-client-dev:
     image: social-client-dev
-    env_file: ./client/.env.development
+    env_file: ./client/.env
     stdin_open: true
     ports: 
       - "3000:3000"
@@ -14,7 +14,7 @@ services:
       - /usr/src/app/node_modules # don't include the local node modules so that the modules added from the dockerfiles can be used
   social-api-dev:
     image: social-api-dev # named in the dockerfile 
-    env_file: ./server/.env.development
+    env_file: ./server/.env
     ports:
       - "4000:4000"
     volumes:

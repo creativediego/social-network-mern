@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { InputFieldI } from '../../interfaces/InputFieldI';
+import { FormFieldI } from '../../interfaces/FormFieldI';
 
 interface useFormProps {
-  inputFields: InputFieldI;
+  inputFields: FormFieldI;
   submitAction: () => void;
 }
 
 const useForm = ({ inputFields, submitAction }: useFormProps) => {
-  const [fields, setFields] = useState<InputFieldI>({ ...inputFields });
+  const [fields, setFields] = useState<FormFieldI>({ ...inputFields });
 
-  const addField = (newField: InputFieldI) => {
+  const addField = (newField: FormFieldI) => {
     setFields((prevState) => ({
       ...prevState,
       ...newField,

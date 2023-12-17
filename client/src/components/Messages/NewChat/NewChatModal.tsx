@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ActionButton, Loader, PopupModal, Search } from '../..';
 import { IUser } from '../../../interfaces/IUser';
-import { findAllUsersByName } from '../../../services/users-service';
+import { APIfindAllUsersByName } from '../../../services/users-service';
 import { useSearch } from '../../Search/useSearch';
 import { useNewChat } from './useNewChat';
 
@@ -15,8 +15,9 @@ const NewChatModal = ({
   showModal,
   toggleModal,
 }: NewChatModalProps): JSX.Element | null => {
-  const { searchResults, searchLoading, searchValue, setSearch } =
-    useSearch<IUser[]>(findAllUsersByName);
+  const { searchResults, searchLoading, searchValue, setSearch } = useSearch<
+    IUser[]
+  >(APIfindAllUsersByName);
   const {
     newChatLoading,
     selectedUsers,

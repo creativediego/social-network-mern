@@ -1,34 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch } from '../../redux/hooks';
 import { registerThunk } from '../../redux/userSlice';
-import { InputFieldI } from '../../interfaces/InputFieldI';
+import { FormFieldI } from '../../interfaces/FormFieldI';
+import { profileFieldsStore } from '../shared/profileFieldsStore';
 
 const useSignupForm = () => {
   const dispatch = useAppDispatch();
-  const [fields, setFields] = useState<InputFieldI>({
-    email: {
-      id: '1',
-      name: 'email',
-      type: 'text',
-      placeholder: 'email',
-      errorMessage: 'It should be a valid email address!',
-      label: 'email',
-      required: true,
-      value: '',
-      pattern: '[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$',
-    },
-    password: {
-      id: '2',
-      name: 'password',
-      type: 'password',
-      placeholder: 'password',
-      errorMessage:
-        'Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character!',
-      label: 'password',
-      pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
-      required: true,
-      value: '',
-    },
+  const [fields, setFields] = useState<FormFieldI>({
+    email: profileFieldsStore['email'],
+    password: profileFieldsStore['password'],
   });
 
   useEffect(() => {
@@ -49,12 +29,12 @@ const useSignupForm = () => {
   }, [fields.password.value]);
 
   const setField = (e: React.FormEvent<HTMLInputElement>) => {
-    const element: HTMLInputElement = e.currentTarget;
+    const field: HTMLInputElement = e.currentTarget;
     setFields((prevState) => ({
       ...prevState,
-      [element.name]: {
-        ...prevState[element.name],
-        value: element.value,
+      [field.name]: {
+        ...prevState[field.name],
+        value: field.value,
       },
     }));
   };

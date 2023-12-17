@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { InputFieldI } from '../../interfaces/InputFieldI';
-import { profileFields } from '../shared/profileFields';
+import { FormFieldI } from '../../interfaces/FormFieldI';
+import { profileFieldsStore } from '../shared/profileFieldsStore';
 import { IUser } from '../../interfaces/IUser';
 import { updateUserThunk } from '../../redux/userSlice';
 import { firebaseUploadProfileImage } from '../../services/storage-service';
@@ -9,34 +9,22 @@ import { ImageTypes } from '../../interfaces/ImageTypes';
 import { setGlobalError } from '../../redux/alertSlice';
 import { FriendlyError } from '../../interfaces/IError';
 
-/**
- * Custom hook that Mmnages the state of the update/edit profile form, including form fields, image uploads, and submitting the form.
- */
-const useUpdateProfile = () => {
+const useUpdateProfile = (fields: string[]) => {
   const mounted = useRef(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
   const authUser = useAppSelector((state) => state.user.data);
-  const [tempUser, setTempUser] = useState<IUser>({
-    ...authUser,
-  });
-  const [inputFields, setInputFields] = useState<InputFieldI>({
-    ...profileFields,
-  });
+  const [tempUser, setTempUser] = useState<IUser>({ ...authUser });
+  const [inputFields, setInputFields] = useState<FormFieldI>({});
 
   const setInputField = useCallback((e: React.FormEvent<HTMLInputElement>) => {
-    const element: HTMLInputElement = e.currentTarget;
+    const { name, value } = e.currentTarget;
     setInputFields((prevState) => ({
       ...prevState,
-      [element.name]: {
-        ...prevState[element.name],
-        value: element.value,
-      },
+      [name]: { ...prevState[name], value },
     }));
-    if (mounted) {
-      setTempUser((prevState) => {
-        return { ...prevState, [element.name]: element.value };
-      });
+    if (mounted.current) {
+      setTempUser((prevState) => ({ ...prevState, [name]: value }));
     }
   }, []);
 
@@ -47,9 +35,7 @@ const useUpdateProfile = () => {
       try {
         const imageURL = await firebaseUploadProfileImage(file, imageType);
         if (mounted.current) {
-          setTempUser((prevState) => {
-            return { ...prevState, [imageType]: imageURL };
-          });
+          setTempUser((prevState) => ({ ...prevState, [imageType]: imageURL }));
           setLoading(false);
         }
       } catch (err) {
@@ -58,33 +44,36 @@ const useUpdateProfile = () => {
         dispatch(setGlobalError(new FriendlyError(message, 500)));
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
-  // For each auth user value, find an input field that matches the key, and change the field's value with the auth user value.
-  const mapExistingFieldValues = () => {
-    for (const [key, val] of Object.entries(authUser)) {
-      if (key in inputFields) {
-        setInputFields((prevState) => ({
-          ...prevState,
-          [key]: {
-            ...prevState[key],
-            value: val,
-          },
-        }));
+  const mapInitialFields = () => {
+    const updatedInputFields: FormFieldI = { ...inputFields };
+    for (const [key, value] of Object.entries(authUser)) {
+      if (key in profileFieldsStore) {
+        if (
+          authUser.registeredWithProvider &&
+          (key === 'email' || key === 'password')
+        ) {
+          delete updatedInputFields[key];
+          continue;
+        } else if (key === 'password') {
+          updateConfirmPasswordPattern();
+        }
+        updatedInputFields[key] = { ...profileFieldsStore[key], value };
       }
     }
+    if (authUser.registeredWithProvider) {
+      delete updatedInputFields['email'];
+      delete updatedInputFields['password'];
+    }
+    setInputFields(updatedInputFields);
   };
 
-  // Change confirm password field pattern to match current value of password field.
   const updateConfirmPasswordPattern = () => {
     setInputFields((prevState) => ({
       ...prevState,
-      password: {
-        ...profileFields['password'],
-        required: false,
-      },
+      password: { ...profileFieldsStore['password'], required: false },
       confirmPassword: {
         id: '9999',
         name: 'confirmPassword',
@@ -119,17 +108,14 @@ const useUpdateProfile = () => {
     setLoading(false);
   };
 
-  // Sets up component initial field values and cleanup subscription.
   useEffect(() => {
     mounted.current = true;
     if (mounted.current) {
-      mapExistingFieldValues();
-      updateConfirmPasswordPattern();
+      mapInitialFields();
     }
     return () => {
       mounted.current = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {

@@ -9,6 +9,7 @@ import {
 } from 'firebase/auth';
 import { setLocalAuthToken } from './api-helpers';
 import { config } from '../config/appConfig';
+import { FriendlyError } from '../interfaces/IError';
 
 const CLIENT_URL = `${config.baseURL}`;
 
@@ -19,7 +20,9 @@ export const firebaseGoogleLogin = async (): Promise<User> => {
     setLocalAuthToken(await result.user.getIdToken());
     return result.user;
   } catch (error) {
-    throw new Error('Login with Google error: Please try logging in later.');
+    throw new FriendlyError(
+      'Login with Google error: Please try logging in later.'
+    );
   }
 };
 
@@ -34,9 +37,11 @@ export const firebaseLoginWithEmail = async (
     return user;
   } catch (error: any) {
     if (error.code === 'auth/wrong-password' || 'auth/wrong-email') {
-      throw new Error('Wrong email or password.');
+      throw new FriendlyError('Wrong email or password.');
     } else {
-      throw new Error('Login with email error: Please try logging in later.');
+      throw new FriendlyError(
+        'Login with email error: Please try logging in later.'
+      );
     }
   }
 };
@@ -57,9 +62,9 @@ export const fireBaseRegisterUser = async (
     return user;
   } catch (err: any) {
     if (err.code === 'auth/email-already-in-use') {
-      throw new Error('A user with this email already exists.');
+      throw new FriendlyError('A user with this email already exists.');
     }
-    throw new Error('Registration error: Please try again later.');
+    throw new FriendlyError('Registration error: Please try again later.');
   }
 };
 
@@ -78,13 +83,23 @@ export const onFirebaseAuthStateChange = async (
 };
 
 export const firebaseLogout = async () => {
-  return await auth.signOut();
+  await auth.signOut();
 };
 
 export const firebaseIsLoggedIn = async () => {
   const user = auth.currentUser;
   if (user) {
     return true;
+  } else {
+    return false;
+  }
+};
+
+// Check if Firebase provider is email/password.
+export const isFirebaseIsEmailProvider = async () => {
+  const user = auth.currentUser;
+  if (user) {
+    return user.providerData[0].providerId === 'password';
   } else {
     return false;
   }

@@ -1,6 +1,5 @@
 import io, { Socket } from 'socket.io-client';
 import axios from 'axios';
-import { processError } from '../services/api-helpers';
 import { upsertNotification } from './notificationSlice';
 import { addPost, removePost, updatePosts } from './postSlice';
 import { findInboxMessagesThunk } from './messageInboxSlice';
@@ -9,6 +8,7 @@ import { IMessage } from '../interfaces/IMessage';
 import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
 import { IPost } from '../interfaces/IPost';
 import { config } from '../config/appConfig';
+import { Requests, callAPI } from '../services/api-helpers';
 /**
  * Redux and socket io helpers for firing off redux state changes on certain socket actions. Helpers are called from inside CreateAsyncThunk slices.
  */
@@ -102,7 +102,9 @@ export const disconnect = () => {
 };
 
 export const registerSocket = () =>
-  api
-    .get(`${SECURITY_API}/socket`)
-    .then((response) => response.data)
-    .catch((err) => processError(err));
+  callAPI(
+    `${SECURITY_API}/socket`,
+    Requests.POST,
+    undefined,
+    'Error registering socket. Try again later.'
+  );

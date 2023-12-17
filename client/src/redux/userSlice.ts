@@ -7,49 +7,52 @@ import {
   createSlice,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { getProfile } from '../services/auth-service';
-import { updateUser } from '../services/users-service';
-import { dataOrThrowError } from './helpers';
-import { clearLocalAuthToken, isError } from '../services/api-helpers';
-import * as socketService from './redux-socket-service';
 import {
-  firebaseLoginWithEmail,
-  firebaseLogout,
-  fireBaseRegisterUser,
-  firebaseGoogleLogin,
-} from '../services/firebase-auth';
+  AUTHlogin,
+  AUTHloginWithGoogle,
+  AUTHlogout,
+  AUTHregister,
+  getProfile,
+} from '../services/auth-service';
+import { withErrorHandling } from './errorHandler';
+import { clearLocalAuthToken } from '../services/api-helpers';
+import * as socketService from './redux-socket-service';
 import { IUser } from '../interfaces/IUser';
 import { INotification } from '../interfaces/INotification';
 import type { RootState } from './store';
 import { setSuccessAlert } from './alertSlice';
 import { clearProfile } from './profileSlice';
 import { clearChat } from './chatSlice';
+import { APIupdateUser } from '../services/users-service';
 
 /**
  * Updates redux state with user profile after calling getProfile from user service.
  */
-export const fetchProfileThunk = createAsyncThunk(
+const fetchProfile = createAsyncThunk(
   'users/fetchProfile',
   async (_, ThunkAPI) => {
-    const profile = await getProfile();
-    console.log(profile);
-    const state = ThunkAPI.getState() as RootState;
-    // if (!state.user.socketConnected) {
-    //   socketService.enableListeners(ThunkAPI.dispatch);
-    // }
-    return dataOrThrowError(profile, ThunkAPI.dispatch);
+    try {
+      const profile = await getProfile();
+      const profileComplete = isProfileComplete(profile);
+      // if (!state.user.socketConnected) {
+      //   socketService.enableListeners(ThunkAPI.dispatch);
+      // }
+      return { profile, profileComplete };
+    } catch (err) {
+      ThunkAPI.dispatch(clearUser());
+      throw err; // will be handled by error handler wrapper
+    }
   }
 );
 
-export const registerThunk = createAsyncThunk(
+const register = createAsyncThunk(
   'users/register',
   async (
     { email, password }: { email: string; password: string },
     ThunkAPI
   ) => {
-    await fireBaseRegisterUser(email, password);
-    ThunkAPI.dispatch(fetchProfileThunk());
-    return;
+    await AUTHregister(email, password);
+    ThunkAPI.dispatch(fetchProfile());
   }
 );
 
@@ -57,52 +60,47 @@ export const registerThunk = createAsyncThunk(
  * Calls the login service and updates state with logged in user.
  * Sets auth token in local storage, and calls sockets listeners.
  */
-export const loginThunk = createAsyncThunk(
+const login = createAsyncThunk(
   'users/login',
   async ({ email, password }: { email: string; password: string }, _) => {
-    await firebaseLoginWithEmail(email, password);
-    return;
+    await AUTHlogin(email, password);
   }
 );
 
-export const loginWithGoogleThunk = createAsyncThunk(
+const loginWithGoogle = createAsyncThunk(
   'users/loginWithGoogle',
   async (_, ThunkAPI) => {
-    await firebaseGoogleLogin();
-    ThunkAPI.dispatch(fetchProfileThunk());
-    return;
+    await AUTHloginWithGoogle();
+    return ThunkAPI.dispatch(fetchProfile());
   }
 );
 
 /**
  * Logs the user out by calling the logout service.
  */
-export const logoutThunk = createAsyncThunk(
-  'users/logout',
-  async (_: void, ThunkAPI) => {
-    await firebaseLogout();
-    clearLocalAuthToken();
-    ThunkAPI.dispatch(clearChat());
-    ThunkAPI.dispatch(clearUser());
-    ThunkAPI.dispatch(clearProfile());
-    socketService.disconnect();
-    return;
-  }
-);
+const logout = createAsyncThunk('users/logout', async (_: void, ThunkAPI) => {
+  await AUTHlogout();
+  clearLocalAuthToken();
+  ThunkAPI.dispatch(clearChat());
+  ThunkAPI.dispatch(clearUser());
+  ThunkAPI.dispatch(clearProfile());
+  socketService.disconnect();
+});
 
 /**
  * Calls updateUser service to update user and then update state with the user.
  */
-export const updateUserThunk = createAsyncThunk(
+const updateUser = createAsyncThunk(
   'users/update',
   async (user: IUser, ThunkAPI) => {
-    const updatedUser = await updateUser(user);
-    if (!isError(updatedUser)) {
-      ThunkAPI.dispatch(
-        setSuccessAlert({ message: 'Profile updated successfully.' })
-      );
-    }
-    return dataOrThrowError(updatedUser, ThunkAPI.dispatch);
+    const updatedUser = await APIupdateUser(user);
+
+    ThunkAPI.dispatch(
+      setSuccessAlert({ message: 'Profile updated successfully.' })
+    );
+    const profileComplete = isProfileComplete(updatedUser);
+
+    return { updatedUser, profileComplete };
   }
 );
 export interface UserState {
@@ -125,6 +123,7 @@ const initialUser: IUser = {
   headerImage: '',
   profilePhoto: '',
   accountType: '',
+  registeredWithProvider: false,
 };
 
 const initialState: UserState = {
@@ -137,17 +136,11 @@ const initialState: UserState = {
   loading: false,
 };
 
-/**
- * Helper: Checks if the logged in user in state has complete their profile.
- */
-const checkProfileComplete = (state: UserState, user: IUser) => {
+const isProfileComplete = (user: IUser): boolean => {
   if (!user || !user.username) {
-    state.profileComplete = false;
-  } else {
-    state.profileComplete = true;
+    return false;
   }
-  state.data = { ...state.data, ...user };
-  return state.data;
+  return true;
 };
 
 const userSlice = createSlice({
@@ -169,8 +162,9 @@ const userSlice = createSlice({
     clearUser: (state) => {
       state.isLoggedIn = false;
       state.data = initialUser;
-      firebaseLogout();
+      state.profileComplete = false;
       clearLocalAuthToken();
+      AUTHlogout();
       state.socketConnected = false;
     },
     updateAuthUser: (state, action: PayloadAction<IUser>) => {
@@ -178,85 +172,84 @@ const userSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchProfileThunk.pending, (state) => {
+    builder.addCase(fetchProfile.pending, (state) => {
       state.loading = true;
     });
     builder.addCase(
-      fetchProfileThunk.fulfilled,
-      (state, action: PayloadAction<IUser>) => {
+      fetchProfile.fulfilled,
+      (
+        state,
+        action: PayloadAction<{ profile: IUser; profileComplete: boolean }>
+      ) => {
         state.loading = false;
-        state.data = action.payload;
+        state.data = action.payload.profile;
         state.isLoggedIn = true;
         state.socketConnected = true;
-        checkProfileComplete(state, action.payload);
+        state.profileComplete = action.payload.profileComplete;
       }
     );
 
-    builder.addCase(fetchProfileThunk.rejected, (state) => {
+    builder.addCase(fetchProfile.rejected, (state) => {
       state.loading = false;
-      firebaseLogout();
     });
 
-    builder.addCase(updateUserThunk.pending, (state) => {
+    builder.addCase(updateUser.pending, (state) => {
       state.loading = true;
     });
     builder.addCase(
-      updateUserThunk.fulfilled,
-      (state, action: PayloadAction<IUser>) => {
+      updateUser.fulfilled,
+      (
+        state,
+        action: PayloadAction<{ updatedUser: IUser; profileComplete: boolean }>
+      ) => {
         state.loading = false;
-        state.data = { ...state.data, ...action.payload };
-        checkProfileComplete(state, action.payload);
+        state.data = { ...state.data, ...action.payload.updatedUser };
+        state.profileComplete = action.payload.profileComplete;
       }
     );
-    builder.addCase(updateUserThunk.rejected, (state) => {
+    builder.addCase(updateUser.rejected, (state) => {
       state.loading = false;
     });
 
-    builder.addCase(registerThunk.pending, (state) => {
+    builder.addCase(register.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(registerThunk.fulfilled, (state) => {
+    builder.addCase(register.fulfilled, (state) => {
       state.loading = false;
     });
-    builder.addCase(registerThunk.rejected, (state) => {
+    builder.addCase(register.rejected, (state) => {
       state.loading = false;
     });
 
-    builder.addCase(loginThunk.pending, (state) => {
+    builder.addCase(login.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(loginThunk.fulfilled, (state) => {
+    builder.addCase(login.fulfilled, (state) => {
       state.loading = false;
     });
-    builder.addCase(loginThunk.rejected, (state) => {
+    builder.addCase(login.rejected, (state) => {
       state.loading = false;
     });
 
-    builder.addCase(logoutThunk.pending, (state) => {
+    builder.addCase(logout.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(logoutThunk.fulfilled, (state) => {
+    builder.addCase(logout.fulfilled, (state) => {
       state.loading = false;
-      state.data = initialUser;
-      state.isLoggedIn = false;
-      state.profileComplete = false;
-      clearLocalAuthToken();
-      firebaseLogout();
-      state.socketConnected = false;
     });
-    builder.addCase(logoutThunk.rejected, (state) => {
+    builder.addCase(logout.rejected, (state) => {
       state.loading = false;
       // state.data = initialUser;
       // state.profileComplete = false;
     });
 
-    builder.addCase(loginWithGoogleThunk.pending, (state) => {
+    builder.addCase(loginWithGoogle.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(loginWithGoogleThunk.fulfilled, (state) => {
+    builder.addCase(loginWithGoogle.fulfilled, (state) => {
       state.loading = false;
     });
-    builder.addCase(loginWithGoogleThunk.rejected, (state) => {
+    builder.addCase(loginWithGoogle.rejected, (state) => {
       state.loading = false;
     });
   },
@@ -289,4 +282,13 @@ export const {
   updateAuthUser,
   setAuthUser,
 } = userSlice.actions;
+
+// Export async thunks with error handling decorator
+export const fetchProfileThunk = withErrorHandling(fetchProfile);
+export const registerThunk = withErrorHandling(register);
+export const loginThunk = withErrorHandling(login);
+export const loginWithGoogleThunk = withErrorHandling(loginWithGoogle);
+export const logoutThunk = withErrorHandling(logout);
+export const updateUserThunk = withErrorHandling(updateUser);
+
 export default userSlice.reducer;

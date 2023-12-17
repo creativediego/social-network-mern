@@ -30,7 +30,7 @@ const alertSlice = createSlice({
   initialState,
   reducers: {
     setGlobalError: (state, action: PayloadAction<IGlobalError>) => {
-      state.error = action.payload.error;
+      state.error = action.payload;
     },
     setPageError: (state, action: PayloadAction<IAlert>) => {
       state.pageError = action.payload;

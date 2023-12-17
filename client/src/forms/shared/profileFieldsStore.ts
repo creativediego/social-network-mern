@@ -1,6 +1,6 @@
-import { InputFieldI } from '../../interfaces/InputFieldI';
+import { FormFieldI } from '../../interfaces/FormFieldI';
 
-export const profileFields: InputFieldI = {
+export const profileFieldsStore: FormFieldI = {
   name: {
     id: '0',
     name: 'name',
@@ -9,8 +9,7 @@ export const profileFields: InputFieldI = {
     errorMessage:
       "Name should be 3-20 characters and shouldn't include any special character!",
     label: 'name',
-    // pattern: "^[A-Za-z0-9 ,.'-]{3,20}$",
-    pattern: '.*',
+    pattern: "^[A-Za-z0-9 ,.'\\-]{3,20}$",
     required: true,
     value: '',
   },
@@ -35,20 +34,8 @@ export const profileFields: InputFieldI = {
     label: 'email',
     required: true,
     value: '',
-    pattern: '.*',
-    // pattern: '[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$',
+    pattern: '^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\\.[a-z]{2,4}$',
   },
-  // birthday: {
-  //   id: '3',
-  //   name: 'birthday',
-  //   type: 'date',
-  //   placeholder: 'birthday (optional)',
-  //   errorMessage: 'Please enter a valid date for birthday.',
-  //   label: 'birthday',
-  //   required: true,
-  //   value: '',
-  //   pattern: '',
-  // },
   bio: {
     id: '4',
     name: 'bio',
@@ -90,7 +77,7 @@ export const profileFields: InputFieldI = {
     errorMessage:
       'Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character!',
     label: 'password',
-    pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
+    pattern: `^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$`,
     required: false,
     value: '',
   },

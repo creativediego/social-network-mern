@@ -9,10 +9,10 @@ import { IPost } from '../interfaces/IPost';
 import { userDislikesPost, userLikesPost } from '../services/likes-service';
 import { uploadPostImage } from '../services/storage-service';
 import {
-  findAllPosts,
-  createPost,
-  deletePost,
-  updatePost,
+  APIfindAllPosts,
+  APIcreatePost,
+  APIdeletePost,
+  APIupdatePost,
 } from '../services/posts-service';
 import { setGlobalError } from './alertSlice';
 import { dataOrThrowError } from './helpers';
@@ -33,8 +33,8 @@ import { FriendlyError } from '../interfaces/IError';
 export const findAllPostsThunk = createAsyncThunk(
   'posts/findAllPosts',
   async (data, ThunkAPI) => {
-    const posts = await findAllPosts();
-    return dataOrThrowError(posts, ThunkAPI.dispatch);
+    const posts = await APIfindAllPosts();
+    return posts;
   }
 );
 
@@ -51,20 +51,19 @@ export const createPostThunk = createAsyncThunk(
     }: { userId: string; post: IPost; imageFile: File | null },
     ThunkAPI
   ) => {
-    let resultPost = await createPost(userId, post);
+    let resultPost = await APIcreatePost(userId, post);
     resultPost = dataOrThrowError(resultPost, ThunkAPI.dispatch);
     if (imageFile) {
       try {
         const postImageURL = await uploadPostImage(imageFile, resultPost.id);
         resultPost.image = postImageURL;
-        resultPost = await updatePost(resultPost.id, resultPost);
+        resultPost = await APIupdatePost(resultPost.id, resultPost);
       } catch (err) {
         ThunkAPI.dispatch(
           setGlobalError(new FriendlyError('Error uploading post image.'))
         );
       }
     }
-    resultPost = dataOrThrowError(resultPost, ThunkAPI.dispatch);
     return resultPost;
   }
 );
@@ -75,14 +74,14 @@ export const createPostThunk = createAsyncThunk(
 export const deletePostThunk = createAsyncThunk(
   'posts/deletePost',
   async (postId: string, ThunkAPI) => {
-    const deletedPost = await deletePost(postId);
-    if (!deletedPost.error) {
-      ThunkAPI.dispatch(removePost(postId));
-      ThunkAPI.dispatch(removeMyPost(deletedPost));
-      ThunkAPI.dispatch(removeLikedPost(deletedPost));
-      ThunkAPI.dispatch(removeDislikedPost(deletedPost));
-    }
-    return dataOrThrowError(deletedPost, ThunkAPI.dispatch);
+    const deletedPost = await APIdeletePost(postId);
+    // if (!deletedPost.error) {
+    //   ThunkAPI.dispatch(removePost(postId));
+    //   ThunkAPI.dispatch(removeMyPost(deletedPost));
+    //   ThunkAPI.dispatch(removeLikedPost(deletedPost));
+    //   ThunkAPI.dispatch(removeDislikedPost(deletedPost));
+    // }
+    return deletedPost;
   }
 );
 
@@ -94,7 +93,7 @@ export const userLikesPostThunk = createAsyncThunk(
     const likedPost = await userLikesPost(userId, postId);
     ThunkAPI.dispatch(updateLikedPosts(likedPost));
     ThunkAPI.dispatch(updateMyPosts(likedPost));
-    return dataOrThrowError(likedPost, ThunkAPI.dispatch);
+    return likedPost;
   }
 );
 
@@ -106,7 +105,7 @@ export const userDislikesPostThunk = createAsyncThunk(
     const dislikedPost = await userDislikesPost(userId, postId);
     ThunkAPI.dispatch(updateDislikedPosts(dislikedPost));
     ThunkAPI.dispatch(updateMyPosts(dislikedPost));
-    return dataOrThrowError(dislikedPost, ThunkAPI.dispatch);
+    return dislikedPost;
   }
 );
 

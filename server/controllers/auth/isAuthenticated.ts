@@ -4,6 +4,7 @@ import admin from '../../config/firebaseConfig';
 import { UnauthorizedException } from './UnauthorizedException';
 import { ForbiddenException } from './ForbiddenException';
 import { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier';
+import IUser from '../../models/users/IUser';
 
 dotenv.config();
 
@@ -27,11 +28,15 @@ export const isAuthenticated = async (
         new ForbiddenException('Failed to login: Invalid or expired session.')
       );
     }
-    const decodedUser: any = {
+
+    const decodedUser: IUser = {
       uid: decoded.uid,
-      email: decoded.email,
+      email: decoded.email || '',
       name: decoded.name,
-      profilePicture: decoded.picture,
+      profilePhoto: decoded.picture || '',
+      bio: decoded.bio || '',
+      username: decoded.username || '',
+      registeredWithProvider: decoded.firebase.sign_in_provider !== 'password',
     };
     req.user = decodedUser;
     return next();

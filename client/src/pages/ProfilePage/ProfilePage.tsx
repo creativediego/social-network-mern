@@ -5,7 +5,8 @@ import { useProfile } from '../../components/Profile/ProfileInfo/useProfile';
 const ProfilePage = () => {
   let { username } = useParams();
   username = username || '';
-  const { profileUser, isAuthUser, loading } = useProfile(username);
+  const { profileUser, isAuthUser, loading, followUser, unfollowUser } =
+    useProfile(username);
 
   return (
     <div className='ttr-profile'>

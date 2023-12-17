@@ -14,4 +14,5 @@ export interface IUser {
   followerCount?: number;
   followeeCount?: number;
   postCount?: number;
+  registeredWithProvider?: boolean;
 }

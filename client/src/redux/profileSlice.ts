@@ -1,3 +1,4 @@
+import { withErrorHandling } from './errorHandler';
 import {
   createAsyncThunk,
   createEntityAdapter,
@@ -12,50 +13,95 @@ import {
   findAllPostsDislikedByUser,
   findAllPostsLikedByUser,
 } from '../services/likes-service';
-import { findPostsByUser } from '../services/posts-service';
-import { findUserByUsername } from '../services/users-service';
-import { dataOrThrowError } from './helpers';
+import { APIfindPostsByUser } from '../services/posts-service';
+import { APIfindUserByUsername } from '../services/users-service';
 import type { RootState } from './store';
+import {
+  APIfindAllFollowers,
+  APIfollowUser,
+  APIunfollowUser,
+} from '../services/follows-service';
+import IFollow from '../interfaces/IFollow';
 
-export const findProfileThunk = createAsyncThunk(
+const findProfile = createAsyncThunk(
   'profile/findProfile',
   async (username: string, ThunkAPI) => {
-    const user = await findUserByUsername(username);
-    return dataOrThrowError(user, ThunkAPI.dispatch);
+    const user = await APIfindUserByUsername(username);
+    ThunkAPI.dispatch(checkIfFollowed(user.id));
+    return user;
   }
 );
 
-export const findMyPostsThunk = createAsyncThunk(
+const follow = createAsyncThunk(
+  'profile/follow-user',
+  async (
+    { authUserId, followeeId }: { authUserId: string; followeeId: string },
+    thunkAPI
+  ) => {
+    return await APIfollowUser(authUserId, followeeId);
+  }
+);
+
+/**
+ * Async function to unfollow a user.
+ * It dispatches an API call to unfollow a user by ID.
+ */
+const unfollow = createAsyncThunk(
+  'profile/unfollow-user',
+  async (
+    { authUserId, followeeId }: { authUserId: string; followeeId: string },
+    thunkAPI
+  ) => {
+    return await APIunfollowUser(authUserId, followeeId);
+  }
+);
+
+const checkIfFollowed = createAsyncThunk(
+  'follow/check-if-followed',
+  async (otherUserId: string, thunkAPI) => {
+    // Fetches the list of followers of the other user
+    const otherUserFollowers = await APIfindAllFollowers(otherUserId); // Gets the authenticated user ID from the Redux store
+    const state = thunkAPI.getState() as RootState;
+    const authUserId = state.user.data.id; // Checks if the authenticated user is in the list of followers of the other user
+    const isFollowed: boolean = otherUserFollowers.some(
+      (follower) => follower.id === authUserId
+    );
+    return isFollowed;
+  }
+);
+
+const findMyPosts = createAsyncThunk(
   'profile/findMyPosts',
   async (userId: string, ThunkAPI) => {
-    const posts = await findPostsByUser(userId);
-    return dataOrThrowError(posts, ThunkAPI.dispatch);
+    const posts = await APIfindPostsByUser(userId);
+    return posts;
   }
 );
 
-export const findLikedPostsThunk = createAsyncThunk(
+const findLikedPosts = createAsyncThunk(
   'profile/findMyLikes',
   async (userId: string, ThunkAPI) => {
     let posts = await findAllPostsLikedByUser(userId);
     posts = posts.filter((post: IPost) => post !== null);
-    return dataOrThrowError(posts, ThunkAPI.dispatch);
+    return posts;
   }
 );
 
-export const findDislikedPostsThunk = createAsyncThunk(
+const findDislikedPosts = createAsyncThunk(
   'profile/findMydislikes',
   async (userId: string, ThunkAPI) => {
     let posts = await findAllPostsDislikedByUser(userId);
     posts = posts.filter((post: IPost) => post !== null);
-    return dataOrThrowError(posts, ThunkAPI.dispatch);
+    return posts;
   }
 );
 
 interface ProfileState {
-  user: IUser | null;
+  user: IUser;
   myPosts: EntityState<IPost>;
   likes: EntityState<IPost>;
   dislikes: EntityState<IPost>;
+  isFollowedByAuthUser: boolean;
   loading: boolean;
 }
 
@@ -74,12 +120,23 @@ const dislikedPostsAdapter = createEntityAdapter<IPost>({
   sortComparer: (a, b) => b.createdAt.localeCompare(a.createdAt),
 });
 
+const emptyUser = {
+  id: '',
+  username: '',
+  email: '',
+  name: '',
+  bio: '',
+  headerImage: '',
+  profilePhoto: '',
+};
+
 const initialState: ProfileState = {
-  user: null,
+  user: emptyUser,
   myPosts: myPostsAdapter.getInitialState(),
   likes: likedPostsAdapter.getInitialState(),
   dislikes: dislikedPostsAdapter.getInitialState(),
   loading: false,
+  isFollowedByAuthUser: true,
 };
 
 const profileSlice = createSlice({
@@ -142,69 +199,97 @@ const profileSlice = createSlice({
       state.user = action.payload;
     },
     clearProfile: (state) => {
-      state.user = null;
+      state.user = emptyUser;
       myPostsAdapter.removeAll(state.likes);
       dislikedPostsAdapter.removeAll(state.dislikes);
       likedPostsAdapter.removeAll(state.likes);
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(findProfileThunk.pending, (state) => {
+    builder.addCase(findProfile.pending, (state) => {
       state.loading = true;
     });
     builder.addCase(
-      findProfileThunk.fulfilled,
+      findProfile.fulfilled,
       (state, action: PayloadAction<IUser>) => {
         state.loading = false;
         state.user = action.payload;
       }
     );
-    builder.addCase(findProfileThunk.rejected, (state) => {
+    builder.addCase(findProfile.rejected, (state) => {
       state.loading = false;
     });
 
-    builder.addCase(findMyPostsThunk.pending, (state) => {
+    builder.addCase(findMyPosts.pending, (state) => {
       state.loading = true;
     });
     builder.addCase(
-      findMyPostsThunk.fulfilled,
+      findMyPosts.fulfilled,
       (state, action: PayloadAction<IPost[]>) => {
         state.loading = false;
 
         myPostsAdapter.setAll(state.myPosts, action.payload);
       }
     );
-    builder.addCase(findMyPostsThunk.rejected, (state) => {
+    builder.addCase(findMyPosts.rejected, (state) => {
       state.loading = false;
     });
 
-    builder.addCase(findLikedPostsThunk.pending, (state) => {
+    builder.addCase(findLikedPosts.pending, (state) => {
       state.loading = true;
     });
     builder.addCase(
-      findLikedPostsThunk.fulfilled,
+      findLikedPosts.fulfilled,
       (state, action: PayloadAction<IPost[]>) => {
         state.loading = false;
         likedPostsAdapter.setAll(state.likes, action.payload);
       }
     );
-    builder.addCase(findLikedPostsThunk.rejected, (state) => {
+    builder.addCase(findLikedPosts.rejected, (state) => {
       state.loading = false;
     });
 
-    builder.addCase(findDislikedPostsThunk.pending, (state) => {
+    builder.addCase(findDislikedPosts.pending, (state) => {
       state.loading = true;
     });
     builder.addCase(
-      findDislikedPostsThunk.fulfilled,
+      findDislikedPosts.fulfilled,
       (state, action: PayloadAction<IPost[]>) => {
         state.loading = false;
         dislikedPostsAdapter.setAll(state.dislikes, action.payload);
       }
     );
-    builder.addCase(findDislikedPostsThunk.rejected, (state) => {
+    builder.addCase(findDislikedPosts.rejected, (state) => {
       state.loading = false;
     });
+    builder.addCase(checkIfFollowed.fulfilled, (state, action) => {
+      state.isFollowedByAuthUser = action.payload;
+    });
+    builder.addCase(follow.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(
+      follow.fulfilled,
+      (state, action: PayloadAction<IFollow>) => {
+        state.loading = false;
+        state.user = action.payload.followee; // Updates details of the followed user
+      }
+    );
+    builder.addCase(follow.rejected, (state) => {
+      state.loading = false;
+    });
+
+    // Reducers for handling unfollow action lifecycle
+    builder.addCase(unfollow.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(
+      unfollow.fulfilled,
+      (state, action: PayloadAction<IFollow>) => {
+        state.loading = false;
+        state.user = action.payload.followee; // Updates details of the unfollowed user
+      }
+    );
   },
 });
 
@@ -235,6 +320,12 @@ export const selectProfileLoading = createSelector(
   (state: RootState) => state.profile.loading,
   (loading) => loading
 );
+
+export const selectProfileIsFollowed = createSelector(
+  (state: RootState) => state.profile.isFollowedByAuthUser,
+  (isFollowed) => isFollowed
+);
+
 export const {
   updateMyPosts,
   updateLikedPosts,
@@ -245,4 +336,12 @@ export const {
   setProfileUser,
   clearProfile,
 } = profileSlice.actions;
+
+export const findProfileThunk = withErrorHandling(findProfile);
+export const findMyPostsThunk = withErrorHandling(findMyPosts);
+export const findLikedPostsThunk = withErrorHandling(findLikedPosts);
+export const findDislikedPostsThunk = withErrorHandling(findDislikedPosts);
+export const followThunk = withErrorHandling(follow);
+export const unfollowThunk = withErrorHandling(unfollow);
+
 export default profileSlice.reducer;

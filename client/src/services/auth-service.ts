@@ -3,6 +3,13 @@ import { IUser } from '../interfaces/IUser';
 import { Requests, callAPI } from './api-helpers';
 import { loadRequestInterceptors } from './api-helpers';
 import { config } from '../config/appConfig';
+import {
+  fireBaseRegisterUser,
+  firebaseGoogleLogin,
+  firebaseLoginWithEmail,
+  firebaseLogout,
+  isFirebaseIsEmailProvider,
+} from './firebase-auth';
 
 const SECURITY_API = config.authApi;
 
@@ -10,28 +17,18 @@ const api = axios.create();
 // api.defaults.headers.common['authorization'] = localStorage.getItem('token');
 api.interceptors.request.use(loadRequestInterceptors);
 
-export const register = (user: IUser) =>
-  callAPI<IUser>(
-    `${SECURITY_API}/register`,
-    Requests.POST,
-    'Error registering. Try again later.'
-  );
+export const AUTHregister = async (email: string, password: string) =>
+  await fireBaseRegisterUser(email, password);
 
-export const registerWithGoogle = (email: string) =>
-  callAPI<IUser>(
-    `${SECURITY_API}/registerWithGoogle`,
-    Requests.POST,
-    { email: email },
-    'Error registering with Google. Try again later.'
-  );
+export const AUTHlogin = async (email: string, password: string) =>
+  await firebaseLoginWithEmail(email, password);
 
-export const loginWithGoogle = (token: string) =>
-  callAPI<IUser>(
-    `${SECURITY_API}/login`,
-    Requests.POST,
-    { token },
-    'Error logging in with Google. Try again later.'
-  );
+export const AUTHloginWithGoogle = async () => await firebaseGoogleLogin();
+
+export const AUTHlogout = async () => await firebaseLogout;
+
+export const registeredWithEmailPassword = async () =>
+  await isFirebaseIsEmailProvider();
 
 export const getProfile = () =>
   callAPI<IUser>(

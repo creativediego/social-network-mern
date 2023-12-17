@@ -11,10 +11,12 @@ import HeaderImageUpload from './HeaderImageUpload';
 interface UpdateProfileFormProps {
   showOptional: boolean;
   submitCallBack?: () => void;
+  fields: string[];
 }
 const UpdateProfileForm = ({
   showOptional,
   submitCallBack,
+  fields,
 }: UpdateProfileFormProps): JSX.Element => {
   const {
     loading,
@@ -23,7 +25,7 @@ const UpdateProfileForm = ({
     user,
     uploadProfileImage,
     submitForm,
-  } = useUpdateProfile();
+  } = useUpdateProfile(fields);
   return (
     <div>
       <div className='mb-5 position-relative bg-white'>

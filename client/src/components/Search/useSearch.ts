@@ -32,9 +32,9 @@ export const useSearch = <T>(
       }
       setLoading(false);
       if (isError(data)) {
-        dispatch(setGlobalError(new FriendlyError(data.error.message, 500)));
+        dispatch(setGlobalError(new FriendlyError(data.message, 500)));
       } else {
-        setResults(data);
+        // setResults(data);
       }
     };
     findData();

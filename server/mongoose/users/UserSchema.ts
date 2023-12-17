@@ -49,6 +49,7 @@ const UserSchema = new mongoose.Schema<IUser>(
     followerCount: { type: Number, default: 0 },
     followeeCount: { type: Number, default: 0 },
     postCount: { type: Number, default: 0 },
+    registeredWithProvider: { type: Boolean, default: false },
   },
 
   { timestamps: true, collection: 'users' }

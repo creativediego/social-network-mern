@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { FriendlyError, IAlert, IGlobalError } from '../interfaces/IError';
+import { FriendlyError, IAlert } from '../interfaces/IError';
 
 export enum Requests {
   GET = 'get',
@@ -15,7 +15,7 @@ const logError = async (error: IAlert): Promise<void> => {
   if (process.env.REACT_APP_ENV === 'production') {
     // TODO: Log error to third-party service.
   } else {
-    console.log(`API ERROR: ${error.message}`);
+    console.log(error.message);
   }
 };
 
@@ -30,7 +30,7 @@ export const callAPI = <T>(
   method: Requests,
   data?: any,
   errorMessage?: string
-): Promise<T | IGlobalError> =>
+): Promise<T> =>
   api({
     method,
     url,
@@ -38,15 +38,11 @@ export const callAPI = <T>(
   })
     .then((response) => response.data)
     .catch((err) => {
-      logError(err.response.data);
+      logError(err.response.data.error);
       if (errorMessage) {
-        return new FriendlyError(errorMessage);
+        throw new FriendlyError(errorMessage);
       } else {
-        return new FriendlyError(
-          err.response.data.error.message
-            ? err.response.data.error.message
-            : undefined
-        );
+        throw new FriendlyError(err.response.data.error.message);
       }
     });
 
@@ -66,6 +62,6 @@ export const clearLocalAuthToken = () => {
 
 export const getLocalAuthToken = (token: any) => localStorage.getItem('token');
 
-export const isError = (value: any): value is IGlobalError => {
-  return value.error !== undefined;
+export const isError = (value: any): value is FriendlyError => {
+  return value instanceof FriendlyError;
 };

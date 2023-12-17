@@ -3,16 +3,18 @@ export interface IAlert {
   code?: number | string | undefined;
 }
 export interface IGlobalError {
-  error: IAlert;
+  message: string;
+  code?: number | string | undefined;
 }
 
 // Friendly error message class based on IAlert that only contains a message
-export class FriendlyError implements IGlobalError {
-  error: IAlert;
+export class FriendlyError extends Error implements IGlobalError {
+  code?: number | string | undefined;
   constructor(message?: string, code?: number) {
-    this.error = {
-      message: message ? message : 'Sorry! Something went wrong.',
-      code: code ? code : 500,
-    };
+    if (message === undefined) {
+      super('Sorry! Something went wrong.');
+    } else {
+      super(message);
+    }
   }
 }

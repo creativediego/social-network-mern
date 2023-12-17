@@ -1,4 +1,4 @@
-export interface InputFieldI {
+export interface FormFieldI {
   [key: string]: {
     id: string;
     name: string;

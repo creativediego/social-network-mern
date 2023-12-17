@@ -21,7 +21,6 @@ export const handleCentralError = (
     errorResponse.code = err.code;
     errorResponse.message = err.message;
   }
-
   res.status(errorResponse.code).json({ error: errorResponse });
 };
 

@@ -94,7 +94,6 @@ export default class UserDao implements IDao<IUser> {
 
   findAllByField = async (nameOrUsername: string): Promise<IUser[]> => {
     const pattern = RegExp(`${nameOrUsername}`, 'i');
-
     try {
       return await this.model
         .find()
@@ -118,6 +117,7 @@ export default class UserDao implements IDao<IUser> {
           // { lastName: emailOrUsernameOrName },
         ],
       });
+      console.log(dbUser);
       return this.errorHandler.objectOrNullException(
         dbUser,
         UserDaoErrors.USER_DOES_NOT_EXIST
@@ -137,6 +137,12 @@ export default class UserDao implements IDao<IUser> {
    */
   create = async (user: IUser): Promise<IUser> => {
     try {
+      // If user already exists, return the existing user.
+      const existingUser = await this.model.findOne({ email: user.email });
+      if (existingUser) {
+        return existingUser;
+      }
+      // Otherwise, create a new user.
       const newUser: IUser | null = await this.model.findOneAndUpdate(
         { uid: user.uid },
         { ...user },

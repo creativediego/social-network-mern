@@ -10,20 +10,20 @@ const USERS_API = `${config.apiURL}/users`;
 const api = axios.create();
 api.interceptors.request.use(loadRequestInterceptors);
 
-export const findAllPostsByKeyword = (keyword: string) =>
+export const APIfindAllPostsByKeyword = (keyword: string) =>
   callAPI<IPost[]>(`${TUITS_API}/search/${keyword}`, Requests.GET);
 
-export const findAllPosts = () =>
+export const APIfindAllPosts = () =>
   callAPI<IPost[]>(`${TUITS_API}`, Requests.GET);
 
-export const findPostsByUser = (userId: string) =>
+export const APIfindPostsByUser = (userId: string) =>
   callAPI<IPost[]>(`${USERS_API}/${userId}/posts`, Requests.GET);
 
-export const createPost = (userId: string, post: IPost) =>
+export const APIcreatePost = (userId: string, post: IPost) =>
   callAPI<IPost>(`${USERS_API}/${userId}/posts`, Requests.POST, post);
 
-export const updatePost = (postId: string, post: IPost) =>
+export const APIupdatePost = (postId: string, post: IPost) =>
   callAPI<IPost>(`${TUITS_API}/${postId}`, Requests.PUT, post);
 
-export const deletePost = (postId: string) =>
+export const APIdeletePost = (postId: string) =>
   callAPI<IPost>(`${TUITS_API}/${postId}`, Requests.DELETE);

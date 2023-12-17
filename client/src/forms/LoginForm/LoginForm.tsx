@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from 'react-bootstrap';
 import { AlertBox, Loader } from '../../components';
 import FormInput from '../FormInput/FormInput';
-import { profileFields } from '../shared/profileFields';
+import { profileFieldsStore } from '../shared/profileFieldsStore';
 import { useAuthUser } from '../../hooks/useAuthUser';
 import { useAlert } from '../../hooks/useAlert';
 
@@ -17,7 +17,7 @@ const LoginForm = (): JSX.Element => {
     <div>
       <form>
         <FormInput
-          {...profileFields['email']}
+          {...profileFieldsStore['email']}
           dataTestId='login-user'
           placeholder='email'
           value={loginUser.email}
@@ -26,7 +26,7 @@ const LoginForm = (): JSX.Element => {
           }
         />
         <FormInput
-          {...profileFields['password']}
+          {...profileFieldsStore['password']}
           pattern=''
           type='password'
           dataTestId='login-password'

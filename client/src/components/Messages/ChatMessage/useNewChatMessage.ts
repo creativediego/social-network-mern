@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { InputFieldI } from '../../../interfaces/InputFieldI';
+import { FormFieldI } from '../../../interfaces/FormFieldI';
 import { selectActiveChatId } from '../../../redux/chatSlice';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { selectAuthUser } from '../../../redux/userSlice';
@@ -13,7 +13,7 @@ const useNewChatMessage = () => {
   const sender = useAppSelector(selectAuthUser).id;
   const dispatch = useAppDispatch();
   const [messageFieldAttributes, setMessageFieldAttributes] =
-    useState<InputFieldI>({
+    useState<FormFieldI>({
       chat: {
         id: '1',
         name: 'chat',

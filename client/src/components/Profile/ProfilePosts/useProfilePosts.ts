@@ -17,6 +17,7 @@ export const useProfilePosts = (userId: string) => {
   const loading = useAppSelector(selectProfileLoading);
 
   useEffect(() => {
+    if (!userId) return;
     dispatch(findMyPostsThunk(userId));
     dispatch(findLikedPostsThunk(userId));
     dispatch(findDislikedPostsThunk(userId));

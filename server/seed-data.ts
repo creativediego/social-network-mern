@@ -8,7 +8,7 @@ import { ConversationType } from './models/messages/ConversationType';
 import ConversationModel from './mongoose/messages/ConversationModel';
 import MessageModel from './mongoose/messages/MessageModel';
 
-dotenv.config({ path: './.env.development' });
+dotenv.config({ path: './.env' });
 
 function getRandomNumberBetween(min: number, max: number) {
   return Math.floor(Math.random() * (max - min) + min);
@@ -108,6 +108,7 @@ const profiles = [
     username: 'fullstackhouse',
     headerImage:
       'https://firebasestorage.googleapis.com/v0/b/tuiter-2e307.appspot.com/o/users%2FXxgohUN2Uudo83BEZwgrXA1J76E3%2Fprofile%2FXxgohUN2Uudo83BEZwgrXA1J76E3-header?alt=media&token=b5448fae-b14e-4857-b9ad-10a50c0e824a',
+    registeredWithProvider: true,
   },
 ];
 

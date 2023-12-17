@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ActionButton, Loader, PopupModal, Search } from '../..';
 import useToggleBoolean from '../../../hooks/useToggleBoolean';
 import { IUser } from '../../../interfaces/IUser';
-import { findAllUsersByName } from '../../../services/users-service';
+import { APIfindAllUsersByName } from '../../../services/users-service';
 import { useSearch } from '../../Search/useSearch';
 import { useNewChat } from './useNewChat';
 
@@ -12,8 +12,9 @@ import { useNewChat } from './useNewChat';
  */
 const NewChat = () => {
   const [showModal, toggleModal] = useToggleBoolean(false);
-  const { searchResults, searchLoading, searchValue, setSearch } =
-    useSearch<IUser[]>(findAllUsersByName);
+  const { searchResults, searchLoading, searchValue, setSearch } = useSearch<
+    IUser[]
+  >(APIfindAllUsersByName);
   const {
     newChatLoading,
     selectedUsers,

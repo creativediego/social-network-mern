@@ -58,6 +58,7 @@ const ProfileInfo = ({
                   <UpdateProfileForm
                     showOptional={true}
                     submitCallBack={setShowEditProfile}
+                    fields={['name', 'username', 'bio', 'email', 'password']}
                   />
                 </PopupModal>
               </span>
@@ -76,12 +77,7 @@ const ProfileInfo = ({
               {profileUser ? profileUser.followerCount : 0}
             </b>{' '}
             Followers
-            {!isAuthUser && (
-              <FollowButton
-                userToFollow={profileUser}
-                setProfileUser={() => {}}
-              />
-            )}
+            {!isAuthUser && <FollowButton />}
           </div>
         </>
       )}
