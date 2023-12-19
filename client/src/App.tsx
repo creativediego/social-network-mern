@@ -7,9 +7,10 @@ import { LoginPage, LandingPage } from './pages';
 import { Routes, Route, HashRouter } from 'react-router-dom';
 import { useAuthUser } from './hooks/useAuthUser';
 import { fetchProfileThunk } from './redux/userSlice';
-// Main app entry point
+
 function App() {
   const { profileComplete, isLoggedIn } = useAuthUser();
+
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(fetchProfileThunk());

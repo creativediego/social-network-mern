@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { useAppDispatch } from '../../redux/hooks';
-import { registerThunk } from '../../redux/userSlice';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { registerThunk, selectAuthUserLoading } from '../../redux/userSlice';
 import { FormFieldI } from '../../interfaces/FormFieldI';
 import { profileFieldsStore } from '../shared/profileFieldsStore';
+import { useAlert } from '../../hooks/useAlert';
 
 const useSignupForm = () => {
   const dispatch = useAppDispatch();
+  const loading = useAppSelector(selectAuthUserLoading);
   const [fields, setFields] = useState<FormFieldI>({
     email: profileFieldsStore['email'],
     password: profileFieldsStore['password'],
   });
+
+  const { setError } = useAlert();
 
   useEffect(() => {
     setFields((prevState) => ({
@@ -24,6 +28,7 @@ const useSignupForm = () => {
         required: true,
         pattern: fields.password.value,
         value: '',
+        readOnly: false,
       },
     }));
   }, [fields.password.value]);
@@ -42,7 +47,10 @@ const useSignupForm = () => {
   const isFormValid = () => {
     for (const field of Object.values(fields)) {
       const regexPattern = new RegExp(field.pattern);
-      if (!regexPattern.test(field.value)) return false;
+      if (!regexPattern.test(field.value)) {
+        setError({ message: field.errorMessage });
+        return false;
+      }
     }
     return true;
   };
@@ -58,7 +66,7 @@ const useSignupForm = () => {
       })
     );
   };
-  return { fields, setField, submitForm };
+  return { fields, setField, submitForm, loading };
 };
 
 export default useSignupForm;

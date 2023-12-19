@@ -36,7 +36,6 @@ export const useAuthUser = () => {
       return;
     }
     await dispatch(loginThunk({ email, password }));
-    dispatch(fetchProfileThunk());
   }, [dispatch, loginUser]);
 
   const logout = useCallback(async () => {

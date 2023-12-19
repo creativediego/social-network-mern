@@ -38,6 +38,10 @@ export const callAPI = <T>(
   })
     .then((response) => response.data)
     .catch((err) => {
+      if (!err.response) {
+        throw new FriendlyError('Network Error');
+      }
+
       logError(err.response.data.error);
       if (errorMessage) {
         throw new FriendlyError(errorMessage);
@@ -60,7 +64,7 @@ export const clearLocalAuthToken = () => {
   localStorage.removeItem('token');
 };
 
-export const getLocalAuthToken = (token: any) => localStorage.getItem('token');
+export const getLocalAuthToken = () => localStorage.getItem('token');
 
 export const isError = (value: any): value is FriendlyError => {
   return value instanceof FriendlyError;

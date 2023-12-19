@@ -36,6 +36,7 @@ export const firebaseLoginWithEmail = async (
     setLocalAuthToken(await result.user.getIdToken());
     return user;
   } catch (error: any) {
+    console.log(error.code);
     if (error.code === 'auth/wrong-password' || 'auth/wrong-email') {
       throw new FriendlyError('Wrong email or password.');
     } else {

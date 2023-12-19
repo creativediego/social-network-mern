@@ -9,5 +9,6 @@ export interface FormFieldI {
     label: string;
     required: boolean;
     pattern: string;
+    readOnly?: boolean;
   };
 }

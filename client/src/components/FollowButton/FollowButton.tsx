@@ -1,20 +1,15 @@
 import React from 'react';
 import { Loader } from '..';
-import { selectProfile } from '../../redux/profileSlice';
+import { useFollow } from './useFollow';
 
-import { useProfile } from '../Profile/ProfileInfo/useProfile';
-import { useAppSelector } from '../../redux/hooks';
-import { IUser } from '../../interfaces/IUser';
-
+interface FollowButtonProps {
+  userId: string;
+}
 /**
  * Displays the follow/unfollow button. Uses the useProfile hook to manage state and process submission.
  */
-const FollowButton = (): JSX.Element => {
-  const profileUser = useAppSelector(selectProfile);
-  console.log(profileUser);
-  const { loading, isFollowed, followUser, unfollowUser } = useProfile(
-    profileUser.username
-  );
+const FollowButton = ({ userId }: FollowButtonProps): JSX.Element => {
+  const { loading, isFollowed, followUser, unfollowUser } = useFollow(userId);
 
   return (
     <span>

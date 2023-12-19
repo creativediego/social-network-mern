@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Loader, ProfileInfo, ProfilePosts } from '../../components';
 import { useProfile } from '../../components/Profile/ProfileInfo/useProfile';
 const ProfilePage = () => {
   let { username } = useParams();
   username = username || '';
-  const { profileUser, isAuthUser, loading, followUser, unfollowUser } =
-    useProfile(username);
+  const { profileUser, isAuthUser, loading } = useProfile(username);
+  console.log('PROFILE PAGE');
 
   return (
     <div className='ttr-profile'>
@@ -24,4 +24,4 @@ const ProfilePage = () => {
     </div>
   );
 };
-export default ProfilePage;
+export default memo(ProfilePage);

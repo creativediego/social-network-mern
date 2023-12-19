@@ -8,6 +8,7 @@ import { firebaseUploadProfileImage } from '../../services/storage-service';
 import { ImageTypes } from '../../interfaces/ImageTypes';
 import { setGlobalError } from '../../redux/alertSlice';
 import { FriendlyError } from '../../interfaces/IError';
+import { auth } from '../../services/firebase-config';
 
 const useUpdateProfile = (fields: string[]) => {
   const mounted = useRef(false);
@@ -49,44 +50,43 @@ const useUpdateProfile = (fields: string[]) => {
 
   const mapInitialFields = () => {
     const updatedInputFields: FormFieldI = { ...inputFields };
+    console.log(authUser);
     for (const [key, value] of Object.entries(authUser)) {
       if (key in profileFieldsStore) {
         if (
           authUser.registeredWithProvider &&
           (key === 'email' || key === 'password')
         ) {
-          delete updatedInputFields[key];
-          continue;
-        } else if (key === 'password') {
-          updateConfirmPasswordPattern();
+          updatedInputFields[key] = {
+            ...profileFieldsStore[key],
+            value,
+            readOnly: true,
+          };
         }
         updatedInputFields[key] = { ...profileFieldsStore[key], value };
       }
     }
-    if (authUser.registeredWithProvider) {
-      delete updatedInputFields['email'];
-      delete updatedInputFields['password'];
-    }
+
     setInputFields(updatedInputFields);
   };
 
-  const updateConfirmPasswordPattern = () => {
-    setInputFields((prevState) => ({
-      ...prevState,
-      password: { ...profileFieldsStore['password'], required: false },
-      confirmPassword: {
-        id: '9999',
-        name: 'confirmPassword',
-        type: 'password',
-        placeholder: 'confirm password',
-        errorMessage: "Passwords don't match!",
-        label: 'confirm password',
-        required: false,
-        pattern: inputFields.password.value,
-        value: '',
-      },
-    }));
-  };
+  // const updateConfirmPasswordPattern = () => {
+  //   setInputFields((prevState) => ({
+  //     ...prevState,
+  //     password: { ...profileFieldsStore['password'], required: false },
+  //     confirmPassword: {
+  //       id: '9999',
+  //       name: 'confirmPassword',
+  //       type: 'password',
+  //       placeholder: 'confirm password',
+  //       errorMessage: "Passwords don't match!",
+  //       label: 'confirm password',
+  //       required: false,
+  //       pattern: inputFields.password.value,
+  //       value: '',
+  //     },
+  //   }));
+  // };
 
   const isFormValid = (): boolean => {
     for (const field of Object.values(inputFields)) {

@@ -5,6 +5,7 @@ import {
   createAsyncThunk,
   createSelector,
   createSlice,
+  isRejectedWithValue,
   PayloadAction,
 } from '@reduxjs/toolkit';
 import {
@@ -15,7 +16,10 @@ import {
   getProfile,
 } from '../services/auth-service';
 import { withErrorHandling } from './errorHandler';
-import { clearLocalAuthToken } from '../services/api-helpers';
+import {
+  clearLocalAuthToken,
+  getLocalAuthToken,
+} from '../services/api-helpers';
 import * as socketService from './redux-socket-service';
 import { IUser } from '../interfaces/IUser';
 import { INotification } from '../interfaces/INotification';
@@ -32,6 +36,12 @@ const fetchProfile = createAsyncThunk(
   'users/fetchProfile',
   async (_, ThunkAPI) => {
     try {
+      // When there is no token, return the initial state user.
+      const constLocalToken = getLocalAuthToken();
+      if (!constLocalToken) {
+        return false;
+      }
+
       const profile = await getProfile();
       const profileComplete = isProfileComplete(profile);
       // if (!state.user.socketConnected) {
@@ -62,8 +72,12 @@ const register = createAsyncThunk(
  */
 const login = createAsyncThunk(
   'users/login',
-  async ({ email, password }: { email: string; password: string }, _) => {
+  async (
+    { email, password }: { email: string; password: string },
+    ThunkAPI
+  ) => {
     await AUTHlogin(email, password);
+    return ThunkAPI.dispatch(fetchProfile());
   }
 );
 
@@ -179,13 +193,17 @@ const userSlice = createSlice({
       fetchProfile.fulfilled,
       (
         state,
-        action: PayloadAction<{ profile: IUser; profileComplete: boolean }>
+        action: PayloadAction<
+          false | { profile: IUser; profileComplete: boolean }
+        >
       ) => {
         state.loading = false;
-        state.data = action.payload.profile;
-        state.isLoggedIn = true;
-        state.socketConnected = true;
-        state.profileComplete = action.payload.profileComplete;
+        if (action.payload !== false) {
+          state.data = action.payload.profile;
+          state.isLoggedIn = true;
+          state.socketConnected = true;
+          state.profileComplete = action.payload.profileComplete;
+        }
       }
     );
 

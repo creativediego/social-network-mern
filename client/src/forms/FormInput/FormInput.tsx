@@ -56,7 +56,7 @@ const FormInput = (props: FormInputProps) => {
         onBlur={handleBlur}
         autoFocus
       />
-      {error && <span className='text-danger validation-error'>{error}</span>}
+      {/* {error && <span className='text-danger validation-error'>{error}</span>} */}
     </span>
   );
 };

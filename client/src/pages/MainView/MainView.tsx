@@ -25,16 +25,7 @@ import { onFirebaseAuthStateChange } from '../../services/firebase-auth';
  */
 const MainView = (): JSX.Element => {
   const { error, success } = useAlert();
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(fetchProfileThunk());
-    const actionOnValidLogin = () => dispatch(fetchProfileThunk());
-    const actionOnLoginExpiration = () => {
-      dispatch(clearUser());
-      dispatch(clearChat());
-    };
-    onFirebaseAuthStateChange(actionOnValidLogin, actionOnLoginExpiration);
-  }, [dispatch]);
+
   return (
     <div className='container'>
       <div className='ttr-poster'>

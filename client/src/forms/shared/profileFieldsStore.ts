@@ -12,6 +12,7 @@ export const profileFieldsStore: FormFieldI = {
     pattern: "^[A-Za-z0-9 ,.'\\-]{3,20}$",
     required: true,
     value: '',
+    readOnly: false,
   },
   username: {
     id: '1',
@@ -24,6 +25,7 @@ export const profileFieldsStore: FormFieldI = {
     pattern: '^[A-Za-z0-9]{3,16}$',
     required: true,
     value: '',
+    readOnly: false,
   },
   email: {
     id: '2',
@@ -35,6 +37,7 @@ export const profileFieldsStore: FormFieldI = {
     required: true,
     value: '',
     pattern: '^[a-z0-9._%+\\-]+@[a-z0-9.\\-]+\\.[a-z]{2,4}$',
+    readOnly: false,
   },
   bio: {
     id: '4',
@@ -46,6 +49,7 @@ export const profileFieldsStore: FormFieldI = {
     pattern: '^.{0,280}$',
     required: false,
     value: '',
+    readOnly: false,
   },
   headerImage: {
     id: '5',
@@ -57,6 +61,7 @@ export const profileFieldsStore: FormFieldI = {
     pattern: '',
     required: false,
     value: '',
+    readOnly: false,
   },
   profilePhoto: {
     id: '6',
@@ -68,6 +73,7 @@ export const profileFieldsStore: FormFieldI = {
     pattern: '',
     required: false,
     value: '',
+    readOnly: false,
   },
   password: {
     id: '7',
@@ -80,5 +86,18 @@ export const profileFieldsStore: FormFieldI = {
     pattern: `^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$`,
     required: false,
     value: '',
+    readOnly: false,
+  },
+  confirmPassword: {
+    id: '8',
+    name: 'confirmPassword',
+    type: 'password',
+    placeholder: 'confirm password',
+    errorMessage: "Passwords don't match!",
+    label: 'confirm password',
+    required: false,
+    pattern: '',
+    value: '',
+    readOnly: false,
   },
 };
