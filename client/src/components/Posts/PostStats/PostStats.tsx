@@ -1,7 +1,7 @@
 import React from 'react';
-import LikeButton from './LikeButton';
-import DislikeButton from './DislikeButton';
-import { usePost } from '../../hooks/usePost';
+import LikeButton from '../LikeButton/LikeButton';
+import DislikeButton from '../DislikeButton/DislikeButton';
+import { usePost } from '../../../hooks/usePost';
 
 /**
  * Displays all stats of a post, including likes, dislikes, reposts, and replies.

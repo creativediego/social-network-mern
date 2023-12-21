@@ -57,10 +57,7 @@ const LoginPage = () => {
               setShow={setShowUpdateProfileModal}
               size='lg'
             >
-              <UpdateProfileForm
-                fields={['name', 'username', 'bio']}
-                showOptional={false}
-              />
+              <UpdateProfileForm showOptional={false} />
             </PopupModal>
           )}
         </div>

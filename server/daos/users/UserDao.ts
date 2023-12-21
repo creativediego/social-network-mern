@@ -117,7 +117,6 @@ export default class UserDao implements IDao<IUser> {
           // { lastName: emailOrUsernameOrName },
         ],
       });
-      console.log(dbUser);
       return this.errorHandler.objectOrNullException(
         dbUser,
         UserDaoErrors.USER_DOES_NOT_EXIST

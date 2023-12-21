@@ -32,10 +32,10 @@ export const isAuthenticated = async (
     const decodedUser: IUser = {
       uid: decoded.uid,
       email: decoded.email || '',
-      name: decoded.name,
+      name: '',
       profilePhoto: decoded.picture || '',
-      bio: decoded.bio || '',
-      username: decoded.username || '',
+      bio: '',
+      username: '',
       registeredWithProvider: decoded.firebase.sign_in_provider !== 'password',
     };
     req.user = decodedUser;
@@ -45,7 +45,7 @@ export const isAuthenticated = async (
     const error = err as Error;
     return next(
       new UnauthorizedException(
-        error.message ? error.message : 'Error validating token session.'
+        'Error validating login session or expired session. Log in again.'
       )
     );
   }

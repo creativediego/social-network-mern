@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
-import './Posts.scss';
-import Post from './Post';
-import { IPost } from '../../interfaces/IPost';
+import '.././Posts.scss';
+import Post from '../Post/Post';
+import { IPost } from '../../../interfaces/IPost';
 
 interface PostsProps {
   posts: IPost[];

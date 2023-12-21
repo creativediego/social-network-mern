@@ -24,11 +24,11 @@ export const validateProfile = [
     .isLength({ min: 0, max: 160 })
     .withMessage(UserValidationMessages.INVALID_BIO),
   // body('birthday').trim().isDate(),
-  body('accountType')
-    .trim()
-    .toUpperCase()
-    .isIn(Object.values(AccountType))
-    .withMessage('Invalid account type.'),
+  // body('accountType')
+  //   .trim()
+  //   .toUpperCase()
+  //   .isIn(Object.values(AccountType))
+  //   .withMessage('Invalid account type.'),
   // body('headerImage')
   //   .exists()
   //   .trim()

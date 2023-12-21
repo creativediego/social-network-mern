@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useProfilePosts } from './useProfilePosts';
-import Posts from '../../Posts';
+import Posts from '../../Posts/Posts/Posts';
 import ProfileNav from '../ProfileNav/ProfileNav';
 
 const ProfilePosts = ({

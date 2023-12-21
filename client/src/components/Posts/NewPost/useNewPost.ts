@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { IPost } from '../../interfaces/IPost';
-import { createPostThunk } from '../../redux/postSlice';
-import { selectAuthUser } from '../../redux/userSlice';
-import { IUser } from '../../interfaces/IUser';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { IPost } from '../../../interfaces/IPost';
+import { createPostThunk } from '../../../redux/postSlice';
+import { selectAuthUser } from '../../../redux/userSlice';
+import { IUser } from '../../../interfaces/IUser';
 
 /**
  * Displays form where user can submit a new post.
@@ -39,9 +39,9 @@ const useNewPost = () => {
       return;
     }
     setPost({ ...post, post: '', image: '', hashtags: [] });
+    console.log(authUser);
     dispatch(createPostThunk({ userId: authUser.id, post, imageFile }));
     setImagePreview('');
-    setImageFile(null);
   };
 
   const parseHashtags = (post: string): string[] | null => {

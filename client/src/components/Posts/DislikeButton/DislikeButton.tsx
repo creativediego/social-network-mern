@@ -1,8 +1,8 @@
 import * as React from 'react';
-import './Posts.scss';
-import { useAuthUser } from '../../hooks/useAuthUser';
-import { useToggleAnimation } from '../../hooks/useToggleAnimation';
-import { usePost } from '../../hooks/usePost';
+import '.././Posts.scss';
+import { useAuthUser } from '../../../hooks/useAuthUser';
+import { useToggleAnimation } from '../../../hooks/useToggleAnimation';
+import { usePost } from '../../../hooks/usePost';
 /**
  * Displays like button.
  */

@@ -55,18 +55,7 @@ const ProfileInfo = ({
                   size='lg'
                   closeButton={true}
                 >
-                  <UpdateProfileForm
-                    showOptional={true}
-                    submitCallBack={setShowEditProfile}
-                    fields={[
-                      'name',
-                      'username',
-                      'bio',
-                      'email',
-                      'password',
-                      'confirmPassword',
-                    ]}
-                  />
+                  <UpdateProfileForm showOptional={true} />
                 </PopupModal>
               </span>
             )}

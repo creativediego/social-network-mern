@@ -73,6 +73,7 @@ const Navigation = (): JSX.Element => {
       path: '/search/?q=',
       color: 'white',
     },
+
     // {
     //   label: 'More',
     //   icon: 'fa-circle-ellipsis',
@@ -92,6 +93,7 @@ const Navigation = (): JSX.Element => {
          ${pathname.indexOf(link.path) >= 0 ? 'fw-bold' : ''}`}
             >
               <Link
+                title={link.label}
                 to={link.path}
                 id={link.label}
                 className='text-decoration-none text-black'

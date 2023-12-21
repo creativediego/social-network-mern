@@ -1,11 +1,11 @@
 import React from 'react';
-import { usePost } from '../../hooks/usePost';
-import './Posts.scss';
+import { usePost } from '../../../hooks/usePost';
+import '.././Posts.scss';
 
 /**
  * Shows the dropdown menu options when clicking the post ellipsis button.
  */
-const PostMoreButton = (): JSX.Element | null => {
+const PostOptions = (): JSX.Element | null => {
   const { post, showMenu, handleShowMenu, handleDeletePost } = usePost();
   return (
     post && (
@@ -43,4 +43,4 @@ const PostMoreButton = (): JSX.Element | null => {
   );
 };
 
-export default PostMoreButton;
+export default PostOptions;

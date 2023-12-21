@@ -1,5 +1,5 @@
 import React from 'react';
-import PostImage from '../PostImage/PostImage';
+import PostImage from '../../PostImage/PostImage';
 import PostImageUpload from './PostImageUpload';
 import useNewPost from './useNewPost';
 

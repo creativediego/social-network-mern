@@ -1,15 +1,15 @@
 import React, { memo } from 'react';
-import PostStats from './PostStats';
-import PostImage from '../PostImage/PostImage';
-import PostVideo from './PostVideo';
+import PostStats from '../PostStats/PostStats';
+import PostImage from '../../PostImage/PostImage';
+import PostVideo from '../PostVideo/PostVideo';
 import { Link } from 'react-router-dom';
-import { AvatarImage } from '../AvatarImage/AvatarImage';
-import { IPost } from '../../interfaces/IPost';
+import { AvatarImage } from '../../AvatarImage/AvatarImage';
+import { IPost } from '../../../interfaces/IPost';
 import moment from 'moment';
-import { PostProvider } from '../../hooks/usePost';
-import PostMoreButton from './PostMoreButton';
-import { useAuthUser } from '../../hooks/useAuthUser';
-import PostContent from './PostContent';
+import { PostProvider } from '../../../hooks/usePost';
+import PostOptions from '../PostOptions/PostOptions';
+import { useAuthUser } from '../../../hooks/useAuthUser';
+import PostContent from '../PostContent/PostContent';
 
 interface PostProps {
   post: IPost;
@@ -58,7 +58,7 @@ const Post = ({ post }: PostProps): JSX.Element => {
                     </span>
                   </p>
                 </div>
-                {user.id === post.author.id && <PostMoreButton />}
+                {user.id === post.author.id && <PostOptions />}
               </div>
               <PostContent content={postWordArray} />
               {post.youtube && <PostVideo />}

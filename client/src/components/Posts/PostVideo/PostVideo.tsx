@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { usePost } from '../../hooks/usePost';
+import { usePost } from '../../../hooks/usePost';
 
 /**
  * Displays a video post of a post.

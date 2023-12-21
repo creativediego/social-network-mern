@@ -1,5 +1,5 @@
 import React, { useState, memo } from 'react';
-import './FormInput.scss';
+import './FormField.scss';
 
 interface FormInputProps {
   id: string;
@@ -14,11 +14,12 @@ interface FormInputProps {
   errorMessage: string;
   dataTestId?: number | string;
   cssClass?: string;
+  readOnly?: boolean;
 }
 /**
  * Form input for a form.
  */
-const FormInput = (props: FormInputProps) => {
+const FormField = (props: FormInputProps) => {
   const { errorMessage, onChange, label, dataTestId, cssClass, ...inputProps } =
     props;
   const [error, setError] = useState('');
@@ -44,21 +45,23 @@ const FormInput = (props: FormInputProps) => {
   };
 
   return (
-    <span>
+    <span style={{ display: `${inputProps.readOnly ? 'none' : 'inherit'}` }}>
       <label htmlFor={label} className='form-label'>
         {label}
       </label>
       <input
-        className={`form-control mb-2 ${cssClass && cssClass}`}
+        className={`form-control mb-2 ${cssClass && cssClass} ${
+          inputProps.readOnly && 'text-muted'
+        }`}
         data-testid={dataTestId}
         onChange={handleOnChange}
         {...inputProps}
         onBlur={handleBlur}
         autoFocus
       />
-      {/* {error && <span className='text-danger validation-error'>{error}</span>} */}
+      {error && <span className='text-danger validation-error'>{error}</span>}
     </span>
   );
 };
 
-export default memo(FormInput);
+export default memo(FormField);

@@ -1,5 +1,5 @@
 import React from 'react';
-import FormInput from '../FormInput/FormInput';
+import FormField from '../FormInput/FormField';
 import AvatarUpload from './AvatarUpload';
 import { ActionButton, Loader } from '../../components';
 import useUpdateProfile from './useUpdateProfile';
@@ -11,12 +11,10 @@ import HeaderImageUpload from './HeaderImageUpload';
 interface UpdateProfileFormProps {
   showOptional: boolean;
   submitCallBack?: () => void;
-  fields: string[];
 }
 const UpdateProfileForm = ({
   showOptional,
   submitCallBack,
-  fields,
 }: UpdateProfileFormProps): JSX.Element => {
   const {
     loading,
@@ -25,7 +23,7 @@ const UpdateProfileForm = ({
     user,
     uploadProfileImage,
     submitForm,
-  } = useUpdateProfile(fields);
+  } = useUpdateProfile();
   return (
     <div>
       <div className='mb-5 position-relative bg-white'>
@@ -50,7 +48,7 @@ const UpdateProfileForm = ({
         input.name !== 'headerImage' &&
         input.name !== 'profilePhoto' &&
         (showOptional || (!showOptional && input.required)) ? (
-          <FormInput
+          <FormField
             key={input.id}
             {...input}
             value={input.value}

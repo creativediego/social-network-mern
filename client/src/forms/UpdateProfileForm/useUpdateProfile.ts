@@ -10,13 +10,22 @@ import { setGlobalError } from '../../redux/alertSlice';
 import { FriendlyError } from '../../interfaces/IError';
 import { auth } from '../../services/firebase-config';
 
-const useUpdateProfile = (fields: string[]) => {
+const useUpdateProfile = () => {
   const mounted = useRef(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
   const authUser = useAppSelector((state) => state.user.data);
   const [tempUser, setTempUser] = useState<IUser>({ ...authUser });
-  const [inputFields, setInputFields] = useState<FormFieldI>({});
+  const [inputFields, setInputFields] = useState<FormFieldI>({
+    name: { ...profileFieldsStore['name'] },
+    username: { ...profileFieldsStore['username'] },
+    bio: { ...profileFieldsStore['bio'] },
+    email: { ...profileFieldsStore['email'] },
+    password: { ...profileFieldsStore['password'] },
+    confirmPassword: { ...profileFieldsStore['confirmPassword'] },
+    profilePhoto: { ...profileFieldsStore['profilePhoto'] },
+    headerImage: { ...profileFieldsStore['headerImage'] },
+  });
 
   const setInputField = useCallback((e: React.FormEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget;
@@ -49,21 +58,32 @@ const useUpdateProfile = (fields: string[]) => {
   );
 
   const mapInitialFields = () => {
-    const updatedInputFields: FormFieldI = { ...inputFields };
-    console.log(authUser);
+    let updatedInputFields: FormFieldI = { ...inputFields };
+    // If user is not registered with a provider, update confirmPassword pattern
+    if (!authUser.registeredWithProvider) {
+      updatedInputFields = {
+        ...updatedInputFields,
+        confirmPassword: {
+          ...updatedInputFields['confirmPassword'],
+          pattern: inputFields.password.value,
+        },
+      };
+    } else {
+      // else set email, password, and confirmPassword to readOnly
+      updatedInputFields = {
+        ...updatedInputFields,
+        email: { ...updatedInputFields['email'], readOnly: true },
+        password: { ...updatedInputFields['password'], readOnly: true },
+        confirmPassword: {
+          ...updatedInputFields['confirmPassword'],
+          readOnly: true,
+        },
+      };
+    }
+    // Update input fields with user data
     for (const [key, value] of Object.entries(authUser)) {
       if (key in profileFieldsStore) {
-        if (
-          authUser.registeredWithProvider &&
-          (key === 'email' || key === 'password')
-        ) {
-          updatedInputFields[key] = {
-            ...profileFieldsStore[key],
-            value,
-            readOnly: true,
-          };
-        }
-        updatedInputFields[key] = { ...profileFieldsStore[key], value };
+        updatedInputFields[key] = { ...updatedInputFields[key], value };
       }
     }
 
@@ -92,7 +112,7 @@ const useUpdateProfile = (fields: string[]) => {
     for (const field of Object.values(inputFields)) {
       const regexPattern = new RegExp(field.pattern);
       if (field.required && !regexPattern.test(field.value)) {
-        dispatch(setGlobalError(new FriendlyError(field.errorMessage)));
+        dispatch(setGlobalError({ message: field.errorMessage }));
         return false;
       }
     }

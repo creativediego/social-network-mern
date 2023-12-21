@@ -1,6 +1,6 @@
 import React from 'react';
 import useSignupForm from './useSignupForm';
-import FormInput from '../FormInput/FormInput';
+import FormField from '../FormInput/FormField';
 import { useAlert } from '../../hooks/useAlert';
 import { FormContainer } from '../';
 
@@ -18,7 +18,7 @@ const SignupForm = (): JSX.Element => {
         error={error.message}
       >
         {Object.values(fields).map((field) => (
-          <FormInput
+          <FormField
             key={field.id}
             {...field}
             value={field.value}

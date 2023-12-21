@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import {
-  fetchProfileThunk,
   loginThunk,
   selectAuthUser,
   selectAuthUserLoading,
@@ -9,6 +8,7 @@ import {
   selectIsProfileComplete,
 } from '../redux/userSlice';
 import { logoutThunk } from '../redux/userSlice';
+import { setGlobalError } from '../redux/alertSlice';
 
 export const useAuthUser = () => {
   const user = useAppSelector(selectAuthUser);
@@ -33,6 +33,7 @@ export const useAuthUser = () => {
   const login = useCallback(async () => {
     const { email, password } = loginUser;
     if (!email || !password) {
+      dispatch(setGlobalError({ message: 'Email and password required.' }));
       return;
     }
     await dispatch(loginThunk({ email, password }));

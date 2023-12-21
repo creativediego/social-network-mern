@@ -12,7 +12,8 @@ async function connectToDatabase(
 
     // Connection successful, returning the database object
     const db: Connection = mongoose.connection;
-    console.log('Database connection successful.');
+
+    console.log('Connected to the following database successfully:', db.name);
 
     return db;
   } catch (error) {
