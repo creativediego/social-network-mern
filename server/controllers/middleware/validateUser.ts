@@ -14,10 +14,7 @@ export const validateProfile = [
     .withMessage(UserValidationMessages.INVALID_EMAIL),
   body('username')
     .trim()
-    .not()
-    .isEmpty()
-    .withMessage(UserValidationMessages.EMPTY_USERNAME)
-    .isLength({ min: 3, max: 15 })
+    .isLength({ min: 0, max: 15 })
     .withMessage(UserValidationMessages.INVALID_USERNAME),
   body('bio')
     .trim()
