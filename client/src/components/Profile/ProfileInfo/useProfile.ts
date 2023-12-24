@@ -8,7 +8,6 @@ import {
 } from '../../../redux/profileSlice';
 
 export const useProfile = (username: string) => {
-  console.log('useProfile rendered');
   const dispatch = useAppDispatch();
   const profileUser = useAppSelector(selectProfile);
   const { user: authUser } = useAuthUser();

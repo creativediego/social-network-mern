@@ -5,7 +5,7 @@
 
 import axios from 'axios';
 import { INotification } from '../interfaces/INotification';
-import { Requests, callAPI, loadRequestInterceptors } from './api-helpers';
+import { Requests, callAPI, loadRequestInterceptors } from '../util/apiConfig';
 import { config } from '../config/appConfig';
 
 const NOTIFICATIONS_API = `${config.apiURL}/notifications`;
@@ -22,16 +22,18 @@ api.interceptors.request.use(loadRequestInterceptors);
 export const findNotifications = async (userId: string) =>
   callAPI<INotification[]>(
     `${USERS_API}/${userId}/notifications`,
-    Requests.GET
+    Requests.GET,
+    'Error fetching notifications. Try again later.'
   );
 
 export const createNotification = async (
   userId: string,
   notification: INotification
 ) =>
-  callAPI<INotification>(
+  callAPI<INotification, INotification>(
     `${USERS_API}/${userId}/notifications`,
     Requests.POST,
+    'Error creating notification. Try again later.',
     notification
   );
 
@@ -41,7 +43,11 @@ export const createNotification = async (
  * @returns {Promise<{Notification}>} the notification object or error
  */
 export const markNotificationAsRead = async (nid: string) =>
-  callAPI<INotification>(`${NOTIFICATIONS_API}/${nid}/read`, Requests.PUT);
+  callAPI<INotification>(
+    `${NOTIFICATIONS_API}/${nid}/read`,
+    Requests.PUT,
+    'Error marking notification as read. Try again later.'
+  );
 
 /**
  * Get all of the unread notifications for a given user
@@ -51,5 +57,6 @@ export const markNotificationAsRead = async (nid: string) =>
 export const findUnreadNotifications = async (userId: string) =>
   callAPI<INotification[]>(
     `${USERS_API}/${userId}/notifications/unread`,
-    Requests.GET
+    Requests.GET,
+    'Error fetching unread notifications. Try again later.'
   );

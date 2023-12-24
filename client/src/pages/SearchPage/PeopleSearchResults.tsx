@@ -20,9 +20,7 @@ const getPersonElement = (user: IUser) => (
       <div className='d-flex align-items-center'>
         <AvatarImage profilePhoto={user.profilePhoto} size={60} />
         <div className='d-flex flex-column flex-fill'>
-          <span className='fs-6 text-white fw-bold'>
-            {user.name || user.firstName}
-          </span>
+          <span className='fs-6 text-white fw-bold'>{user.name}</span>
           <span>@{user.username}</span>
         </div>
       </div>

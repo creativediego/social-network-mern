@@ -1,22 +1,33 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import './AvatarUpload.scss';
 import { Loader } from '../../components';
-import { ProfileImageProps } from './AvatarUpload';
-import { ImageTypes } from '../../interfaces/ImageTypes';
+import { ImageTypes, StoragePaths } from '../../interfaces/ImageTypes';
+import { IUser } from '../../interfaces/IUser';
+import { useUploadFile } from '../../hooks/useUploadFile';
+import { useAppDispatch } from '../../redux/hooks';
+import { setAuthUser } from '../../redux/userSlice';
 
 /**
  * Displays user's background header image. Handles state upload via props.
  */
-const HeaderImageUpload = ({
-  imageURL,
-  uploadImage,
-  loading,
-}: ProfileImageProps) => {
+interface HeaderImageUploadProps {
+  user: IUser;
+}
+const BackgroundImageUpload = ({ user }: HeaderImageUploadProps) => {
+  const { loading, uploadFile, fileURL } = useUploadFile(
+    StoragePaths.BACKGROUND
+  );
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(setAuthUser({ ...user, headerImage: fileURL }));
+  }, [fileURL]);
+
   return (
     <div
       className='d-flex flex-column header-image-container bg-dark d-flex justify-content-center align-items-center'
       style={{
-        backgroundImage: `url('${imageURL})`,
+        backgroundImage: `url('${user.headerImage})`,
         backgroundSize: 'cover',
       }}
     >
@@ -35,7 +46,7 @@ const HeaderImageUpload = ({
       <input
         onChange={(e: React.FormEvent<HTMLInputElement>) => {
           if (e.currentTarget.files) {
-            uploadImage(e.currentTarget.files.item(0), ImageTypes.HEADER);
+            uploadFile(e.currentTarget.files.item(0), `background-${user.id}`);
           }
         }}
         className='avatar-input'
@@ -46,4 +57,4 @@ const HeaderImageUpload = ({
   );
 };
 
-export default memo(HeaderImageUpload);
+export default memo(BackgroundImageUpload);

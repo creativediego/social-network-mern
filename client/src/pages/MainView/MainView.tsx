@@ -18,7 +18,7 @@ import { useAlert } from '../../hooks/useAlert';
 import { useAppDispatch } from '../../redux/hooks';
 import { clearUser, fetchProfileThunk } from '../../redux/userSlice';
 import { clearChat } from '../../redux/chatSlice';
-import { onFirebaseAuthStateChange } from '../../services/firebase-auth';
+import { onFirebaseAuthStateChange } from '../../firebase/firebaseAuthAPI';
 
 /**
  * Main middle column view of the app where all pages are displayed.

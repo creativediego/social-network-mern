@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useSearch } from '../../components/Search/useSearch';
 import { useAppDispatch } from '../../redux/hooks';
 import { setAllPosts } from '../../redux/postSlice';
-import { findAllByKeyword } from '../../services/search-service';
+import { findAllByKeyword } from '../../services/searchAPI';
 
 const useSearchResults = (defaultQueryType: string) => {
   const [searchParams, setSearchParams] = useSearchParams();

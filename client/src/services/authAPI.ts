@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { IUser } from '../interfaces/IUser';
-import { Requests, callAPI } from './api-helpers';
-import { loadRequestInterceptors } from './api-helpers';
+import { Requests, callAPI } from '../util/apiConfig';
+import { loadRequestInterceptors } from '../util/apiConfig';
 import { config } from '../config/appConfig';
 import {
   fireBaseRegisterUser,
@@ -9,7 +9,7 @@ import {
   firebaseLoginWithEmail,
   firebaseLogout,
   isFirebaseIsEmailProvider,
-} from './firebase-auth';
+} from '../firebase/firebaseAuthAPI';
 
 const SECURITY_API = config.authApi;
 
@@ -34,6 +34,5 @@ export const getProfile = () =>
   callAPI<IUser>(
     `${SECURITY_API}/profile`,
     Requests.GET,
-    undefined,
     'Error getting profile. Try again later.'
   );

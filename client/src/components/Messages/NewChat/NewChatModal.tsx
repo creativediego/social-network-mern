@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ActionButton, Loader, PopupModal, Search } from '../..';
 import { IUser } from '../../../interfaces/IUser';
-import { APIfindAllUsersByName } from '../../../services/users-service';
+import { APIfindAllUsersByName } from '../../../services/userAPI';
 import { useSearch } from '../../Search/useSearch';
 import { useNewChat } from './useNewChat';
 
@@ -50,7 +50,7 @@ const NewChatModal = ({
             onClick={() => removeSelectedUser(user.id)}
             className='badge rounded-pill bg-primary btn'
           >
-            {user.name || user.firstName}
+            {user.name}
           </span>
         ))}
       </div>
@@ -83,7 +83,7 @@ const NewChatModal = ({
             {searchResults.map((user: IUser) => (
               <div key={user.id}>
                 <p className='btn' onClick={() => selectUsersForChat(user)}>
-                  {user.name || user.firstName} @{user.username}
+                  {user.name} @{user.username}
                 </p>
               </div>
             ))}

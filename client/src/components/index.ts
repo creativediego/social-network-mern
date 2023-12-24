@@ -19,6 +19,8 @@ import ProfilePosts from './Profile/ProfilePosts/ProfilePosts';
 import { AvatarImage } from './AvatarImage/AvatarImage';
 import Notification from './Notifications/Notification';
 import Notifications from './Notifications/index';
+import AvatarUpload from '../forms/UpdateProfileForm/AvatarUpload';
+import BackgroundImageUpload from '../forms/UpdateProfileForm/HeaderImageUpload';
 export {
   AlertBox,
   GenericError,
@@ -41,4 +43,6 @@ export {
   AvatarImage,
   Notification,
   Notifications,
+  AvatarUpload,
+  BackgroundImageUpload as HeaderImageUpload,
 };

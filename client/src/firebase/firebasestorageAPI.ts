@@ -1,12 +1,15 @@
 import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 import { ImageTypes } from '../interfaces/ImageTypes';
-import { storage, auth } from './firebase-config';
+import { storage, auth } from '../config/firebaseConfig';
 
 const errors = {
   NOT_LOGGED_IN: 'Error uploading image: Path or file name not provided.',
 };
 
-const uploadImage = async (path: string, file: File): Promise<string> => {
+export const firebaseUploadFile = async (
+  path: string,
+  file: File
+): Promise<string> => {
   try {
     const firebaseUser = auth.currentUser;
     if (!path || !file) {
@@ -20,7 +23,8 @@ const uploadImage = async (path: string, file: File): Promise<string> => {
     const fileURL: string = await getDownloadURL(fileSnapshot.ref);
     return fileURL;
   } catch (err) {
-    throw new Error('Error uploading image to Firebase');
+    console.log(path, err);
+    throw new Error('Error uploading image.');
   }
 };
 
@@ -29,7 +33,7 @@ export const uploadAvatar = async (file: File): Promise<string> => {
   if (!firebaseUser) {
     throw new Error(errors.NOT_LOGGED_IN);
   }
-  return await uploadImage(
+  return await firebaseUploadFile(
     `users/${firebaseUser.uid}/profile/${firebaseUser.uid}-avatar`,
     file
   );
@@ -40,7 +44,7 @@ export const uploadHeaderImage = async (file: File): Promise<string> => {
   if (!firebaseUser) {
     throw new Error(errors.NOT_LOGGED_IN);
   }
-  return await uploadImage(
+  return await firebaseUploadFile(
     `users/${firebaseUser.uid}/profile/${firebaseUser.uid}-header`,
     file
   );
@@ -54,7 +58,7 @@ export const firebaseUploadProfileImage = async (
   if (!firebaseUser) {
     throw new Error(errors.NOT_LOGGED_IN);
   }
-  return await uploadImage(
+  return await firebaseUploadFile(
     `users/${firebaseUser.uid}/profile/${firebaseUser.uid}-${type}`,
     file
   );
@@ -68,5 +72,8 @@ export const uploadPostImage = async (
   if (!firebaseUser) {
     throw new Error(errors.NOT_LOGGED_IN);
   }
-  return await uploadImage(`users/${firebaseUser.uid}/posts/${postId}`, file);
+  return await firebaseUploadFile(
+    `users/${firebaseUser.uid}/posts/${postId}`,
+    file
+  );
 };

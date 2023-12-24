@@ -8,7 +8,7 @@ import { IMessage } from '../interfaces/IMessage';
 import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
 import { IPost } from '../interfaces/IPost';
 import { config } from '../config/appConfig';
-import { Requests, callAPI } from '../services/api-helpers';
+import { Requests, callAPI } from '../util/apiConfig';
 /**
  * Redux and socket io helpers for firing off redux state changes on certain socket actions. Helpers are called from inside CreateAsyncThunk slices.
  */

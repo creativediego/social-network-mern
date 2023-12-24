@@ -1,4 +1,4 @@
-import { withErrorHandling } from './errorHandler';
+import { withErrorHandling } from './reduxErrorHandler';
 import {
   createAsyncThunk,
   createEntityAdapter,
@@ -10,17 +10,17 @@ import {
 import { IPost } from '../interfaces/IPost';
 import { IUser } from '../interfaces/IUser';
 import {
-  findAllPostsDislikedByUser,
-  findAllPostsLikedByUser,
-} from '../services/likes-service';
-import { APIfindPostsByUser } from '../services/posts-service';
-import { APIfindUserByUsername } from '../services/users-service';
+  APIfindAllPostsDislikedByUser,
+  APIfindAllPostsLikedByUser,
+} from '../services/likeAPI';
+import { APIfindPostsByUser } from '../services/postAPI';
+import { APIfindUserByUsername } from '../services/userAPI';
 import type { RootState } from './store';
 import {
   APIfindAllFollowers,
   APIfollowUser,
   APIunfollowUser,
-} from '../services/follows-service';
+} from '../services/followAPI';
 import IFollow from '../interfaces/IFollow';
 
 const findProfile = createAsyncThunk(
@@ -81,7 +81,7 @@ const findMyPosts = createAsyncThunk(
 const findLikedPosts = createAsyncThunk(
   'profile/findMyLikes',
   async (userId: string, ThunkAPI) => {
-    let posts = await findAllPostsLikedByUser(userId);
+    let posts = await APIfindAllPostsLikedByUser(userId);
     posts = posts.filter((post: IPost) => post !== null);
     return posts;
   }
@@ -90,7 +90,7 @@ const findLikedPosts = createAsyncThunk(
 const findDislikedPosts = createAsyncThunk(
   'profile/findMydislikes',
   async (userId: string, ThunkAPI) => {
-    let posts = await findAllPostsDislikedByUser(userId);
+    let posts = await APIfindAllPostsDislikedByUser(userId);
     posts = posts.filter((post: IPost) => post !== null);
     return posts;
   }

@@ -1,4 +1,4 @@
-import { auth } from './firebase-config';
+import { auth } from '../config/firebaseConfig';
 import {
   signInWithPopup,
   createUserWithEmailAndPassword,
@@ -7,7 +7,7 @@ import {
   sendEmailVerification,
   User,
 } from 'firebase/auth';
-import { setLocalAuthToken } from './api-helpers';
+import { setLocalAuthToken } from '../util/tokenManagement';
 import { config } from '../config/appConfig';
 import { FriendlyError } from '../interfaces/IError';
 

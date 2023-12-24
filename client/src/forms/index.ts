@@ -2,12 +2,14 @@ import FormField from './FormInput/FormField';
 import LoginForm from './LoginForm/LoginForm';
 import SignupForm from './SignupForm/SignupForm';
 import UpdateProfileForm from './UpdateProfileForm/UpdateProfileForm';
-import FormContainer from './FormContainer/FormContainer';
+import Form from './FormContainer/Form';
+import ReactHookFormInput from './FormInput/ReactHookFormInput';
 
 export {
-  FormField as FormInput,
+  FormField,
   LoginForm,
   SignupForm,
   UpdateProfileForm,
-  FormContainer,
+  Form,
+  ReactHookFormInput,
 };

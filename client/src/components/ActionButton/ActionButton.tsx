@@ -4,7 +4,7 @@ import Loader from '../Loader/Loader';
 
 export interface ActionButtonProps {
   label?: string;
-  submitAction: () => void;
+  submitAction?: () => void;
   position: 'right' | 'left';
   color?: 'primary' | 'secondary';
   loading?: boolean;
@@ -27,7 +27,7 @@ const ActionButton = ({
         className='rounded-pill'
         variant={color || 'primary'}
         onClick={() => {
-          submitAction();
+          if (submitAction) submitAction();
         }}
         data-testid='action-button'
       >

@@ -1,6 +1,6 @@
 import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
 import { FriendlyError, IGlobalError } from '../interfaces/IError';
-import { isError } from '../services/api-helpers';
+import { isError } from '../util/errorHandling';
 import { setGlobalError } from './alertSlice';
 import { clearChat } from './chatSlice';
 import { clearProfile } from './profileSlice';

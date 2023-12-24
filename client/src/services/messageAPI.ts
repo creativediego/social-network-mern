@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { IConversation } from '../interfaces/IConversation';
 import { IMessage } from '../interfaces/IMessage';
-import { loadRequestInterceptors, callAPI, Requests } from './api-helpers';
+import { loadRequestInterceptors, callAPI, Requests } from '../util/apiConfig';
 import { config } from '../config/appConfig';
 
 const MESSAGES_API = `${config.apiURL}/users`;
@@ -20,9 +20,10 @@ export const sendMessage = async (
   conversationId: string,
   message: string
 ) =>
-  callAPI<IMessage>(
+  callAPI<IMessage, { message: string }>(
     `${MESSAGES_API}/${userId}/conversations/${conversationId}/messages`,
     Requests.POST,
+    'Error sending message. Try again later.',
     { message }
   );
 
@@ -37,9 +38,10 @@ export const createConversation = async (
   userId: string,
   conversation: IConversation
 ) =>
-  callAPI<IConversation>(
+  callAPI<IConversation, IConversation>(
     `${MESSAGES_API}/${userId}/conversations`,
     Requests.POST,
+    'Error creating conversation. Try again later.',
     conversation
   );
 
@@ -51,7 +53,11 @@ export const createConversation = async (
  * and to format the returned output.
  */
 export const findInboxMessages = async (userId: string) =>
-  callAPI<IMessage[]>(`${MESSAGES_API}/${userId}/messages/`, Requests.GET);
+  callAPI<IMessage[]>(
+    `${MESSAGES_API}/${userId}/messages/`,
+    Requests.GET,
+    'Error fetching inbox messages. Try again later.'
+  );
 
 export const findConversation = async (
   userId: string,
@@ -59,7 +65,8 @@ export const findConversation = async (
 ) =>
   callAPI<IConversation>(
     `${MESSAGES_API}/${userId}/conversations/${conversationId}`,
-    Requests.GET
+    Requests.GET,
+    'Error fetching conversation. Try again later.'
   );
 
 /**
@@ -74,14 +81,19 @@ export const findMessagesByConversation = async (
 ) =>
   callAPI<IMessage[]>(
     `${MESSAGES_API}/${userId}/conversations/${conversationId}/messages`,
-    Requests.GET
+    Requests.GET,
+    'Error fetching messages. Try again later.'
   );
 
 /**
  * Finds all the messages sent by the specified user.
  */
 export const findAllMessagesSentByUser = async (userId: string) =>
-  callAPI<IMessage[]>(`${MESSAGES_API}/${userId}/messages/sent`, Requests.GET);
+  callAPI<IMessage[]>(
+    `${MESSAGES_API}/${userId}/messages/sent`,
+    Requests.GET,
+    'Error fetching messages. Try again later.'
+  );
 
 /**
  * Remove a message for a particular user by finding the message in the database,
@@ -94,7 +106,8 @@ export const findAllMessagesSentByUser = async (userId: string) =>
 export const deleteMessage = async (userId: string, messageId: string) =>
   callAPI<IMessage>(
     `${MESSAGES_API}/${userId}/messages/${messageId}`,
-    Requests.DELETE
+    Requests.DELETE,
+    'Error deleting message. Try again later.'
   );
 
 /**
@@ -109,5 +122,6 @@ export const deleteConversation = async (
 ) =>
   callAPI<IConversation>(
     `${MESSAGES_API}/${userId}/conversations/${conversationId}`,
-    Requests.DELETE
+    Requests.DELETE,
+    'Error deleting conversation. Try again later.'
   );

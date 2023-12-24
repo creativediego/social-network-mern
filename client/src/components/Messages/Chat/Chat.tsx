@@ -36,7 +36,7 @@ const Chat = () => {
             className='badge rounded-pill bg-light mx-1'
             key={participant.id}
           >
-            {participant.name || participant.firstName}
+            {participant.name}
           </span>
         ))}
       </p>

@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { FormInput } from '../../../forms';
+import { FormField } from '../../../forms';
 import useNewChatMessage from './useNewChatMessage';
 
 /**
@@ -10,7 +10,7 @@ const NewChatMessage = () => {
     useNewChatMessage();
   return (
     <form onSubmit={(e) => submitMessage(e)}>
-      <FormInput
+      <FormField
         {...messageFieldAttributes}
         cssClass='mt-4 w-100 border-0 border border-light'
         onChange={(e) => setMessage(e)}

@@ -7,7 +7,7 @@ import {
 } from '@reduxjs/toolkit';
 import { IConversation } from '../interfaces/IConversation';
 import { IMessage } from '../interfaces/IMessage';
-import * as messageAPI from '../services/messages-service';
+import * as messageAPI from '../services/messageAPI';
 import type { RootState } from './store';
 import { dataOrThrowError } from './helpers';
 

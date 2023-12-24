@@ -13,7 +13,7 @@ import {
   findNotifications,
   findUnreadNotifications,
   markNotificationAsRead,
-} from '../services/notifications-service';
+} from '../services/notificationAPI';
 import { INotification } from '../interfaces/INotification';
 import type { RootState } from './store';
 

@@ -1,72 +1,128 @@
-import React from 'react';
-import FormField from '../FormInput/FormField';
-import AvatarUpload from './AvatarUpload';
-import { ActionButton, Loader } from '../../components';
-import useUpdateProfile from './useUpdateProfile';
-import HeaderImageUpload from './HeaderImageUpload';
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import {
+  registerThunk,
+  selectAuthUserLoading,
+  selectIsProfileComplete,
+  updateUserThunk,
+} from '../../redux/userSlice';
+import { ReactHookFormInput } from '../';
+import {
+  UpdateProfileSchemaT,
+  UpdateProfileSchema,
+} from '../../types/UpdateProfileSchema';
+import { SignupSchema } from '../../types/SignupSchema';
+import { useAuthUser } from '../../hooks/useAuthUser';
+import {
+  ActionButton,
+  AvatarUpload,
+  HeaderImageUpload,
+} from '../../components';
+import { IUser } from '../../interfaces/IUser';
 
-/**
- * Displays the form to update user's profile, including fields and images. Uses custom hook to manage state and submit form.
- */
 interface UpdateProfileFormProps {
-  showOptional: boolean;
-  submitCallBack?: () => void;
+  user: IUser;
 }
-const UpdateProfileForm = ({
-  showOptional,
-  submitCallBack,
-}: UpdateProfileFormProps): JSX.Element => {
+
+const UpdateProfileForm = ({ user }: UpdateProfileFormProps): JSX.Element => {
+  const profileComplete = useAppSelector(selectIsProfileComplete);
+  const loading = useAppSelector(selectAuthUserLoading);
+  const dispatch = useAppDispatch();
   const {
-    loading,
-    inputFields,
-    setInputField,
-    user,
-    uploadProfileImage,
-    submitForm,
-  } = useUpdateProfile();
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<UpdateProfileSchemaT>({
+    resolver: zodResolver(UpdateProfileSchema),
+    mode: 'onBlur',
+  });
+
+  const onSubmit = async (data: UpdateProfileSchemaT) => {
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
+    dispatch(
+      updateUserThunk({
+        ...user,
+        username: data.username,
+        name: data.name,
+        bio: data.bio,
+        email: data.email,
+        password: data.password,
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (user) {
+      setValue('name', user.name);
+      setValue('username', user.username);
+      setValue('bio', user.bio);
+      setValue('email', user.email);
+    }
+  }, []);
+
   return (
-    <div>
+    <>
       <div className='mb-5 position-relative bg-white'>
-        {loading ? (
-          <div className='position-absolute top-30 bottom-50 start-50 end-50'>
-            <Loader loading={loading} size='fs-3' />
-          </div>
-        ) : (
-          <div>
-            <HeaderImageUpload
-              imageURL={user.headerImage}
-              uploadImage={uploadProfileImage}
-            />
-            <AvatarUpload
-              imageURL={user.profilePhoto}
-              uploadImage={uploadProfileImage}
-            />
-          </div>
-        )}
+        <div>
+          <HeaderImageUpload user={user} />
+          <AvatarUpload user={user} />
+        </div>
       </div>
-      {Object.values(inputFields).map((input) =>
-        input.name !== 'headerImage' &&
-        input.name !== 'profilePhoto' &&
-        (showOptional || (!showOptional && input.required)) ? (
-          <FormField
-            key={input.id}
-            {...input}
-            value={input.value}
-            onChange={setInputField}
+      <form onSubmit={handleSubmit(onSubmit)} className='form-container'>
+        <>
+          <ReactHookFormInput
+            label='Name'
+            id='name'
+            type='name'
+            register={register('name')}
+            error={errors}
           />
-        ) : null
-      )}
-      <ActionButton
-        submitAction={() => {
-          submitForm();
-          if (submitCallBack) {
-            submitCallBack();
-          }
-        }}
-        position={'right'}
-        loading={loading}
-      />
-    </div>
+          <ReactHookFormInput
+            label='Username'
+            id='username'
+            type='username'
+            register={register('username')}
+            error={errors}
+          />
+          <ReactHookFormInput
+            label='Bio'
+            id='bio'
+            type='bio'
+            register={register('bio')}
+            error={errors}
+          />
+
+          <ReactHookFormInput
+            label='Email'
+            id='email'
+            type='email'
+            register={register('email')}
+            error={errors}
+            disabled={user.registeredWithProvider}
+          />
+          <ReactHookFormInput
+            label='Password'
+            id='password'
+            type='password'
+            register={register('password')}
+            error={errors}
+            disabled={user.registeredWithProvider || !profileComplete}
+          />
+          <ReactHookFormInput
+            label='Confirm Password'
+            id='confirmPassword'
+            type='password'
+            register={register('confirmPassword')}
+            error={errors}
+            disabled={user.registeredWithProvider || !profileComplete}
+          />
+        </>
+        <ActionButton position={'right'} loading={loading} />
+      </form>
+    </>
   );
 };
 

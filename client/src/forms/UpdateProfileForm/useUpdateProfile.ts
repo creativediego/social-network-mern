@@ -4,11 +4,10 @@ import { FormFieldI } from '../../interfaces/FormFieldI';
 import { profileFieldsStore } from '../shared/profileFieldsStore';
 import { IUser } from '../../interfaces/IUser';
 import { updateUserThunk } from '../../redux/userSlice';
-import { firebaseUploadProfileImage } from '../../services/storage-service';
+import { firebaseUploadProfileImage } from '../../firebase/firebasestorageAPI';
 import { ImageTypes } from '../../interfaces/ImageTypes';
 import { setGlobalError } from '../../redux/alertSlice';
 import { FriendlyError } from '../../interfaces/IError';
-import { auth } from '../../services/firebase-config';
 
 const useUpdateProfile = () => {
   const mounted = useRef(false);

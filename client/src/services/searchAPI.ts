@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ISearchResults } from '../interfaces/ISearchResults';
-import { callAPI, Requests } from './api-helpers';
-import { loadRequestInterceptors } from './api-helpers';
+import { callAPI, Requests } from '../util/apiConfig';
+import { loadRequestInterceptors } from '../util/apiConfig';
 import { config } from '../config/appConfig';
 
 const SEARCH_API = `${config.apiURL}/search`;

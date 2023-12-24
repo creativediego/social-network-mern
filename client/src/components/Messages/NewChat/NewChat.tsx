@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ActionButton, Loader, PopupModal, Search } from '../..';
 import useToggleBoolean from '../../../hooks/useToggleBoolean';
 import { IUser } from '../../../interfaces/IUser';
-import { APIfindAllUsersByName } from '../../../services/users-service';
+import { APIfindAllUsersByName } from '../../../services/userAPI';
 import { useSearch } from '../../Search/useSearch';
 import { useNewChat } from './useNewChat';
 
@@ -55,7 +55,7 @@ const NewChat = () => {
               onClick={() => removeSelectedUser(user.id)}
               className='badge rounded-pill bg-primary btn'
             >
-              {user.name || user.firstName}
+              {user.name}
             </span>
           ))}
         </div>
@@ -91,7 +91,7 @@ const NewChat = () => {
                     className='btn p-1'
                     onClick={() => selectUsersForChat(user)}
                   >
-                    {user.name || user.firstName} @{user.username}
+                    {user.name} @{user.username}
                   </p>
                 </div>
               ))}

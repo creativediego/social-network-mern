@@ -6,31 +6,31 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { IPost } from '../interfaces/IPost';
-import { userDislikesPost, userLikesPost } from '../services/likes-service';
-import { uploadPostImage } from '../services/storage-service';
+import { APIuserDislikesPost, APIuserLikesPost } from '../services/likeAPI';
+import { uploadPostImage } from '../firebase/firebasestorageAPI';
 import {
   APIfindAllPosts,
   APIcreatePost,
   APIdeletePost,
   APIupdatePost,
-} from '../services/posts-service';
+} from '../services/postAPI';
 import { setGlobalError } from './alertSlice';
-import { dataOrThrowError } from './helpers';
 import {
-  updateDislikedPosts,
-  updateLikedPosts,
-  updateMyPosts,
   removeDislikedPost,
   removeLikedPost,
   removeMyPost,
+  updateDislikedPosts,
+  updateLikedPosts,
+  updateMyPosts,
 } from './profileSlice';
 import type { RootState } from './store';
 import { FriendlyError } from '../interfaces/IError';
+import { withErrorHandling } from './reduxErrorHandler';
 
 /**
  * Uses posts service to update state with all posts. Also keeps track of loading status of requests.
  */
-export const findAllPostsThunk = createAsyncThunk(
+const findAllPosts = createAsyncThunk(
   'posts/findAllPosts',
   async (data, ThunkAPI) => {
     const posts = await APIfindAllPosts();
@@ -41,7 +41,7 @@ export const findAllPostsThunk = createAsyncThunk(
 /**
  * Uses post service to crate a post and then makes another call to fetch all posts to update state.
  */
-export const createPostThunk = createAsyncThunk(
+const createPost = createAsyncThunk(
   'posts/createPost',
   async (
     {
@@ -52,7 +52,6 @@ export const createPostThunk = createAsyncThunk(
     ThunkAPI
   ) => {
     let resultPost = await APIcreatePost(userId, post);
-    resultPost = dataOrThrowError(resultPost, ThunkAPI.dispatch);
     if (imageFile) {
       try {
         const postImageURL = await uploadPostImage(imageFile, resultPost.id);
@@ -71,45 +70,44 @@ export const createPostThunk = createAsyncThunk(
 /**
  * Uses post service to delete a post and then makes another call to fetch all posts to update state.
  */
-export const deletePostThunk = createAsyncThunk(
+const deletePost = createAsyncThunk(
   'posts/deletePost',
   async (postId: string, ThunkAPI) => {
     const deletedPost = await APIdeletePost(postId);
-    // if (!deletedPost.error) {
-    //   ThunkAPI.dispatch(removePost(postId));
-    //   ThunkAPI.dispatch(removeMyPost(deletedPost));
-    //   ThunkAPI.dispatch(removeLikedPost(deletedPost));
-    //   ThunkAPI.dispatch(removeDislikedPost(deletedPost));
-    // }
+    ThunkAPI.dispatch(removePost(postId));
+    ThunkAPI.dispatch(removeMyPost(deletedPost));
+    ThunkAPI.dispatch(removeLikedPost(deletedPost));
+    ThunkAPI.dispatch(removeDislikedPost(deletedPost));
+
     return deletedPost;
   }
 );
 
-export const userLikesPostThunk = createAsyncThunk(
+const userLikesPost = createAsyncThunk(
   'posts/userLikesPost',
   async (postId: string, ThunkAPI) => {
     const state = ThunkAPI.getState() as RootState;
     const userId = state.user.data.id;
-    const likedPost = await userLikesPost(userId, postId);
+    const likedPost = await APIuserLikesPost(userId, postId);
     ThunkAPI.dispatch(updateLikedPosts(likedPost));
     ThunkAPI.dispatch(updateMyPosts(likedPost));
     return likedPost;
   }
 );
 
-export const userDislikesPostThunk = createAsyncThunk(
+const userDislikesPost = createAsyncThunk(
   'posts/userDislikesPost',
   async (postId: string, ThunkAPI) => {
     const state = ThunkAPI.getState() as RootState;
     const userId = state.user.data.id;
-    const dislikedPost = await userDislikesPost(userId, postId);
+    const dislikedPost = await APIuserDislikesPost(userId, postId);
     ThunkAPI.dispatch(updateDislikedPosts(dislikedPost));
     ThunkAPI.dispatch(updateMyPosts(dislikedPost));
     return dislikedPost;
   }
 );
 
-export interface PostsState {
+interface PostsState {
   byAllUsers: IPost[];
   loading: boolean;
 }
@@ -144,60 +142,60 @@ const postSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(findAllPostsThunk.pending, (state) => {
+    builder.addCase(findAllPosts.pending, (state) => {
       state.loading = true;
     });
     builder.addCase(
-      findAllPostsThunk.fulfilled,
+      findAllPosts.fulfilled,
       (state, action: PayloadAction<IPost[]>) => {
         state.loading = false;
         postAdapter.setAll(state, action.payload);
       }
     );
-    builder.addCase(findAllPostsThunk.rejected, (state) => {
+    builder.addCase(findAllPosts.rejected, (state) => {
       state.loading = false;
     });
-    builder.addCase(createPostThunk.pending, (state) => {
+    builder.addCase(createPost.pending, (state) => {
       state.loading = true;
     });
     builder.addCase(
-      createPostThunk.fulfilled,
+      createPost.fulfilled,
       (state, action: PayloadAction<IPost>) => {
         state.loading = false;
         postAdapter.upsertOne(state, action.payload);
       }
     );
-    builder.addCase(createPostThunk.rejected, (state) => {
+    builder.addCase(createPost.rejected, (state) => {
       state.loading = false;
     });
-    builder.addCase(deletePostThunk.pending, (state) => {
+    builder.addCase(deletePost.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(deletePostThunk.fulfilled, (state) => {
+    builder.addCase(deletePost.fulfilled, (state) => {
       state.loading = false;
     });
-    builder.addCase(deletePostThunk.rejected, (state) => {
+    builder.addCase(deletePost.rejected, (state) => {
       state.loading = false;
     });
     builder.addCase(
-      userLikesPostThunk.fulfilled,
+      userLikesPost.fulfilled,
       (state, action: PayloadAction<IPost>) => {
         state.loading = false;
         postAdapter.upsertOne(state, action.payload);
       }
     );
-    builder.addCase(userLikesPostThunk.rejected, (state) => {
+    builder.addCase(userLikesPost.rejected, (state) => {
       state.loading = false;
     });
 
     builder.addCase(
-      userDislikesPostThunk.fulfilled,
+      userDislikesPost.fulfilled,
       (state, action: PayloadAction<IPost>) => {
         state.loading = false;
         postAdapter.upsertOne(state, action.payload);
       }
     );
-    builder.addCase(userDislikesPostThunk.rejected, (state) => {
+    builder.addCase(userDislikesPost.rejected, (state) => {
       state.loading = false;
     });
   },
@@ -222,3 +220,9 @@ export const {
   setAllPosts,
 } = postSlice.actions;
 export default postSlice.reducer;
+
+export const findAllPostsThunk = withErrorHandling(findAllPosts);
+export const createPostThunk = withErrorHandling(createPost);
+export const deletePostThunk = withErrorHandling(deletePost);
+export const userLikesPostThunk = withErrorHandling(userLikesPost);
+export const userDislikesPostThunk = withErrorHandling(userDislikesPost);

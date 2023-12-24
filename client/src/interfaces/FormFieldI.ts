@@ -1,3 +1,4 @@
+// Based on HTML input element attributes
 export interface FormFieldI {
   [key: string]: {
     id: string;

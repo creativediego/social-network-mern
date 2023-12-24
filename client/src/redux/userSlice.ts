@@ -14,12 +14,12 @@ import {
   AUTHlogout,
   AUTHregister,
   getProfile,
-} from '../services/auth-service';
-import { withErrorHandling } from './errorHandler';
+} from '../services/authAPI';
+import { withErrorHandling } from './reduxErrorHandler';
 import {
   clearLocalAuthToken,
   getLocalAuthToken,
-} from '../services/api-helpers';
+} from '../util/tokenManagement';
 import * as socketService from './redux-socket-service';
 import { IUser } from '../interfaces/IUser';
 import { INotification } from '../interfaces/INotification';
@@ -27,7 +27,8 @@ import type { RootState } from './store';
 import { setSuccessAlert } from './alertSlice';
 import { clearProfile } from './profileSlice';
 import { clearChat } from './chatSlice';
-import { APIupdateUser } from '../services/users-service';
+import { APIupdateUser } from '../services/userAPI';
+import { firebaseUploadFile } from '../firebase/firebasestorageAPI';
 
 /**
  * Updates redux state with user profile after calling getProfile from user service.
@@ -41,12 +42,12 @@ const fetchProfile = createAsyncThunk(
       if (!constLocalToken) {
         return false;
       }
-
       const profile = await getProfile();
       const profileComplete = isProfileComplete(profile);
-      // if (!state.user.socketConnected) {
-      //   socketService.enableListeners(ThunkAPI.dispatch);
-      // }
+      const state = ThunkAPI.getState() as RootState;
+      if (!state.user.socketConnected) {
+        socketService.enableListeners(ThunkAPI.dispatch);
+      }
       return { profile, profileComplete };
     } catch (err) {
       ThunkAPI.dispatch(clearUser());
@@ -101,6 +102,14 @@ const logout = createAsyncThunk('users/logout', async (_: void, ThunkAPI) => {
   socketService.disconnect();
 });
 
+const uploadAvatar = createAsyncThunk(
+  'users/uploadAvatar',
+  async ({ file, path }: { file: File; path: string }, ThunkAPI) => {
+    const imageURL = await firebaseUploadFile(path, file);
+    return imageURL;
+  }
+);
+
 /**
  * Calls updateUser service to update user and then update state with the user.
  */
@@ -131,7 +140,6 @@ const initialUser: IUser = {
   id: '',
   username: '',
   name: '',
-  firstName: '',
   email: '',
   bio: '',
   headerImage: '',
@@ -270,6 +278,21 @@ const userSlice = createSlice({
     builder.addCase(loginWithGoogle.rejected, (state) => {
       state.loading = false;
     });
+
+    builder.addCase(uploadAvatar.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(
+      uploadAvatar.fulfilled,
+      (state, action: PayloadAction<string>) => {
+        state.loading = false;
+        state.data.profilePhoto = action.payload;
+      }
+    );
+
+    builder.addCase(uploadAvatar.rejected, (state) => {
+      state.loading = false;
+    });
   },
 });
 
@@ -308,5 +331,6 @@ export const loginThunk = withErrorHandling(login);
 export const loginWithGoogleThunk = withErrorHandling(loginWithGoogle);
 export const logoutThunk = withErrorHandling(logout);
 export const updateUserThunk = withErrorHandling(updateUser);
+export const uploadAvatarThunk = withErrorHandling(uploadAvatar);
 
 export default userSlice.reducer;

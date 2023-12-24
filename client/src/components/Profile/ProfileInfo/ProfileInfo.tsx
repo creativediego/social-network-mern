@@ -6,6 +6,7 @@ import useToggleBoolean from '../../../hooks/useToggleBoolean';
 import PopupModal from '../../PopupModal/PopupModal';
 import FollowButton from '../../FollowButton/FollowButton';
 import { IUser } from '../../../interfaces/IUser';
+import { useAuthUser } from '../../../hooks/useAuthUser';
 
 interface ProfileInfoProps {
   profileUser: IUser;
@@ -24,7 +25,7 @@ const ProfileInfo = ({
       {profileUser && !loading && (
         <>
           <h5 className='p-2 mb-0 pb-0 fw-bolder'>
-            {profileUser.name || profileUser.firstName}
+            {profileUser.name}
             <i className='fa fa-badge-check text-primary'></i>
           </h5>
           {/* <span className='ps-2'>{user.postCount} Posts</span> */}
@@ -55,7 +56,7 @@ const ProfileInfo = ({
                   size='lg'
                   closeButton={true}
                 >
-                  <UpdateProfileForm showOptional={true} />
+                  <UpdateProfileForm user={profileUser} />
                 </PopupModal>
               </span>
             )}
@@ -63,7 +64,7 @@ const ProfileInfo = ({
 
           <div className='p-2'>
             <h5 className='fw-bolder pb-0 mb-0'>
-              {profileUser.name || profileUser.firstName}
+              {profileUser.name}
               <i className='fa fa-badge-check text-primary'></i>
             </h5>
             <h6 className='pt-0'>{`@${profileUser.username}`}</h6>

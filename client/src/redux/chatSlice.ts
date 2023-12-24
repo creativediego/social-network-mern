@@ -9,7 +9,7 @@ import { IConversation } from '../interfaces/IConversation';
 import { IMessage } from '../interfaces/IMessage';
 import { IUser } from '../interfaces/IUser';
 import { dataOrThrowError as getDataOrError } from './helpers';
-import * as messageAPI from '../services/messages-service';
+import * as messageAPI from '../services/messageAPI';
 import type { RootState } from './store';
 
 /**

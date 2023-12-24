@@ -36,22 +36,13 @@ const Post = ({ post }: PostProps): JSX.Element => {
             <div className='w-100'>
               <div className='d-flex justify-content-between'>
                 <div>
-                  {/* {user.id === post.author.id ? ( // only delete if post belongs to user
-                <i
-                  onClick={() => handleDeletePost(post.id)}
-                  className='fa-duotone fa-trash-xmark btn fa-2x fa-pull-right fs-6 text-dark'
-                ></i>
-              ) : null} */}
                   <p className='fw-bold ttr-post-title'>
-                    {/* {post.author && post.author.name} */}
                     {/* This link and the one above will naviagate a user's the profile page for the user who posted this post.  */}
                     <Link
                       to={`/${post.author.username}/posts`}
                       className='text-decoration-none'
                     >
-                      {`${post.author.name || post.author.firstName} @${
-                        post.author.username
-                      } `}
+                      {`${post.author.name} @${post.author.username} `}
                     </Link>
                     <span className='text-dark'>
                       {moment(post.createdAt).fromNow()}

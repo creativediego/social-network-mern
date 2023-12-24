@@ -35,13 +35,13 @@ export const useAlert = () => {
     dispatch(clearAll());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (error.message || success.message) {
-      setTimeout(() => {
-        dispatch(clearAll());
-      }, 9000);
-    }
-  }, [error, success, dispatch]);
+  // useEffect(() => {
+  //   if (error.message || success.message) {
+  //     setTimeout(() => {
+  //       dispatch(clearAll());
+  //     }, 9000);
+  //   }
+  // }, [error, success, dispatch]);
 
   return {
     error,

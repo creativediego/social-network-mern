@@ -1,14 +1,13 @@
 import React, { useEffect } from 'react';
 import { AlertBox, PopupModal } from '../../components';
-import UpdateProfileForm from '../../forms/UpdateProfileForm/UpdateProfileForm';
 import { Button } from 'react-bootstrap';
-import { SignupForm } from '../../forms';
-import { LoginForm } from '../../forms';
+import { SignupForm, LoginForm, UpdateProfileForm } from '../../forms';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { clearUser, loginWithGoogleThunk } from '../../redux/userSlice';
 import useToggleBoolean from '../../hooks/useToggleBoolean';
 import { useAlert } from '../../hooks/useAlert';
 import AppConfig from '../../config';
+import { useAuthUser } from '../../hooks/useAuthUser';
 
 const LoginPage = () => {
   const isLoggedIn = useAppSelector((state) => state.user.isLoggedIn);
@@ -19,6 +18,7 @@ const LoginPage = () => {
   const [showLoginModal, setShowLoginModal] = useToggleBoolean(false);
   const [showUpdateProfileModal, setShowUpdateProfileModal] =
     useToggleBoolean(true);
+  const { user } = useAuthUser();
   // Clears user session if user closes the complete signup modal.
   useEffect(() => {
     if (!showUpdateProfileModal) {
@@ -57,7 +57,7 @@ const LoginPage = () => {
               setShow={setShowUpdateProfileModal}
               size='lg'
             >
-              <UpdateProfileForm showOptional={false} />
+              <UpdateProfileForm user={user} />
             </PopupModal>
           )}
         </div>

@@ -8,7 +8,6 @@ import {
 } from '../../redux/profileSlice';
 
 export const useFollow = (userId: string) => {
-  console.log('useProfile rendered');
   const dispatch = useAppDispatch();
   const { user: authUser } = useAuthUser();
   const loading = useAppSelector(selectProfileLoading);

@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormFieldI } from '../../interfaces/FormFieldI';
+import { setGlobalError } from '../../redux/alertSlice';
+import { useAppDispatch } from '../../redux/hooks';
 
 interface useFormProps {
-  inputFields: FormFieldI;
-  submitAction: () => void;
+  initialValues: FormFieldI;
+  onSubmit: (values: FormFieldI) => Promise<void>;
 }
 
-const useForm = ({ inputFields, submitAction }: useFormProps) => {
-  const [fields, setFields] = useState<FormFieldI>({ ...inputFields });
+const useForm = ({ initialValues, onSubmit }: useFormProps) => {
+  const dispatch = useAppDispatch();
+  const [fields, setFields] = useState<FormFieldI>({ ...initialValues });
 
   const addField = (newField: FormFieldI) => {
     setFields((prevState) => ({
@@ -30,7 +33,10 @@ const useForm = ({ inputFields, submitAction }: useFormProps) => {
   const isFormValid = () => {
     for (const field of Object.values(fields)) {
       const regexPattern = new RegExp(field.pattern);
-      if (!regexPattern.test(field.value)) return false;
+      if (!regexPattern.test(field.value)) {
+        dispatch(setGlobalError({ message: field.errorMessage }));
+        return false;
+      }
     }
     return true;
   };
@@ -39,7 +45,7 @@ const useForm = ({ inputFields, submitAction }: useFormProps) => {
     if (!isFormValid()) {
       return;
     }
-    submitAction();
+    onSubmit(fields);
   };
 
   return { fields, setField, addField, submitForm };

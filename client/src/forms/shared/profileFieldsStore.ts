@@ -2,7 +2,7 @@ import { FormFieldI } from '../../interfaces/FormFieldI';
 
 export const profileFieldsStore: FormFieldI = {
   name: {
-    id: '0',
+    id: 'name',
     name: 'name',
     type: 'text',
     placeholder: 'name',
@@ -15,7 +15,7 @@ export const profileFieldsStore: FormFieldI = {
     readOnly: false,
   },
   username: {
-    id: '1',
+    id: 'username',
     name: 'username',
     type: 'text',
     placeholder: 'username (required)',
@@ -28,7 +28,7 @@ export const profileFieldsStore: FormFieldI = {
     readOnly: false,
   },
   email: {
-    id: '2',
+    id: 'email',
     name: 'email',
     type: 'text',
     placeholder: 'email',
@@ -40,7 +40,7 @@ export const profileFieldsStore: FormFieldI = {
     readOnly: false,
   },
   bio: {
-    id: '4',
+    id: 'bio',
     name: 'bio',
     type: 'text',
     placeholder: 'bio (optional)',
@@ -52,7 +52,7 @@ export const profileFieldsStore: FormFieldI = {
     readOnly: false,
   },
   headerImage: {
-    id: '5',
+    id: 'headerImage',
     name: 'headerImage',
     type: 'file',
     placeholder: '',
@@ -64,7 +64,7 @@ export const profileFieldsStore: FormFieldI = {
     readOnly: false,
   },
   profilePhoto: {
-    id: '6',
+    id: 'profilePhoto',
     name: 'profilePhoto',
     type: 'file',
     placeholder: '',
@@ -76,7 +76,7 @@ export const profileFieldsStore: FormFieldI = {
     readOnly: false,
   },
   password: {
-    id: '7',
+    id: 'password',
     name: 'password',
     type: 'password',
     placeholder: 'password',
@@ -89,14 +89,14 @@ export const profileFieldsStore: FormFieldI = {
     readOnly: false,
   },
   confirmPassword: {
-    id: '8',
+    id: 'confirmPassword',
     name: 'confirmPassword',
     type: 'password',
     placeholder: 'confirm password',
     errorMessage: "Passwords don't match!",
     label: 'confirm password',
     required: false,
-    pattern: '',
+    pattern: 'password',
     value: '',
     readOnly: false,
   },
