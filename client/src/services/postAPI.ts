@@ -1,14 +1,9 @@
-import axios from 'axios';
 import { IPost } from '../interfaces/IPost';
 import { Requests, callAPI } from '../util/apiConfig';
-import { loadRequestInterceptors } from '../util/apiConfig';
 import { config } from '../config/appConfig';
 
 const TUITS_API = `${config.apiURL}/posts`;
 const USERS_API = `${config.apiURL}/users`;
-
-const api = axios.create();
-api.interceptors.request.use(loadRequestInterceptors);
 
 export const APIfindAllPostsByKeyword = (keyword: string) =>
   callAPI<IPost[]>(

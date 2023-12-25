@@ -15,11 +15,11 @@ export const isError = (value: any): value is FriendlyError => {
 };
 
 export const handleError = <T>(errorMessage?: string) => {
-  return (error: AxiosError<IGlobalError>): T => {
+  return (error: AxiosError): T => {
     if (!error.response) {
       throw new Error('Network Error');
     }
-    logError(error.response.data || { message: error.message });
+    logError(error.response.data.error || { message: error.response.data });
     throw new Error(
       errorMessage || error.response.data.message || 'Unknown Error'
     );

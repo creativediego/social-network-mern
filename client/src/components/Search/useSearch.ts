@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { FriendlyError, IGlobalError } from '../../interfaces/IError';
 import { setGlobalError } from '../../redux/alertSlice';
 import { useAppDispatch } from '../../redux/hooks';
-import { isError } from '../../util/errorHandling';
+import { isError } from '../../util/apiErrorHandling';
 
 export const useSearch = <T>(
   APICall: (searchValue: string) => Promise<T | IGlobalError>,

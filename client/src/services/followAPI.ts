@@ -1,13 +1,10 @@
-import axios from 'axios';
-import { Requests, callAPI, loadRequestInterceptors } from '../util/apiConfig';
+import { Requests, callAPI } from '../util/apiConfig';
 import { config } from '../config/appConfig';
 import IFollow from '../interfaces/IFollow';
 import { IUser } from '../interfaces/IUser';
 
 const USERS_API = `${config.apiURL}/users`;
 
-const api = axios.create();
-api.interceptors.request.use(loadRequestInterceptors);
 // This service exposes operations relating to the follows resource, by calling the backend Follows API
 
 // Create a Follows object encompassing the relationship between the given users

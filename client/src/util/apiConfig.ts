@@ -1,7 +1,7 @@
-import axios from 'axios';
-import { FriendlyError } from '../interfaces/IError';
-import { handleError, logError } from './errorHandling';
+import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
+import { handleError } from './apiErrorHandling';
 
+// Specify the HTTP methods that can be used.
 export enum Requests {
   GET = 'get',
   POST = 'post',
@@ -9,19 +9,30 @@ export enum Requests {
   DELETE = 'delete',
 }
 
-const api = axios.create();
+const API = axios.create();
 
-export const setHeaders = function (config: any) {
+/**
+ * Sets the authorization header for the request by getting the token from local storage and adding it to the request headers.
+ * @param config the config object for the request
+ * @returns the config object with the authorization header set
+ */
+export const setHeaders = function (
+  config: AxiosRequestConfig
+): AxiosRequestConfig {
   const token = localStorage.getItem('token');
-  config.headers.authorization = `Bearer ${token}`;
+
+  if (config.headers) {
+    config.headers.authorization = `Bearer ${token}`;
+  } else {
+    config.headers = {
+      authorization: `Bearer ${token}`,
+    };
+  }
+
   return config;
 };
 
-export const loadRequestInterceptors = function (config: any) {
-  setHeaders(config);
-  return config;
-};
-api.interceptors.request.use(loadRequestInterceptors);
+API.interceptors.request.use(setHeaders);
 
 /**
  *  Call the API with the given parameters. If the call fails, throw a FriendlyError.
@@ -37,10 +48,10 @@ export const callAPI = <T, U = undefined>(
   errorMessage?: string,
   data?: U
 ): Promise<T> =>
-  api({
+  API({
     method,
     url,
     data,
   })
-    .then((response) => response.data)
+    .then((response: AxiosResponse) => response.data)
     .catch(handleError(errorMessage));

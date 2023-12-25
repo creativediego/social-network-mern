@@ -1,14 +1,10 @@
-import axios from 'axios';
 import { IConversation } from '../interfaces/IConversation';
 import { IMessage } from '../interfaces/IMessage';
-import { loadRequestInterceptors, callAPI, Requests } from '../util/apiConfig';
+import { callAPI, Requests } from '../util/apiConfig';
 import { config } from '../config/appConfig';
 
 const MESSAGES_API = `${config.apiURL}/users`;
 
-const api = axios.create();
-// api.defaults.headers.common['authorization'] = localStorage.getItem('token');
-api.interceptors.request.use(loadRequestInterceptors);
 /**
  * Create a new message for an existing conversation by using the existing
  * id of the conversation this message belongs to. Also interact with the

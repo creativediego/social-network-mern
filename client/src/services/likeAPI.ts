@@ -1,5 +1,4 @@
-import axios from 'axios';
-import { Requests, callAPI, loadRequestInterceptors } from '../util/apiConfig';
+import { Requests, callAPI } from '../util/apiConfig';
 import { config } from '../config/appConfig';
 import { IPost } from '../interfaces/IPost';
 
@@ -7,9 +6,6 @@ const BASE_URL = config.apiURL;
 const USERS_API = `${BASE_URL}/users`;
 const TUITS_API = `${BASE_URL}/posts`;
 
-const api = axios.create();
-// api.defaults.headers.common['Authorization'] = localStorage.getItem('token');
-api.interceptors.request.use(loadRequestInterceptors);
 export const APIfindAllPostsLikedByUser = (userId: string) =>
   callAPI<IPost[]>(
     `${USERS_API}/${userId}/likes`,

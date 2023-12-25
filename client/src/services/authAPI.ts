@@ -1,7 +1,5 @@
-import axios from 'axios';
 import { IUser } from '../interfaces/IUser';
 import { Requests, callAPI } from '../util/apiConfig';
-import { loadRequestInterceptors } from '../util/apiConfig';
 import { config } from '../config/appConfig';
 import {
   fireBaseRegisterUser,
@@ -12,10 +10,6 @@ import {
 } from '../firebase/firebaseAuthAPI';
 
 const SECURITY_API = config.authApi;
-
-const api = axios.create();
-// api.defaults.headers.common['authorization'] = localStorage.getItem('token');
-api.interceptors.request.use(loadRequestInterceptors);
 
 export const AUTHregister = async (email: string, password: string) =>
   await fireBaseRegisterUser(email, password);

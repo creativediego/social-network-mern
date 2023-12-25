@@ -1,72 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { registerThunk, selectAuthUserLoading } from '../../redux/userSlice';
-import { FormFieldI } from '../../interfaces/FormFieldI';
-import { profileFieldsStore } from '../shared/profileFieldsStore';
-import { useAlert } from '../../hooks/useAlert';
+import {
+  registerThunk,
+  selectAuthUserLoading,
+  selectIsLoggedIn,
+  selectIsProfileComplete,
+} from '../../redux/userSlice';
+import { SignupSchemaT, SignupSchema } from '../../types/SignupSchema';
 
-const useSignupForm = () => {
+export const useSignUpForm = () => {
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
+  const profileComplete = useAppSelector(selectIsProfileComplete);
   const dispatch = useAppDispatch();
   const loading = useAppSelector(selectAuthUserLoading);
-  const [fields, setFields] = useState<FormFieldI>({
-    email: profileFieldsStore['email'],
-    password: profileFieldsStore['password'],
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignupSchemaT>({
+    resolver: zodResolver(SignupSchema),
+    mode: 'onBlur',
   });
 
-  const { setError } = useAlert();
-
-  useEffect(() => {
-    setFields((prevState) => ({
-      ...prevState,
-      confirmPassword: {
-        id: '3',
-        name: 'confirmPassword',
-        type: 'password',
-        placeholder: 'confirm password',
-        errorMessage: "Passwords don't match!",
-        label: 'confirm password',
-        required: true,
-        pattern: fields.password.value,
-        value: '',
-        readOnly: false,
-      },
-    }));
-  }, [fields.password.value]);
-
-  const setField = (e: React.FormEvent<HTMLInputElement>) => {
-    const field: HTMLInputElement = e.currentTarget;
-    setFields((prevState) => ({
-      ...prevState,
-      [field.name]: {
-        ...prevState[field.name],
-        value: field.value,
-      },
-    }));
+  const onSubmit = async (data: SignupSchemaT) => {
+    dispatch(registerThunk({ email: data.email, password: data.password }));
   };
 
-  const isFormValid = () => {
-    for (const field of Object.values(fields)) {
-      const regexPattern = new RegExp(field.pattern);
-      if (!regexPattern.test(field.value)) {
-        setError({ message: field.errorMessage });
-        return false;
-      }
-    }
-    return true;
+  const submitForm = (event: React.FormEvent) => {
+    event.preventDefault();
+    handleSubmit(onSubmit)();
   };
-
-  const submitForm = () => {
-    if (!isFormValid()) {
-      return;
-    }
-    dispatch(
-      registerThunk({
-        email: fields.email.value,
-        password: fields.password.value,
-      })
-    );
+  return {
+    completeSignup: !profileComplete && isLoggedIn,
+    loading,
+    submitForm,
+    register,
+    errors,
   };
-  return { fields, setField, submitForm, loading };
 };
-
-export default useSignupForm;
