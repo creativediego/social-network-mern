@@ -86,9 +86,7 @@ const deletePost = createAsyncThunk(
 const userLikesPost = createAsyncThunk(
   'posts/userLikesPost',
   async (postId: string, ThunkAPI) => {
-    const state = ThunkAPI.getState() as RootState;
-    const userId = state.user.data.id;
-    const likedPost = await APIuserLikesPost(userId, postId);
+    const likedPost = await APIuserLikesPost(postId);
     ThunkAPI.dispatch(updateLikedPosts(likedPost));
     ThunkAPI.dispatch(updateMyPosts(likedPost));
     return likedPost;
@@ -98,9 +96,7 @@ const userLikesPost = createAsyncThunk(
 const userDislikesPost = createAsyncThunk(
   'posts/userDislikesPost',
   async (postId: string, ThunkAPI) => {
-    const state = ThunkAPI.getState() as RootState;
-    const userId = state.user.data.id;
-    const dislikedPost = await APIuserDislikesPost(userId, postId);
+    const dislikedPost = await APIuserDislikesPost(postId);
     ThunkAPI.dispatch(updateDislikedPosts(dislikedPost));
     ThunkAPI.dispatch(updateMyPosts(dislikedPost));
     return dislikedPost;
@@ -131,6 +127,7 @@ const postSlice = createSlice({
         changes: action.payload,
       });
     },
+
     removeAllPosts: (state) => {
       postAdapter.removeAll(state);
     },
@@ -177,6 +174,9 @@ const postSlice = createSlice({
     builder.addCase(deletePost.rejected, (state) => {
       state.loading = false;
     });
+    builder.addCase(userLikesPost.pending, (state) => {
+      state.loading = true;
+    });
     builder.addCase(
       userLikesPost.fulfilled,
       (state, action: PayloadAction<IPost>) => {
@@ -215,6 +215,7 @@ export const {
   removeAllPosts,
   removePost,
   updatePosts,
+
   addPost,
   selectPost,
   setAllPosts,

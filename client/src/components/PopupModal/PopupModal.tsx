@@ -6,10 +6,13 @@ interface PopupModalProps {
   title: string | JSX.Element;
   show: boolean;
   size: 'sm' | 'lg';
-  setShow: () => void;
+  closeModal: () => void;
+  action?: () => void;
+  actionLabel?: string;
   locked?: boolean;
   children?: React.ReactNode;
-  closeButton?: boolean;
+  withClose?: boolean;
+  loading?: boolean;
 }
 /**
  * A dismissible popup modal with  a title, content, and submit action customizable via props.
@@ -18,14 +21,14 @@ const PopupModal: React.FC<PopupModalProps> = ({
   title,
   show,
   size,
-  setShow,
   locked,
-  closeButton,
+  withClose,
+  actionLabel,
+  loading,
   children,
+  closeModal,
+  action,
 }) => {
-  const handleShow = (): void => {
-    setShow();
-  };
   return (
     <Modal
       id='modal'
@@ -35,7 +38,7 @@ const PopupModal: React.FC<PopupModalProps> = ({
       aria-describedby='modal_body'
       size={size}
       show={show}
-      onHide={handleShow}
+      onHide={closeModal}
       backdrop={locked ? 'static' : true}
     >
       <Modal.Header closeButton={locked ? false : true}>
@@ -43,12 +46,21 @@ const PopupModal: React.FC<PopupModalProps> = ({
       </Modal.Header>
       <Modal.Body id='modal_body'>{children && children}</Modal.Body>
       <ModalFooter>
-        {closeButton && (
+        {withClose && (
           <ActionButton
             position='right'
             color='secondary'
-            submitAction={setShow}
+            submitAction={closeModal}
             label='Close'
+          />
+        )}
+        {action && (
+          <ActionButton
+            position='right'
+            color='primary'
+            label={actionLabel ? actionLabel : 'Submit'}
+            submitAction={action}
+            loading={loading}
           />
         )}
       </ModalFooter>

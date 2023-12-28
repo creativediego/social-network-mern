@@ -14,6 +14,7 @@ import INotification from '../../models/notifications/INotification';
 import { NotificationType } from '../../models/notifications/NotificationType';
 import { ISocketService } from '../../services/ISocketService';
 import IUser from '../../models/users/IUser';
+import ILike from '../../models/likes/ILike';
 
 /**
  * Represents the implementation of an ILikeController interface for handling the likes resource api.
@@ -55,13 +56,12 @@ export default class LikeController implements ILikeController {
       adaptRequest(this.findAllUsersByPostLike)
     );
     router.post(
-      '/users/:userId/posts/:postId/likes',
+      '/posts/:postId/likes',
       isAuthenticated,
-
       adaptRequest(this.userLikesPost)
     );
     router.post(
-      '/users/:userId/posts/:postId/dislikes',
+      '/posts/:postId/dislikes',
       isAuthenticated,
       adaptRequest(this.userDislikesPost)
     );
@@ -76,7 +76,7 @@ export default class LikeController implements ILikeController {
   userLikesPost = async (req: HttpRequest): Promise<HttpResponse> => {
     const userId = req.user.id;
     const postId = req.params.postId;
-    const existingLike: any = await this.likeDao.findLike(userId, postId);
+    const existingLike = await this.likeDao.findLike(userId, postId);
     const existingDislike = await this.likeDao.findDislike(userId, postId);
 
     if (existingLike) {

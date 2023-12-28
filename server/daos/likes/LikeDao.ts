@@ -42,6 +42,7 @@ export class LikeDao implements ILikeDao {
         user: userId,
         post: postId,
       });
+      // Increment the likes count and add the user to the likedBy array.
       const updatedPost = await this.postModel
         .findOneAndUpdate(
           { _id: postId },

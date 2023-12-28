@@ -28,5 +28,5 @@ export const getProfile = () =>
   callAPI<IUser>(
     `${SECURITY_API}/profile`,
     Requests.GET,
-    'Error getting profile. Try again later.'
+    'Error getting profile. Try again logging in again.'
   );

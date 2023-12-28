@@ -52,9 +52,9 @@ const ProfileInfo = ({
                 <PopupModal
                   title='Update Profile'
                   show={showEditProfile}
-                  setShow={setShowEditProfile}
+                  closeModal={setShowEditProfile}
                   size='lg'
-                  closeButton={true}
+                  withClose={true}
                 >
                   <UpdateProfileForm user={profileUser} />
                 </PopupModal>

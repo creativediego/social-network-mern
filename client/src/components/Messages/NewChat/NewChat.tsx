@@ -40,7 +40,7 @@ const NewChat = () => {
       <PopupModal
         title='Start a new chat'
         size='sm'
-        setShow={toggleModal}
+        closeModal={toggleModal}
         show={showModal}
       >
         <Search

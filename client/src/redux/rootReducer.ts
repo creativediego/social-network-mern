@@ -7,6 +7,7 @@ import messageReducer from './chatSlice';
 import notificationsReducer from './notificationSlice';
 import messagesInboxReducer from './messageInboxSlice';
 import chatReducer from './chatSlice';
+import modalReducer from './modalSlice';
 
 export const rootReducer = combineReducers({
   alert: alertReducer,
@@ -17,4 +18,5 @@ export const rootReducer = combineReducers({
   notifications: notificationsReducer,
   messagesInbox: messagesInboxReducer,
   chat: chatReducer,
+  modal: modalReducer,
 });

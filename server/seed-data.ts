@@ -30,10 +30,19 @@ const getRandomImageURLs = (gender: string, quantity: number) => {
 
 function newRandomDateWithinThisYear() {
   const start = new Date(new Date().getFullYear(), 0, 1);
-  const end = new Date(new Date().getFullYear(), 11, 31);
-  return new Date(
-    start.getTime() + Math.random() * (end.getTime() - start.getTime())
-  );
+  const end = new Date(); // Current date and time
+
+  // Adjust end date to prevent generating dates beyond current time
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth();
+  const currentDate = new Date().getDate();
+  end.setFullYear(currentYear, currentMonth, currentDate);
+
+  const randomTime =
+    start.getTime() + Math.random() * (end.getTime() - start.getTime());
+  const randomDate = new Date(randomTime);
+
+  return randomDate;
 }
 
 const randomMenProfilePhotos = getRandomImageURLs('men', 100);
@@ -96,19 +105,6 @@ const profiles = [
     bio: 'I am a social media manager who helps businesses build their online presence and connect with their customers. In my free time, I enjoy dancing, cooking, and watching reality TV shows.',
     birthday: '2000-05-05',
     profilePhoto: randomWomenProfilePhotos[2],
-  },
-
-  {
-    email: 'creativehtml5@gmail.com',
-    password: 'pass123!',
-    bio: 'I am a fullstack developer who loves developing creative solutions!',
-    birthday: '1980-01-01',
-    name: 'Fullstack Developer',
-    profilePhoto: randomMenProfilePhotos[3],
-    username: 'fullstackhouse',
-    headerImage:
-      'https://firebasestorage.googleapis.com/v0/b/tuiter-2e307.appspot.com/o/users%2FXxgohUN2Uudo83BEZwgrXA1J76E3%2Fprofile%2FXxgohUN2Uudo83BEZwgrXA1J76E3-header?alt=media&token=b5448fae-b14e-4857-b9ad-10a50c0e824a',
-    registeredWithProvider: true,
   },
 ];
 

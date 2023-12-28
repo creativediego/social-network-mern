@@ -5,6 +5,7 @@ import { UnauthorizedException } from './UnauthorizedException';
 import { ForbiddenException } from './ForbiddenException';
 import { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier';
 import IUser from '../../models/users/IUser';
+import { getUserByFirebaseUID } from './getUserByFirebaseUID';
 
 dotenv.config();
 
@@ -29,13 +30,29 @@ export const isAuthenticated = async (
       );
     }
 
+    // Get user from database
+    const dbUser = await getUserByFirebaseUID(decoded.uid);
+
+    if (!dbUser) {
+      const decodedUser: IUser = {
+        uid: decoded.uid,
+        email: decoded.email || '',
+        name: decoded.name,
+        registeredWithProvider:
+          decoded.firebase.sign_in_provider !== 'password',
+      };
+      req.user = decodedUser;
+      return next();
+    }
+
     const decodedUser: IUser = {
-      uid: decoded.uid,
-      email: decoded.email || '',
-      name: '',
-      profilePhoto: decoded.picture || '',
-      bio: '',
-      username: '',
+      id: dbUser.id,
+      uid: dbUser.uid,
+      email: dbUser.email,
+      name: dbUser.name,
+      profilePhoto: dbUser.profilePhoto,
+      bio: dbUser.bio,
+      username: dbUser.username,
       registeredWithProvider: decoded.firebase.sign_in_provider !== 'password',
     };
     req.user = decodedUser;

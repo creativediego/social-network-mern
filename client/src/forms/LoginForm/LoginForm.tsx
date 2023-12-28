@@ -29,7 +29,7 @@ const LoginForm = (): JSX.Element => {
         <PopupModal
           title='Log in'
           show={showLoginModal}
-          setShow={setShowLoginModal}
+          closeModal={setShowLoginModal}
           size='lg'
         >
           <form>

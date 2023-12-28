@@ -141,11 +141,13 @@ export default class PostDao implements IDao<IPost> {
    * @returns the newly created post
    */
   create = async (postData: IPost): Promise<IPost> => {
+    console.log(postData);
     try {
       // Check if user exists first.
       const existingUser: IUser | null = await this.userModel.findOne({
-        uid: postData.author.uid,
+        _id: postData.author.id,
       });
+      console.log('existingUser', existingUser);
 
       if (existingUser === null) {
         throw new DaoNullException(PostDaoErrors.NO_USER_FOUND);

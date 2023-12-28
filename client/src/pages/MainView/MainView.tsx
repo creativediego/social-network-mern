@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './MainView.css';
 import { Routes, Route } from 'react-router-dom';
-import { AlertBox, Navigation } from '../../components';
+import { AlertBox, Navigation, PopupModal } from '../../components';
 import {
   WhatsHappeningWidget,
   HomePage,
@@ -15,16 +15,14 @@ import {
   MessagesPage,
 } from '../index';
 import { useAlert } from '../../hooks/useAlert';
-import { useAppDispatch } from '../../redux/hooks';
-import { clearUser, fetchProfileThunk } from '../../redux/userSlice';
-import { clearChat } from '../../redux/chatSlice';
-import { onFirebaseAuthStateChange } from '../../firebase/firebaseAuthAPI';
+import { useModal } from '../../hooks/useModal';
 
 /**
  * Main middle column view of the app where all pages are displayed.
  */
 const MainView = (): JSX.Element => {
   const { error, success } = useAlert();
+  const { modal, handleCloseModal, confirmModal } = useModal();
 
   return (
     <div className='container'>
@@ -45,6 +43,18 @@ const MainView = (): JSX.Element => {
             <Route path='/messages/*' element={<MessagesPage />} />
             <Route path='/search/*' element={<SearchPage />} />
           </Routes>
+          <PopupModal
+            size='sm'
+            title={modal.title}
+            show={modal.isOpen}
+            actionLabel={modal.actionLabel}
+            withClose={true}
+            closeModal={handleCloseModal}
+            action={confirmModal}
+          >
+            <p>{modal.content}</p>
+          </PopupModal>
+
           {error && <AlertBox message={error.message} />}
           {success && <AlertBox message={success.message} variant='primary' />}
         </div>

@@ -4,16 +4,13 @@ import React, {
   ReactNode,
   useCallback,
   useState,
+  useEffect,
 } from 'react';
 import { IPost } from '../interfaces/IPost';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-
-import {
-  selectPostsLoading,
-  userLikesPostThunk,
-  userDislikesPostThunk,
-  deletePostThunk,
-} from '../redux/postSlice';
+import { APIuserDislikesPost, APIuserLikesPost } from '../services/likeAPI';
+import { closeModal, openModal, selectConfirmModal } from '../redux/modalSlice';
+import { usePostAPI } from './usePostAPI';
 
 const PostContext = createContext<IPost | null>(null);
 
@@ -35,40 +32,54 @@ export const PostProvider = ({
  */
 export const usePost = () => {
   const post = useContext(PostContext);
-  const [showMenu, setShowMenu] = useState(false);
-  const loading = useAppSelector(selectPostsLoading);
+  const [showOptions, setShowOptions] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const modalConfirmed = useAppSelector(selectConfirmModal);
+  const { deletePost, likeDislikePost, loading } = usePostAPI();
+
   const dispatch = useAppDispatch();
 
-  const handleShowMenu = useCallback((status: boolean) => {
-    setShowMenu(status);
+  const handleShowOptions = useCallback((status: boolean) => {
+    setShowOptions(status);
   }, []);
 
   const handleLikePost = useCallback(
     async (postId: string) => {
-      await dispatch(userLikesPostThunk(postId));
+      return likeDislikePost(postId, APIuserLikesPost);
     },
-    [dispatch]
+    [likeDislikePost]
   );
 
   const handleDislikePost = useCallback(
-    (postId: string) => {
-      dispatch(userDislikesPostThunk(postId));
+    async (postId: string) => {
+      return likeDislikePost(postId, APIuserDislikesPost);
     },
-    [dispatch]
+    [likeDislikePost]
   );
 
-  const handleDeletePost = useCallback(
-    async (postId: string) => {
-      await dispatch(deletePostThunk(postId));
-    },
-    [dispatch]
-  );
+  const handleDeletePost = useCallback(async () => {
+    setConfirmDelete(true);
+    dispatch(
+      openModal({
+        title: 'Delete post?',
+        content: 'Are you sure you want to delete this post?',
+        actionLabel: 'Delete',
+      })
+    );
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (modalConfirmed && confirmDelete && post) {
+      deletePost(post.id);
+      dispatch(closeModal());
+    }
+  }, [confirmDelete, modalConfirmed, post, dispatch, deletePost]);
 
   return {
     loading,
     post,
-    showMenu,
-    handleShowMenu,
+    showMenu: showOptions,
+    handleShowOptions,
     handleLikePost,
     handleDislikePost,
     handleDeletePost,

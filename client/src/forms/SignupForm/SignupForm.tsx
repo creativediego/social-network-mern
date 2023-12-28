@@ -28,7 +28,7 @@ const SignupForm = (): JSX.Element => {
       <PopupModal
         title='Create an Account'
         show={showSignupModal}
-        setShow={setShowSignupModal}
+        closeModal={setShowSignupModal}
         size='lg'
       >
         <form onSubmit={submitForm} className='form-container'>
@@ -61,7 +61,7 @@ const SignupForm = (): JSX.Element => {
         <PopupModal
           title='Complete Signup'
           show={showUpdateProfileModal}
-          setShow={setShowUpdateProfileModal}
+          closeModal={setShowUpdateProfileModal}
           size='lg'
         >
           <UpdateProfileForm user={user} />

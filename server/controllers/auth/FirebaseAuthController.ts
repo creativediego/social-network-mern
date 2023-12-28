@@ -35,9 +35,12 @@ export default class FirebaseAuthController {
   }
 
   getProfile = async (req: HttpRequest): Promise<HttpResponse> => {
-    const user = req.user; // from firebase auth middleware on this route.
-    // Upsert the user in the database in case they don't exist.
-    let dbUser = await this.dao.create(user);
+    // If req.user exists, then the user is already logged in with firebase and returned from db.
+    if (req.user.id) {
+      return okResponse(req.user);
+    }
+    // Otherwise, the user is logged in with firebase but not yet registered in db, so create the user in db.
+    let dbUser = await this.dao.create(req.user);
     // Return user without password or other meta fields.
     dbUser = {
       id: dbUser.id,

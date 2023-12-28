@@ -3,7 +3,8 @@ import { useSearchParams } from 'react-router-dom';
 import { useSearch } from '../../components/Search/useSearch';
 import { useAppDispatch } from '../../redux/hooks';
 import { setAllPosts } from '../../redux/postSlice';
-import { findAllByKeyword } from '../../services/searchAPI';
+import { APIfindAllByKeyword } from '../../services/searchAPI';
+import { ISearchResults } from '../../interfaces/ISearchResults';
 
 const useSearchResults = (defaultQueryType: string) => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -11,10 +12,11 @@ const useSearchResults = (defaultQueryType: string) => {
   const [queryType, setQueryType] = useState(defaultQueryType);
   const dispatch = useAppDispatch();
 
-  const { searchValue, searchResults, setSearch, searchLoading } = useSearch(
-    (searchValue) => findAllByKeyword(searchValue),
-    queryValue
-  );
+  const { searchValue, searchResults, setSearch, searchLoading } =
+    useSearch<ISearchResults>(
+      (searchValue) => APIfindAllByKeyword(searchValue),
+      queryValue
+    );
 
   const handleSetQueryType = useCallback((type: string) => {
     setQueryType(type);

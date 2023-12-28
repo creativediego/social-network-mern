@@ -1,6 +1,5 @@
 import React from 'react';
-import LikeButton from '../LikeButton/LikeButton';
-import DislikeButton from '../DislikeButton/DislikeButton';
+import LikeDislikeButton from '../LikeDislikeButton/LikeDislikeButton';
 import { usePost } from '../../../hooks/usePost';
 
 /**
@@ -12,8 +11,8 @@ const PostStats = (): JSX.Element | null => {
     <div className='row mt-2'>
       <div className='col'>
         <div className='d-flex'>
-          <LikeButton />
-          <DislikeButton />
+          <LikeDislikeButton type='like' />
+          <LikeDislikeButton type='dislike' />
         </div>
       </div>
     </div>
