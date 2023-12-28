@@ -21,7 +21,9 @@ export const handleError = <T>(errorMessage?: string) => {
     }
     logError(error.response.data.error || { message: error.response.data });
     throw new Error(
-      errorMessage || error.response.data.message || 'Unknown Error'
+      errorMessage ||
+        error.response.data.message ||
+        'Sorry, something went wrong!'
     );
   };
 };

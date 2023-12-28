@@ -1,78 +1,97 @@
-import * as React from 'react';
-import { Nav } from 'react-bootstrap';
+import React from 'react';
+import { Nav, TabContent } from 'react-bootstrap';
 import { Search, Loader, Posts } from '../../components';
-import { useAppSelector } from '../../redux/hooks';
-import { selectAllPosts } from '../../redux/postSlice';
+import { useSearch } from '../../hooks/useSearch';
+import { allSearchService } from '../../services/searchService';
 import PeopleSearchResults from './PeopleSearchResults';
-import useSearchResults from './useSearchResults';
+import { ISearchResults } from '../../interfaces/ISearchResults';
 
 const SearchPage = (): JSX.Element => {
-  const {
-    queryValue,
-    handleSetQueryValue,
-    queryType,
-    handleSetQueryType,
-    results,
-    loading,
-  } = useSearchResults('top');
-  const reduxPosts = useAppSelector(selectAllPosts);
+  const [activeTab, setActiveTab] = React.useState<string>('all'); // State to manage active tab
+  const initialEmptyResults: ISearchResults = {
+    users: [],
+    posts: [],
+  };
+  const { query, setQuery, results, loading } = useSearch<ISearchResults>(
+    allSearchService,
+    initialEmptyResults
+  );
+
+  const toggleTab = (tab: string) => {
+    setActiveTab(tab); // Set the active tab
+  };
+
   return (
-    <>
+    <div>
       <Search
-        searchValue={queryValue}
-        setSearchValue={handleSetQueryValue}
-        placeHolder='Search Poster'
+        searchValue={query}
+        setSearchValue={setQuery}
+        placeHolder='Search for users or posts'
       />
-      <Nav variant='tabs' defaultActiveKey={queryType} className='mt-3'>
-        {results &&
-          Object.keys(results).map((category: string, index) => (
-            <Nav.Item key={index}>
-              <Nav.Link
-                eventKey={category}
-                onClick={async () => {
-                  if (queryValue) {
-                    handleSetQueryType(category);
-                  }
-                }}
-              >
-                {category}
-              </Nav.Link>
-            </Nav.Item>
-          ))}
+
+      <Nav variant='tabs' defaultActiveKey='all'>
+        <Nav.Item>
+          <Nav.Link
+            eventKey='all'
+            active={activeTab === 'all'}
+            onClick={() => toggleTab('all')}
+          >
+            All
+          </Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link
+            eventKey='posts'
+            active={activeTab === 'posts'}
+            onClick={() => toggleTab('posts')}
+          >
+            Posts
+          </Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link
+            eventKey='people'
+            active={activeTab === 'people'}
+            onClick={() => toggleTab('people')}
+          >
+            People
+          </Nav.Link>
+        </Nav.Item>
       </Nav>
-      <h1 className='mt-4'>Search Results</h1>
-      <Loader loading={loading} />
-      {!loading && (
-        <div className='mt-2'>
-          {!queryValue && !results && <p>Enter a search term.</p>}
-
-          {queryValue &&
-            results &&
-            results.posts.length < 1 &&
-            results.users.length < 1 && <p>Sorry, no results</p>}
-
-          {results &&
-            results.users &&
-            results.users.length > 0 &&
-            (queryType === 'top' || queryType === 'users') && (
-              <div>
-                <h5>People</h5>
-                <PeopleSearchResults users={results.users} />
-              </div>
-            )}
-
-          {results &&
-            results.posts &&
-            results.posts.length > 0 &&
-            (queryType === 'top' || queryType === 'posts') && (
-              <div>
-                <h5>Posts</h5>
-                <Posts posts={reduxPosts} showOptions={false} />
-              </div>
-            )}
-        </div>
+      {loading ? (
+        <Loader loading={loading} />
+      ) : (
+        <TabContent>
+          {results.users.length === 0 && results.posts.length === 0 && (
+            <div className='text-center mt-5'>
+              <h5>No results found</h5>
+            </div>
+          )}
+          {activeTab === 'all' && (
+            <>
+              {results.users.length > 0 && (
+                <>
+                  <h3>People</h3>
+                  <PeopleSearchResults users={results.users} />
+                </>
+              )}
+              {results.posts.length > 0 && (
+                <>
+                  <h3>Posts</h3>
+                  <Posts posts={results.posts} showOptions={false} />
+                </>
+              )}
+            </>
+          )}
+          {activeTab === 'people' && (
+            <PeopleSearchResults users={results.users} />
+          )}
+          {activeTab === 'posts' && (
+            <Posts posts={results.posts} showOptions={false} />
+          )}
+        </TabContent>
       )}
-    </>
+    </div>
   );
 };
 

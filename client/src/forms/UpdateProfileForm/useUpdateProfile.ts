@@ -6,11 +6,11 @@ import { IUser } from '../../interfaces/IUser';
 import { updateUserThunk } from '../../redux/userSlice';
 import { firebaseUploadProfileImage } from '../../firebase/firebasestorageAPI';
 import { ImageTypes } from '../../interfaces/ImageTypes';
-import { setGlobalError } from '../../redux/alertSlice';
-import { FriendlyError } from '../../interfaces/IError';
+import { useAlert } from '../../hooks/useAlert';
 
 const useUpdateProfile = () => {
   const mounted = useRef(false);
+  const { setError } = useAlert();
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
   const authUser = useAppSelector((state) => state.user.data);
@@ -48,9 +48,9 @@ const useUpdateProfile = () => {
           setLoading(false);
         }
       } catch (err) {
-        const message =
-          'Sorry, we ran into an error uploading your profile image. Try again later.';
-        dispatch(setGlobalError(new FriendlyError(message, 500)));
+        setError(
+          'Sorry, we ran into an error uploading your profile image. Try again later.'
+        );
       }
     },
     []
@@ -89,29 +89,11 @@ const useUpdateProfile = () => {
     setInputFields(updatedInputFields);
   };
 
-  // const updateConfirmPasswordPattern = () => {
-  //   setInputFields((prevState) => ({
-  //     ...prevState,
-  //     password: { ...profileFieldsStore['password'], required: false },
-  //     confirmPassword: {
-  //       id: '9999',
-  //       name: 'confirmPassword',
-  //       type: 'password',
-  //       placeholder: 'confirm password',
-  //       errorMessage: "Passwords don't match!",
-  //       label: 'confirm password',
-  //       required: false,
-  //       pattern: inputFields.password.value,
-  //       value: '',
-  //     },
-  //   }));
-  // };
-
   const isFormValid = (): boolean => {
     for (const field of Object.values(inputFields)) {
       const regexPattern = new RegExp(field.pattern);
       if (field.required && !regexPattern.test(field.value)) {
-        dispatch(setGlobalError({ message: field.errorMessage }));
+        setError(field.errorMessage);
         return false;
       }
     }

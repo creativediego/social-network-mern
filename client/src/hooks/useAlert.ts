@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { IGlobalError } from '../interfaces/IError';
+import { FriendlyError } from '../interfaces/IError';
 import {
   clearAll,
   clearAllErrors,
@@ -17,8 +17,8 @@ export const useAlert = () => {
   const success = useAppSelector(selectSuccessAlert);
   const dispatch = useAppDispatch();
   const setError = useCallback(
-    (error: IGlobalError) => {
-      dispatch(setGlobalError(error));
+    (message: string) => {
+      dispatch(setGlobalError({ message }));
     },
     [dispatch]
   );

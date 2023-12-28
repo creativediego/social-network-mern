@@ -55,7 +55,7 @@ const MainView = (): JSX.Element => {
             <p>{modal.content}</p>
           </PopupModal>
 
-          {error && <AlertBox message={error.message} />}
+          {error.message && <AlertBox message={error.message} />}
           {success && <AlertBox message={success.message} variant='primary' />}
         </div>
         <div className='ttr-right-column'>

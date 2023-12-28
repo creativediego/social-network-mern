@@ -8,7 +8,6 @@ import {
 import { IConversation } from '../interfaces/IConversation';
 import { IMessage } from '../interfaces/IMessage';
 import { IUser } from '../interfaces/IUser';
-import { dataOrThrowError as getDataOrError } from './helpers';
 import * as messageAPI from '../services/messageAPI';
 import type { RootState } from './store';
 
@@ -21,16 +20,14 @@ export const findMessagesByConversationThunk = createAsyncThunk(
     const state = ThunkAPI.getState() as RootState;
     const userId = state.user.data.id;
 
-    const conversationOrError = await messageAPI.findConversation(
+    const conversation = await messageAPI.findConversation(
       userId,
       conversationId
     );
-    const messagesOrError = await messageAPI.findMessagesByConversation(
+    const messages = await messageAPI.findMessagesByConversation(
       userId,
       conversationId
     );
-    const conversation = getDataOrError(conversationOrError, ThunkAPI.dispatch);
-    const messages = getDataOrError(messagesOrError, ThunkAPI.dispatch);
     return { conversation, messages };
   }
 );
@@ -51,7 +48,7 @@ export const sendMessageThunk = createAsyncThunk(
     const state = ThunkAPI.getState() as RootState;
     const chatId = state.chat.id;
     const newMessage = await messageAPI.sendMessage(sender, chatId, message);
-    return getDataOrError(newMessage, ThunkAPI.dispatch);
+    return newMessage;
   }
 );
 
@@ -62,7 +59,7 @@ export const deleteMessageThunk = createAsyncThunk(
     ThunkAPI
   ) => {
     const deletedMessage = await messageAPI.deleteMessage(userId, messageId);
-    return getDataOrError(deletedMessage, ThunkAPI.dispatch);
+    return deletedMessage;
   }
 );
 
@@ -78,7 +75,7 @@ export const createConversationThunk = createAsyncThunk(
       userId,
       conversation
     );
-    return getDataOrError(newConversation, ThunkAPI.dispatch);
+    return newConversation;
   }
 );
 

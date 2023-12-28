@@ -1,16 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
-import { useAppDispatch } from '../redux/hooks';
 import { StoragePaths } from '../interfaces/ImageTypes';
 import { firebaseUploadFile } from '../firebase/firebasestorageAPI';
-import { setGlobalError } from '../redux/alertSlice';
 import { useAuthUser } from './useAuthUser';
+import { useAlert } from './useAlert';
 
 export const useUploadFile = (filePath: StoragePaths) => {
   const { user } = useAuthUser();
   const [loading, setLoading] = useState(false);
   const [fileURL, setFileURL] = useState('');
   const isMounted = useRef(true);
-  const dispatch = useAppDispatch();
+  const { setError } = useAlert();
 
   const uploadFile = async (file: File | null, filename: string) => {
     if (!file) return;
@@ -24,9 +23,9 @@ export const useUploadFile = (filePath: StoragePaths) => {
       }
     } catch (err) {
       setLoading(false);
-      const message =
-        'Sorry, we ran into an error uploading your profile image. Try again later.';
-      dispatch(setGlobalError({ message }));
+      setError(
+        'Sorry, we ran into an error uploading your profile image. Try again later.'
+      );
     }
   };
 

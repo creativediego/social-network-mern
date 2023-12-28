@@ -8,7 +8,6 @@ import {
   createSlice,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { dataOrThrowError } from './helpers';
 import {
   findNotifications,
   findUnreadNotifications,
@@ -22,7 +21,7 @@ export const findNotificationsThunk = createAsyncThunk(
   async (data, ThunkAPI: any) => {
     const userId = ThunkAPI.getState().user.data.id;
     const notifications = await findNotifications(userId);
-    return dataOrThrowError(notifications, ThunkAPI);
+    return notifications;
   }
 );
 
@@ -31,7 +30,7 @@ export const findUnreadNotificationsThunk = createAsyncThunk(
   async (data, ThunkAPI: any) => {
     const userId = ThunkAPI.getState().user.data.id;
     const notifications = await findUnreadNotifications(userId);
-    return dataOrThrowError(notifications, ThunkAPI);
+    return notifications;
   }
 );
 
@@ -39,7 +38,7 @@ export const markNotificationReadThunk = createAsyncThunk(
   'notifications/markNotificationRead',
   async (notificationId: string, ThunkAPI: any) => {
     const notification = await markNotificationAsRead(notificationId);
-    return dataOrThrowError(notification, ThunkAPI);
+    return notification;
   }
 );
 

@@ -11,27 +11,47 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { APIuserDislikesPost, APIuserLikesPost } from '../services/likeAPI';
 import { closeModal, openModal, selectConfirmModal } from '../redux/modalSlice';
 import { usePostAPI } from './usePostAPI';
+import { set } from 'react-hook-form';
 
-const PostContext = createContext<IPost | null>(null);
+interface IPostContext {
+  post: IPost | null;
+  updatePost: (post: IPost) => void;
+}
+
+export const PostContext = createContext<IPostContext | null>(null);
 
 /**
  * Context for a single post to give nested components (such as stats) access to its data.
  */
 export const PostProvider = ({
-  post,
+  initialState,
   children,
 }: {
-  post: IPost;
+  initialState: IPost;
   children: ReactNode;
 }) => {
-  return <PostContext.Provider value={post}>{children}</PostContext.Provider>;
+  const [post, setPost] = useState<IPost>(initialState);
+  // Function to update the post value
+  const updatePost = (newPost: IPost) => {
+    setPost((prevPost) => ({ ...prevPost, ...newPost }));
+  };
+
+  return (
+    <PostContext.Provider value={{ post, updatePost }}>
+      {children}
+    </PostContext.Provider>
+  );
 };
 
 /**
  * Custom hook that manages the state of fetching posts, liking, disliking, and deleting.
  */
 export const usePost = () => {
-  const post = useContext(PostContext);
+  const context = useContext(PostContext);
+  if (!context) {
+    throw new Error('usePost must be used within a PostProvider');
+  }
+  const { post, updatePost } = context;
   const [showOptions, setShowOptions] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const modalConfirmed = useAppSelector(selectConfirmModal);
@@ -45,16 +65,22 @@ export const usePost = () => {
 
   const handleLikePost = useCallback(
     async (postId: string) => {
-      return likeDislikePost(postId, APIuserLikesPost);
+      const updatedPost = await likeDislikePost(postId, APIuserLikesPost);
+      if (updatedPost) {
+        updatePost(updatedPost);
+      }
     },
-    [likeDislikePost]
+    [likeDislikePost, updatePost]
   );
 
   const handleDislikePost = useCallback(
     async (postId: string) => {
-      return likeDislikePost(postId, APIuserDislikesPost);
+      const updatedPost = await likeDislikePost(postId, APIuserDislikesPost);
+      if (updatedPost) {
+        updatePost(updatedPost);
+      }
     },
-    [likeDislikePost]
+    [likeDislikePost, updatePost]
   );
 
   const handleDeletePost = useCallback(async () => {

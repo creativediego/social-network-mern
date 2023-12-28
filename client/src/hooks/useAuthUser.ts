@@ -8,13 +8,14 @@ import {
   selectIsProfileComplete,
 } from '../redux/userSlice';
 import { logoutThunk } from '../redux/userSlice';
-import { setGlobalError } from '../redux/alertSlice';
+import { useAlert } from './useAlert';
 
 export const useAuthUser = () => {
   const user = useAppSelector(selectAuthUser);
   const profileComplete = useAppSelector(selectIsProfileComplete);
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
   const loading = useAppSelector(selectAuthUserLoading);
+  const { setError } = useAlert();
   const dispatch = useAppDispatch();
 
   const [loginUser, setLoginUser] = useState<{
@@ -33,11 +34,11 @@ export const useAuthUser = () => {
   const login = useCallback(async () => {
     const { email, password } = loginUser;
     if (!email || !password) {
-      dispatch(setGlobalError({ message: 'Email and password required.' }));
+      setError('Email and password required.');
       return;
     }
     await dispatch(loginThunk({ email, password }));
-  }, [dispatch, loginUser]);
+  }, [dispatch, setError, loginUser]);
 
   const logout = useCallback(async () => {
     dispatch(logoutThunk());

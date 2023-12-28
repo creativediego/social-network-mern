@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { FormFieldI } from '../../interfaces/FormFieldI';
-import { setGlobalError } from '../../redux/alertSlice';
-import { useAppDispatch } from '../../redux/hooks';
+import { useAlert } from '../../hooks/useAlert';
 
 interface useFormProps {
   initialValues: FormFieldI;
@@ -9,8 +8,8 @@ interface useFormProps {
 }
 
 const useForm = ({ initialValues, onSubmit }: useFormProps) => {
-  const dispatch = useAppDispatch();
   const [fields, setFields] = useState<FormFieldI>({ ...initialValues });
+  const { setError } = useAlert();
 
   const addField = (newField: FormFieldI) => {
     setFields((prevState) => ({
@@ -34,7 +33,7 @@ const useForm = ({ initialValues, onSubmit }: useFormProps) => {
     for (const field of Object.values(fields)) {
       const regexPattern = new RegExp(field.pattern);
       if (!regexPattern.test(field.value)) {
-        dispatch(setGlobalError({ message: field.errorMessage }));
+        setError(field.errorMessage);
         return false;
       }
     }

@@ -31,10 +31,8 @@ const getPersonElement = (user: IUser) => (
     <hr />
   </div>
 );
-const UserSearchResults = ({
-  users,
-}: PeopleSearchResultsProps): JSX.Element => {
-  return <div>{users && users.map((user) => getPersonElement(user))}</div>;
+const UserSearchResults = ({ users }: { users: IUser[] }): JSX.Element => {
+  return <div>{users.map((user: IUser) => getPersonElement(user))}</div>;
 };
 
 export default React.memo(UserSearchResults);

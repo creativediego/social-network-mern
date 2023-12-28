@@ -23,7 +23,7 @@ const Post = ({ post }: PostProps): JSX.Element => {
   return (
     post && (
       <>
-        <PostProvider post={post}>
+        <PostProvider initialState={post}>
           <li className='p-2 ttr-post list-group-item d-flex rounded-0'>
             <Link to={`/${post.author.username}/posts`}>
               <div className='pe-2'>

@@ -1,6 +1,8 @@
 import { ISearchResults } from '../interfaces/ISearchResults';
 import { callAPI, Requests } from '../util/apiConfig';
 import { config } from '../config/appConfig';
+import { IPost } from '../interfaces/IPost';
+import { IUser } from '../interfaces/IUser';
 
 const SEARCH_API = `${config.apiURL}/search`;
 
@@ -9,7 +11,7 @@ export const APIfindAllByKeyword = (keyword: string) => {
 };
 
 export const APIfindAllPostsByKeyword = (keyword: string) =>
-  callAPI<ISearchResults>(`${SEARCH_API}/posts/${keyword}`, Requests.GET);
+  callAPI<IPost[]>(`${SEARCH_API}/posts/${keyword}`, Requests.GET);
 
 export const APIfindAllUsersByKeyword = (keyword: string) =>
-  callAPI<ISearchResults>(`${SEARCH_API}/users/${keyword}`, Requests.GET);
+  callAPI<IUser[]>(`${SEARCH_API}/users/${keyword}`, Requests.GET);

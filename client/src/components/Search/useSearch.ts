@@ -1,16 +1,15 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { setGlobalError } from '../../redux/alertSlice';
-import { useAppDispatch } from '../../redux/hooks';
+import { useAlert } from '../../hooks/useAlert';
 
 export const useSearch = <T>(
   APICall: (searchValue: string) => Promise<T>,
   initialSearchValue?: string
 ) => {
-  const dispatch = useAppDispatch();
   const [searchValue, setSearchValue] = useState(initialSearchValue || '');
   const [searchResults, setResults] = useState<T | null>(null);
   const [searchLoading, setLoading] = useState(false);
   const isMounted = useRef(true);
+  const { setError } = useAlert();
 
   const handleSetSearchValue = useCallback((val: string) => {
     setSearchValue(val);
@@ -35,7 +34,7 @@ export const useSearch = <T>(
       } catch (err) {
         setLoading(false);
         const error = err as Error;
-        dispatch(setGlobalError({ message: error.message }));
+        setError(error.message);
       }
     };
     findData();
