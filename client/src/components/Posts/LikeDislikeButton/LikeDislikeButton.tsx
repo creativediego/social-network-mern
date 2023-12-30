@@ -2,6 +2,10 @@ import React, { useMemo } from 'react';
 import '.././Posts.scss';
 import { useAuthUser } from '../../../hooks/useAuthUser';
 import { usePost } from '../../../hooks/usePost';
+import { useLikeDislikePost } from '../../../hooks/useLikePost';
+import { useAlert } from '../../../hooks/useAlert';
+import { postService } from '../../../services/postService';
+
 /**
  * Displays like button.
  */
@@ -12,7 +16,10 @@ interface LikeButtonProps {
 
 const LikeDislikeButton = ({ type }: LikeButtonProps): JSX.Element | null => {
   const userId = useAuthUser().user.id;
-  const { post, handleLikePost, handleDislikePost, loading } = usePost();
+  const { post } = usePost();
+  const { setError } = useAlert();
+  const likeHook = useLikeDislikePost(postService.likePost, setError);
+  const dislikeHook = useLikeDislikePost(postService.dislikePost, setError);
 
   const userHasLiked = useMemo((): boolean => {
     if (post && post.likedBy.includes(userId)) {
@@ -48,13 +55,13 @@ const LikeDislikeButton = ({ type }: LikeButtonProps): JSX.Element | null => {
         data-testid='ttr-like-btn'
         onClick={() => {
           type === 'like'
-            ? handleLikePost(post.id)
-            : handleDislikePost(post.id);
+            ? likeHook.handleLikeDislike(post.id)
+            : dislikeHook.handleLikeDislike(post.id);
         }}
       >
         <i
           className={`${getButtonClass} ttr-stat-icon ${
-            loading ? 'fs-6 fa-beat' : ''
+            likeHook.loading || dislikeHook.loading ? 'fs-6 fa-beat' : ''
           }`}
         >
           <span data-testid='ttr-stats-likes' className='mx-1'>

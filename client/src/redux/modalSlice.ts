@@ -36,7 +36,6 @@ const modalSlice = createSlice({
       state.actionLabel = action.payload.actionLabel;
     },
     closeModal: (state) => {
-      console.log('close modal reducer triggered');
       state.isOpen = false;
       state.title = '';
       state.content = '';

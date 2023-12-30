@@ -20,8 +20,6 @@ const Notification = ({
   notification,
   handleMarkAsRead,
 }: NotificationProps) => {
-  console.log(notification.resourceId);
-
   // create a notification message depending on the type of notification
   let notificationLink: NotificationLink = {
     MESSAGES: {

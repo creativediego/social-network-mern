@@ -39,7 +39,6 @@ const useNewPost = () => {
       return;
     }
     setPost({ ...post, post: '', image: '', hashtags: [] });
-    console.log(authUser);
     dispatch(createPostThunk({ userId: authUser.id, post, imageFile }));
     setImagePreview('');
   };

@@ -1,5 +1,34 @@
 import { AxiosError } from 'axios';
-import { FriendlyError, IAlert, IGlobalError } from '../interfaces/IError';
+import { FriendlyError, IAlert } from '../interfaces/IError';
+
+export interface ILogger<T, U> {
+  logError: (error: T) => U;
+}
+
+// Concrete implementation of ILogger with singleton pattern
+class Logger implements ILogger<IAlert, Promise<void>> {
+  private static instance: Logger;
+
+  private constructor() {}
+
+  public static getInstance(): Logger {
+    if (!Logger.instance) {
+      Logger.instance = new Logger();
+    }
+    return Logger.instance;
+  }
+
+  public logError = async (error: IAlert): Promise<void> => {
+    // If in production, log error to third-party service.
+    if (process.env.REACT_APP_ENV === 'production') {
+      // TODO: Log error to third-party service.
+    } else {
+      console.log(error.message);
+    }
+  };
+}
+
+export const logger = Logger.getInstance();
 
 export const logError = async (error: IAlert): Promise<void> => {
   // If in production, log error to third-party service.

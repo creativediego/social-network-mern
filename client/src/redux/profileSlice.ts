@@ -9,10 +9,7 @@ import {
 } from '@reduxjs/toolkit';
 import { IPost } from '../interfaces/IPost';
 import { IUser } from '../interfaces/IUser';
-import {
-  APIfindAllPostsDislikedByUser,
-  APIfindAllPostsLikedByUser,
-} from '../services/likeAPI';
+import { postService } from '../services/postService';
 import { APIfindPostsByUser } from '../services/postAPI';
 import { APIfindUserByUsername } from '../services/userAPI';
 import type { RootState } from './store';
@@ -81,7 +78,7 @@ const findMyPosts = createAsyncThunk(
 const findLikedPosts = createAsyncThunk(
   'profile/findMyLikes',
   async (userId: string, ThunkAPI) => {
-    let posts = await APIfindAllPostsLikedByUser(userId);
+    let posts = await postService.findAllPostsLikedByUser(userId);
     posts = posts.filter((post: IPost) => post !== null);
     return posts;
   }
@@ -90,7 +87,7 @@ const findLikedPosts = createAsyncThunk(
 const findDislikedPosts = createAsyncThunk(
   'profile/findMydislikes',
   async (userId: string, ThunkAPI) => {
-    let posts = await APIfindAllPostsDislikedByUser(userId);
+    let posts = await postService.findAllPostsDislikedByUser(userId);
     posts = posts.filter((post: IPost) => post !== null);
     return posts;
   }

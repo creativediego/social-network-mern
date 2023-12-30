@@ -30,7 +30,6 @@ export const useSearch = <T>(
         if (isMounted.current) {
           setResults(data);
         }
-        console.log(data);
       } catch (err) {
         setLoading(false);
         const error = err as Error;

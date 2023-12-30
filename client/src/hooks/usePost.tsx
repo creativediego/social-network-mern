@@ -8,10 +8,8 @@ import React, {
 } from 'react';
 import { IPost } from '../interfaces/IPost';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { APIuserDislikesPost, APIuserLikesPost } from '../services/likeAPI';
 import { closeModal, openModal, selectConfirmModal } from '../redux/modalSlice';
 import { usePostAPI } from './usePostAPI';
-import { set } from 'react-hook-form';
 
 interface IPostContext {
   post: IPost | null;
@@ -55,33 +53,13 @@ export const usePost = () => {
   const [showOptions, setShowOptions] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const modalConfirmed = useAppSelector(selectConfirmModal);
-  const { deletePost, likeDislikePost, loading } = usePostAPI();
+  const { deletePost, loading } = usePostAPI();
 
   const dispatch = useAppDispatch();
 
   const handleShowOptions = useCallback((status: boolean) => {
     setShowOptions(status);
   }, []);
-
-  const handleLikePost = useCallback(
-    async (postId: string) => {
-      const updatedPost = await likeDislikePost(postId, APIuserLikesPost);
-      if (updatedPost) {
-        updatePost(updatedPost);
-      }
-    },
-    [likeDislikePost, updatePost]
-  );
-
-  const handleDislikePost = useCallback(
-    async (postId: string) => {
-      const updatedPost = await likeDislikePost(postId, APIuserDislikesPost);
-      if (updatedPost) {
-        updatePost(updatedPost);
-      }
-    },
-    [likeDislikePost, updatePost]
-  );
 
   const handleDeletePost = useCallback(async () => {
     setConfirmDelete(true);
@@ -106,8 +84,7 @@ export const usePost = () => {
     post,
     showMenu: showOptions,
     handleShowOptions,
-    handleLikePost,
-    handleDislikePost,
     handleDeletePost,
+    updatePost,
   };
 };

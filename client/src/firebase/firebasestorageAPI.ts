@@ -23,7 +23,6 @@ export const firebaseUploadFile = async (
     const fileURL: string = await getDownloadURL(fileSnapshot.ref);
     return fileURL;
   } catch (err) {
-    console.log(path, err);
     throw new Error('Error uploading image.');
   }
 };

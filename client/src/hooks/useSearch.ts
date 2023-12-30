@@ -55,7 +55,8 @@ export function useSearch<T>(
     return () => {
       isMounted.current = false;
     };
-  }, [query]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]); // Only re-run the effect if query changes.
 
   return { results, query, setQuery, loading };
 }

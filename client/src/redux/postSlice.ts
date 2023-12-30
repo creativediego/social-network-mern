@@ -6,7 +6,7 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { IPost } from '../interfaces/IPost';
-import { APIuserDislikesPost, APIuserLikesPost } from '../services/likeAPI';
+import { postService } from '../services/postService';
 import { uploadPostImage } from '../firebase/firebasestorageAPI';
 import {
   APIfindAllPosts,
@@ -86,7 +86,7 @@ const deletePost = createAsyncThunk(
 const userLikesPost = createAsyncThunk(
   'posts/userLikesPost',
   async (postId: string, ThunkAPI) => {
-    const likedPost = await APIuserLikesPost(postId);
+    const likedPost = await postService.likePost(postId);
     ThunkAPI.dispatch(updateLikedPosts(likedPost));
     ThunkAPI.dispatch(updateMyPosts(likedPost));
     return likedPost;
@@ -96,7 +96,7 @@ const userLikesPost = createAsyncThunk(
 const userDislikesPost = createAsyncThunk(
   'posts/userDislikesPost',
   async (postId: string, ThunkAPI) => {
-    const dislikedPost = await APIuserDislikesPost(postId);
+    const dislikedPost = await postService.dislikePost(postId);
     ThunkAPI.dispatch(updateDislikedPosts(dislikedPost));
     ThunkAPI.dispatch(updateMyPosts(dislikedPost));
     return dislikedPost;

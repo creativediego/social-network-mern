@@ -1,10 +1,10 @@
 import { ISearchResults } from '../interfaces/ISearchResults';
 import { callAPI, Requests } from '../util/apiConfig';
-import { config } from '../config/appConfig';
+import { configENV } from '../config/appConfig';
 import { IPost } from '../interfaces/IPost';
 import { IUser } from '../interfaces/IUser';
 
-const SEARCH_API = `${config.apiURL}/search`;
+const SEARCH_API = `${configENV.apiURL}/search`;
 
 export const APIfindAllByKeyword = (keyword: string) => {
   return callAPI<ISearchResults>(`${SEARCH_API}/${keyword}`, Requests.GET);

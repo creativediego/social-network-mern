@@ -8,10 +8,10 @@ import {
   User,
 } from 'firebase/auth';
 import { setLocalAuthToken } from '../util/tokenManagement';
-import { config } from '../config/appConfig';
+import { configENV } from '../config/appConfig';
 import { FriendlyError } from '../interfaces/IError';
 
-const CLIENT_URL = `${config.baseURL}`;
+const CLIENT_URL = `${configENV.baseURL}`;
 
 export const firebaseGoogleLogin = async (): Promise<User> => {
   const provider = new GoogleAuthProvider();
@@ -36,7 +36,6 @@ export const firebaseLoginWithEmail = async (
     setLocalAuthToken(await result.user.getIdToken());
     return user;
   } catch (error: any) {
-    console.log(error.code);
     if (error.code === 'auth/wrong-password' || 'auth/wrong-email') {
       throw new FriendlyError('Wrong email or password.');
     } else {

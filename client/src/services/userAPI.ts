@@ -1,10 +1,10 @@
 import { IUser } from '../interfaces/IUser';
 import { callAPI } from '../util/apiConfig';
 import { Requests } from '../util/apiConfig';
-import { config } from '../config/appConfig';
+import { configENV } from '../config/appConfig';
 
-const LOGIN_API = `${config.apiURL}/login`;
-const USERS_API = `${config.apiURL}/users`;
+const LOGIN_API = `${configENV.apiURL}/login`;
+const USERS_API = `${configENV.apiURL}/users`;
 
 // Create a user based on the given user object
 export const APIcreateUser = (user: IUser) =>
