@@ -8,7 +8,18 @@ import { useAlert } from '../../hooks/useAlert';
 import useToggleBoolean from '../../hooks/useToggleBoolean';
 
 /**
- * User login form component: Displays loading button when login in being processed. Displays error message if login fails. Uses useAuthUser hook to manage login state. Uses useAlert hook to display error message. Uses FormInput component to display form inputs. Uses profileFields to display form input fields.
+ * `LoginForm` is a component that displays the login form.
+ *
+ * It uses the `useState` hook to manage the state of the login user.
+ * It also uses the `useAppDispatch` and `useAppSelector` hooks to dispatch actions and select state from the Redux store.
+ * It uses the `useLoginUser` hook to manage the login user state and actions.
+ *
+ * @component
+ * @example
+ * Example usage of LoginForm component
+ * <LoginForm />
+ *
+ * @returns {JSX.Element} A JSX element representing the login form.
  */
 const LoginForm = (): JSX.Element => {
   const { error } = useAlert();

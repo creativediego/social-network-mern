@@ -7,7 +7,7 @@ import {
 } from '@reduxjs/toolkit';
 import { IPost } from '../interfaces/IPost';
 import { postService } from '../services/postService';
-import { uploadPostImage } from '../firebase/firebasestorageAPI';
+import { uploadPostImage } from '../firebase/firebasestorageService';
 import {
   APIfindAllPosts,
   APIcreatePost,

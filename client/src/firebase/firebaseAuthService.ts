@@ -82,6 +82,14 @@ export const onFirebaseAuthStateChange = async (
   });
 };
 
+export const onFirebaseSessionExpired = async (expiredAction: Function) => {
+  auth.onIdTokenChanged(function (user: any) {
+    if (!user) {
+      return expiredAction();
+    }
+  });
+};
+
 export const firebaseLogout = async () => {
   await auth.signOut();
 };

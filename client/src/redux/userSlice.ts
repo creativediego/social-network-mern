@@ -27,7 +27,7 @@ import { setSuccessAlert } from './alertSlice';
 import { clearProfile } from './profileSlice';
 import { clearChat } from './chatSlice';
 import { APIupdateUser } from '../services/userAPI';
-import { firebaseUploadFile } from '../firebase/firebasestorageAPI';
+import { firebaseUploadFile } from '../firebase/firebasestorageService';
 
 /**
  * Updates redux state with user profile after calling getProfile from user service.

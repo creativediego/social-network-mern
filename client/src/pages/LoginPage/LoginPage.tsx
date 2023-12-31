@@ -1,14 +1,26 @@
 import React from 'react';
 import { AlertBox } from '../../components';
 import { SignupForm, LoginForm } from '../../forms';
-import { useAppDispatch } from '../../redux/hooks';
-import { loginWithGoogleThunk } from '../../redux/userSlice';
 import { useAlert } from '../../hooks/useAlert';
 import AppConfig from '../../config';
+import { useAuthUser } from '../../hooks/useAuthUser';
 
-const LoginPage = () => {
+/**
+ * `LoginPage` is a component that displays the login page.
+ *
+ * It uses the `useAlert` hook to display any error messages.
+ * It also uses the loginWithGoogle from useAuthUser hook for Google login.
+ *
+ * @component
+ * @example
+ * Example usage of LoginPage component
+ * <LoginPage />
+ *
+ * @returns {JSX.Element} A JSX element representing the login page.
+ */
+const LoginPage = (): JSX.Element => {
   const { error } = useAlert();
-  const dispatch = useAppDispatch();
+  const { loginWithGoogle } = useAuthUser();
 
   return (
     <div>
@@ -29,7 +41,7 @@ const LoginPage = () => {
         <div className='d-flex justify-content-between mt-3'>
           <div
             className='btn btn-light rounded-pill w-100'
-            onClick={() => dispatch(loginWithGoogleThunk())}
+            onClick={loginWithGoogle}
           >
             <i className='fa-brands fa-google'></i> Login with Google
           </div>

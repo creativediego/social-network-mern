@@ -1,9 +1,33 @@
 // useSearch.ts
-import { useState, useEffect, useRef } from 'react';
-import { ISearchService } from '../interfaces/ISearchService';
+import { useState, useEffect } from 'react';
+import { ISearchService } from '../../../interfaces/ISearchService';
 import { useSearchParams } from 'react-router-dom';
-import { useAlert } from './useAlert';
+import { useAlert } from '../../../hooks/useAlert';
+import { useIsMounted } from '../../../hooks/useIsMounted';
 
+/**
+ * `useSearch` is a custom hook that manages search functionality.
+ *
+ * It uses the `useState` and `useEffect` hooks to manage the search results, query, and loading state.
+ * It also uses the `useSearchParams` hook to manage the search parameters in the URL.
+ * It uses the `useAlert` hook to manage errors.
+ *
+ * @hook
+ * @example
+ * Example usage of useSearch hook
+ * const { results, query, setQuery, loading } = useSearch(searchService, initialResults);
+ *
+ * @template T The type of the search results.
+ * @param {ISearchService<T>} searchService - The service to use for the search.
+ * @param {T} initialResults - The initial search results.
+ *
+ * @returns {{
+ *   results: T,
+ *   query: string,
+ *   setQuery: React.Dispatch<React.SetStateAction<string>>,
+ *   loading: boolean
+ * }} An object containing the search results, the current query, a function to set the query, and a loading state for the search.
+ */
 export function useSearch<T>(
   searchService: ISearchService<T>,
   initialResults: T
@@ -17,16 +41,17 @@ export function useSearch<T>(
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState<string>(searchParams.get('q') || '');
   const [loading, setLoading] = useState<boolean>(false);
-  const isMounted = useRef(false);
+  const isMounted = useIsMounted();
   const { clearErrors, setError } = useAlert();
 
+  // Validate the query to prevent XSS. Only allow alpha characters. No special characters, spaces, symbols, numbers, etc.
   const queryIsValid = (query: string) => {
     const validAlphaChars = new RegExp(/^[a-z]*[A-Z]*$/);
     return query.match(validAlphaChars);
   };
 
+  // Fetch search results when the query changes.
   useEffect(() => {
-    isMounted.current = true;
     const fetchData = async () => {
       try {
         if (query) {
@@ -39,7 +64,7 @@ export function useSearch<T>(
           setLoading(true);
           const searchResults = await searchService.search(query);
           setLoading(false);
-          if (isMounted.current) {
+          if (isMounted) {
             setResults(searchResults);
           }
         } else {
@@ -51,10 +76,8 @@ export function useSearch<T>(
         setError(error.message);
       }
     };
+
     fetchData();
-    return () => {
-      isMounted.current = false;
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]); // Only re-run the effect if query changes.
 

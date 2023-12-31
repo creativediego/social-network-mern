@@ -6,7 +6,8 @@ import MainView from './pages/MainView/MainView';
 import { LoginPage, LandingPage } from './pages';
 import { Routes, Route, HashRouter } from 'react-router-dom';
 import { useAuthUser } from './hooks/useAuthUser';
-import { fetchProfileThunk } from './redux/userSlice';
+import { clearUser, fetchProfileThunk } from './redux/userSlice';
+import { onFirebaseSessionExpired } from './firebase/firebaseAuthService';
 
 /**
  * Main entry point and control hub for the application.
@@ -19,8 +20,9 @@ function App(): JSX.Element {
   const { profileComplete, isLoggedIn } = useAuthUser();
   const dispatch = useAppDispatch();
 
-  // On component mount, fetch user profile information
+  // On component mount, fetch user profile information and check for session expiration
   useEffect(() => {
+    onFirebaseSessionExpired(() => dispatch(clearUser()));
     dispatch(fetchProfileThunk());
   }, [dispatch]);
 

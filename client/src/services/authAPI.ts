@@ -7,7 +7,7 @@ import {
   firebaseLoginWithEmail,
   firebaseLogout,
   isFirebaseIsEmailProvider,
-} from '../firebase/firebaseAuthAPI';
+} from '../firebase/firebaseAuthService';
 
 const SECURITY_API = urlConfig.authApi;
 

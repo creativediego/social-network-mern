@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import {
   loginThunk,
+  loginWithGoogleThunk,
   selectAuthUser,
   selectAuthUserLoading,
   selectIsLoggedIn,
@@ -40,6 +41,8 @@ export const useAuthUser = () => {
     await dispatch(loginThunk({ email, password }));
   }, [dispatch, setError, loginUser]);
 
+  const loginWithGoogle = () => dispatch(loginWithGoogleThunk());
+
   const logout = useCallback(async () => {
     dispatch(logoutThunk());
   }, [dispatch]);
@@ -50,6 +53,7 @@ export const useAuthUser = () => {
     isLoggedIn,
     logout,
     login,
+    loginWithGoogle,
     handleSetLoginUser,
     loading,
     loginUser,

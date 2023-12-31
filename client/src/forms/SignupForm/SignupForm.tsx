@@ -6,6 +6,20 @@ import useToggleBoolean from '../../hooks/useToggleBoolean';
 import { useAuthUser } from '../../hooks/useAuthUser';
 import { useSignUpForm } from './useSignupForm';
 
+/**
+ * `SignupForm` is a component that displays the signup form.
+ *
+ * It uses the `useToggleBoolean` hook to manage the visibility of the signup and update profile modals.
+ * It also uses the `useAuthUser` hook to get the current authenticated user.
+ * It uses the `useSignUpForm` hook to manage the signup form state and actions.
+ *
+ * @component
+ * @example
+ * Example usage of SignupForm component
+ * <SignupForm />
+ *
+ * @returns {JSX.Element} A JSX element representing the signup form.
+ */
 const SignupForm = (): JSX.Element => {
   const [showSignupModal, setShowSignupModal] = useToggleBoolean(false);
   const [showUpdateProfileModal, setShowUpdateProfileModal] =

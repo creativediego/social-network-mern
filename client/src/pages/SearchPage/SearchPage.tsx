@@ -1,13 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Nav, TabContent } from 'react-bootstrap';
 import { Search, Loader, PostsList } from '../../components';
-import { useSearch } from '../../hooks/useSearch';
+import { useSearch } from '../../components/Search/hooks/useSearch';
 import { allSearchService } from '../../services/searchService';
 import PeopleSearchResults from './PeopleSearchResults';
 import { ISearchResults } from '../../interfaces/ISearchResults';
 
+/**
+ * `SearchPage` is a component that displays a search page.
+ *
+ * It uses the `useSearch` hook to perform a search and display the results.
+ *
+ * @component
+ * @example
+ * Example usage of SearchPage component
+ * <SearchPage />
+ *
+ * @returns {JSX.Element} A JSX element representing the search page.
+ */
 const SearchPage = (): JSX.Element => {
-  const [activeTab, setActiveTab] = React.useState<string>('all'); // State to manage active tab
+  const [activeTab, setActiveTab] = useState<string>('all');
   const initialEmptyResults: ISearchResults = {
     users: [],
     posts: [],
@@ -17,8 +29,58 @@ const SearchPage = (): JSX.Element => {
     initialEmptyResults
   );
 
+  /**
+   * Toggles the active tab that filters the search results.
+   * @param tab the tab type to toggle
+   */
   const toggleTab = (tab: string) => {
-    setActiveTab(tab); // Set the active tab
+    setActiveTab(tab);
+  };
+
+  /**
+   * Renders the tab content based on the active tab.
+   */
+  const renderTabContent = () => {
+    if (loading) {
+      return <Loader loading={loading} />;
+    }
+
+    if (results.users.length === 0 && results.posts.length === 0) {
+      return (
+        <div className='text-center mt-5'>
+          <h5>No results found</h5>
+        </div>
+      );
+    }
+
+    switch (activeTab) {
+      case 'all':
+        return (
+          <TabContent>
+            {results.users.length > 0 && (
+              <>
+                <h4>People</h4>
+                <PeopleSearchResults users={results.users} />
+              </>
+            )}
+            {results.posts.length > 0 && (
+              <>
+                <h4>Posts</h4>
+                <PostsList posts={results.posts} showOptions={false} />
+              </>
+            )}
+          </TabContent>
+        );
+
+      case 'people':
+        return <PeopleSearchResults users={results.users} />;
+
+      case 'posts':
+        return <PostsList posts={results.posts} showOptions={false} />;
+
+      default:
+        return null;
+    }
   };
 
   return (
@@ -30,67 +92,21 @@ const SearchPage = (): JSX.Element => {
       />
 
       <Nav variant='tabs' defaultActiveKey='all'>
-        <Nav.Item>
-          <Nav.Link
-            eventKey='all'
-            active={activeTab === 'all'}
-            onClick={() => toggleTab('all')}
-          >
-            All
-          </Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
-          <Nav.Link
-            eventKey='posts'
-            active={activeTab === 'posts'}
-            onClick={() => toggleTab('posts')}
-          >
-            Posts
-          </Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
-          <Nav.Link
-            eventKey='people'
-            active={activeTab === 'people'}
-            onClick={() => toggleTab('people')}
-          >
-            People
-          </Nav.Link>
-        </Nav.Item>
+        {['all', 'posts', 'people'].map((tab) => (
+          <Nav.Item key={tab}>
+            <Nav.Link
+              eventKey={tab}
+              active={activeTab === tab}
+              onClick={() => toggleTab(tab)}
+            >
+              {/* Capitalize the first letter of the tab */}
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </Nav.Link>
+          </Nav.Item>
+        ))}
       </Nav>
-      {loading ? (
-        <Loader loading={loading} />
-      ) : (
-        <TabContent>
-          {results.users.length === 0 && results.posts.length === 0 && (
-            <div className='text-center mt-5'>
-              <h5>No results found</h5>
-            </div>
-          )}
-          {activeTab === 'all' && (
-            <>
-              {results.users.length > 0 && (
-                <>
-                  <h3>People</h3>
-                  <PeopleSearchResults users={results.users} />
-                </>
-              )}
-              {results.posts.length > 0 && (
-                <>
-                  <h3>Posts</h3>
-                  <PostsList posts={results.posts} showOptions={false} />
-                </>
-              )}
-            </>
-          )}
-          {activeTab === 'people' && (
-            <PeopleSearchResults users={results.users} />
-          )}
-          {activeTab === 'posts' && (
-            <PostsList posts={results.posts} showOptions={false} />
-          )}
-        </TabContent>
-      )}
+
+      {renderTabContent()}
     </div>
   );
 };

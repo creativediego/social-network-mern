@@ -4,7 +4,7 @@ import { FormFieldI } from '../../interfaces/FormFieldI';
 import { profileFieldsStore } from '../shared/profileFieldsStore';
 import { IUser } from '../../interfaces/IUser';
 import { updateUserThunk } from '../../redux/userSlice';
-import { firebaseUploadProfileImage } from '../../firebase/firebasestorageAPI';
+import { firebaseUploadProfileImage } from '../../firebase/firebasestorageService';
 import { ImageTypes } from '../../interfaces/ImageTypes';
 import { useAlert } from '../../hooks/useAlert';
 

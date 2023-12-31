@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { StoragePaths } from '../interfaces/ImageTypes';
-import { firebaseUploadFile } from '../firebase/firebasestorageAPI';
+import { firebaseUploadFile } from '../firebase/firebasestorageService';
 import { useAuthUser } from './useAuthUser';
 import { useAlert } from './useAlert';
 
