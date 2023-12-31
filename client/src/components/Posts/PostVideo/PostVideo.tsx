@@ -1,12 +1,21 @@
 import * as React from 'react';
-import { usePost } from '../../../hooks/usePost';
+import { usePost } from '../Post/hooks/usePost';
 
 /**
- * Displays a video post of a post.
+ * `ReactionButton` is a component that displays a reaction button.
+ *
+ * @component
+ * @example
+ * Example usage of ReactionButton component
+ * <ReactionButton cssClass="like-button" handleClick={handleLike} disabled={false} reactions={10} />
+ *
+ * @param {ReactionButtonProps} props - The properties that define the ReactionButton component.
+ *
+ * @returns {JSX.Element} A JSX element representing the reaction button.
  */
-const PostVideo: React.FC = (): JSX.Element | null => {
+const PostVideo = (): JSX.Element => {
   const { post } = usePost();
-  return post ? (
+  return (
     <div className='ttr-responsive-video ttr-rounded-15px position-relative overflow-hidden w-100 mt-2'>
       <iframe
         width='560'
@@ -19,6 +28,6 @@ const PostVideo: React.FC = (): JSX.Element | null => {
         allowFullScreen
       ></iframe>
     </div>
-  ) : null;
+  );
 };
 export default PostVideo;

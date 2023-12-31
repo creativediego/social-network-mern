@@ -1,4 +1,4 @@
-import HomePage from './HomePage/HomePage';
+import PostsPage from './PostsPage/PostsPage';
 import LandingPage from './LandingPage/LandingPage';
 import LoginPage from './LoginPage/LoginPage';
 import MessagesPage from './MessagesPage/MessagesPage';
@@ -13,7 +13,7 @@ import SearchPage from './SearchPage/SearchPage';
 import NotFoundPage from './NotFoundPage/NotFoundPage';
 
 export {
-  HomePage,
+  PostsPage,
   LoginPage,
   MessagesPage,
   WhatsHappeningWidget,

@@ -1,12 +1,12 @@
 import PopupModal from './PopupModal/PopupModal';
 import GenericError from './GenericError/GenericError';
-import Posts from './Posts/Posts/Posts';
+import PostsList from './Posts/PostsLists/PostsList';
 import AlertBox from './AlertBox/AlertBox';
 import Navigation from './Navigation/Navigation';
 import NewPost from './Posts/NewPost/NewPost';
 import Loader from './Loader/Loader';
 import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
-import PostImage from './PostImage/PostImage';
+import PostImage from './Posts/PostImage/PostImage';
 import Search from './Search/Search';
 import FollowButton from './FollowButton/FollowButton';
 import InboxMessage from './Messages/Inbox/InboxMessage';
@@ -16,17 +16,19 @@ import NewChat from './Messages/NewChat/NewChat';
 import ActionButton from './ActionButton/ActionButton';
 import ProfileInfo from './Profile/ProfileInfo/ProfileInfo';
 import ProfilePosts from './Profile/ProfilePosts/ProfilePosts';
-import { AvatarImage } from './AvatarImage/AvatarImage';
+import AvatarImage from './AvatarImage/AvatarImage';
 import Notification from './Notifications/Notification';
 import Notifications from './Notifications/index';
 import AvatarUpload from '../forms/UpdateProfileForm/AvatarUpload';
-import BackgroundImageUpload from '../forms/UpdateProfileForm/HeaderImageUpload';
+import HeaderImageUpload from '../forms/UpdateProfileForm/HeaderImageUpload';
+import ReactionButton from './Posts/ReactionButton.tsx/ReactionButton';
+import LikeButton from './Posts/LikeButton/LikeButton';
 export {
   AlertBox,
   GenericError,
   PopupModal,
   PostImage,
-  Posts,
+  PostsList,
   Navigation,
   NewPost,
   Loader,
@@ -44,5 +46,7 @@ export {
   Notification,
   Notifications,
   AvatarUpload,
-  BackgroundImageUpload as HeaderImageUpload,
+  ReactionButton,
+  LikeButton,
+  HeaderImageUpload,
 };

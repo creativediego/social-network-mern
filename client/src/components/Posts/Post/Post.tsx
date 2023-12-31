@@ -1,67 +1,64 @@
 import React, { memo } from 'react';
 import PostStats from '../PostStats/PostStats';
-import PostImage from '../../PostImage/PostImage';
-import PostVideo from '../PostVideo/PostVideo';
-import { Link } from 'react-router-dom';
-import { AvatarImage } from '../../AvatarImage/AvatarImage';
-import { IPost } from '../../../interfaces/IPost';
-import moment from 'moment';
-import { PostProvider } from '../../../hooks/usePost';
+import PostImage from '../PostImage/PostImage';
+import { PostProvider } from './hooks/usePost';
 import PostOptions from '../PostOptions/PostOptions';
 import { useAuthUser } from '../../../hooks/useAuthUser';
-import PostContent from '../PostContent/PostContent';
+import PostContent from './PostContent';
+import { postService } from '../../../services/postService';
+import PostHeader from './PostHeader';
+import PostAuthorAvatar from './PostAvatar';
+import { IPost } from '../../../interfaces/IPost';
 
-interface PostProps {
+/**
+ * `PostProps` is the props object passed to the `Post` component.
+ *
+ * @typedef {Object} PostProps
+ * @property {IPost} post - The post object to be rendered.
+ */
+export interface PostProps {
   post: IPost;
 }
+
 /**
- * Displays a post with all of its information, including Author, time, and stats (likes, dislikes, etc).
+ * `Post` is a component that renders a single post.
+ *
+ * It displays the post's author avatar, header, content, image, and stats.
+ * If the post's author is the currently authenticated user, it also displays post options.
+ *
+ * @component
+ * @example
+ * Example usage of Post component
+ * <Post post={samplePost} />
+ *
+ * @param {PostProps} props - The properties that define the Post component.
+ * @param {IPost} props.post - The post object to be rendered. It should conform to the IPost interface.
+ *
+ * @returns {JSX.Element} A JSX element representing a single post.
  */
+
 const Post = ({ post }: PostProps): JSX.Element => {
   const postWordArray = post.post.split(' ');
   const { user } = useAuthUser();
+
   return (
     post && (
-      <>
-        <PostProvider initialState={post}>
-          <li className='p-2 ttr-post list-group-item d-flex rounded-0'>
-            <Link to={`/${post.author.username}/posts`}>
-              <div className='pe-2'>
-                <AvatarImage
-                  profilePhoto={post.author.profilePhoto}
-                  size={50}
-                />
-              </div>
-            </Link>
-            <div className='w-100'>
-              <div className='d-flex justify-content-between'>
-                <div>
-                  <p className='fw-bold ttr-post-title'>
-                    {/* This link and the one above will naviagate a user's the profile page for the user who posted this post.  */}
-                    <Link
-                      to={`/${post.author.username}/posts`}
-                      className='text-decoration-none'
-                    >
-                      {`${post.author.name} @${post.author.username} `}
-                    </Link>
-                    <span className='text-dark'>
-                      {moment(post.createdAt).fromNow()}
-                    </span>
-                  </p>
-                </div>
-                {user.id === post.author.id && <PostOptions />}
-              </div>
-              <PostContent content={postWordArray} />
-              {post.youtube && <PostVideo />}
-              {post.image && (
-                <PostImage imageURL={post.image} deletable={false} />
-              )}
-              <PostStats />
+      <PostProvider post={post} postService={postService}>
+        <li className='p-2 ttr-post list-group-item d-flex rounded-0'>
+          <PostAuthorAvatar post={post} />
+          <div className='w-100'>
+            <div className='d-flex justify-content-between'>
+              <PostHeader post={post} />
+              {user.id === post.author.id ? <PostOptions /> : null}
             </div>
-          </li>
-        </PostProvider>
-      </>
+            <PostContent content={postWordArray} />
+            <PostImage imageURL={post.image} deletable={false} />
+            <PostStats />
+          </div>
+        </li>
+      </PostProvider>
     )
   );
 };
+
 export default memo(Post);

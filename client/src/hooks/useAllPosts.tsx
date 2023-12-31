@@ -32,8 +32,10 @@ export const useAllPosts = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(findAllPostsThunk());
-  }, [dispatch]);
+    if (posts.length === 0) {
+      dispatch(findAllPostsThunk());
+    }
+  }, [dispatch, posts.length]);
 
   return {
     posts,

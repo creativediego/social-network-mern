@@ -4,7 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import { AlertBox, Navigation, PopupModal } from '../../components';
 import {
   WhatsHappeningWidget,
-  HomePage,
+  PostsPage,
   BookmarksPage,
   ProfilePage,
   ExplorePage,
@@ -18,23 +18,33 @@ import { useAlert } from '../../hooks/useAlert';
 import { useModal } from '../../hooks/useModal';
 
 /**
- * Main middle column view of the app where all pages are displayed.
+ * Primary view component displaying the central layout of the application.
+ * Renders various pages within the main columns and manages alerts and modals.
+ *
+ * @returns {JSX.Element} Root JSX element representing the main layout of the application.
  */
 const MainView = (): JSX.Element => {
+  // Retrieve alert messages for error and success that will be displayed in the AlertBox comp at bottom of this main view.
   const { error, success } = useAlert();
+
+  // Global modal functionality - opening, closing, and confirming actions
   const { modal, handleCloseModal, confirmModal } = useModal();
 
   return (
     <div className='container'>
       <div className='ttr-poster'>
+        {/* Left column containing navigation */}
         <div className='ttr-left-column'>
           <Navigation />
         </div>
+
+        {/* Center column containing various pages */}
         <div className='ttr-center-column'>
           <Routes>
-            <Route path='/' element={<HomePage />} />
+            {/* Routing setup for different paths */}
+            <Route path='/' element={<PostsPage />} />
             <Route path='/:username/*' element={<ProfilePage />} />
-            <Route path='/home' element={<HomePage />} />
+            <Route path='/home' element={<PostsPage />} />
             <Route path='/explore' element={<ExplorePage />} />
             <Route path='/notifications/*' element={<NotificationsPage />} />
             <Route path='/bookmarks' element={<BookmarksPage />} />
@@ -43,6 +53,8 @@ const MainView = (): JSX.Element => {
             <Route path='/messages/*' element={<MessagesPage />} />
             <Route path='/search/*' element={<SearchPage />} />
           </Routes>
+
+          {/* Global Popup modal for displaying conforming actions */}
           <PopupModal
             size='sm'
             title={modal.title}
@@ -55,9 +67,12 @@ const MainView = (): JSX.Element => {
             <p>{modal.content}</p>
           </PopupModal>
 
+          {/* Display error and success alerts if available */}
           {error.message && <AlertBox message={error.message} />}
           {success && <AlertBox message={success.message} variant='primary' />}
         </div>
+
+        {/* Right column containing the 'What's Happening' widget */}
         <div className='ttr-right-column'>
           <WhatsHappeningWidget />
         </div>

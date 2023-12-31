@@ -7,15 +7,15 @@ import { upsertChatMessage } from './chatSlice';
 import { IMessage } from '../interfaces/IMessage';
 import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
 import { IPost } from '../interfaces/IPost';
-import { configENV } from '../config/appConfig';
+import { urlConfig } from '../config/appConfig';
 import { Requests, callAPI } from '../util/apiConfig';
 /**
  * Redux and socket io helpers for firing off redux state changes on certain socket actions. Helpers are called from inside CreateAsyncThunk slices.
  */
 
-const SECURITY_API = `${configENV.authApi}`;
+const SECURITY_API = `${urlConfig.authApi}`;
 const api = axios.create();
-const SOCKET_URL = configENV.serverURL;
+const SOCKET_URL = urlConfig.serverURL;
 
 let socket: any;
 let listening = false;

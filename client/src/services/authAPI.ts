@@ -1,6 +1,6 @@
 import { IUser } from '../interfaces/IUser';
 import { Requests, callAPI } from '../util/apiConfig';
-import { configENV } from '../config/appConfig';
+import { urlConfig } from '../config/appConfig';
 import {
   fireBaseRegisterUser,
   firebaseGoogleLogin,
@@ -9,7 +9,7 @@ import {
   isFirebaseIsEmailProvider,
 } from '../firebase/firebaseAuthAPI';
 
-const SECURITY_API = configENV.authApi;
+const SECURITY_API = urlConfig.authApi;
 
 export const AUTHregister = async (email: string, password: string) =>
   await fireBaseRegisterUser(email, password);

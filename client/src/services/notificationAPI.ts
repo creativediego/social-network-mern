@@ -6,10 +6,10 @@
 import axios from 'axios';
 import { INotification } from '../interfaces/INotification';
 import { Requests, callAPI } from '../util/apiConfig';
-import { configENV } from '../config/appConfig';
+import { urlConfig } from '../config/appConfig';
 
-const NOTIFICATIONS_API = `${configENV.apiURL}/notifications`;
-const USERS_API = `${configENV.apiURL}/users`;
+const NOTIFICATIONS_API = `${urlConfig.apiURL}/notifications`;
+const USERS_API = `${urlConfig.apiURL}/users`;
 
 /**
  * Find all the notifications for a particular user.

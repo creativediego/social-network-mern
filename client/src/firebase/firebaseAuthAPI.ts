@@ -8,10 +8,10 @@ import {
   User,
 } from 'firebase/auth';
 import { setLocalAuthToken } from '../util/tokenManagement';
-import { configENV } from '../config/appConfig';
+import { urlConfig } from '../config/appConfig';
 import { FriendlyError } from '../interfaces/IError';
 
-const CLIENT_URL = `${configENV.baseURL}`;
+const CLIENT_URL = `${urlConfig.baseURL}`;
 
 export const firebaseGoogleLogin = async (): Promise<User> => {
   const provider = new GoogleAuthProvider();

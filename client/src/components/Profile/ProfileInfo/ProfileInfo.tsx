@@ -1,12 +1,11 @@
 import React, { memo } from 'react';
 import LogoutButton from '../LogoutButton/LogoutButton';
-import { AvatarImage } from '../../AvatarImage/AvatarImage';
+import { AvatarImage } from '../../../components';
 import { UpdateProfileForm } from '../../../forms';
 import useToggleBoolean from '../../../hooks/useToggleBoolean';
 import PopupModal from '../../PopupModal/PopupModal';
 import FollowButton from '../../FollowButton/FollowButton';
 import { IUser } from '../../../interfaces/IUser';
-import { useAuthUser } from '../../../hooks/useAuthUser';
 
 interface ProfileInfoProps {
   profileUser: IUser;

@@ -2,6 +2,14 @@ import React, { memo } from 'react';
 import { Button } from 'react-bootstrap';
 import Loader from '../Loader/Loader';
 
+/**
+ * ActionButtonProps defines the props for the ActionButton component.
+ * label: Text to display on the button (optional, defaults to 'Submit').
+ * submitAction: Function triggered on button click (optional).
+ * position: Specifies the button's alignment - 'right' or 'left'.
+ * color: Specifies the button's color scheme - 'primary' or 'secondary' (optional, defaults to 'primary').
+ * loading: Flag indicating whether the button is in a loading state (optional).
+ */
 export interface ActionButtonProps {
   label?: string;
   submitAction?: () => void;
@@ -11,7 +19,9 @@ export interface ActionButtonProps {
 }
 
 /**
- * Generic action button that takes a label, position, color, loading state, and submit action.
+ * ActionButton is a reusable component that renders a customizable button with loading state support.
+ * It accepts label, position, color, loading state, and a submit action.
+ * Utilizes Bootstrap's Button component and Loader component for loading state.
  */
 const ActionButton = ({
   submitAction,
@@ -23,8 +33,9 @@ const ActionButton = ({
   return (
     <span className={`fa-pull-${position} mt-2`}>
       <Button
+        disabled={loading}
         type='submit'
-        className='rounded-pill'
+        className='rounded-pill fw-bold'
         variant={color || 'primary'}
         onClick={() => {
           if (submitAction) submitAction();

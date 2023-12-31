@@ -1,8 +1,8 @@
 import { Requests, callAPI } from '../util/apiConfig';
-import { configENV } from '../config/appConfig';
+import { urlConfig } from '../config/appConfig';
 import { IPost } from '../interfaces/IPost';
 
-const BASE_URL = configENV.apiURL;
+const BASE_URL = urlConfig.apiURL;
 const USERS_API = `${BASE_URL}/users`;
 const POSTS_API = `${BASE_URL}/posts`;
 

@@ -1,9 +1,9 @@
 import { Requests, callAPI } from '../util/apiConfig';
-import { configENV } from '../config/appConfig';
+import { urlConfig } from '../config/appConfig';
 import IFollow from '../interfaces/IFollow';
 import { IUser } from '../interfaces/IUser';
 
-const USERS_API = `${configENV.apiURL}/users`;
+const USERS_API = `${urlConfig.apiURL}/users`;
 
 // This service exposes operations relating to the follows resource, by calling the backend Follows API
 

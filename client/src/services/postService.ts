@@ -1,7 +1,7 @@
 import { IPost } from '../interfaces/IPost';
 import { logToConsole } from '../util/logToConsole';
 import { APIServiceI, Requests, APIService } from './APIService';
-import { configENV } from '../config/appConfig';
+import { urlConfig } from '../config/appConfig';
 
 export interface IPostService {
   findAllPosts: () => Promise<IPost[]>;
@@ -128,7 +128,7 @@ class PostServiceImpl implements IPostService {
   };
 }
 
-const POST_API_URL = `${configENV.apiURL}/posts`;
+const POST_API_URL = `${urlConfig.apiURL}/posts`;
 
 export const postService = PostServiceImpl.getInstance(
   POST_API_URL,

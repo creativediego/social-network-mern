@@ -1,9 +1,9 @@
 import { IConversation } from '../interfaces/IConversation';
 import { IMessage } from '../interfaces/IMessage';
 import { callAPI, Requests } from '../util/apiConfig';
-import { configENV } from '../config/appConfig';
+import { urlConfig } from '../config/appConfig';
 
-const MESSAGES_API = `${configENV.apiURL}/users`;
+const MESSAGES_API = `${urlConfig.apiURL}/users`;
 
 /**
  * Create a new message for an existing conversation by using the existing

@@ -8,13 +8,15 @@ import {
 } from '../../redux/notificationSlice';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { selectUnreadCount } from '../../redux/messageInboxSlice';
+import { useAuthUser } from '../../hooks/useAuthUser';
+import { NavLink } from './NavigationItem/NavigationItem';
 
 /**
  * Displays the main navigation menu of the app.
  */
 const Navigation = (): JSX.Element => {
   const { pathname } = useLocation();
-  const authUser = useAppSelector((state: any) => state.user.data);
+  const { user: authUser } = useAuthUser();
   const dispatch = useAppDispatch();
   const notifications = useAppSelector(selectUnreadNotifications);
   const unreadMessageCount = useAppSelector(selectUnreadCount);
@@ -37,7 +39,7 @@ const Navigation = (): JSX.Element => {
     dispatch(findUnreadNotificationsThunk());
   }, [dispatch]);
 
-  const links = [
+  const links: NavLink[] = [
     // { label: 'Poster', icon: 'fa-square-t', path: '/poster', color: 'white' },
     { label: 'Home', icon: 'fa-home', path: '/home', color: 'white' },
     // { label: 'Explore', icon: 'fa-hashtag', path: '/explore', color: 'white' },
@@ -54,13 +56,7 @@ const Navigation = (): JSX.Element => {
       path: '/messages',
       color: messageColor,
     },
-    // {
-    //   label: 'Bookmarks',
-    //   icon: 'fa-bookmark',
-    //   path: '/bookmarks',
-    //   color: 'white',
-    // },
-    // { label: 'Lists', icon: 'fa-list', path: '/lists', color: 'white' },
+
     {
       label: 'Profile',
       icon: 'fa-user',
@@ -73,13 +69,6 @@ const Navigation = (): JSX.Element => {
       path: '/search/?q=',
       color: 'white',
     },
-
-    // {
-    //   label: 'More',
-    //   icon: 'fa-circle-ellipsis',
-    //   path: '/more',
-    //   color: 'white',
-    // },
   ];
 
   return (

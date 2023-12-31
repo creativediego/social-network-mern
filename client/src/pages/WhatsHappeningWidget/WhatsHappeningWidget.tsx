@@ -3,7 +3,7 @@ import { useAllPosts } from '../../hooks/useAllPosts';
 import { IPost } from '../../interfaces/IPost';
 import './WhatsHappeningView.css';
 import moment from 'moment';
-import PostContent from '../../components/Posts/PostContent/PostContent';
+import PostContent from '../../components/Posts/Post/PostContent';
 import { Link } from 'react-router-dom';
 
 const WhatsHappeningWidget = (): JSX.Element => {

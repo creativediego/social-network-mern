@@ -1,9 +1,21 @@
 import React from 'react';
-import LikeDislikeButton from '../LikeDislikeButton/LikeDislikeButton';
-import { usePost } from '../../../hooks/usePost';
+import { usePost } from '../Post/hooks/usePost';
+import { LikeButton } from '../../../components';
 
 /**
- * Displays all stats of a post, including likes, dislikes, reposts, and replies.
+ * `PostsList` is a component that displays a list of posts.
+ *
+ * It maps over the `posts` prop and renders a `Post` component for each post.
+ *
+ * @component
+ * @example
+ * Example usage of PostsList component
+ * <PostsList posts={samplePosts} />
+ *
+ * @param {PostsProps} props - The properties that define the PostsList component.
+ * @param {IPost[]} props.posts - An array of post objects.
+ *
+ * @returns {JSX.Element} A JSX element representing the list of posts.
  */
 const PostStats = (): JSX.Element | null => {
   const { post } = usePost();
@@ -11,8 +23,7 @@ const PostStats = (): JSX.Element | null => {
     <div className='row mt-2'>
       <div className='col'>
         <div className='d-flex'>
-          <LikeDislikeButton type='like' />
-          <LikeDislikeButton type='dislike' />
+          <LikeButton />
         </div>
       </div>
     </div>

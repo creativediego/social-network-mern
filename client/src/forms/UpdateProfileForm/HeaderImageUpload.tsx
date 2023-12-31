@@ -1,7 +1,7 @@
 import React, { memo, useEffect } from 'react';
 import './AvatarUpload.scss';
 import { Loader } from '../../components';
-import { ImageTypes, StoragePaths } from '../../interfaces/ImageTypes';
+import { StoragePaths } from '../../interfaces/ImageTypes';
 import { IUser } from '../../interfaces/IUser';
 import { useUploadFile } from '../../hooks/useUploadFile';
 import { useAppDispatch } from '../../redux/hooks';
@@ -13,7 +13,7 @@ import { setAuthUser } from '../../redux/userSlice';
 interface HeaderImageUploadProps {
   user: IUser;
 }
-const BackgroundImageUpload = ({ user }: HeaderImageUploadProps) => {
+const HeaderImageUpload = ({ user }: HeaderImageUploadProps) => {
   const { loading, uploadFile, fileURL } = useUploadFile(
     StoragePaths.BACKGROUND
   );
@@ -57,4 +57,4 @@ const BackgroundImageUpload = ({ user }: HeaderImageUploadProps) => {
   );
 };
 
-export default memo(BackgroundImageUpload);
+export default memo(HeaderImageUpload);

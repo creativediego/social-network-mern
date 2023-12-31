@@ -1,9 +1,9 @@
 import { IPost } from '../interfaces/IPost';
 import { Requests, callAPI } from '../util/apiConfig';
-import { configENV } from '../config/appConfig';
+import { urlConfig } from '../config/appConfig';
 
-const TUITS_API = `${configENV.apiURL}/posts`;
-const USERS_API = `${configENV.apiURL}/users`;
+const TUITS_API = `${urlConfig.apiURL}/posts`;
+const USERS_API = `${urlConfig.apiURL}/users`;
 
 export const APIfindAllPostsByKeyword = (keyword: string) =>
   callAPI<IPost[]>(

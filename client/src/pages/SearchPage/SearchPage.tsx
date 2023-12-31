@@ -1,6 +1,6 @@
 import React from 'react';
 import { Nav, TabContent } from 'react-bootstrap';
-import { Search, Loader, Posts } from '../../components';
+import { Search, Loader, PostsList } from '../../components';
 import { useSearch } from '../../hooks/useSearch';
 import { allSearchService } from '../../services/searchService';
 import PeopleSearchResults from './PeopleSearchResults';
@@ -78,7 +78,7 @@ const SearchPage = (): JSX.Element => {
               {results.posts.length > 0 && (
                 <>
                   <h3>Posts</h3>
-                  <Posts posts={results.posts} showOptions={false} />
+                  <PostsList posts={results.posts} showOptions={false} />
                 </>
               )}
             </>
@@ -87,7 +87,7 @@ const SearchPage = (): JSX.Element => {
             <PeopleSearchResults users={results.users} />
           )}
           {activeTab === 'posts' && (
-            <Posts posts={results.posts} showOptions={false} />
+            <PostsList posts={results.posts} showOptions={false} />
           )}
         </TabContent>
       )}
