@@ -1,26 +1,49 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { IPost } from '../../../../interfaces/IPost';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import {
+  closeModal,
+  openModal,
+  selectConfirmModal,
+} from '../../../../redux/modalSlice';
+import { deletePostThunk } from '../../../../redux/postSlice';
 
 /**
- * `usePostOptions` is a custom hook that provides the functionality to show or hide post options.
+ * `usePostDeletion` is a custom hook that provides the functionality to delete a post.
  *
- * It uses the `useState` and `useCallback` hooks from React to manage the visibility of the post options.
+ * It uses the `useAppDispatch` and `useAppSelector` hooks from Redux to dispatch actions and select state.
  *
  * @hook
  * @example
- * Example usage of usePostOptions hook
- * const { showMenu, handleShowOptions } = usePostOptions();
+ * Example usage of usePostDeletion hook
+ * const { handleDeletePost } = usePostDeletion(post);
  *
- * @returns {{ showMenu: boolean, handleShowOptions: Function }} An object containing the `showMenu` state and the `handleShowOptions` function.
- */
-export const usePostOptions = (): {
-  showMenu: boolean;
-  handleShowOptions: Function;
-} => {
-  const [showMenu, setShowMenu] = useState(false);
+ * @param {IPost} post - The post object to delete.
+ *
+ * @returns {{ handleDeletePost: Function, loading: boolean }} An object containing the `handleDeletePost` function and the `loading` state. */
 
-  const handleShowOptions = useCallback((status: boolean) => {
-    setShowMenu(status);
-  }, []);
+export const usePostOptions = (post: IPost): { handleDelete: Function } => {
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const modalConfirmed = useAppSelector(selectConfirmModal);
+  const dispatch = useAppDispatch();
 
-  return { showMenu, handleShowOptions };
+  const handleDelete = useCallback(() => {
+    setConfirmDelete(true);
+    dispatch(
+      openModal({
+        title: `Delete post?`,
+        content: 'Are you sure you want to delete this post?',
+        actionLabel: 'Delete',
+      })
+    );
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (modalConfirmed && confirmDelete) {
+      dispatch(deletePostThunk(post.id));
+      dispatch(closeModal());
+    }
+  }, [modalConfirmed, confirmDelete, dispatch, post.id]);
+
+  return { handleDelete };
 };

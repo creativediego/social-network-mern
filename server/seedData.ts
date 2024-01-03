@@ -4,8 +4,8 @@ import UserModel from './mongoose/users/UserModel';
 import PostModel from './mongoose/posts/PostModel';
 import mongoose, { Connection } from 'mongoose';
 import { AccountType } from './models/users/AccoutType';
-import { ConversationType } from './models/messages/ConversationType';
-import ConversationModel from './mongoose/messages/ConversationModel';
+import { ChatType } from './models/messages/ChatType';
+import ChatModel from './mongoose/messages/ChatModel';
 import MessageModel from './mongoose/messages/MessageModel';
 
 dotenv.config({ path: './.env' });
@@ -50,8 +50,8 @@ const randomWomenProfilePhotos = getRandomImageURLs('women', 100);
 
 const profiles = [
   {
-    email: 'createideas@hotmail.com',
-    password: 'pass123!',
+    uid: 'CwGYeQ5rVtU9SPa1LTTbaI34J3R2',
+    email: 'creativehtml5@gmail.com',
     bio: 'life is a dream!',
     birthday: '1980-01-01',
     name: 'Creative Dev',
@@ -61,6 +61,7 @@ const profiles = [
       'https://firebasestorage.googleapis.com/v0/b/tuiter-2e307.appspot.com/o/users%2FXxgohUN2Uudo83BEZwgrXA1J76E3%2Fprofile%2FXxgohUN2Uudo83BEZwgrXA1J76E3-header?alt=media&token=b5448fae-b14e-4857-b9ad-10a50c0e824a',
   },
   {
+    uid: '2',
     username: 'johnsmith',
     password: 'abc123',
     name: 'John Smith',
@@ -71,6 +72,7 @@ const profiles = [
   },
 
   {
+    uid: '3',
     username: 'sarahjohnson',
     password: 'def456',
     name: 'Sarah Johnson',
@@ -80,6 +82,7 @@ const profiles = [
     profilePhoto: randomWomenProfilePhotos[0],
   },
   {
+    uid: '4',
     username: 'michaeljames',
     password: 'ghi789',
     name: 'Michael James',
@@ -89,6 +92,7 @@ const profiles = [
     profilePhoto: randomMenProfilePhotos[1],
   },
   {
+    uid: '5',
     username: 'katiejohnson',
     password: 'jkl101',
     name: 'Katie Johnson',
@@ -98,6 +102,7 @@ const profiles = [
     profilePhoto: randomWomenProfilePhotos[1],
   },
   {
+    uid: '6',
     username: 'jenniferbrown',
     password: 'mno112',
     name: 'Jennifer Brown',
@@ -111,7 +116,6 @@ const profiles = [
 const createSeedUser = () => {
   return {
     _id: new mongoose.Types.ObjectId(),
-    uid: new mongoose.Types.ObjectId(),
     accountType: AccountType.Personal,
     followerCount: getRandomNumberBetween(0, 100),
     followeeCount: getRandomNumberBetween(0, 100),
@@ -125,7 +129,10 @@ const userSeeds: any[] = [];
 
 for (let i = 0; i < profiles.length; i++) {
   let user = createSeedUser();
-  user = { ...user, ...profiles[i] };
+  user = {
+    ...user,
+    ...profiles[i],
+  };
 
   userSeeds.push(user);
 }
@@ -155,7 +162,7 @@ const posts = [
 const createSeedPost = (postNumber: number, authorNumber: number): any => {
   return {
     post: posts[postNumber],
-    author: userSeeds[authorNumber]._id,
+    author: userSeeds[authorNumber],
     stats: {
       likes: getRandomNumberBetween(1, 1000),
       dislikes: getRandomNumberBetween(1, 1000),
@@ -169,93 +176,139 @@ const createSeedPost = (postNumber: number, authorNumber: number): any => {
   };
 };
 
+/**
+ * Generates seed data for users and posts. The number of users and posts generated can be configured by changing the values of the `numberOfUsers` and `numberOfPosts` variables.
+ */
 let postSeeds: any[] = [];
 for (let i = 0; i < posts.length; i++) {
+  // Select a random author for the post
   const authorIndex = getRandomNumberBetween(0, profiles.length - 1);
   const post = createSeedPost(i, authorIndex);
   postSeeds.push(post);
 }
 
-// Your existing code for users and posts seed data...
-
-// Find the user with the specified email
-const creatorUser = userSeeds[0];
-
+// Call the function to create seed conversations and messages
 // Generating seed data for conversations
-const conversationSeeds = [
+const chatSeeds = [
   {
-    cid: new mongoose.Types.ObjectId(),
-    type: ConversationType.Group,
-    createdBy: creatorUser._id,
-    participants: [userSeeds[1]._id, userSeeds[2]._id],
+    _id: new mongoose.Types.ObjectId(),
+    type: 'PRIVATE', // Replace with ConversationType or the appropriate type
+    creatorId: userSeeds[0]._id, // Selecting a user as the conversation creator
+    participants: [userSeeds[0]._id, userSeeds[2]._id], // Participants in the conversation
+    deletedBy: [], // Initializing optional fields as empty arrays
+    readBy: [], // Initializing optional fields as empty arrays
   },
   {
-    cid: new mongoose.Types.ObjectId(),
-    type: ConversationType.Private,
-    createdBy: creatorUser._id,
-    participants: [userSeeds[0]._id],
+    _id: new mongoose.Types.ObjectId(),
+    type: 'GROUP', // Replace with ConversationType or the appropriate type
+    creatorId: userSeeds[1]._id,
+    participants: [userSeeds[0]._id, userSeeds[1]._id, userSeeds[2]._id], // Participants in the conversation
+    deletedBy: [], // Initializing optional fields as empty arrays
+    readBy: [], // Initializing optional fields as empty arrays
   },
-  // Add more conversation seed objects as needed...
 ];
 
-// Generating seed data for messages
+// Generating seed data for messages related to chats
 const messageSeeds = [
   {
-    sender: userSeeds[1]._id,
-    conversation: conversationSeeds[0].createdBy,
-    message: 'Hey there, how are you?',
+    _id: new mongoose.Types.ObjectId(),
+    sender: userSeeds[0]._id, // Sender of the message
+    recipients: [userSeeds[0]._id, userSeeds[2]._id], // Recipient(s) of the message
+    chatId: chatSeeds[0]._id, // Corresponding chat ID
+    chat: chatSeeds[0], // Reference to the chat object
+    content: 'Hi Sarah, how are you?', // Message content
+    createdAt: newRandomDateWithinThisYear(), // Date and time of message creation
+    removeFor: [], // Initializing optional fields as empty arrays
+    readFor: [], // Initializing optional fields as empty arrays
   },
   {
-    sender: userSeeds[2]._id,
-    conversation: conversationSeeds[0].createdBy,
-    message: 'I am doing great, thanks!',
+    _id: new mongoose.Types.ObjectId(),
+    sender: userSeeds[0]._id, // Sender of the message
+    recipients: [userSeeds[0]._id, userSeeds[2]._id], // Recipient(s) of the message
+    chatId: chatSeeds[0]._id, // Corresponding chat ID
+    chat: chatSeeds[0], // Reference to the chat object
+    content: 'Happy new year Sarah!', // Message content
+    createdAt: newRandomDateWithinThisYear(), // Date and time of message creation
+    removeFor: [], // Initializing optional fields as empty arrays
+    readFor: [], // Initializing optional fields as empty arrays
+  },
+
+  {
+    _id: new mongoose.Types.ObjectId(),
+    sender: userSeeds[2]._id, // Sender of the message
+    recipients: [userSeeds[0]._id, userSeeds[2]._id], // Recipient(s) of the message
+    chatId: chatSeeds[0]._id, // Corresponding chat ID
+    chat: chatSeeds[0], // Reference to the chat object
+    content: 'Hello my friend!', // Message content
+    createdAt: newRandomDateWithinThisYear(), // Date and time of message creation
+    removeFor: [], // Initializing optional fields as empty arrays
+    readFor: [], // Initializing optional fields as empty arrays
   },
   {
-    sender: userSeeds[0]._id,
-    conversation: conversationSeeds[1].createdBy,
-    message: 'Hello! How can I help you?',
+    _id: new mongoose.Types.ObjectId(),
+    sender: userSeeds[1]._id, // Sender of the message
+    recipients: [userSeeds[0]._id, userSeeds[1]._id, userSeeds[2]._id], // Recipient(s) of the message
+    chatId: chatSeeds[1]._id, // Corresponding chat ID
+    chat: chatSeeds[1], // Reference to the chat object
+    content: 'This group is awesome!', // Message content
+    createdAt: newRandomDateWithinThisYear(), // Date and time of message creation
+    removeFor: [], // Initializing optional fields as empty arrays
+    readFor: [], // Initializing optional fields as empty arrays
   },
   {
-    sender: userSeeds[1]._id,
-    conversation: conversationSeeds[1].createdBy,
-    message: 'I have a question about our project deadline.',
+    _id: new mongoose.Types.ObjectId(),
+    sender: userSeeds[2]._id, // Sender of the message
+    recipients: [userSeeds[0]._id, userSeeds[1]._id, userSeeds[2]._id], // Recipient(s) of the message
+    chatId: chatSeeds[1]._id, // Corresponding chat ID
+    chat: chatSeeds[1], // Reference to the chat object
+    content: 'I totally agree this group is awesome!', // Message content
+    createdAt: newRandomDateWithinThisYear(), // Date and time of message creation
+    removeFor: [], // Initializing optional fields as empty arrays
+    readFor: [], // Initializing optional fields as empty arrays
   },
-  // Add more message seed objects as needed...
+  {
+    _id: new mongoose.Types.ObjectId(),
+    sender: userSeeds[0]._id, // Sender of the message
+    recipients: [userSeeds[0]._id, userSeeds[1]._id, userSeeds[2]._id], // Recipient(s) of the message
+    chatId: chatSeeds[1]._id, // Corresponding chat ID
+    chat: chatSeeds[1], // Reference to the chat object
+    content: 'Oh, well hello group!', // Message content
+    createdAt: newRandomDateWithinThisYear(), // Date and time of message creation
+    removeFor: [], // Initializing optional fields as empty arrays
+    readFor: [], // Initializing optional fields as empty arrays
+  },
 ];
 
-// Function to create seed conversations and messages
-const createSeedConversationsAndMessages = async () => {
+// Function to create seed chats and messages
+const createSeedChatsAndMessages = async () => {
   // Connect to the MongoDB database
-  // Insert seed conversations into the conversations collection
-  const insertedConversations = await ConversationModel.insertMany(
-    conversationSeeds
-  );
+  // Insert seed chats into the chats collection
+  const insertedChats = await ChatModel.insertMany(chatSeeds);
 
-  // Update message seeds with inserted conversation IDs
-  messageSeeds.forEach((messageSeed, index) => {
-    messageSeed.conversation =
-      insertedConversations[index % insertedConversations.length]._id;
-  });
+  // Update message seeds with inserted chat IDs
+  // messageSeeds.forEach((messageSeed, index) => {
+  //   messageSeed.chat = insertedChats[index % insertedChats.length]._id;
+  // });
 
   // Insert seed messages into the messages collection
   await MessageModel.insertMany(messageSeeds);
 
-  console.log('Seeded conversations and messages!');
-  process.exit(0);
+  console.log('Seeded chats and messages!');
 };
-
-// Call the function to create seed conversations and messages
 
 // Conect to mongoDB and then drop all collections, and then seed the users and posts collections
 let db: Connection;
 (async () => {
+  console.log('=================');
+  console.log('Connecting to Database...');
+  console.log('=================');
   db = await connectToDatabase(process.env.API_MONGO_URI!);
   console.log('Dropping database...');
   await db.dropDatabase();
   console.log('Seeding database...');
   await UserModel.insertMany(userSeeds);
   await PostModel.insertMany(postSeeds);
-  await createSeedConversationsAndMessages();
+  await createSeedChatsAndMessages();
   console.log('=================');
   console.log('Seeded database!');
   console.log('=================');

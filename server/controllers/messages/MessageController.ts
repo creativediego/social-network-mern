@@ -5,11 +5,10 @@ import HttpRequest from '../shared/HttpRequest';
 import HttpResponse from '../shared/HttpResponse';
 import { Express, Router } from 'express';
 import { adaptRequest } from '../shared/adaptRequest';
-import { Server } from 'socket.io';
 import { okResponse } from '../shared/createResponse';
 import { isAuthenticated } from '../auth/isAuthenticated';
 import { ISocketService } from '../../services/ISocketService';
-import IConversation from '../../models/messages/IConversation';
+import IChat from '../../models/messages/IChat';
 
 /**
  * Represents an implementation of an {@link IMessageController}
@@ -31,135 +30,109 @@ export default class MessageController implements IMessageController {
     this.messageDao = messageDao;
     this.socketService = socketService;
     const router: Router = Router();
-    router.get(
-      '/:userId/messages',
-      isAuthenticated,
 
-      adaptRequest(this.findLatestMessagesByUser)
-    );
-    router.get(
-      '/:userId/messages/sent',
-      isAuthenticated,
-      adaptRequest(this.findAllMessagesSentByUser)
-    );
-    router.get(
-      '/:userId/conversations/:conversationId/messages',
-      isAuthenticated,
+    router.get('/:chatId', isAuthenticated, adaptRequest(this.findChat));
 
-      adaptRequest(this.findAllMessagesByConversation)
-    );
-    router.post(
-      '/:userId/conversations/',
+    router.post('/', isAuthenticated, adaptRequest(this.createChat));
+
+    router.delete('/:chatId', isAuthenticated, adaptRequest(this.deleteChat));
+
+    router.get(
+      '/:chatId/messages',
       isAuthenticated,
-      adaptRequest(this.createConversation)
+      adaptRequest(this.findMessagesByChat)
     );
 
-    router.post(
-      '/:userId/conversations/:conversationId/messages/',
+    router.get(
+      '/messages/inbox',
       isAuthenticated,
-      adaptRequest(this.createMessage)
+      adaptRequest(this.findInboxMessages)
     );
+
+    router.get(
+      '/messages/sent',
+      isAuthenticated,
+      adaptRequest(this.findMessagesUserSent)
+    );
+
+    router.post('/messages', isAuthenticated, adaptRequest(this.createMessage));
 
     router.delete(
-      '/:userId/messages/:messageId',
+      '/messages/:messageId',
       isAuthenticated,
       adaptRequest(this.deleteMessage)
     );
-    router.delete(
-      '/:userId/conversations/:conversationId',
-      isAuthenticated,
-      adaptRequest(this.deleteConversation)
-    );
-    router.get(
-      '/:userId/conversations/:conversationId',
-      isAuthenticated,
-      adaptRequest(this.findConversation)
-    );
+
     app.use(path, router);
     Object.freeze(this); // Make this object immutable.
   }
 
   /**
-   * Processes request and response of creating a new conversation, which will be associated with a message. Calls the message dao to create the conversation using with meta data, such as who created the conversations, the participants, and the type of conversation. Sends the new conversation object back to the client.
+   * Processes request and response of creating a new chat, which will be associated with a message. Calls the message dao to create the chat using with meta data, such as who created the chats, the participants, and the type of chat. Sends the new chat object back to the client.
    * @param {HttpRequest} req the request data containing client data
    * @returns {HttpResponse} the response data to be sent to the client
    */
-  createConversation = async (req: HttpRequest): Promise<HttpResponse> => {
-    const newConversation = await this.messageDao.createConversation(req.body);
-    return okResponse(newConversation);
+  createChat = async (req: HttpRequest): Promise<HttpResponse> => {
+    const newChat = await this.messageDao.createChat(req.body);
+    return okResponse(newChat);
   };
 
-  findConversation = async (req: HttpRequest): Promise<HttpResponse> => {
-    const conversation = await this.messageDao.findConversation(
-      req.params.conversationId
-    );
-    return okResponse(conversation);
+  findChat = async (req: HttpRequest): Promise<HttpResponse> => {
+    const chat = await this.messageDao.findChat(req.params.chatId);
+    return okResponse(chat);
   };
 
   /**
-   * Processes the request and response of creating a new message sent by the specified user. The request body specifies the conversation the message belongs to. Message dao is called to create the message, which is then sent back to the client.
+   * Processes the request and response of creating a new message sent by the specified user. The request body specifies the chat the message belongs to. Message dao is called to create the message, which is then sent back to the client.
    * @param {HttpRequest} req the request data containing client data
    * @returns {HttpResponse} the response data to be sent to the client
    */
-  createMessage = async (req: HttpRequest): Promise<any> => {
+  createMessage = async (req: HttpRequest): Promise<HttpResponse> => {
     const message: IMessage = {
       sender: req.user.id,
-      conversation: req.params.conversationId,
-      message: req.body.message,
+      chatId: req.params.chatId,
+      content: req.body.message,
+      recipients: req.body.recipients,
     };
 
-    const newMessage: IMessage = await this.messageDao.createMessage(
-      req.user.id,
-      message
-    );
+    const newMessage: IMessage = await this.messageDao.createMessage(message);
 
     // Emit to client sockets
-    const recipients = newMessage.conversation.participants;
-    for (const recipient of recipients) {
-      this.socketService.emitToRoom(
-        recipient.toString(),
-        'NEW_MESSAGE',
-        newMessage
-      );
+    const recipientIds = newMessage.recipients;
+    for (const recipientId of recipientIds) {
+      this.socketService.emitToRoom(recipientId, 'NEW_MESSAGE', newMessage);
     }
     return okResponse(newMessage);
   };
 
   /**
-   * Processes request and response of finding all messages associated with a user and a conversation. Calls the message dao to find such messages using the user and conversation ids. Sends back an array of messages back to the client.
+   * Processes request and response of finding all messages associated with a user and a chat. Calls the message dao to find such messages using the user and chat ids. Sends back an array of messages back to the client.
    * @param {HttpRequest} req the request data containing client data
    * @returns {HttpResponse} the response data to be sent to the client
    */
-  findAllMessagesByConversation = async (
-    req: HttpRequest
-  ): Promise<HttpResponse> => {
-    const messages = await this.messageDao.findAllMessagesByConversation(
+  findMessagesByChat = async (req: HttpRequest): Promise<HttpResponse> => {
+    const messages = await this.messageDao.findMessagesByChat(
       req.user.id,
-      req.params.conversationId
+      req.params.chatId
     );
     return okResponse(messages);
   };
 
   /**
-   * Processes request and response of finding the latest messages for each conversation the specified user currently has with the help of the messages dao. Sends back an array with the latest messages to the client.
+   * Processes request and response of finding the latest messages for each chat the specified user currently has with the help of the messages dao. Sends back an array with the latest messages to the client.
    * @param {HttpRequest} req the request data containing client data
    * @returns {HttpResponse} the response data to be sent to the client
    */
-  findLatestMessagesByUser = async (
-    req: HttpRequest
-  ): Promise<HttpResponse> => {
+  findInboxMessages = async (req: HttpRequest): Promise<HttpResponse> => {
     const userId = req.user.id;
-    const messages: any = await this.messageDao.findLatestMessagesByUser(
-      userId
-    );
+    const messages: any = await this.messageDao.findInboxMessages(userId);
     return okResponse(messages);
   };
 
-  findAllMessagesSentByUser = async (
-    req: HttpRequest
-  ): Promise<HttpResponse> => {
-    const messages: IMessage[] =
-      await this.messageDao.findAllMessagesSentByUser(req.user.id);
+  findMessagesUserSent = async (req: HttpRequest): Promise<HttpResponse> => {
+    const messages: IMessage[] = await this.messageDao.findMessagesUserSent(
+      req.user.id
+    );
     return okResponse(messages);
   };
 
@@ -177,16 +150,15 @@ export default class MessageController implements IMessageController {
   };
 
   /**
-   * Processes request and response of removing a conversation for the specified user by passing user and conversation id to the message dao. Sends the deleted conversation back to the client.
+   * Processes request and response of removing a chat for the specified user by passing user and chat id to the message dao. Sends the deleted chat back to the client.
    * @param {HttpRequest} req the request data containing client data
    * @returns {HttpResponse} the response data to be sent to the client
    */
-  deleteConversation = async (req: HttpRequest): Promise<HttpResponse> => {
-    const deletedConversation: IConversation =
-      await this.messageDao.deleteConversation(
-        req.user.id,
-        req.params.conversationId
-      );
-    return okResponse(deletedConversation);
+  deleteChat = async (req: HttpRequest): Promise<HttpResponse> => {
+    const deletedChat: IChat = await this.messageDao.deleteChat(
+      req.user.id,
+      req.params.chatId
+    );
+    return okResponse(deletedChat);
   };
 }

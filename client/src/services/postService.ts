@@ -1,6 +1,6 @@
 import { IPost } from '../interfaces/IPost';
 import { logToConsole } from '../util/logToConsole';
-import { APIServiceI, Requests, APIService } from './APIService';
+import { APIServiceI, Requests, apiService } from './APIService';
 import { urlConfig } from '../config/appConfig';
 
 export interface IPostService {
@@ -132,5 +132,5 @@ const POST_API_URL = `${urlConfig.apiURL}/posts`;
 
 export const postService = PostServiceImpl.getInstance(
   POST_API_URL,
-  APIService
+  apiService
 );

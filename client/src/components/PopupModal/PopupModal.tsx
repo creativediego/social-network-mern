@@ -42,7 +42,7 @@ const PopupModal: React.FC<PopupModalProps> = ({
       backdrop={locked ? 'static' : true}
     >
       <Modal.Header closeButton={locked ? false : true}>
-        <h2 id='modal_title'>{title}</h2>
+        <h6 id='modal_title'>{title}</h6>
       </Modal.Header>
       <Modal.Body id='modal_body'>{children && children}</Modal.Body>
       <ModalFooter>

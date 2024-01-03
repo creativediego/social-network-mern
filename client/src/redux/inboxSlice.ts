@@ -5,10 +5,12 @@ import {
   createSlice,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { IConversation } from '../interfaces/IConversation';
+import { IChat } from '../interfaces/IChat';
 import { IMessage } from '../interfaces/IMessage';
-import * as messageAPI from '../services/messageAPI';
+import * as messageAPI from '../services/chatAPI';
 import type { RootState } from './store';
+import { logToConsole } from '../util/logToConsole';
+import { chatService } from '../services/chatService';
 
 /**
  * Fetch inbox messages.
@@ -19,20 +21,16 @@ export const findInboxMessagesThunk = createAsyncThunk(
     const state = ThunkAPI.getState() as RootState;
     const userId = state.user.data.id;
     const inboxMessages = await messageAPI.findInboxMessages(userId);
+    logToConsole('INBOX', inboxMessages);
     return inboxMessages;
   }
 );
 
-export const deleteConversationThunk = createAsyncThunk(
-  'messages/deleteConversation',
-  async (conversationId: string, ThunkAPI) => {
-    const state = ThunkAPI.getState() as RootState;
-    const userId = state.user.data.id;
-    const deletedConversation = await messageAPI.deleteConversation(
-      userId,
-      conversationId
-    );
-    return deletedConversation;
+export const deleteInboxChatThunk = createAsyncThunk(
+  'messages/deleteInboxChat',
+  async (chatId: string, _) => {
+    const delChat = await chatService.deleteChat(chatId);
+    return delChat;
   }
 );
 
@@ -40,7 +38,7 @@ export const deleteConversationThunk = createAsyncThunk(
  * Manages the state dealing with messages, including inbox and current active chat.
  */
 const inboxAdapter = createEntityAdapter<IMessage>({
-  selectId: (message: IMessage) => message.conversationId!,
+  selectId: (message: IMessage) => message.chatId!,
   sortComparer: (a, b) => b.createdAt.localeCompare(a.createdAt),
 });
 
@@ -73,17 +71,17 @@ const messageInboxSlice = createSlice({
     builder.addCase(findInboxMessagesThunk.rejected, (state) => {
       state.loading = false;
     });
-    builder.addCase(deleteConversationThunk.pending, (state) => {
+    builder.addCase(deleteInboxChatThunk.pending, (state) => {
       state.loading = true;
     });
     builder.addCase(
-      deleteConversationThunk.fulfilled,
-      (state, action: PayloadAction<IConversation>) => {
+      deleteInboxChatThunk.fulfilled,
+      (state, action: PayloadAction<IChat>) => {
         state.loading = false;
         inboxAdapter.removeOne(state, action.payload.id);
       }
     );
-    builder.addCase(deleteConversationThunk.rejected, (state) => {
+    builder.addCase(deleteInboxChatThunk.rejected, (state) => {
       state.loading = false;
     });
   },
@@ -103,7 +101,7 @@ export const selectUnreadCount = createSelector(
       .getSelectors()
       .selectAll(state.messagesInbox)
       .forEach((message) => {
-        if (message.readFor && !message.readFor.includes(userId)) {
+        if (message.readBy && !message.readBy.includes(userId)) {
           unreadCount++;
         }
       });

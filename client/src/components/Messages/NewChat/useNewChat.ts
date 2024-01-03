@@ -2,12 +2,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IUser } from '../../../interfaces/IUser';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { IConversation } from '../../../interfaces/IConversation';
+import { IChat } from '../../../interfaces/IChat';
 import { selectAuthUser } from '../../../redux/userSlice';
-import {
-  createConversationThunk,
-  selectActiveChatId,
-} from '../../../redux/chatSlice';
+import { createChatThunk, selectActiveChatId } from '../../../redux/chatSlice';
 
 /**
  * Manages the state of creating a new chat. Used with NewChat component.
@@ -44,13 +41,15 @@ export const useNewChat = () => {
     setLoading(true);
     setSelectedUsers([]);
 
-    const conversation: IConversation = {
+    const conversation: IChat = {
       id: '',
       participants: [...selectedUsers, authUser],
-      createdBy: authUser,
+      creatorId: authUser.id,
+      deletedBy: [],
+      readBy: [],
     };
 
-    dispatch(createConversationThunk(conversation));
+    dispatch(createChatThunk(conversation));
     if (isMounted.current) {
       setLoading(false);
     }

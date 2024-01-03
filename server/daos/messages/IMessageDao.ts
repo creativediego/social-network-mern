@@ -1,22 +1,19 @@
-import IConversation from '../../models/messages/IConversation';
+import IChat from '../../models/messages/IChat';
 import IMessage from '../../models/messages/IMessage';
 
 /**
  * Common DAO interface operations for the messages resources.
  */
 export default interface IMessageDao {
-  createConversation(conversation: IConversation): Promise<IConversation>;
-  findConversation(conversationId: string): Promise<IConversation>;
-  createMessage(sender: string, message: IMessage): Promise<IMessage>;
-  findLatestMessagesByUser(userId: string): Promise<IMessage[]>;
-  findAllMessagesSentByUser(userId: string): Promise<IMessage[]>;
-  findAllMessagesByConversation(
+  createChat(conversation: IChat): Promise<IChat>;
+  findChat(chatId: string): Promise<IChat>;
+  createMessage(message: IMessage): Promise<IMessage>;
+  findInboxMessages(userId: string): Promise<IMessage[]>;
+  findMessagesUserSent(userId: string): Promise<IMessage[]>;
+  findMessagesByChat(
     userId: string,
     conversationId: string
   ): Promise<IMessage[]>;
-  deleteConversation(
-    userId: string,
-    conversationId: string
-  ): Promise<IConversation>;
+  deleteChat(userId: string, chatId: string): Promise<IChat>;
   deleteMessage(userId: string, messageId: string): Promise<IMessage>;
 }

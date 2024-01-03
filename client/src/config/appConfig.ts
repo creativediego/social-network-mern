@@ -7,6 +7,6 @@ export const urlConfig = {
   userApi: `${process.env.REACT_APP_SERVER_URL}/api/users`,
   likeApi: `${process.env.REACT_APP_SERVER_URL}/api/posts/likes`,
   dislikeApi: `${process.env.REACT_APP_SERVER_URL}/api/posts/dislikes`,
-  conversationApi: `${process.env.REACT_APP_SERVER_URL}/api/conversations`,
+  chatApi: `${process.env.REACT_APP_SERVER_URL}/api/chat`,
   notificationApi: `${process.env.REACT_APP_SERVER_URL}/api/notifications`,
 };

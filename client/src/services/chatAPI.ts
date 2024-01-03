@@ -1,9 +1,9 @@
-import { IConversation } from '../interfaces/IConversation';
+import { IChat } from '../interfaces/IChat';
 import { IMessage } from '../interfaces/IMessage';
 import { callAPI, Requests } from '../util/apiConfig';
 import { urlConfig } from '../config/appConfig';
 
-const MESSAGES_API = `${urlConfig.apiURL}/users`;
+const CHAT_API = `${urlConfig.chatApi}`;
 
 /**
  * Create a new message for an existing conversation by using the existing
@@ -11,13 +11,9 @@ const MESSAGES_API = `${urlConfig.apiURL}/users`;
  * ConversationModel to check if sender is a participant in the conversation.
  * If so, then call the MessageModel to create the message.
  */
-export const sendMessage = async (
-  userId: string,
-  conversationId: string,
-  message: string
-) =>
+export const sendMessage = async (chatId: string, message: string) =>
   callAPI<IMessage, { message: string }>(
-    `${MESSAGES_API}/${userId}/conversations/${conversationId}/messages`,
+    `${CHAT_API}/${chatId}/messages`,
     Requests.POST,
     'Error sending message. Try again later.',
     { message }
@@ -30,12 +26,9 @@ export const sendMessage = async (
  * @param conversation conversation object
  * @returns {Promise<{conversation}>} the conversation object or error
  */
-export const createConversation = async (
-  userId: string,
-  conversation: IConversation
-) =>
-  callAPI<IConversation, IConversation>(
-    `${MESSAGES_API}/${userId}/conversations`,
+export const createChat = async (userId: string, conversation: IChat) =>
+  callAPI<IChat, IChat>(
+    `${CHAT_API}/${userId}/conversations`,
     Requests.POST,
     'Error creating conversation. Try again later.',
     conversation
@@ -50,17 +43,14 @@ export const createConversation = async (
  */
 export const findInboxMessages = async (userId: string) =>
   callAPI<IMessage[]>(
-    `${MESSAGES_API}/${userId}/messages/`,
+    `${CHAT_API}/messages/inbox`,
     Requests.GET,
     'Error fetching inbox messages. Try again later.'
   );
 
-export const findConversation = async (
-  userId: string,
-  conversationId: string
-) =>
-  callAPI<IConversation>(
-    `${MESSAGES_API}/${userId}/conversations/${conversationId}`,
+export const findChat = async (chatId: string) =>
+  callAPI<IChat>(
+    `${CHAT_API}/${chatId}`,
     Requests.GET,
     'Error fetching conversation. Try again later.'
   );
@@ -71,12 +61,9 @@ export const findConversation = async (
  * @param userId id of the user requesting the latest messages
  * @param conversationId the id of the conversation*/
 
-export const findMessagesByConversation = async (
-  userId: string,
-  conversationId: string
-) =>
+export const findMessagesByChat = async (chatId: string) =>
   callAPI<IMessage[]>(
-    `${MESSAGES_API}/${userId}/conversations/${conversationId}/messages`,
+    `${CHAT_API}/${chatId}/messages`,
     Requests.GET,
     'Error fetching messages. Try again later.'
   );
@@ -86,7 +73,7 @@ export const findMessagesByConversation = async (
  */
 export const findAllMessagesSentByUser = async (userId: string) =>
   callAPI<IMessage[]>(
-    `${MESSAGES_API}/${userId}/messages/sent`,
+    `${CHAT_API}/${userId}/messages/sent`,
     Requests.GET,
     'Error fetching messages. Try again later.'
   );
@@ -101,7 +88,7 @@ export const findAllMessagesSentByUser = async (userId: string) =>
  */
 export const deleteMessage = async (userId: string, messageId: string) =>
   callAPI<IMessage>(
-    `${MESSAGES_API}/${userId}/messages/${messageId}`,
+    `${CHAT_API}/${userId}/messages/${messageId}`,
     Requests.DELETE,
     'Error deleting message. Try again later.'
   );
@@ -116,8 +103,8 @@ export const deleteConversation = async (
   userId: string,
   conversationId: string
 ) =>
-  callAPI<IConversation>(
-    `${MESSAGES_API}/${userId}/conversations/${conversationId}`,
+  callAPI<IChat>(
+    `${CHAT_API}/${userId}/conversations/${conversationId}`,
     Requests.DELETE,
     'Error deleting conversation. Try again later.'
   );

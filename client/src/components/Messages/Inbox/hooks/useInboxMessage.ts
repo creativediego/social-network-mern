@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useAppDispatch } from '../../../redux/hooks';
+import { useAppDispatch } from '../../../../redux/hooks';
 
 import {
   findInboxMessagesThunk,
-  deleteConversationThunk,
-} from '../../../redux/messageInboxSlice';
+  deleteInboxChatThunk,
+} from '../../../../redux/inboxSlice';
 
 /**
  * Manages the state of a single inbox message.
@@ -19,7 +19,7 @@ const useInboxMessage = () => {
 
   const deleteConversation = useCallback(
     (conversationId: string) => {
-      return dispatch(deleteConversationThunk(conversationId));
+      return dispatch(deleteInboxChatThunk(conversationId));
     },
     [dispatch]
   );

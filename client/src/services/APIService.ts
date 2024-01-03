@@ -89,5 +89,5 @@ class APIServiceImpl implements APIServiceI {
   }
 }
 
-export const APIService = APIServiceImpl.getInstance(logger);
-export const callAPI = APIService.makeRequest;
+export const apiService = APIServiceImpl.getInstance(logger);
+export const callAPI = apiService.makeRequest;

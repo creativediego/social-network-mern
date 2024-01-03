@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Loader, ProfileInfo, ProfilePosts } from '../../components';
 import { useProfile } from '../../components/Profile/ProfileInfo/useProfile';
-
+// TODO: CHECK PERFORMANCE, UNIT AND INTEGRATION TESTS, AND THEN LIGHTHOUSE SCORES, captcha for reg and login
 /**
  * `ProfilePage` is a component that displays the profile page for a user. The user can be the authenticated user looking at their own profile, or the profile of another user. The username is determined from the URL parameters.
  *

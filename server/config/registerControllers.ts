@@ -106,7 +106,7 @@ export const registerControllers = (container: IDependencyContainer): void => {
     Dep.MessageController,
     [Dep.App, Dep.MessageDao, Dep.SocketService],
     (app: Express, messageDao: IMessageDao, socketService: ISocketService) =>
-      new MessageController('/api/users', app, messageDao, socketService)
+      new MessageController('/api/chat', app, messageDao, socketService)
   );
 
   container.register(

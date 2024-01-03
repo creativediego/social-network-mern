@@ -5,30 +5,21 @@ import {
   createAsyncThunk,
   createSelector,
 } from '@reduxjs/toolkit';
-import { IConversation } from '../interfaces/IConversation';
+import { IChat } from '../interfaces/IChat';
 import { IMessage } from '../interfaces/IMessage';
 import { IUser } from '../interfaces/IUser';
-import * as messageAPI from '../services/messageAPI';
+import { chatService } from '../services/chatService';
 import type { RootState } from './store';
 
 /**
- * Fetch a specific conversation and all messages related to it.
+ * Fetch a specific chat and all messages related to it.
  */
-export const findMessagesByConversationThunk = createAsyncThunk(
+export const findMessagesByChatThunk = createAsyncThunk(
   'chat/findAllMessages',
-  async (conversationId: string, ThunkAPI) => {
-    const state = ThunkAPI.getState() as RootState;
-    const userId = state.user.data.id;
-
-    const conversation = await messageAPI.findConversation(
-      userId,
-      conversationId
-    );
-    const messages = await messageAPI.findMessagesByConversation(
-      userId,
-      conversationId
-    );
-    return { conversation, messages };
+  async (chatId: string, _) => {
+    const chat = await chatService.findChat(chatId);
+    const messages = await chatService.findMessagesByChat(chatId);
+    return { chat, messages };
   }
 );
 
@@ -37,45 +28,30 @@ export const findMessagesByConversationThunk = createAsyncThunk(
  */
 export const sendMessageThunk = createAsyncThunk(
   'chat/send',
-  async (
-    {
-      sender,
-      conversationId,
-      message,
-    }: { sender: string; conversationId: string; message: string },
-    ThunkAPI
-  ) => {
+  async (content: string, ThunkAPI) => {
     const state = ThunkAPI.getState() as RootState;
     const chatId = state.chat.id;
-    const newMessage = await messageAPI.sendMessage(sender, chatId, message);
+    const newMessage = await chatService.sendMessage(chatId, content);
     return newMessage;
   }
 );
 
 export const deleteMessageThunk = createAsyncThunk(
-  'chat/delete',
-  async (
-    { userId, messageId }: { userId: string; messageId: string },
-    ThunkAPI
-  ) => {
-    const deletedMessage = await messageAPI.deleteMessage(userId, messageId);
+  'chat/message/delete',
+  async (message: IMessage, ThunkAPI) => {
+    const deletedMessage = await chatService.deleteMessage(message);
     return deletedMessage;
   }
 );
 
 // /**
-//  * Post a new conversation.
+//  * Create a new chat.
 //  */
-export const createConversationThunk = createAsyncThunk(
-  'messages/createConversation',
-  async (conversation: IConversation, ThunkAPI) => {
-    const state = ThunkAPI.getState() as RootState;
-    const userId = state.user.data.id;
-    const newConversation = await messageAPI.createConversation(
-      userId,
-      conversation
-    );
-    return newConversation;
+export const createChatThunk = createAsyncThunk(
+  'messages/createChat',
+  async (chat: IChat, ThunkAPI) => {
+    const newChat = await chatService.createChat(chat);
+    return newChat;
   }
 );
 
@@ -121,30 +97,31 @@ const chatSlice = createSlice({
     builder.addCase(deleteMessageThunk.rejected, (state) => {
       state.loading = false;
     });
-    builder.addCase(findMessagesByConversationThunk.pending, (state) => {
+    builder.addCase(findMessagesByChatThunk.pending, (state) => {
       state.loading = true;
       chatAdapter.removeAll(state);
       participantsAdapter.removeAll(state.participants);
     });
     builder.addCase(
-      findMessagesByConversationThunk.fulfilled,
+      findMessagesByChatThunk.fulfilled,
       (
         state,
         action: PayloadAction<{
-          conversation: IConversation;
+          chat: IChat;
           messages: IMessage[];
         }>
       ) => {
+        console.log('MESSAGE BY CHAT', action.payload);
         state.loading = false;
         chatAdapter.setAll(state, action.payload.messages);
-        state.id = action.payload.conversation.id;
+        state.id = action.payload.chat.id;
         participantsAdapter.setAll(
           state.participants,
-          action.payload.conversation.participants
+          action.payload.chat.participants
         );
       }
     );
-    builder.addCase(findMessagesByConversationThunk.rejected, (state) => {
+    builder.addCase(findMessagesByChatThunk.rejected, (state) => {
       state.loading = false;
     });
 
@@ -154,7 +131,7 @@ const chatSlice = createSlice({
     builder.addCase(
       sendMessageThunk.fulfilled,
       (state, action: PayloadAction<IMessage>) => {
-        state.id = action.payload.conversation.id;
+        state.id = action.payload.chatId;
         state.loading = false;
         chatAdapter.upsertOne(state, action.payload);
       }
@@ -162,12 +139,12 @@ const chatSlice = createSlice({
     builder.addCase(sendMessageThunk.rejected, (state) => {
       state.loading = false;
     });
-    builder.addCase(createConversationThunk.pending, (state) => {
+    builder.addCase(createChatThunk.pending, (state) => {
       state.loading = true;
     });
     builder.addCase(
-      createConversationThunk.fulfilled,
-      (state, action: PayloadAction<IConversation>) => {
+      createChatThunk.fulfilled,
+      (state, action: PayloadAction<IChat>) => {
         state.loading = false;
         state.id = action.payload.id;
         chatAdapter.removeAll(state);
@@ -177,7 +154,7 @@ const chatSlice = createSlice({
         );
       }
     );
-    builder.addCase(createConversationThunk.rejected, (state) => {
+    builder.addCase(createChatThunk.rejected, (state) => {
       state.loading = false;
     });
   },

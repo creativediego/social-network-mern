@@ -7,7 +7,7 @@ import {
   selectUnreadNotifications,
 } from '../../redux/notificationSlice';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { selectUnreadCount } from '../../redux/messageInboxSlice';
+import { selectUnreadCount } from '../../redux/inboxSlice';
 import { useAuthUser } from '../../hooks/useAuthUser';
 import { NavLink } from './NavigationItem/NavigationItem';
 

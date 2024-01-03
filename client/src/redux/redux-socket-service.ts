@@ -2,7 +2,7 @@ import io, { Socket } from 'socket.io-client';
 import axios from 'axios';
 import { upsertNotification } from './notificationSlice';
 import { addPost, removePost, updatePosts } from './postSlice';
-import { findInboxMessagesThunk } from './messageInboxSlice';
+import { findInboxMessagesThunk } from './inboxSlice';
 import { upsertChatMessage } from './chatSlice';
 import { IMessage } from '../interfaces/IMessage';
 import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';

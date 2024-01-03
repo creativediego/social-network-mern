@@ -4,13 +4,14 @@ import { selectActiveChatId } from '../../../redux/chatSlice';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { selectAuthUser } from '../../../redux/userSlice';
 import { sendMessageThunk } from '../../../redux/chatSlice';
+import { IMessage } from '../../../interfaces/IMessage';
+import { useAuthUser } from '../../../hooks/useAuthUser';
 
 /**
  * Custom hook that manages the state of setting and sending a new chat message in the active chat.
  */
 const useNewChatMessage = () => {
   const activeChatId = useAppSelector(selectActiveChatId);
-  const sender = useAppSelector(selectAuthUser).id;
   const dispatch = useAppDispatch();
   const [messageFieldAttributes, setMessageFieldAttributes] =
     useState<FormFieldI>({
@@ -41,12 +42,8 @@ const useNewChatMessage = () => {
   const submitMessage = useCallback(
     (e: React.FormEvent<HTMLFormElement>): void => {
       e.preventDefault();
-      const message = {
-        sender,
-        conversationId: activeChatId,
-        message: messageFieldAttributes['chat'].value,
-      };
-      dispatch(sendMessageThunk(message));
+      const content = messageFieldAttributes['chat'].value;
+      dispatch(sendMessageThunk(content));
       setMessageFieldAttributes((prevState) => ({
         ...prevState,
         chat: {
@@ -55,7 +52,7 @@ const useNewChatMessage = () => {
         },
       }));
     },
-    [messageFieldAttributes, activeChatId, dispatch, sender]
+    [messageFieldAttributes, activeChatId, dispatch]
   );
   return {
     messageFieldAttributes: messageFieldAttributes['chat'],

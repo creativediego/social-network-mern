@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ActionButton, Loader, PopupModal, Search } from '../..';
-import useToggleBoolean from '../../../hooks/useToggleBoolean';
+import useToggle from '../../../hooks/useToggle';
 import { IUser } from '../../../interfaces/IUser';
 import { APIfindAllUsersByName } from '../../../services/userAPI';
 import { useSearch } from '../../Search/useSearch';
@@ -11,7 +11,7 @@ import { useNewChat } from './useNewChat';
  * Displays a new chat button and new chat model, where the user can initiate a new chat.
  */
 const NewChat = () => {
-  const [showModal, toggleModal] = useToggleBoolean(false);
+  const [showModal, toggleModal] = useToggle(false);
   const { searchResults, searchLoading, searchValue, setSearch } = useSearch<
     IUser[]
   >(APIfindAllUsersByName);

@@ -44,7 +44,7 @@ const ChatMessage = ({ message }: MessageProps) => {
           className={`btn rounded-pill text-white w-auto text-start ${bgColor} ${bubbleBorder}`}
           onClick={() => setShowOptions(!showOptions)}
         >
-          {message.message}
+          {message.content}
         </span>
         {showOptions && (
           <span className='px-2 btn text-danger' onClick={deleteMessage}>

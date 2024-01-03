@@ -5,7 +5,7 @@ import { useCallback, useState } from 'react';
  * @param initialState true/false
  * @returns the state, and set state of the boolean.
  */
-const useToggleBoolean = (initialState: boolean) => {
+const useToggle = (initialState: boolean) => {
   const [bool, setBool] = useState(initialState);
   const toggle = useCallback(() => {
     setBool(!bool);
@@ -13,4 +13,4 @@ const useToggleBoolean = (initialState: boolean) => {
   return [bool, toggle] as const;
 };
 
-export default useToggleBoolean;
+export default useToggle;

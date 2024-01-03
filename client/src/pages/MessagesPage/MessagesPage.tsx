@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { InboxList, Chat, NewChat } from '../../components';
+import { Inbox, Chat, NewChat } from '../../components';
 
 /**
  * Displays inbox or active chat based on the route. Uses the inbox messages fetched
@@ -19,7 +19,7 @@ const MessagesPage = () => {
         </span>
       </div>
       <Routes>
-        <Route path={`/`} element={<InboxList />} />
+        <Route path={`/`} element={<Inbox />} />
         <Route path={`/:urlChatId/*`} element={<Chat />} />
       </Routes>
     </div>

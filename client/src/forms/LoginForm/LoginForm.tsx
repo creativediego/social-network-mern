@@ -5,7 +5,7 @@ import FormField from '../FormInput/FormField';
 import { profileFieldsStore } from '../shared/profileFieldsStore';
 import { useAuthUser } from '../../hooks/useAuthUser';
 import { useAlert } from '../../hooks/useAlert';
-import useToggleBoolean from '../../hooks/useToggleBoolean';
+import useToggle from '../../hooks/useToggle';
 
 /**
  * `LoginForm` is a component that displays the login form.
@@ -25,7 +25,7 @@ const LoginForm = (): JSX.Element => {
   const { error } = useAlert();
   const { login, loading, handleSetLoginUser, loginUser, isLoggedIn } =
     useAuthUser();
-  const [showLoginModal, setShowLoginModal] = useToggleBoolean(false);
+  const [showLoginModal, setShowLoginModal] = useToggle(false);
 
   return (
     <div className='mt-4'>

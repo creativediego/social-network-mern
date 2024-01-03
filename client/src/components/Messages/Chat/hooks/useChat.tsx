@@ -1,16 +1,16 @@
 import { useEffect } from 'react';
-import { useAppSelector, useAppDispatch } from '../../../redux/hooks';
+import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
 import {
   selectChatLoading,
-  findMessagesByConversationThunk,
+  findMessagesByChatThunk,
   selectAllParticipants,
   selectActiveChatId,
   clearChat,
-} from '../../../redux/chatSlice';
+} from '../../../../redux/chatSlice';
 
-import { selectAllChatMessages } from '../../../redux/chatSlice';
+import { selectAllChatMessages } from '../../../../redux/chatSlice';
 import { useParams } from 'react-router-dom';
-import { findInboxMessagesThunk } from '../../../redux/messageInboxSlice';
+import { findInboxMessagesThunk } from '../../../../redux/inboxSlice';
 
 /**
  * Manages the state of an active chat, including messages, the participants, and loading state.
@@ -29,7 +29,7 @@ const useChat = () => {
 
   useEffect(() => {
     if (chatId && chatId !== 'undefined') {
-      dispatch(findMessagesByConversationThunk(chatId));
+      dispatch(findMessagesByChatThunk(chatId));
       dispatch(findInboxMessagesThunk());
     }
     return () => {

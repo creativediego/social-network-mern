@@ -5,7 +5,7 @@ import profileReducer from './profileSlice';
 import postsReducer from './postSlice';
 import messageReducer from './chatSlice';
 import notificationsReducer from './notificationSlice';
-import messagesInboxReducer from './messageInboxSlice';
+import messagesInboxReducer from './inboxSlice';
 import chatReducer from './chatSlice';
 import modalReducer from './modalSlice';
 import { postApi } from './postApi';

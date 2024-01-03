@@ -1,71 +1,62 @@
-import mongoose, { Model, SchemaTypes } from 'mongoose';
-import IConversation from '../../models/messages/IConversation';
+import { Model } from 'mongoose';
+import IChat from '../../models/messages/IChat';
 import IMessage from '../../models/messages/IMessage';
 import IErrorHandler from '../../errors/IErrorHandler';
 import IMessageDao from './IMessageDao';
 import { MessageDaoErrors } from './MessageDaoErrors';
-import { ConversationType } from '../../models/messages/ConversationType';
+import { ChatType } from '../../models/messages/ChatType';
 
 /**
- * DAO database CRUD operations for the messages resources. Implements {@link IMessage}. Takes a {@link MessageModel}, {@link ConversationModel}, and {@link IErrorHandler} as injected dependencies.
+ * DAO database CRUD operations for the messages resources. Implements {@link IMessage}. Takes a {@link MessageModel}, {@link ChatModel}, and {@link IErrorHandler} as injected dependencies.
  */
 export default class MessageDao implements IMessageDao {
   private readonly messageModel: Model<IMessage>;
-  private readonly conversationModel: Model<IConversation>;
+  private readonly chatModel: Model<IChat>;
   private readonly errorHandler: IErrorHandler;
 
   /**
-   * Constructs the model by setting the dependencies in state: the message model, the conversation model, and the error handle.
+   * Constructs the model by setting the dependencies in state: the message model, the chat model, and the error handle.
    * @param {MessageModel} messageModel the Mongoose message model for db operations
-   * @param {ConversationModel} conversationModel the Mongoose conversation model for db operations
+   * @param {ChatModel} chatModel the Mongoose chat model for db operations
    * @param {IErrorHandler} errorHandler the error handler to deal with all exceptions
    */
   public constructor(
     messageModel: Model<IMessage>,
-    conversationModel: Model<IConversation>,
+    chatModel: Model<IChat>,
     errorHandler: IErrorHandler
   ) {
     this.messageModel = messageModel;
-    this.conversationModel = conversationModel;
+    this.chatModel = chatModel;
     this.errorHandler = errorHandler;
     Object.freeze(this); // Make this object immutable.
   }
 
   /**
-   * Create a conversation document by taking an {@link IConversation} object and calling the ConversationModel. In addition to the native _id of the conversation id, also create a conversationId field that is a sorted concatenation of all participant ids. This ensure the conversation document record is unique to avoid duplicating new conversation documents with the same participants.
-   * @param conversation the conversation object with all its data
-   * @returns the new conversation object after it is created in the ConversationModel
+   * Create a chat document by taking an {@link IChat} object and calling the ChatModel. In addition to the native _id of the chat id, also create a chatId field that is a sorted concatenation of all participant ids. This ensure the chat document record is unique to avoid duplicating new chat documents with the same participants.
+   * @param chat the chat object with all its data
+   * @returns the new chat object after it is created in the ChatModel
    */
-  createConversation = async (
-    conversation: IConversation
-  ): Promise<IConversation> => {
-    let participants = conversation.participants.map((user) => user.id);
-    // if (!conversation.participants.includes(conversation.createdBy)) {
-    //   participants.push(conversation.createdBy.id);
+  createChat = async (chat: IChat): Promise<IChat> => {
+    let participants = chat.participants.map((user) => user.id);
+    // if (!chat.participants.includes(chat.createdBy)) {
+    //   participants.push(chat.createdBy.id);
     // }
-    let type: ConversationType;
-    if (conversation.participants.length > 2) {
-      type = ConversationType.Group;
+    let type: ChatType;
+    if (chat.participants.length > 2) {
+      type = ChatType.Group;
     } else {
-      type = ConversationType.Private;
-    }
-    let conversationCid;
-    if (!conversation.cid) {
-      conversationCid = participants.sort().join('');
-    } else {
-      conversationCid = conversation.cid;
+      type = ChatType.Private;
     }
     try {
-      const convo = await this.conversationModel
+      const convo = await this.chatModel
         .findOneAndUpdate(
-          { cid: conversationCid },
+          { type: chat.participants, participants: { $all: participants } },
           {
-            createdBy: conversation.createdBy.id,
-            cid: conversationCid,
+            creatorId: chat.creatorId,
             type,
             participants,
-            removeFor: [],
-            // $pull: { removeFor: { $in: [conversation.createdBy] } },
+            deletedBy: [],
+            // $pull: { removeFor: { $in: [chat.createdBy] } },
           },
           { upsert: true, new: true }
         )
@@ -73,42 +64,39 @@ export default class MessageDao implements IMessageDao {
       return await convo.populate('createdBy');
     } catch (err) {
       throw this.errorHandler.handleError(
-        MessageDaoErrors.DB_ERROR_CREATING_CONVERSATION,
+        MessageDaoErrors.DB_ERROR_CREATING_CHAT,
         err
       );
     }
   };
 
   /**
-   * Create a new message for an existing conversation by using the existing id of the conversation this message belongs to. Also interact with the ConversationModel to check if sender is a participant in the conversation. If so, then call the MessageModel to create the message.
-   * @param {string} sender the send of the message
+   * Create a new message for an existing chat by using the existing id of the chat this message belongs to. Also interact with the ChatModel to check if sender is a participant in the chat. If so, then call the MessageModel to create the message.
+   * @param {string} senderId the send of the message
    * @param {string} message the contents of the message
    * @returns the message document from the MessageModel
    */
-  createMessage = async (
-    sender: string,
-    message: IMessage
-  ): Promise<IMessage> => {
-    // Check if conversation for this message exists, and if sender is a participant in it.
+  createMessage = async (message: IMessage): Promise<IMessage> => {
+    // Check if chat for this message exists, and if sender is a participant in it.
+    const senderId = message.sender.id;
     try {
-      const existingConvo = await this.conversationModel.findOneAndUpdate(
+      const existingChat = await this.chatModel.findOneAndUpdate(
         {
-          _id: message.conversation,
-          participants: { $in: [sender] },
+          _id: message.chatId,
+          participants: { $in: [senderId] },
         },
-        { readFor: [sender], removeFor: [] },
+        { readBy: [senderId], deletedBy: [] },
         { new: true }
       );
       this.errorHandler.objectOrNullException(
-        existingConvo,
-        MessageDaoErrors.INVALID_CONVERSATION
+        existingChat,
+        MessageDaoErrors.INVALID_CHAT
       );
       // Create the message.
       const dbMessage = await this.messageModel.create({
-        sender,
         ...message,
       });
-      await (await dbMessage.populate('sender')).populate('conversation');
+      await (await dbMessage.populate('sender')).populate('chat');
       return dbMessage;
     } catch (err) {
       throw this.errorHandler.handleError(
@@ -118,189 +106,161 @@ export default class MessageDao implements IMessageDao {
     }
   };
 
-  findConversation = async (conversationId: string): Promise<IConversation> => {
-    // First, make sure user is a participant in the conversation for which they're trying to get all messages from.
+  findChat = async (chatId: string): Promise<IChat> => {
+    // First, make sure user is a participant in the chat for which they're trying to get all messages from.
     try {
-      const existingConvo = await this.conversationModel
+      const existingConvo = await this.chatModel
         .findOne({
-          _id: conversationId,
+          _id: chatId,
         })
         .populate('participants');
       this.errorHandler.objectOrNullException(
         existingConvo,
-        MessageDaoErrors.INVALID_CONVERSATION
+        MessageDaoErrors.INVALID_CHAT
       );
 
       return this.errorHandler.objectOrNullException(
         existingConvo,
-        MessageDaoErrors.NO_CONVERSATION_FOUND
+        MessageDaoErrors.NO_CHAT_FOUND
       );
     } catch (err) {
       throw this.errorHandler.handleError(
-        MessageDaoErrors.DB_ERROR_FINDING_CONVERSATION,
+        MessageDaoErrors.DB_ERROR_FINDING_CHAT,
         err
       );
     }
   };
 
   /**
-   * Find all messages for conversation for the specified user and conversation ids. Also check if user if indeed a participant in the conversation for security reasons.
-   * @param {string} userId the id of the user requesting the messages who should be a participant in the conversation
-   * @param {string} conversationId the id of the conversation
-   * @returns an array of all {@link IMessage} messages for the conversation.
+   * Find all messages for chat for the specified user and chat ids. Also check if user if indeed a participant in the chat for security reasons.
+   * @param {string} userId the id of the user requesting the messages who should be a participant in the chat
+   * @param {string} chatId the id of the chat
+   * @returns an array of all {@link IMessage} messages for the chat.
    */
-  findAllMessagesByConversation = async (
+  findMessagesByChat = async (
     userId: string,
-    conversationId: string
+    chatId: string
   ): Promise<IMessage[]> => {
-    // First, make sure user is a participant in the conversation for which they're trying to get all messages from.
+    // First, make sure user is a participant in the chat for which they're trying to get all messages from.
     try {
-      const existingConvo = await this.conversationModel.findOneAndUpdate(
+      const existingChat = await this.chatModel.findOneAndUpdate(
         {
-          _id: conversationId,
+          _id: chatId,
           participants: { $in: [userId] },
         },
         {
-          $addToSet: { readFor: userId }, // mark convo read. only unique entries in the array allowed
+          $addToSet: { readBy: userId }, // mark convo read. addToSet only unique entries in the array allowed
         }
       );
 
       this.errorHandler.objectOrNullException(
-        existingConvo,
-        MessageDaoErrors.INVALID_CONVERSATION
+        existingChat,
+        MessageDaoErrors.INVALID_CHAT
       );
-      // Retrieve all the messages for the conversation.
-      const allMessagesForConversation = await this.messageModel
+      // Retrieve all the messages for the chat.
+      const messagesByChat = await this.messageModel
         .find({
-          conversation: conversationId,
-          removeFor: { $nin: [userId] },
+          chatId: chatId,
+          deletedBy: { $nin: [userId] },
         })
         .populate('sender');
 
       this.errorHandler.objectOrNullException(
-        allMessagesForConversation,
+        messagesByChat,
         MessageDaoErrors.NO_MATCHING_MESSAGES
       );
-      return allMessagesForConversation;
+      return messagesByChat;
     } catch (err) {
       throw this.errorHandler.handleError(
-        MessageDaoErrors.DB_ERROR_GETTING_CONVERSATION_MESSAGES,
+        MessageDaoErrors.DB_ERROR_GETTING_CHAT_MESSAGES,
         err
       );
     }
   };
 
   /**
-   * Finds the latest messages per conversation for the specified user. This corresponds what the messages inbox is, where the latest messages are by conversation regardless of who sent the last message per conversation. Uses the mongo aggregate functionality to filter and sort through conversations/messages and to format the the returned output.
-   * @param {string} uid the id of the user requesting the latest messages
-   * @returns an array of {@link IMessage} latest messages per conversation
+   * Finds the latest messages per chat for the specified user. This corresponds what the messages inbox is, where the latest messages are by chat regardless of who sent the last message per chat. Uses the mongo aggregate functionality to filter and sort through chats/messages and to format the the returned output.
+   * @param {string} userId the id of the user requesting the latest messages
+   * @returns an array of {@link IMessage} latest messages per chat
    */
-  findLatestMessagesByUser = async (uid: string): Promise<IMessage[]> => {
+  findInboxMessages = async (userId: string): Promise<IMessage[]> => {
     try {
-      const userId = new mongoose.Types.ObjectId(uid);
       /**
-       * Aggregation piping steps to get latest message per conversation:
+       * Aggregation piping steps to get latest message per chat:
        */
-      const convo = await this.conversationModel.aggregate([
-        // Match conversations where user is a participant and conversation is not removed for the user
+      const messages = await this.messageModel.aggregate([
+        // Match messages where userId is in recipients and not in deletedBy
         {
           $match: {
-            participants: { $in: [userId] },
-            removeFor: { $ne: userId },
+            recipients: userId,
+            deletedBy: { $nin: [userId] },
           },
         },
-        // Lookup recipients' details. What we are doing here is looking up the user details for each participant in the conversation.
-        {
-          $lookup: {
-            from: 'users', // user collection
-            localField: 'participants', // field in conversation model. this is an array of user ids
-            foreignField: '_id', // field in user model
-            as: 'recipients', //
-          },
-        },
-        // Lookup messages for the conversation. We are looking up all messages for the conversation.
-        {
-          $lookup: {
-            from: 'messages',
-            localField: '_id',
-            foreignField: 'conversation',
-            as: 'messages',
-          },
-        },
-        // Unwind messages array. Unwinds simply flattens the array of messages so that we can work with each message individually.
-        {
-          $unwind: { path: '$messages' },
-        },
-        // Filter messages not removed for the user. This is so that we don't return messages that the user has deleted for themselves.
-        {
-          $match: {
-            'messages.removeFor': { $ne: userId },
-          },
-        },
-        // Sort conversations by the latest message date
-        {
-          $sort: {
-            'messages.createdAt': -1,
-          },
-        },
-        // Group conversation details and latest message. This is so that we can group all the messages for a conversation together and then get the latest message for that conversation.
+
+        // Sort messages by createdAt field in descending order (latest first)
+        { $sort: { createdAt: -1 } },
+
+        // Group messages by chatId and get the latest message in each chat
         {
           $group: {
-            _id: '$_id',
-            recipients: { $first: '$recipients' },
-            readFor: { $first: '$readFor' },
-            latestMessage: { $first: '$messages.message' },
-            latestMessageId: { $first: '$messages._id' },
-            sender: { $first: '$messages.sender' },
-            createdAt: { $first: '$messages.createdAt' },
-            removeFor: { $first: '$messages.removeFor' },
+            _id: '$chatId',
+            latestMessage: { $first: '$$ROOT' },
           },
         },
-        // Lookup sender details. What we are doing here is looking up the user details for the sender of the latest message.
+
+        // Sort the latest messages by createdAt field in descending order (newest to oldest)
+        {
+          $sort: { 'latestMessage.createdAt': -1 },
+        },
+
+        // Lookup to populate the 'sender' field with data from the 'User' collection
         {
           $lookup: {
-            from: 'users',
-            localField: 'sender',
+            from: 'users', // Replace 'users' with the actual name of your User collection
+            localField: 'latestMessage.sender',
             foreignField: '_id',
-            as: 'senderInfo',
+            as: 'sender',
           },
         },
-        // Unwind sender details array. By this point, the sender details array should only have one element, so we can unwind it to get the sender details object.
+
+        // Project to rename _id to id within the sender object
         {
-          $unwind: { path: '$senderInfo' },
+          $addFields: {
+            sender: { $arrayElemAt: ['$sender', 0] },
+          },
         },
-        // Project fields to shape the final output. This is so that we can rename fields and remove fields we don't need.
+
+        // Project to shape the output with selected fields, including the populated 'sender'
         {
           $project: {
-            _id: 0,
-            id: '$latestMessageId',
-            message: '$latestMessage',
-            sender: '$senderInfo',
-            conversationId: '$_id',
-            removeFor: '$removeFor',
-            readFor: '$readFor',
-            recipients: '$recipients',
-            createdAt: '$createdAt',
-          },
-        },
-        // Sort conversations by date of creation
-        {
-          $sort: {
-            createdAt: -1,
+            sender: {
+              id: '$sender._id',
+              name: '$sender.name',
+              profilePhoto: '$sender.profilePhoto',
+            }, // Select the first element from 'sender' array
+            id: '$latestMessage._id',
+            _id: 0, // exclude
+            recipients: '$latestMessage.recipients',
+            chatId: '$latestMessage.chatId',
+            content: '$latestMessage.content',
+            deletedBy: '$latestMessage.deletedBy',
+            readBy: '$latestMessage.readBy',
+            createdAt: '$latestMessage.createdAt',
+            // Add or remove fields as needed for the final output
           },
         },
       ]);
 
-      return convo;
+      return messages;
     } catch (err) {
       throw this.errorHandler.handleError(
-        MessageDaoErrors.DB_ERROR_RETRIEVING_LAST_CONVERSATION_MESSAGES,
+        MessageDaoErrors.DB_ERROR_RETRIEVING_LAST_CHAT_MESSAGES,
         err
       );
     }
   };
 
-  findAllMessagesSentByUser = async (userId: string): Promise<IMessage[]> => {
+  findMessagesUserSent = async (userId: string): Promise<IMessage[]> => {
     try {
       const messages: IMessage[] = await this.messageModel.find({
         sender: userId,
@@ -329,7 +289,7 @@ export default class MessageDao implements IMessageDao {
           _id: messageId,
         },
         {
-          $addToSet: { removeFor: userId }, // only unique entries in the array allowed
+          $addToSet: { deletedBy: userId }, // only unique entries in the array allowed
         }
       );
       return this.errorHandler.objectOrNullException(
@@ -344,35 +304,32 @@ export default class MessageDao implements IMessageDao {
     }
   };
 
-  deleteConversation = async (
-    userId: string,
-    conversationId: string
-  ): Promise<IConversation> => {
+  deleteChat = async (userId: string, chatId: string): Promise<IChat> => {
     try {
-      const conversation = await this.conversationModel.findOneAndUpdate(
+      const chat = await this.chatModel.findOneAndUpdate(
         {
-          _id: conversationId,
+          _id: chatId,
         },
         {
-          $addToSet: { removeFor: userId },
+          $addToSet: { deletedBy: userId },
         },
         { new: true }
       );
       await this.messageModel.updateMany(
         {
-          conversation: conversationId,
+          chatId,
         },
         {
-          $addToSet: { removeFor: userId },
+          $addToSet: { deletedBy: userId },
         }
       );
       return this.errorHandler.objectOrNullException(
-        conversation,
-        MessageDaoErrors.NO_CONVERSATION_FOUND
+        chat,
+        MessageDaoErrors.NO_CHAT_FOUND
       );
     } catch (err) {
       throw this.errorHandler.handleError(
-        MessageDaoErrors.DB_ERROR_DELETING_CONVERSATION,
+        MessageDaoErrors.DB_ERROR_DELETING_CHAT,
         err
       );
     }

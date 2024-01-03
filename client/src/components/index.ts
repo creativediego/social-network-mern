@@ -10,7 +10,7 @@ import PostImage from './Posts/PostImage/PostImage';
 import Search from './Search/Search';
 import FollowButton from './FollowButton/FollowButton';
 import InboxMessage from './Messages/Inbox/InboxMessage';
-import InboxList from './Messages/Inbox/InboxList';
+import Inbox from './Messages/Inbox/Inbox';
 import Chat from './Messages/Chat/Chat';
 import NewChat from './Messages/NewChat/NewChat';
 import ActionButton from './ActionButton/ActionButton';
@@ -23,6 +23,7 @@ import AvatarUpload from '../forms/UpdateProfileForm/AvatarUpload';
 import HeaderImageUpload from '../forms/UpdateProfileForm/HeaderImageUpload';
 import ReactionButton from './Posts/ReactionButton.tsx/ReactionButton';
 import LikeButton from './Posts/LikeButton/LikeButton';
+import OptionMenu from './OptionMenu/OptionMenu';
 export {
   AlertBox,
   GenericError,
@@ -36,7 +37,7 @@ export {
   FollowButton,
   ErrorBoundary,
   InboxMessage,
-  InboxList,
+  Inbox,
   NewChat,
   Chat,
   ActionButton,
@@ -49,4 +50,5 @@ export {
   ReactionButton,
   LikeButton,
   HeaderImageUpload,
+  OptionMenu,
 };

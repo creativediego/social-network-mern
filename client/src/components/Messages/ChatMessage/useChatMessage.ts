@@ -12,9 +12,11 @@ export const useChatMessage = (message: IMessage) => {
   const userId = useAppSelector(selectAuthUser).id;
   const isLoggedInUser = message.sender && message.sender.id === userId;
   const [showOptions, setShowOptions] = useState(false);
+
   const handleDeleteMessage = useCallback(() => {
-    dispatch(deleteMessageThunk({ messageId: message.id, userId }));
-  }, [dispatch, message.id, userId]);
+    dispatch(deleteMessageThunk(message));
+  }, [dispatch, message]);
+
   return {
     isLoggedInUser,
     showOptions,

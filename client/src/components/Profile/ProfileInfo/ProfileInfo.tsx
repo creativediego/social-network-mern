@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import LogoutButton from '../LogoutButton/LogoutButton';
 import { AvatarImage } from '../../../components';
 import { UpdateProfileForm } from '../../../forms';
-import useToggleBoolean from '../../../hooks/useToggleBoolean';
+import useToggle from '../../../hooks/useToggle';
 import PopupModal from '../../PopupModal/PopupModal';
 import FollowButton from '../../FollowButton/FollowButton';
 import { IUser } from '../../../interfaces/IUser';
@@ -43,7 +43,7 @@ const ProfileInfo = ({
   isAuthUser,
   loading,
 }: ProfileInfoProps): JSX.Element => {
-  const [showEditProfile, setShowEditProfile] = useToggleBoolean(false);
+  const [showEditProfile, setShowEditProfile] = useToggle(false);
   return (
     <>
       {profileUser && !loading && (

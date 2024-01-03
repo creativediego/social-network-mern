@@ -1,33 +1,21 @@
-import React, { useRef, useLayoutEffect, memo } from 'react';
+import React, { memo } from 'react';
 import './Chat.scss';
 import ChatMessage from '../ChatMessage/ChatMessage';
-import useChat from './useChat';
+import useChat from './hooks/useChat';
 import { IMessage } from '../../../interfaces/IMessage';
 import NewChatMessage from '../ChatMessage/NewChatMessage';
 import { IUser } from '../../../interfaces/IUser';
 import Loader from '../../Loader/Loader';
+import useScrollToBottom from './hooks/useScrollToBottom';
 
 /**
  * Displays the active chat window with all its messages and send message text area.
  *
  */
 const Chat = () => {
-  const chatWindowRef = useRef<null | HTMLDivElement>(null);
   const { loading, messages, participants } = useChat();
+  const { windowRef } = useScrollToBottom(loading);
 
-  const scrollToBottom = () => {
-    if (chatWindowRef.current)
-      chatWindowRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'end',
-        inline: 'nearest',
-      });
-  };
-  useLayoutEffect(() => {
-    if (!loading) {
-      scrollToBottom();
-    }
-  });
   return (
     <>
       <p className='mt-4 mb-4'>
@@ -47,7 +35,7 @@ const Chat = () => {
             <ChatMessage message={message} key={message.id} />
           ))}
 
-        <div ref={chatWindowRef} />
+        <div ref={windowRef} />
       </div>
       <div>
         <NewChatMessage />

@@ -5,12 +5,12 @@ import HttpResponse from '../shared/HttpResponse';
  * Represents the interface of a message resource controller.
  */
 export default interface IMessageController {
-  findAllMessagesByConversation(req: HttpRequest): Promise<HttpResponse>;
-  findLatestMessagesByUser(req: HttpRequest): Promise<HttpResponse>;
-  findAllMessagesSentByUser(req: HttpRequest): Promise<HttpResponse>;
-  createConversation(req: HttpRequest): Promise<HttpResponse>;
-  findConversation(req: HttpRequest): Promise<HttpResponse>;
+  findMessagesByChat(req: HttpRequest): Promise<HttpResponse>;
+  findInboxMessages(req: HttpRequest): Promise<HttpResponse>;
+  findMessagesUserSent(req: HttpRequest): Promise<HttpResponse>;
+  createChat(req: HttpRequest): Promise<HttpResponse>;
+  findChat(req: HttpRequest): Promise<HttpResponse>;
   createMessage(req: HttpRequest): Promise<HttpResponse>;
   deleteMessage(req: HttpRequest): Promise<HttpResponse>;
-  deleteConversation(req: HttpRequest): Promise<HttpResponse>;
+  deleteChat(req: HttpRequest): Promise<HttpResponse>;
 }

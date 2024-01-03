@@ -2,7 +2,7 @@ import React from 'react';
 import { ReactHookFormInput, UpdateProfileForm } from '../';
 import { ActionButton, PopupModal } from '../../components';
 import { Button } from 'react-bootstrap';
-import useToggleBoolean from '../../hooks/useToggleBoolean';
+import useToggle from '../../hooks/useToggle';
 import { useAuthUser } from '../../hooks/useAuthUser';
 import { useSignUpForm } from './useSignupForm';
 
@@ -21,9 +21,8 @@ import { useSignUpForm } from './useSignupForm';
  * @returns {JSX.Element} A JSX element representing the signup form.
  */
 const SignupForm = (): JSX.Element => {
-  const [showSignupModal, setShowSignupModal] = useToggleBoolean(false);
-  const [showUpdateProfileModal, setShowUpdateProfileModal] =
-    useToggleBoolean(true);
+  const [showSignupModal, setShowSignupModal] = useToggle(false);
+  const [showUpdateProfileModal, setShowUpdateProfileModal] = useToggle(true);
   const { user } = useAuthUser();
 
   const { completeSignup, loading, submitForm, register, errors } =

@@ -5,15 +5,15 @@
  */
 export enum MessageDaoErrors {
   DB_ERROR_CREATING_MESSAGE = 'Database error creating message.',
-  DB_ERROR_RETRIEVING_LAST_CONVERSATION_MESSAGES = 'Database error in retrieving the latest conversation message for user',
-  DB_ERROR_CREATING_CONVERSATION = 'Database error creating conversation.',
-  DB_ERROR_GETTING_CONVERSATION_MESSAGES = 'Database error in getting all messages for conversation.',
+  DB_ERROR_RETRIEVING_LAST_CHAT_MESSAGES = 'Database error in retrieving the latest chat message for user',
+  DB_ERROR_CREATING_CHAT = 'Database error creating chat.',
+  DB_ERROR_GETTING_CHAT_MESSAGES = 'Database error in getting all messages for chat.',
   DB_ERROR_ALL_MESSAGES_SENT_BY_USER = 'Database error in getting all messages sent by user.',
-  NO_MATCHING_MESSAGES = 'No messages found for the provided conversation.',
-  INVALID_CONVERSATION = 'Invalid conversation. Either conversation id invalid, or sender is not a participant in the conversation.',
+  NO_MATCHING_MESSAGES = 'No messages found for the provided chat.',
+  INVALID_CHAT = 'Invalid chat. Either chat id invalid, or sender is not a participant in the chat.',
   DB_ERROR_DELETING_MESSAGE = 'Database error deleting message.',
   NO_MESSAGE_FOUND = 'No message found.',
-  NO_CONVERSATION_FOUND = 'No matching conversation found.',
-  DB_ERROR_DELETING_CONVERSATION = 'Database error deleting conversation.',
-  DB_ERROR_FINDING_CONVERSATION = 'Database error finding conversation',
+  NO_CHAT_FOUND = 'No matching chat found.',
+  DB_ERROR_DELETING_CHAT = 'Database error deleting chat.',
+  DB_ERROR_FINDING_CHAT = 'Database error finding chat',
 }

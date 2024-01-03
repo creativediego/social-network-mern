@@ -18,7 +18,7 @@ import DislikeModel from '../mongoose/dislikes/DislikeModel';
 import FollowModel from '../mongoose/follows/FollowModel';
 import HashtagModel from '../mongoose/hashtags/HashtagModel';
 import LikeModel from '../mongoose/likes/LikeModel';
-import ConversationModel from '../mongoose/messages/ConversationModel';
+import ConversationModel from '../mongoose/messages/ChatModel';
 import MessageModel from '../mongoose/messages/MessageModel';
 import PostModel from '../mongoose/posts/PostModel';
 import UserModel from '../mongoose/users/UserModel';

@@ -24,11 +24,11 @@ import { formatUserJSON } from '../util/formatUserJSON';
  */
 const UserSchema = new mongoose.Schema<IUser>(
   {
-    uid: { type: String, required: true, unique: true },
+    uid: { type: String, unique: true },
     email: { type: String, required: true, unique: true },
     username: { type: String, required: true },
     name: { type: String, required: true },
-    password: { type: String, required: true },
+    password: { type: String },
     bio: { type: String },
     headerImage: { type: String },
     profilePhoto: {
