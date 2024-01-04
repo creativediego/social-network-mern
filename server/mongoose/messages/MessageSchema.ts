@@ -27,11 +27,13 @@ const MessageSchema = new mongoose.Schema<IMessage>(
     deletedBy: [
       {
         type: [String],
+        default: [],
       },
     ],
     readBy: [
       {
         type: [String],
+        default: [],
       },
     ],
   },

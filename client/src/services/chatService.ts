@@ -12,7 +12,7 @@ export interface IChatService {
   findInboxMessages(userId: string): Promise<IMessage[]>;
   findMessagesByChat(chatId: string): Promise<IMessage[]>;
   findMessagesUserSent(userId: string): Promise<IMessage[]>;
-  sendMessage(chatId: string, content: string): Promise<IMessage>;
+  sendMessage(message: IMessage): Promise<IMessage>;
   deleteMessage(message: IMessage): Promise<IMessage>;
 }
 
@@ -88,13 +88,13 @@ class ChatServiceImpl implements IChatService {
     );
   };
 
-  sendMessage(chatId: string, content: string): Promise<IMessage> {
-    const url = `${this.url}/${chatId}/messages`;
+  sendMessage(message: IMessage): Promise<IMessage> {
+    const url = `${this.url}/${message.chatId}/messages`;
     return this.APIService.makeRequest<IMessage, { content: string }>(
       url,
       Requests.POST,
       'Error sending message. Try again later.',
-      { content }
+      { content: message.content }
     );
   }
   deleteMessage(message: IMessage): Promise<IMessage> {

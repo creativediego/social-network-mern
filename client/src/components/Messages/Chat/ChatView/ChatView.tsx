@@ -1,18 +1,18 @@
 import React, { memo } from 'react';
-import './Chat.scss';
+import './ChatView.scss';
 import ChatMessage from '../ChatMessage/ChatMessage';
 import useChat from './hooks/useChat';
-import { IMessage } from '../../../interfaces/IMessage';
-import NewChatMessage from '../ChatMessage/NewChatMessage';
-import { IUser } from '../../../interfaces/IUser';
-import Loader from '../../Loader/Loader';
+import { IMessage } from '../../../../interfaces/IMessage';
+import ChatMessageForm from '../ChatMessageForm/ChatMessageForm';
+import { IUser } from '../../../../interfaces/IUser';
+import Loader from '../../../Loader/Loader';
 import useScrollToBottom from './hooks/useScrollToBottom';
 
 /**
  * Displays the active chat window with all its messages and send message text area.
  *
  */
-const Chat = () => {
+const ChatView = () => {
   const { loading, messages, participants } = useChat();
   const { windowRef } = useScrollToBottom(loading);
 
@@ -38,10 +38,10 @@ const Chat = () => {
         <div ref={windowRef} />
       </div>
       <div>
-        <NewChatMessage />
+        <ChatMessageForm />
       </div>
     </>
   );
 };
 
-export default memo(Chat);
+export default memo(ChatView);

@@ -1,16 +1,16 @@
 import { useEffect } from 'react';
-import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
+import { useAppSelector, useAppDispatch } from '../../../../../redux/hooks';
 import {
   selectChatLoading,
-  findMessagesByChatThunk,
+  findMessagesByChat,
   selectAllParticipants,
   selectActiveChatId,
   clearChat,
-} from '../../../../redux/chatSlice';
+} from '../../../../../redux/chatSlice';
 
-import { selectAllChatMessages } from '../../../../redux/chatSlice';
+import { selectAllChatMessages } from '../../../../../redux/chatSlice';
 import { useParams } from 'react-router-dom';
-import { findInboxMessagesThunk } from '../../../../redux/inboxSlice';
+import { findInboxMessages } from '../../../../../redux/inboxSlice';
 
 /**
  * Manages the state of an active chat, including messages, the participants, and loading state.
@@ -29,8 +29,8 @@ const useChat = () => {
 
   useEffect(() => {
     if (chatId && chatId !== 'undefined') {
-      dispatch(findMessagesByChatThunk(chatId));
-      dispatch(findInboxMessagesThunk());
+      dispatch(findMessagesByChat(chatId));
+      dispatch(findInboxMessages());
     }
     return () => {
       dispatch(clearChat());
@@ -40,7 +40,7 @@ const useChat = () => {
   // When messages are loaded, will make a call to fetch the inbox again, which will updated unread message count in navigation.
   useEffect(() => {
     if (messages.length > 0) {
-      dispatch(findInboxMessagesThunk());
+      dispatch(findInboxMessages());
     }
   }, [dispatch, messages]);
 

@@ -1,20 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ActionButton, Loader, PopupModal, Search } from '../..';
-import useToggle from '../../../hooks/useToggle';
-import { IUser } from '../../../interfaces/IUser';
-import { APIfindAllUsersByName } from '../../../services/userAPI';
-import { useSearch } from '../../Search/useSearch';
-import { useNewChat } from './useNewChat';
+import { ActionButton, Loader, PopupModal, Search } from '../../..';
+import useToggle from '../../../../hooks/useToggle';
+import { IUser } from '../../../../interfaces/IUser';
+import { APIfindAllUsersByName } from '../../../../services/userAPI';
+import { useSearch } from '../../../Search/useSearch';
+import { useNewChat } from './hooks/useNewChat';
+import NewChatSelectedUsersList from './NewChatSelectedUsersList';
+import NewChatUsersResultsList from './NewChatUsersResultsList';
 
 /**
  * Displays a new chat button and new chat model, where the user can initiate a new chat.
  */
 const NewChat = () => {
   const [showModal, toggleModal] = useToggle(false);
-  const { searchResults, searchLoading, searchValue, setSearch } = useSearch<
-    IUser[]
-  >(APIfindAllUsersByName);
+  const { searchResults, searchLoading, searchValue, setSearch } =
+    useSearch<IUser>(APIfindAllUsersByName);
   const {
     newChatLoading,
     selectedUsers,
@@ -25,18 +26,9 @@ const NewChat = () => {
   } = useNewChat();
   return (
     <>
-      {/* <Button
-        aria-label='new chat button'
-        style={{ zIndex: '2' }}
-        className='p-0 fa-solid fa-message-plus fa-2x fa-pull-right btn text-primary fs-5'
-        onClick={toggleModal}
-      /> */}
-      <button
-        aria-label='new chat'
-        style={{ zIndex: '2' }}
-        className='p-0 fa-solid fa-message-plus fa-2x fa-pull-right btn text-primary fs-5'
-        onClick={toggleModal}
-      ></button>
+      <div className='mb-3'>
+        <ActionButton label='+ New Chat' submitAction={toggleModal} />
+      </div>
       <PopupModal
         title='Start a new chat'
         size='sm'
@@ -48,17 +40,10 @@ const NewChat = () => {
           setSearchValue={setSearch}
           placeHolder='Search for people to start new chat'
         />
-        <div className='mt-3'>
-          {selectedUsers.map((user) => (
-            <span
-              key={user.id}
-              onClick={() => removeSelectedUser(user.id)}
-              className='badge rounded-pill bg-primary btn'
-            >
-              {user.name}
-            </span>
-          ))}
-        </div>
+        <NewChatSelectedUsersList
+          selectedUsers={selectedUsers}
+          removeSelectedUser={removeSelectedUser}
+        />
         <hr />
         <Loader loading={searchLoading} />
         {searchResults && searchResults.length > 0 && (
@@ -83,19 +68,10 @@ const NewChat = () => {
                 </Link>
               )}
             </div>
-
-            <div style={{ overflowY: 'scroll', height: '50vh' }}>
-              {searchResults.map((user: IUser) => (
-                <div key={user.id}>
-                  <p
-                    className='btn p-1'
-                    onClick={() => selectUsersForChat(user)}
-                  >
-                    {user.name} @{user.username}
-                  </p>
-                </div>
-              ))}
-            </div>
+            <NewChatUsersResultsList
+              searchResults={searchResults}
+              selectUsersForChat={selectUsersForChat}
+            />
           </>
         )}
       </PopupModal>

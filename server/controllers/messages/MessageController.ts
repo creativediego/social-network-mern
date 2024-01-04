@@ -55,10 +55,14 @@ export default class MessageController implements IMessageController {
       adaptRequest(this.findMessagesUserSent)
     );
 
-    router.post('/messages', isAuthenticated, adaptRequest(this.createMessage));
+    router.post(
+      '/:chatId/messages',
+      isAuthenticated,
+      adaptRequest(this.createMessage)
+    );
 
     router.delete(
-      '/messages/:messageId',
+      '/:chatId/messages/:messageId',
       isAuthenticated,
       adaptRequest(this.deleteMessage)
     );
@@ -73,6 +77,7 @@ export default class MessageController implements IMessageController {
    * @returns {HttpResponse} the response data to be sent to the client
    */
   createChat = async (req: HttpRequest): Promise<HttpResponse> => {
+    console.log(req.body);
     const newChat = await this.messageDao.createChat(req.body);
     return okResponse(newChat);
   };
@@ -89,10 +94,10 @@ export default class MessageController implements IMessageController {
    */
   createMessage = async (req: HttpRequest): Promise<HttpResponse> => {
     const message: IMessage = {
-      sender: req.user.id,
+      sender: req.user,
       chatId: req.params.chatId,
-      content: req.body.message,
-      recipients: req.body.recipients,
+      content: req.body.content,
+      recipients: [],
     };
 
     const newMessage: IMessage = await this.messageDao.createMessage(message);

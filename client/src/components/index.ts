@@ -9,11 +9,11 @@ import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 import PostImage from './Posts/PostImage/PostImage';
 import Search from './Search/Search';
 import FollowButton from './FollowButton/FollowButton';
-import InboxMessage from './Messages/Inbox/InboxMessage';
-import Inbox from './Messages/Inbox/Inbox';
-import Chat from './Messages/Chat/Chat';
-import NewChat from './Messages/NewChat/NewChat';
-import ActionButton from './ActionButton/ActionButton';
+import InboxMessage from './Messages/Inbox/InboxMessage/InboxMessage';
+import InboxView from './Messages/Inbox/InboxView/InboxView';
+import ChatView from './Messages/Chat/ChatView/ChatView';
+import NewChat from './Messages/Chat/NewChat/NewChat';
+import SubmitButton from './SubmitButton/SubmitButton';
 import ProfileInfo from './Profile/ProfileInfo/ProfileInfo';
 import ProfilePosts from './Profile/ProfilePosts/ProfilePosts';
 import AvatarImage from './AvatarImage/AvatarImage';
@@ -37,10 +37,10 @@ export {
   FollowButton,
   ErrorBoundary,
   InboxMessage,
-  Inbox,
+  InboxView as Inbox,
   NewChat,
-  Chat,
-  ActionButton,
+  ChatView as Chat,
+  SubmitButton as ActionButton,
   ProfileInfo,
   ProfilePosts,
   AvatarImage,

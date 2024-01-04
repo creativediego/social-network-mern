@@ -2,7 +2,7 @@ import io, { Socket } from 'socket.io-client';
 import axios from 'axios';
 import { upsertNotification } from './notificationSlice';
 import { addPost, removePost, updatePosts } from './postSlice';
-import { findInboxMessagesThunk } from './inboxSlice';
+import { findInboxMessages } from './inboxSlice';
 import { upsertChatMessage } from './chatSlice';
 import { IMessage } from '../interfaces/IMessage';
 import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
@@ -25,7 +25,7 @@ const listenForNewMessages = (
   dispatchAction: ThunkDispatch<unknown, unknown, AnyAction>
 ) => {
   socket.on('NEW_MESSAGE', (message: IMessage) => {
-    dispatchAction(findInboxMessagesThunk());
+    dispatchAction(findInboxMessages());
     dispatchAction(upsertChatMessage(message));
   });
 };

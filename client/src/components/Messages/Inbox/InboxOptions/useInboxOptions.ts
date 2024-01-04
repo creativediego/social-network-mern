@@ -6,9 +6,22 @@ import {
   selectConfirmModal,
 } from '../../../../redux/modalSlice';
 import { IMessage } from '../../../../interfaces/IMessage';
-import { deleteInboxChatThunk } from '../../../../redux/inboxSlice';
+import { deleteInboxChat } from '../../../../redux/inboxSlice';
 
-export const useInboxActions = (
+/**
+ * useInboxActions hook.
+ *
+ * This hook provides a function to handle the deletion of a message.
+ * It uses the `useAppDispatch` and `useAppSelector` hooks from Redux,
+ * as well as the `useState` and `useCallback` hooks from React.
+ *
+ * The `handleDelete` function sets `confirmDelete` to `true` and dispatches
+ * the `openModal` action to open a confirmation modal.
+ *
+ * @param {IMessage} message - The message object.
+ * @returns {{ handleDelete: () => void }} An object with the `handleDelete` function.
+ */
+export const useInboxOptions = (
   message: IMessage
 ): { handleDelete: Function } => {
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -29,7 +42,7 @@ export const useInboxActions = (
 
   useEffect(() => {
     if (modalConfirmed && confirmDelete) {
-      dispatch(deleteInboxChatThunk(message.chatId));
+      dispatch(deleteInboxChat(message.chatId));
       dispatch(closeModal());
     }
   }, [modalConfirmed, confirmDelete, dispatch, message.chatId]);

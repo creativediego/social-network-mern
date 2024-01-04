@@ -7,26 +7,24 @@ import {
 } from '@reduxjs/toolkit';
 import { IChat } from '../interfaces/IChat';
 import { IMessage } from '../interfaces/IMessage';
-import * as messageAPI from '../services/chatAPI';
 import type { RootState } from './store';
-import { logToConsole } from '../util/logToConsole';
 import { chatService } from '../services/chatService';
+import { withErrorHandling } from './reduxErrorHandler';
 
 /**
  * Fetch inbox messages.
  */
-export const findInboxMessagesThunk = createAsyncThunk(
+export const findInboxMessages = createAsyncThunk(
   'messages/findInbox',
-  async (data, ThunkAPI) => {
+  async (_, ThunkAPI) => {
     const state = ThunkAPI.getState() as RootState;
     const userId = state.user.data.id;
-    const inboxMessages = await messageAPI.findInboxMessages(userId);
-    logToConsole('INBOX', inboxMessages);
+    const inboxMessages = await chatService.findInboxMessages(userId);
     return inboxMessages;
   }
 );
 
-export const deleteInboxChatThunk = createAsyncThunk(
+export const deleteInboxChat = createAsyncThunk(
   'messages/deleteInboxChat',
   async (chatId: string, _) => {
     const delChat = await chatService.deleteChat(chatId);
@@ -58,30 +56,30 @@ const messageInboxSlice = createSlice({
   },
   // Manages the async call states for creating conversations.
   extraReducers: (builder) => {
-    builder.addCase(findInboxMessagesThunk.pending, (state) => {
+    builder.addCase(findInboxMessages.pending, (state) => {
       state.loading = true;
     });
     builder.addCase(
-      findInboxMessagesThunk.fulfilled,
+      findInboxMessages.fulfilled,
       (state, action: PayloadAction<IMessage[]>) => {
         state.loading = false;
         inboxAdapter.upsertMany(state, action.payload);
       }
     );
-    builder.addCase(findInboxMessagesThunk.rejected, (state) => {
+    builder.addCase(findInboxMessages.rejected, (state) => {
       state.loading = false;
     });
-    builder.addCase(deleteInboxChatThunk.pending, (state) => {
+    builder.addCase(deleteInboxChat.pending, (state) => {
       state.loading = true;
     });
     builder.addCase(
-      deleteInboxChatThunk.fulfilled,
+      deleteInboxChat.fulfilled,
       (state, action: PayloadAction<IChat>) => {
         state.loading = false;
         inboxAdapter.removeOne(state, action.payload.id);
       }
     );
-    builder.addCase(deleteInboxChatThunk.rejected, (state) => {
+    builder.addCase(deleteInboxChat.rejected, (state) => {
       state.loading = false;
     });
   },
@@ -113,4 +111,8 @@ export const { selectAll: selectAllInboxMessages } = inboxAdapter.getSelectors(
   (state: RootState) => state.messagesInbox
 );
 export const { updateInbox } = messageInboxSlice.actions;
+
+export const findInboxMessagesThunk = withErrorHandling(findInboxMessages);
+export const deleteInboxChatThunk = withErrorHandling(deleteInboxChat);
+
 export default messageInboxSlice.reducer;

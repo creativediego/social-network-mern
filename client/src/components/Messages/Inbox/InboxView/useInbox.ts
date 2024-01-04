@@ -6,8 +6,8 @@ import {
   selectAllInboxMessages,
 } from '../../../../redux/inboxSlice';
 import {
-  findInboxMessagesThunk,
-  deleteInboxChatThunk,
+  findInboxMessages,
+  deleteInboxChat,
 } from '../../../../redux/inboxSlice';
 import { IMessage } from '../../../../interfaces/IMessage';
 
@@ -41,14 +41,14 @@ const useInbox = (): {
 
   const deleteConversation = useCallback(
     async (conversationId: string) => {
-      dispatch(deleteInboxChatThunk(conversationId));
+      dispatch(deleteInboxChat(conversationId));
     },
     [dispatch]
   );
 
   useEffect(() => {
     dispatch(clearChat());
-    dispatch(findInboxMessagesThunk());
+    dispatch(findInboxMessages());
   }, [dispatch]);
   return {
     messages,

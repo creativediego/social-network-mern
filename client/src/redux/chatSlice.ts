@@ -10,11 +10,12 @@ import { IMessage } from '../interfaces/IMessage';
 import { IUser } from '../interfaces/IUser';
 import { chatService } from '../services/chatService';
 import type { RootState } from './store';
+import { withErrorHandling } from './reduxErrorHandler';
 
 /**
  * Fetch a specific chat and all messages related to it.
  */
-export const findMessagesByChatThunk = createAsyncThunk(
+export const findMessagesByChat = createAsyncThunk(
   'chat/findAllMessages',
   async (chatId: string, _) => {
     const chat = await chatService.findChat(chatId);
@@ -26,17 +27,28 @@ export const findMessagesByChatThunk = createAsyncThunk(
 /**
  * Post a new message.
  */
-export const sendMessageThunk = createAsyncThunk(
+export const sendMessage = createAsyncThunk(
   'chat/send',
   async (content: string, ThunkAPI) => {
     const state = ThunkAPI.getState() as RootState;
     const chatId = state.chat.id;
-    const newMessage = await chatService.sendMessage(chatId, content);
+    const message: IMessage = {
+      id: '',
+      chatId,
+      content,
+      sender: state.user.data,
+      recipients: [],
+      readBy: [],
+      deletedBy: [],
+      createdAt: '',
+    };
+
+    const newMessage = await chatService.sendMessage(message);
     return newMessage;
   }
 );
 
-export const deleteMessageThunk = createAsyncThunk(
+export const deleteMessage = createAsyncThunk(
   'chat/message/delete',
   async (message: IMessage, ThunkAPI) => {
     const deletedMessage = await chatService.deleteMessage(message);
@@ -84,26 +96,26 @@ const chatSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(deleteMessageThunk.pending, (state) => {
+    builder.addCase(deleteMessage.pending, (state) => {
       state.loading = true;
     });
     builder.addCase(
-      deleteMessageThunk.fulfilled,
+      deleteMessage.fulfilled,
       (state, action: PayloadAction<IMessage>) => {
         state.loading = false;
         chatAdapter.removeOne(state, action.payload.id);
       }
     );
-    builder.addCase(deleteMessageThunk.rejected, (state) => {
+    builder.addCase(deleteMessage.rejected, (state) => {
       state.loading = false;
     });
-    builder.addCase(findMessagesByChatThunk.pending, (state) => {
+    builder.addCase(findMessagesByChat.pending, (state) => {
       state.loading = true;
       chatAdapter.removeAll(state);
       participantsAdapter.removeAll(state.participants);
     });
     builder.addCase(
-      findMessagesByChatThunk.fulfilled,
+      findMessagesByChat.fulfilled,
       (
         state,
         action: PayloadAction<{
@@ -111,7 +123,6 @@ const chatSlice = createSlice({
           messages: IMessage[];
         }>
       ) => {
-        console.log('MESSAGE BY CHAT', action.payload);
         state.loading = false;
         chatAdapter.setAll(state, action.payload.messages);
         state.id = action.payload.chat.id;
@@ -121,22 +132,22 @@ const chatSlice = createSlice({
         );
       }
     );
-    builder.addCase(findMessagesByChatThunk.rejected, (state) => {
+    builder.addCase(findMessagesByChat.rejected, (state) => {
       state.loading = false;
     });
 
-    builder.addCase(sendMessageThunk.pending, (state) => {
+    builder.addCase(sendMessage.pending, (state) => {
       state.loading = true;
     });
     builder.addCase(
-      sendMessageThunk.fulfilled,
+      sendMessage.fulfilled,
       (state, action: PayloadAction<IMessage>) => {
         state.id = action.payload.chatId;
         state.loading = false;
         chatAdapter.upsertOne(state, action.payload);
       }
     );
-    builder.addCase(sendMessageThunk.rejected, (state) => {
+    builder.addCase(sendMessage.rejected, (state) => {
       state.loading = false;
     });
     builder.addCase(createChatThunk.pending, (state) => {
@@ -177,4 +188,10 @@ export const { selectAll: selectAllParticipants } =
     (state: RootState) => state.chat.participants
   );
 export const { upsertChatMessage, clearChat } = chatSlice.actions;
+
+export const findMessagesByChatThunk = withErrorHandling(findMessagesByChat);
+export const sendMessageThunk = withErrorHandling(sendMessage);
+export const deleteMessageThunk = withErrorHandling(deleteMessage);
+export const createChat = withErrorHandling(createChatThunk);
+
 export default chatSlice.reducer;

@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { Modal, ModalFooter } from 'react-bootstrap';
-import ActionButton from '../ActionButton/ActionButton';
+import SubmitButton from '../SubmitButton/SubmitButton';
 
 interface PopupModalProps {
   title: string | JSX.Element;
@@ -47,7 +47,7 @@ const PopupModal: React.FC<PopupModalProps> = ({
       <Modal.Body id='modal_body'>{children && children}</Modal.Body>
       <ModalFooter>
         {withClose && (
-          <ActionButton
+          <SubmitButton
             position='right'
             color='secondary'
             submitAction={closeModal}
@@ -55,7 +55,7 @@ const PopupModal: React.FC<PopupModalProps> = ({
           />
         )}
         {action && (
-          <ActionButton
+          <SubmitButton
             position='right'
             color='primary'
             label={actionLabel ? actionLabel : 'Submit'}

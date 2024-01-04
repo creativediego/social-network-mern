@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuthUser } from '../../../hooks/useAuthUser';
-import { IMessage } from '../../../interfaces/IMessage';
-import InboxOptions from './InboxOptions';
+import { useAuthUser } from '../../../../hooks/useAuthUser';
+import { IMessage } from '../../../../interfaces/IMessage';
+import InboxOptions from '../InboxOptions/InboxOptions';
 
 interface InboxMessageProps {
   message: IMessage;
@@ -16,14 +16,7 @@ const InboxMessage = ({ message }: InboxMessageProps) => {
 
   return (
     <li className='p-2 inbox-item list-group-item rounded-0 bg-info m-0 px-0 py-0'>
-      <div
-        className={`d-flex p-2 ${
-          message.sender.id !== authUser.id &&
-          !message.readBy.includes(authUser.id)
-            ? 'bg-primary'
-            : 'bg-secondary'
-        }`}
-      >
+      <div className={`d-flex p-2  bg-secondary rounded-0 inbox-item`}>
         <Link
           style={{ zIndex: '1', flex: '1' }}
           to={`/messages/${message.chatId}`}

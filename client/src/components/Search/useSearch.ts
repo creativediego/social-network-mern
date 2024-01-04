@@ -1,18 +1,27 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useAlert } from '../../hooks/useAlert';
+import { set } from 'react-hook-form';
+
+export interface SearchData<T> {
+  searchValue: string;
+  setSearch: (val: string) => void;
+  searchResults: T[];
+  searchLoading: boolean;
+}
 
 export const useSearch = <T>(
-  APICall: (searchValue: string) => Promise<T>,
+  APICall: (searchValue: string) => Promise<T[]>,
   initialSearchValue?: string
-) => {
+): SearchData<T> => {
   const [searchValue, setSearchValue] = useState(initialSearchValue || '');
-  const [searchResults, setResults] = useState<T | null>(null);
+  const [searchResults, setResults] = useState<T[]>([]);
   const [searchLoading, setLoading] = useState(false);
   const isMounted = useRef(true);
   const { setError } = useAlert();
 
-  const handleSetSearchValue = useCallback((val: string) => {
+  const setSearch = useCallback((val: string) => {
     setSearchValue(val);
+    setResults([]);
   }, []);
 
   useEffect(() => {
@@ -22,7 +31,7 @@ export const useSearch = <T>(
       if (!searchValue || !searchValue.match(validAlphaChars)) {
         return;
       }
-      setResults({} as T);
+      setResults([]);
       setLoading(true);
       try {
         const data = await APICall(searchValue);
@@ -45,7 +54,7 @@ export const useSearch = <T>(
 
   return {
     searchValue,
-    setSearch: handleSetSearchValue,
+    setSearch,
     searchResults,
     searchLoading,
   };

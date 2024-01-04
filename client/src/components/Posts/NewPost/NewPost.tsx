@@ -2,7 +2,7 @@ import React from 'react';
 import PostImage from '../PostImage/PostImage';
 import PostImageUpload from './PostImageUpload';
 import useNewPost from './useNewPost';
-import ActionButton from '../../ActionButton/ActionButton';
+import SubmitButton from '../../SubmitButton/SubmitButton';
 
 /**
  * Displays a form for a user to submit a new post.
@@ -25,6 +25,7 @@ const NewPost = (): JSX.Element => {
     <div className='p-2 w-100'>
       {/* Text area for entering post content */}
       <textarea
+        id='new-post'
         onChange={handleInputChange}
         placeholder="What's happening?"
         className='w-100 border-0 p-2'
@@ -55,7 +56,7 @@ const NewPost = (): JSX.Element => {
           <PostImageUpload setImageFile={handleSetImageFile} />
         </div>
         <div className='col-2 mt-4'>
-          <ActionButton
+          <SubmitButton
             submitAction={handleCreatePost}
             label='Post'
             position='right'

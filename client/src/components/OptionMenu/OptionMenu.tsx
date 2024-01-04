@@ -21,7 +21,7 @@ const OptionMenu = ({ customOptions }: OptionMenuProps) => {
       )}
       <div className='dropdown d-flex align-items-center justify-content-end position-relative'>
         <div className='btn' onClick={toggleShowMenu}>
-          <i className='fa-solid fa-ellipsis'></i>
+          <i className='fa-solid fa-ellipsis text'></i>
         </div>
         {showMenu && (
           <div className='position-absolute w-50 h-100 '>

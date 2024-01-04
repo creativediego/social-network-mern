@@ -1,11 +1,11 @@
 import React, { memo } from 'react';
-import InboxMessage from './InboxMessage';
-import useInbox from './hooks/useInbox';
-import { Loader } from '../../index';
-import { IMessage } from '../../../interfaces/IMessage';
+import InboxMessage from '../InboxMessage/InboxMessage';
+import useInbox from './useInbox';
+import { Loader } from '../../../index';
+import { IMessage } from '../../../../interfaces/IMessage';
 
 /**
- * `MessageInbox` is a component that displays a list of conversations in the user's inbox.
+ * `Inbox` is a component that displays a list of conversations in the user's inbox.
  *
  * It uses the `useInbox` hook to get the messages and the loading state.
  * It also uses the `Loader` component to display a loader while the messages are loading.
@@ -13,11 +13,11 @@ import { IMessage } from '../../../interfaces/IMessage';
  * @component
  * @example
  * Example usage of MessageInbox component
- * <MessageInbox />
+ * <Inbox />
  *
  * @returns {JSX.Element} A JSX element representing the message inbox.
  */
-const Inbox = (): JSX.Element => {
+const InboxView = (): JSX.Element => {
   const { messages, loading } = useInbox();
 
   if (loading) {
@@ -39,4 +39,4 @@ const Inbox = (): JSX.Element => {
   }
 };
 
-export default memo(Inbox);
+export default memo(InboxView);

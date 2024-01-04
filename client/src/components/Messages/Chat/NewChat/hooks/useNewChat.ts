@@ -1,15 +1,27 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IUser } from '../../../interfaces/IUser';
-import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { IChat } from '../../../interfaces/IChat';
-import { selectAuthUser } from '../../../redux/userSlice';
-import { createChatThunk, selectActiveChatId } from '../../../redux/chatSlice';
+import { IUser } from '../../../../../interfaces/IUser';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hooks';
+import { IChat } from '../../../../../interfaces/IChat';
+import { selectAuthUser } from '../../../../../redux/userSlice';
+import {
+  createChatThunk,
+  selectActiveChatId,
+} from '../../../../../redux/chatSlice';
+
+export interface NewChatActions {
+  newChatLoading: boolean;
+  selectedUsers: IUser[];
+  selectUsersForChat: (user: IUser) => void;
+  removeSelectedUser: (userId: string) => void;
+  createNewChat: () => void;
+  activeChatId: string;
+}
 
 /**
  * Manages the state of creating a new chat. Used with NewChat component.
  */
-export const useNewChat = () => {
+export const useNewChat = (): NewChatActions => {
   const isMounted = useRef(true);
   const navigate = useNavigate();
   const authUser = useAppSelector(selectAuthUser);

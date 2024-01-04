@@ -10,10 +10,10 @@ import Loader from '../Loader/Loader';
  * color: Specifies the button's color scheme - 'primary' or 'secondary' (optional, defaults to 'primary').
  * loading: Flag indicating whether the button is in a loading state (optional).
  */
-export interface ActionButtonProps {
-  label?: string;
+export interface SubmitButtonProps {
   submitAction?: () => void;
-  position: 'right' | 'left';
+  label?: string;
+  position?: 'right' | 'left';
   color?: 'primary' | 'secondary';
   loading?: boolean;
 }
@@ -23,15 +23,15 @@ export interface ActionButtonProps {
  * It accepts label, position, color, loading state, and a submit action.
  * Utilizes Bootstrap's Button component and Loader component for loading state.
  */
-const ActionButton = ({
+const SubmitButton = ({
   submitAction,
   label,
   position,
   color,
   loading,
-}: ActionButtonProps) => {
+}: SubmitButtonProps) => {
   return (
-    <span className={`fa-pull-${position} mt-2`}>
+    <span className={`fa-pull-${position ? position : 'right'} mt-2`}>
       <Button
         disabled={loading}
         type='submit'
@@ -48,4 +48,4 @@ const ActionButton = ({
   );
 };
 
-export default memo(ActionButton);
+export default memo(SubmitButton);

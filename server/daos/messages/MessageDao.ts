@@ -37,31 +37,40 @@ export default class MessageDao implements IMessageDao {
    * @returns the new chat object after it is created in the ChatModel
    */
   createChat = async (chat: IChat): Promise<IChat> => {
-    let participants = chat.participants.map((user) => user.id);
-    // if (!chat.participants.includes(chat.createdBy)) {
-    //   participants.push(chat.createdBy.id);
-    // }
-    let type: ChatType;
-    if (chat.participants.length > 2) {
-      type = ChatType.Group;
-    } else {
-      type = ChatType.Private;
-    }
     try {
-      const convo = await this.chatModel
-        .findOneAndUpdate(
-          { type: chat.participants, participants: { $all: participants } },
-          {
-            creatorId: chat.creatorId,
-            type,
-            participants,
-            deletedBy: [],
-            // $pull: { removeFor: { $in: [chat.createdBy] } },
-          },
-          { upsert: true, new: true }
-        )
+      let participantsIds = chat.participants.map((user) => user.id);
+
+      let type: ChatType;
+      if (chat.participants.length > 2) {
+        type = ChatType.Group;
+      } else {
+        type = ChatType.Private;
+      }
+
+      const existingChat = await this.chatModel
+        .findOne({ type, participants: { $all: participantsIds } })
         .populate('participants');
-      return await convo.populate('createdBy');
+
+      if (existingChat) {
+        return existingChat;
+      }
+
+      const newChat = await this.chatModel.create({
+        creatorId: chat.creatorId,
+        type,
+        participants: participantsIds,
+        deletedBy: [],
+      });
+
+      const populatedChat = await this.chatModel
+        .findById(newChat._id)
+        .populate('participants');
+
+      if (populatedChat) {
+        return populatedChat;
+      } else {
+        throw new Error('Failed to populate chat participants');
+      }
     } catch (err) {
       throw this.errorHandler.handleError(
         MessageDaoErrors.DB_ERROR_CREATING_CHAT,
@@ -77,6 +86,7 @@ export default class MessageDao implements IMessageDao {
    * @returns the message document from the MessageModel
    */
   createMessage = async (message: IMessage): Promise<IMessage> => {
+    console.log(message);
     // Check if chat for this message exists, and if sender is a participant in it.
     const senderId = message.sender.id;
     try {
@@ -85,18 +95,21 @@ export default class MessageDao implements IMessageDao {
           _id: message.chatId,
           participants: { $in: [senderId] },
         },
-        { readBy: [senderId], deletedBy: [] },
         { new: true }
       );
-      this.errorHandler.objectOrNullException(
-        existingChat,
-        MessageDaoErrors.INVALID_CHAT
-      );
+      if (!existingChat) {
+        throw this.errorHandler.objectOrNullException(
+          existingChat,
+          MessageDaoErrors.INVALID_CHAT
+        );
+      }
       // Create the message.
       const dbMessage = await this.messageModel.create({
         ...message,
+        sender: message.sender.id,
+        recipients: existingChat.participants,
       });
-      await (await dbMessage.populate('sender')).populate('chat');
+      await dbMessage.populate('sender');
       return dbMessage;
     } catch (err) {
       throw this.errorHandler.handleError(
@@ -157,12 +170,14 @@ export default class MessageDao implements IMessageDao {
         existingChat,
         MessageDaoErrors.INVALID_CHAT
       );
+
       // Retrieve all the messages for the chat.
       const messagesByChat = await this.messageModel
         .find({
-          chatId: chatId,
+          chatId,
           deletedBy: { $nin: [userId] },
         })
+        .sort({ timestamp: -1 }) // Sort messages in descending order based on timestamp (latest first)
         .populate('sender');
 
       this.errorHandler.objectOrNullException(

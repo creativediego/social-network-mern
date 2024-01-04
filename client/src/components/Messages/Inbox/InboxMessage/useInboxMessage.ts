@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch } from '../../../../redux/hooks';
 
 import {
-  findInboxMessagesThunk,
-  deleteInboxChatThunk,
+  findInboxMessages,
+  deleteInboxChat,
 } from '../../../../redux/inboxSlice';
 
 /**
@@ -19,13 +19,13 @@ const useInboxMessage = () => {
 
   const deleteConversation = useCallback(
     (conversationId: string) => {
-      return dispatch(deleteInboxChatThunk(conversationId));
+      return dispatch(deleteInboxChat(conversationId));
     },
     [dispatch]
   );
 
   useEffect(() => {
-    dispatch(findInboxMessagesThunk());
+    dispatch(findInboxMessages());
   }, [dispatch]);
   return {
     deleteConversation,
