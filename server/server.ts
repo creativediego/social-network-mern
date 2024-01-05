@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
-import express, { Express, Response, Request } from 'express';
-import connectToDatabase from './config/configDatabase';
 import path from 'path';
+import express, { Express, Response, Request } from 'express';
+import { connectToDatabase } from './config/configDatabase';
 import { Connection } from 'mongoose';
 import { DependencyContainer } from './config/DependencyContainer';
 import { Dep } from './config/Dependencies';
@@ -20,8 +20,8 @@ dependencies.register(Dep.App, [], () => express());
 dependencies.register(Dep.HttpServer, [Dep.App], (app: Express) =>
   createServer(app)
 );
-const app = dependencies.get<Express>(Dep.App);
-const httpServer = dependencies.get<Server>(Dep.HttpServer);
+const app = dependencies.resolve<Express>(Dep.App);
+const httpServer = dependencies.resolve<Server>(Dep.HttpServer);
 
 // Config middleware and init other dependencies
 configMiddleWare(app);

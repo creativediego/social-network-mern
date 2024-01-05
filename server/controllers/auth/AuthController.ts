@@ -16,7 +16,11 @@ import { IJWTService } from '../../services/IJWTService';
 dotenv.config();
 
 /**
- * Handles authentication using json web tokens.
+ * AuthController class.
+ *
+ * This class implements the `IAuthController` interface and handles authentication using JSON Web Tokens (JWTs). It has two private readonly properties: `dao`, which is a DAO for users, and `path`, which refers to the api auth path.
+ *
+ * @implements {IAuthController}
  */
 export default class AuthController implements IAuthController {
   private readonly dao: IDao<IUser>;

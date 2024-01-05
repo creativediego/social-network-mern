@@ -1,18 +1,11 @@
 import BookmarkDao from '../daos/bookmarks/BookmarkDao';
-import IBookMarkDao from '../daos/bookmarks/IBookmarkDao';
 import FollowDao from '../daos/follows/FollowDao';
-import IFollowDao from '../daos/follows/IFollowDao';
-import ILikeDao from '../daos/likes/ILikeDao';
 import { LikeDao } from '../daos/likes/LikeDao';
-import IMessageDao from '../daos/messages/IMessageDao';
 import MessageDao from '../daos/messages/MessageDao';
 import NotificationDao from '../daos/notifications/NotificationsDao';
-import IDao from '../daos/shared/IDao';
 import PostDao from '../daos/posts/PostDao';
 import UserDao from '../daos/users/UserDao';
 import DaoErrorHandler from '../errors/DaoErrorHandler';
-import IPost from '../models/posts/IPost';
-import IUser from '../models/users/IUser';
 import BookmarkModel from '../mongoose/bookmarks/BookmarkModel';
 import DislikeModel from '../mongoose/dislikes/DislikeModel';
 import FollowModel from '../mongoose/follows/FollowModel';
@@ -27,8 +20,14 @@ import IErrorHandler from '../errors/IErrorHandler';
 import { Dep } from './Dependencies';
 
 /**
- * @file
- * Registers all the DAOs and their model dependencies using the parameterized dependency injection container.
+ * registerDAOs function.
+ *
+ * This function registers all Data Access Objects (DAOs) and their model dependencies in the dependency container.
+ * Each DAO is registered with its name, a list of its dependencies, and a factory function that creates an instance of the DAO.
+ *
+ * The factory function takes the dependencies of the DAO as parameters and returns a new instance of the DAO.
+ *
+ * @param {IDependencyContainer} container - The dependency container.
  */
 
 export const registerDAOs = (container: IDependencyContainer): void => {

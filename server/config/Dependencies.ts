@@ -1,3 +1,14 @@
+/**
+ * Dep enum.
+ *
+ * This enum represents the dependencies in the application.
+ * Each dependency is represented by a string value.
+ *
+ * The dependencies include services, controllers, and data access objects (DAOs).
+ * Used to inject dependencies into the application.
+ *
+ * @enum {string}
+ */
 export enum Dep {
   App = 'app',
   isAuthenticated = 'isAuthenticated',

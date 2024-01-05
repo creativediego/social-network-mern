@@ -1,22 +1,12 @@
 import { Express } from 'express';
 import BookMarkController from '../controllers/bookmarks/BookmarkController';
-import IBookMarkController from '../controllers/bookmarks/IBookmarkController';
 import FollowController from '../controllers/follows/FollowController';
-import IFollowController from '../controllers/follows/IFollowController';
-import ILikeController from '../controllers/likes/ILikeController';
 import LikeController from '../controllers/likes/LikeController';
-import IMessageController from '../controllers/messages/IMessageController';
 import MessageController from '../controllers/messages/MessageController';
-import IPostController from '../controllers/posts/IPostController';
 import PostController from '../controllers/posts/PostController';
 import { UserController } from '../controllers/users/UserController';
 import NotificationController from '../controllers/notifications/NotificationController';
 import SearchController from '../controllers/search/SearchController';
-
-import { handleCentralError } from '../errors/handleCentralError';
-import AuthController from '../controllers/auth/AuthController';
-import IAuthController from '../controllers/auth/IAuthController';
-import ISearchController from '../controllers/search/ISearchController';
 import { IDependencyContainer } from './IDependencyContainer';
 import { Dep } from './Dependencies';
 import IDao from '../daos/shared/IDao';
@@ -32,8 +22,14 @@ import SocketService from '../services/SocketService';
 import FirebaseAuthController from '../controllers/auth/FirebaseAuthController';
 
 /**
- * Instantiates all controllers.
- * @param app the express app to pass as dependency to controllers to declare routes.
+ * registerControllers function.
+ *
+ * This function registers all controllers in the dependency container.
+ * Each controller is registered with its name, a list of its dependencies, and a factory function that creates an instance of the controller.
+ *
+ * The factory function takes the dependencies of the controller as parameters and returns a new instance of the controller.
+ *
+ * @param {IDependencyContainer} container - The dependency container.
  */
 export const registerControllers = (container: IDependencyContainer): void => {
   container.register(

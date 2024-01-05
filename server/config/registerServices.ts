@@ -8,9 +8,16 @@ import IDao from '../daos/shared/IDao';
 import IUser from '../models/users/IUser';
 import BcryptHasher from '../controllers/auth/BcryptHasher';
 import { Dep } from './Dependencies';
+
 /**
- * @file
- * Registers all services and their dependencies using the parameterized dependency injection container.
+ * registerServices function.
+ *
+ * This function registers all services and their dependencies in the dependency container.
+ * Each service is registered with its name, a list of its dependencies, and a factory function that creates an instance of the service.
+ *
+ * The factory function takes the dependencies of the service as parameters and returns a new instance of the service.
+ *
+ * @param {IDependencyContainer} container - The dependency container.
  */
 
 export const registerServices = (container: IDependencyContainer): void => {

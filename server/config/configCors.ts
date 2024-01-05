@@ -1,6 +1,19 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 
+/**
+ * configCors function.
+ *
+ * This function configures Cross-Origin Resource Sharing (CORS) for the Express application.
+ * It uses the `cors` middleware from the `cors` package and the `json` middleware from the `express` package.
+ *
+ * The `allowedOrigins` array contains the origins that are allowed to access the application.
+ * The `cors` middleware is configured to allow credentials, to check the origin of the request, and to allow certain headers and methods.
+ *
+ * If the origin of the request is not in the `allowedOrigins` array or is not provided, an error is passed to the callback of the `cors` middleware.
+ *
+ * @param {Express} app - The Express application.
+ */
 export const configCors = (app: Express) => {
   app.use(express.json());
   const allowedOrigins = [process.env.API_CLIENT_URL!];
@@ -20,19 +33,4 @@ export const configCors = (app: Express) => {
       methods: 'GET, POST, PUT, DELETE',
     })
   );
-
-  // Manually handle OPTIONS requests
-  // app.use((req: Request, res: Response, next: NextFunction) => {
-  //   if (req.method === 'OPTIONS') {
-  //     res.setHeader('Access-Control-Allow-Origin', '*');
-  //     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  //     res.setHeader(
-  //       'Access-Control-Allow-Headers',
-  //       'Content-Type, Authorization'
-  //     );
-  //     res.status(200).end();
-  //   } else {
-  //     next();
-  //   }
-  // });
 };
