@@ -1,6 +1,8 @@
 import IUser from '../../models/users/IUser';
-import IDao from '../shared/IDao';
+import IBaseDao from '../shared/IDao';
 
-export interface IUserDao extends IDao<IUser> {
-  findByEmail(email: string): Promise<IUser>;
+export interface IUserDao extends IBaseDao<IUser> {
+  findByEmail(email: string): Promise<IUser | null>;
+  findByUsername(value: string): Promise<IUser | null>;
+  findAllByField(field: string): Promise<IUser[]>;
 }

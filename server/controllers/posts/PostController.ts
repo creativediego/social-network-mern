@@ -3,7 +3,7 @@ import HttpRequest from '../shared/HttpRequest';
 import HttpResponse from '../shared/HttpResponse';
 import { Express, Router } from 'express';
 import { adaptRequest } from '../shared/adaptRequest';
-import IDao from '../../daos/shared/IDao';
+import IBaseDao from '../../daos/shared/IDao';
 import IPost from '../../models/posts/IPost';
 import { isAuthenticated } from '../auth/isAuthenticated';
 import { validatePost } from '../middleware/validatePost';
@@ -17,7 +17,7 @@ import DaoDatabaseException from '../../errors/DaoDatabseException';
  * Handles CRUD requests and responses for the Post resource.  Implements {@link IPostController}.
  */
 export default class PostController implements IPostController {
-  private readonly postDao: IDao<IPost>;
+  private readonly postDao: IBaseDao<IPost>;
   private readonly socketService: ISocketService;
   /**
    * Constructs the controller by calling the super abstract, setting the dao, and configuring the endpoint paths.
@@ -26,7 +26,7 @@ export default class PostController implements IPostController {
   public constructor(
     path: string,
     app: Express,
-    dao: IDao<IPost>,
+    dao: IBaseDao<IPost>,
     socketService: ISocketService
   ) {
     this.postDao = dao;
@@ -37,7 +37,7 @@ export default class PostController implements IPostController {
     router.get(
       '/posts/search/:keyword',
       isAuthenticated,
-      adaptRequest(this.findByField)
+      adaptRequest(this.findOneByUsername)
     );
     router.get('/posts/:postId', isAuthenticated, adaptRequest(this.findById));
     router.get(
@@ -61,7 +61,7 @@ export default class PostController implements IPostController {
     throw new Error('Method not implemented.');
   }
 
-  findByField = async (req: HttpRequest): Promise<HttpResponse> => {
+  findOneByUsername = async (req: HttpRequest): Promise<HttpResponse> => {
     const posts: IPost[] = await this.postDao.findAllByField(
       req.params.keyword
     );
@@ -93,7 +93,7 @@ export default class PostController implements IPostController {
    * @returns {HttpResponse} the response data to be sent to the client
    */
   findById = async (req: HttpRequest): Promise<HttpResponse> => {
-    const post: IPost = await this.postDao.findById(req.params.postId);
+    const post: IPost = await this.postDao.findOneById(req.params.postId);
     return okResponse(post);
   };
 
@@ -136,7 +136,7 @@ export default class PostController implements IPostController {
    * @returns {HttpResponse} the response data to be sent to the client
    */
   delete = async (req: HttpRequest): Promise<HttpResponse> => {
-    const post: IPost = await this.postDao.findById(req.params.postId);
+    const post: IPost = await this.postDao.findOneById(req.params.postId);
     if (req.user.id !== post.author.id) {
       throw new AuthException('User not authorized to delete post.');
     }

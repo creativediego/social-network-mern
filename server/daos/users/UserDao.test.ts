@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import DaoErrorHandler from '../../errors/DaoErrorHandler';
 import IUser from '../../models/users/IUser';
 import UserModel from '../../mongoose/users/UserModel';
-import IDao from '../shared/IDao';
+import IBaseDao from '../shared/IDao';
 import UserDao from './UserDao';
 import mongoose, { Mongoose } from 'mongoose';
 import { mockUsers } from '../../__mocks__/mockUsers';
@@ -30,7 +30,7 @@ const stripPrivateFields = (users: any[]): any => {
 };
 const mockDatabaseUsers = stripPrivateFields(mockUsers);
 
-const userDao: IDao<IUser> = new UserDao(UserModel, new DaoErrorHandler());
+const userDao: IBaseDao<IUser> = new UserDao(UserModel, new DaoErrorHandler());
 
 describe.only('User Dao', () => {
   test('create()', async () => {
@@ -47,7 +47,7 @@ describe.only('User Dao', () => {
   });
   test('findById()', async () => {
     const mockId: string = mockUsers[0]._id;
-    const dbUser: IUser = await userDao.findById(mockId);
+    const dbUser: IUser = await userDao.findOneById(mockId);
     expect(dbUser).toMatchObject(mockDatabaseUsers[0]);
   });
   test('update()', async () => {

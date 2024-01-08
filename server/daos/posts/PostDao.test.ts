@@ -10,7 +10,7 @@ import DaoErrorHandler from '../../errors/DaoErrorHandler';
 import UserModel from '../../mongoose/users/UserModel';
 import HashtagModel from '../../mongoose/hashtags/HashtagModel';
 import UserDao from '../users/UserDao';
-import IDao from '../shared/IDao';
+import IBaseDao from '../shared/IDao';
 import mongoose, { ObjectId } from 'mongoose';
 import { mockPosts } from '../../__mocks__/mockPosts';
 
@@ -21,7 +21,7 @@ const mockDbPosts = [
   { ...mockPosts[0], author: { _id: mockAuthor._id } },
   { ...mockPosts[1], author: { _id: mockAuthor._id } },
 ];
-const postDao: IDao<IPost> = new PostDao(
+const postDao: IBaseDao<IPost> = new PostDao(
   PostModel,
   UserModel,
   HashtagModel,
@@ -30,7 +30,10 @@ const postDao: IDao<IPost> = new PostDao(
 
 beforeAll(async () => {
   configDatabase(process.env.MONGO_DEV!);
-  const userDao: IDao<IUser> = new UserDao(UserModel, new DaoErrorHandler());
+  const userDao: IBaseDao<IUser> = new UserDao(
+    UserModel,
+    new DaoErrorHandler()
+  );
   const createdUser: IUser = await userDao.create(mockAuthor);
 });
 
@@ -72,7 +75,7 @@ describe('PostDao', () => {
   test('findById(): a valid post', async () => {
     const postToCreate: any = await createMockPost('hello!');
 
-    const foundPost: any = await postDao.findById(postToCreate.id);
+    const foundPost: any = await postDao.findOneById(postToCreate.id);
     expect(postToCreate.post).toStrictEqual(foundPost.post);
     expect(postToCreate.author.id).toStrictEqual(foundPost.author.id);
   });

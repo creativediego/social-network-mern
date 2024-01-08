@@ -3,7 +3,7 @@ import connectToDatabase from './config/configDatabase';
 import UserModel from './mongoose/users/UserModel';
 import PostModel from './mongoose/posts/PostModel';
 import mongoose, { Connection } from 'mongoose';
-import { AccountType } from './models/users/AccoutType';
+import { UserAccountType } from './models/users/UserAccoutType';
 import { ChatType } from './models/messages/ChatType';
 import ChatModel from './mongoose/messages/ChatModel';
 import MessageModel from './mongoose/messages/MessageModel';
@@ -116,7 +116,7 @@ const profiles = [
 const createSeedUser = () => {
   return {
     _id: new mongoose.Types.ObjectId(),
-    accountType: AccountType.Personal,
+    accountType: UserAccountType.Personal,
     followerCount: getRandomNumberBetween(0, 100),
     followeeCount: getRandomNumberBetween(0, 100),
     postCount: getRandomNumberBetween(0, 100),

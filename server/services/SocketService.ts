@@ -3,19 +3,19 @@ import { Server } from 'http';
 import dotenv from 'dotenv';
 import { ISocketService } from './ISocketService';
 import { IJWTService } from './IJWTService';
-import IDao from '../daos/shared/IDao';
+import IBaseDao from '../daos/shared/IDao';
 import IUser from '../models/users/IUser';
 
 dotenv.config();
 
 export default class SocketService implements ISocketService {
   private readonly io: ioServer; // Instance of the Socket.IO server
-  private readonly userDao: IDao<IUser>; // User data access object
+  private readonly userDao: IBaseDao<IUser>; // User data access object
 
   public constructor(
     jwtService: IJWTService, // Service for handling JSON Web Tokens
     httpServer: Server, // HTTP server instance
-    userDao: IDao<IUser> // Data Access Object for user data
+    userDao: IBaseDao<IUser> // Data Access Object for user data
   ) {
     this.userDao = userDao;
 

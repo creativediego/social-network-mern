@@ -1,4 +1,4 @@
-import IDao from '../../daos/shared/IDao';
+import IBaseDao from '../../daos/shared/IDao';
 import IPost from '../../models/posts/IPost';
 import IUser from '../../models/users/IUser';
 import HttpRequest from '../shared/HttpRequest';
@@ -10,13 +10,13 @@ import { okResponse } from '../shared/createResponse';
 import { adaptRequest } from '../shared/adaptRequest';
 
 export default class SearchController implements ISearchController {
-  private readonly userDao: IDao<IUser>;
-  private readonly postDao: IDao<IPost>;
+  private readonly userDao: IBaseDao<IUser>;
+  private readonly postDao: IBaseDao<IPost>;
   public constructor(
     path: string,
     app: Express,
-    userDao: IDao<IUser>,
-    postDao: IDao<IPost>
+    userDao: IBaseDao<IUser>,
+    postDao: IBaseDao<IPost>
   ) {
     this.userDao = userDao;
     this.postDao = postDao;

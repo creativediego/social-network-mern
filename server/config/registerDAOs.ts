@@ -2,7 +2,7 @@ import BookmarkDao from '../daos/bookmarks/BookmarkDao';
 import FollowDao from '../daos/follows/FollowDao';
 import { LikeDao } from '../daos/likes/LikeDao';
 import MessageDao from '../daos/messages/MessageDao';
-import NotificationDao from '../daos/notifications/NotificationsDao';
+import { NotificationDao } from '../daos/notifications/NotificationDao';
 import PostDao from '../daos/posts/PostDao';
 import UserDao from '../daos/users/UserDao';
 import DaoErrorHandler from '../errors/DaoErrorHandler';

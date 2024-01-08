@@ -1,11 +1,11 @@
-import { AccountStatus } from './AccountStatus';
-import { AccountType } from './AccoutType';
+import { UserAccountStatus } from './UserAccountStatus';
+import { UserAccountType } from './UserAccoutType';
 
 /**
  * User entity interface
  */
 export default interface IUser {
-  id?: string;
+  id: string;
   uid?: string;
   email: string;
   name?: string;
@@ -14,8 +14,8 @@ export default interface IUser {
   bio?: string;
   headerImage?: string;
   profilePhoto?: string;
-  accountType?: AccountType;
-  accountStatus?: AccountStatus;
+  accountType?: UserAccountType;
+  accountStatus?: UserAccountStatus;
   followerCount?: number;
   followeeCount?: number;
   postCount?: number;

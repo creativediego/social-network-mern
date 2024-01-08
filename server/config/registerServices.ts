@@ -4,7 +4,7 @@ import { IJWTService } from '../services/IJWTService';
 import JWTService from '../services/JWTService';
 import SocketService from '../services/SocketService';
 import { IDependencyContainer } from './IDependencyContainer';
-import IDao from '../daos/shared/IDao';
+import IBaseDao from '../daos/shared/IDao';
 import IUser from '../models/users/IUser';
 import BcryptHasher from '../controllers/auth/BcryptHasher';
 import { Dep } from './Dependencies';
@@ -33,7 +33,7 @@ export const registerServices = (container: IDependencyContainer): void => {
     (
       firebaseJWTService: IJWTService,
       httpServer: Server,
-      userDao: IDao<IUser>
+      userDao: IBaseDao<IUser>
     ) => new SocketService(firebaseJWTService, httpServer, userDao)
   );
   container.register(Dep.HashService, [], () => new BcryptHasher(10));

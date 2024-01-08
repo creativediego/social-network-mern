@@ -1,209 +1,130 @@
-import IDao from '../shared/IDao';
-import { UserDaoErrors } from './UserDaoErrors';
+/**
+ * A class representing a data access object (DAO) for user-related operations in a MongoDB database.
+ */
+import IBaseDao from '../shared/IDao';
 import { Model } from 'mongoose';
 import IUser from '../../models/users/IUser';
-import IErrorHandler from '../../errors/IErrorHandler';
-import User from '../../models/users/User';
-import DaoDatabaseException from '../../errors/DaoDatabseException';
+import { DatabaseError } from '../../errors/DatabaseError';
 
-/**
- * DAO database CRUD operations for the user resource. Takes the injected dependencies of a {@link Model<IUser>} ORM model and an {@link IErrorHandler} error handler.
- */
-export default class UserDao implements IDao<IUser> {
+export default class UserDao implements IBaseDao<IUser> {
   private readonly model: Model<IUser>;
-  private readonly errorHandler: IErrorHandler;
 
   /**
-   * Builds the DAO by setting model and error handler injected dependencies to state.
-   * @param {UserModel} UserModel the Mongoose user model
-   * @param {IErrorHandler} errorHandler the error handler to deal with all errors that might occur
+   * Creates an instance of UserDao.
+   * @param {Model<IUser>} model The Mongoose Model for the User entity.
    */
-  constructor(model: Model<IUser>, errorHandler: IErrorHandler) {
+  constructor(model: Model<IUser>) {
     this.model = model;
-    this.errorHandler = errorHandler;
     Object.freeze(this);
   }
 
-  checkUniqueFields = async (user: IUser): Promise<void> => {
-    const existingUserWithSameEmail: any = await this.model.findOne({
-      email: user.email,
-    });
-    const existingUserWithSameUserName: any = await this.model.findOne({
-      username: user.username,
-    });
-    if (
-      existingUserWithSameEmail &&
-      existingUserWithSameEmail._id.toString() !== user.id
-    )
-      throw new DaoDatabaseException(UserDaoErrors.EMAIL_TAKEN);
-    if (
-      existingUserWithSameUserName &&
-      existingUserWithSameUserName._id.toString() !== user.id
-    )
-      throw new DaoDatabaseException(UserDaoErrors.USERNAME_TAKEN);
-  };
   /**
-   * Finds all users in the database.
-   * @returns an array of all users.
+   * Finds one user in the database based on the provided criteria.
+   * @param {Partial<IUser>} criteria The criteria to search for the user.
+   * @returns {Promise<IUser | null>} A Promise that resolves to the found user or null if not found.
+   * @throws {DatabaseError} If an error occurs during the operation.
    */
-  findAll = async (): Promise<IUser[]> => {
+  findOne = async (criteria: Partial<IUser>): Promise<IUser | null> => {
     try {
-      const dbUsers = await this.model.find().exec();
-      return this.errorHandler.objectOrNullException(
-        dbUsers,
-        UserDaoErrors.USER_NOT_FOUND
-      );
-    } catch (err) {
-      throw this.errorHandler.handleError(
-        UserDaoErrors.DB_ERROR_FINDING_ALL_USERS,
-        err
-      );
+      return this.model.findOne(criteria || {});
+    } catch (error) {
+      throw new DatabaseError('Error finding user.', error);
     }
   };
 
-  exists = async (user: IUser): Promise<boolean> => {
+  /**
+   * Finds all users in the database based on the provided criteria.
+   * @param {Partial<IUser>} [criteria] The optional criteria to filter the users.
+   * @returns {Promise<IUser[]>} A Promise that resolves to an array of users matching the criteria.
+   * @throws {DatabaseError} If an error occurs during the operation.
+   */
+  findAll = async (criteria?: Partial<IUser>): Promise<IUser[]> => {
     try {
-      const dbUser: IUser | null = await this.model.findOne({
-        uid: user.uid,
-      });
-      if (dbUser === null) return false;
-      else return true;
-    } catch (err) {
-      throw this.errorHandler.handleError(UserDaoErrors.DB_ERROR_EXISTS, err);
+      return await this.model.find(criteria || {});
+    } catch (error) {
+      throw new DatabaseError('Error finding users.', error);
     }
   };
+
   /**
    * Finds a single user in the database by its specified id.
-   * @param {string} userId the id of the user
-   * @returns the user
+   * @param {string} id The id of the user.
+   * @returns {Promise<IUser | null>} A Promise that resolves to the found user or null if not found.
+   * @throws {DatabaseError} If an error occurs during the operation.
    */
-  findById = async (id: string): Promise<IUser> => {
+  findOneById = async (id: string): Promise<IUser | null> => {
     try {
-      const dbUser: IUser | null = await this.model.findOne({ uid: id });
-      return this.errorHandler.objectOrNullException(
-        dbUser,
-        UserDaoErrors.USER_DOES_NOT_EXIST_ID
-      );
+      return await this.model.findOne({ _id: id });
     } catch (err) {
-      throw this.errorHandler.handleError(
-        UserDaoErrors.DB_ERROR_FINDING_USER,
-        err
-      );
-    }
-  };
-
-  findAllByField = async (nameOrUsername: string): Promise<IUser[]> => {
-    const pattern = RegExp(`${nameOrUsername}`, 'i');
-    try {
-      return await this.model
-        .find()
-        .or([{ username: pattern }, { name: pattern }]);
-    } catch (err) {
-      throw this.errorHandler.handleError(
-        UserDaoErrors.DB_ERROR_FINDING_USER,
-        err
-      );
-    }
-  };
-
-  findByField = async (emailOrUsernameOrName: string): Promise<IUser> => {
-    try {
-      const dbUser: IUser | null = await this.model.findOne({
-        $or: [
-          { email: emailOrUsernameOrName },
-          { username: emailOrUsernameOrName },
-          // { name: emailOrUsernameOrName },
-          // { firstName: emailOrUsernameOrName },
-          // { lastName: emailOrUsernameOrName },
-        ],
-      });
-      return this.errorHandler.objectOrNullException(
-        dbUser,
-        UserDaoErrors.USER_DOES_NOT_EXIST
-      );
-    } catch (err) {
-      throw this.errorHandler.handleError(
-        UserDaoErrors.DB_ERROR_FINDING_USER,
-        err
-      );
+      throw new DatabaseError('Error finding user.', err);
     }
   };
 
   /**
-   * Create a new user document with all its data by calling the Mongoose UserModel.
-   * @param {string} user the new user
-   * @returns the newly created user
+   * Creates a new user document in the database.
+   * @param {IUser} user The new user object to be created.
+   * @returns {Promise<IUser>} A Promise that resolves to the newly created user.
+   * @throws {DatabaseError} If an error occurs during the operation.
    */
   create = async (user: IUser): Promise<IUser> => {
     try {
       // If user already exists, return the existing user.
-      const existingUser = await this.model.findOne({ email: user.email });
+      const existingUser = await this.model.findOne({
+        uid: user?.uid,
+        email: user.email,
+      });
       if (existingUser) {
         return existingUser;
       }
       // Otherwise, create a new user.
-      const newUser: IUser | null = await this.model.findOneAndUpdate(
-        { uid: user.uid },
-        { ...user },
-        {
-          upsert: true,
-          new: true,
-        }
-      );
-      return this.errorHandler.objectOrNullException(
-        newUser,
-        UserDaoErrors.USER_NOT_FOUND
-      );
+      const newUser: IUser = await this.model.create({ ...user });
+      return newUser;
     } catch (err) {
-      throw this.errorHandler.handleError(
-        UserDaoErrors.DB_ERROR_CREATING_USER,
-        err
-      );
+      throw new DatabaseError('Error creating user.', err);
     }
   };
 
   /**
    * Updates a user in the database by its id.
-   * @param {string} userId the id of the user
-   * @param {IUser} user the user with the information used for the update.
-   * @returns the updated user
+   * @param {string} id The id of the user to update.
+   * @param {IUser} user The user object containing the information for the update.
+   * @returns {Promise<IUser>} A Promise that resolves to the updated user.
+   * @throws {DatabaseError} If an error occurs during the operation or if the user is not found.
    */
-  update = async (uid: string, user: IUser): Promise<IUser> => {
-    await this.checkUniqueFields(user);
+  update = async (id: string, user: IUser): Promise<IUser> => {
     try {
       const updatedUser: IUser | null = await this.model.findOneAndUpdate(
-        { uid },
+        { _id: id },
         { ...user },
         {
           new: true,
         }
       );
-      return this.errorHandler.objectOrNullException(
-        updatedUser,
-        UserDaoErrors.NO_USER_TO_UPDATE
-      );
+      if (!updatedUser) {
+        throw new DatabaseError('User not found for update operation.');
+      }
+      return updatedUser;
     } catch (err) {
-      throw this.errorHandler.handleError(
-        UserDaoErrors.DB_ERROR_CREATING_USER,
-        err
-      );
+      throw new DatabaseError('Error updating user.', err);
     }
   };
 
   /**
-   * Deletes a particular user from the database.
-   * @param userId the id of the user.
-   * @returns the deleted user
+   * Deletes a particular user from the database by its id.
+   * @param {string} userId The id of the user to be deleted.
+   * @returns {Promise<boolean>} A Promise that resolves to true if the user was successfully deleted, false otherwise.
+   * @throws {DatabaseError} If an error occurs during the operation or if the user is not found.
    */
-  delete = async (userId: string): Promise<number> => {
+  delete = async (userId: string): Promise<boolean> => {
     try {
+      const existingUser = await this.model.findOne({ _id: userId });
+      if (existingUser === null) {
+        throw new DatabaseError('User not found.');
+      }
       const userToDelete = await this.model.deleteOne({ _id: userId });
-      return userToDelete.deletedCount;
+      return userToDelete.acknowledged;
     } catch (err) {
-      throw this.errorHandler.handleError(
-        UserDaoErrors.CANNOT_DELETE_USER,
-        err
-      );
+      throw new DatabaseError('Error deleting user.', err);
     }
   };
 }

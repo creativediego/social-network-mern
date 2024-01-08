@@ -9,7 +9,7 @@ import NotificationController from '../controllers/notifications/NotificationCon
 import SearchController from '../controllers/search/SearchController';
 import { IDependencyContainer } from './IDependencyContainer';
 import { Dep } from './Dependencies';
-import IDao from '../daos/shared/IDao';
+import IBaseDao from '../daos/shared/IDao';
 import IUser from '../models/users/IUser';
 import { IJWTService } from '../services/IJWTService';
 import IPost from '../models/posts/IPost';
@@ -35,21 +35,21 @@ export const registerControllers = (container: IDependencyContainer): void => {
   container.register(
     Dep.UserController,
     [Dep.App, Dep.UserDao],
-    (app: Express, userDao: IDao<IUser>) =>
+    (app: Express, userDao: IBaseDao<IUser>) =>
       new UserController('/api/users', app, userDao)
   );
 
   container.register(
     Dep.AuthController,
     [Dep.App, Dep.UserDao, Dep.FirebaseJWTService],
-    (app: Express, userDao: IDao<IUser>, firebaseJWTService: IJWTService) =>
+    (app: Express, userDao: IBaseDao<IUser>, firebaseJWTService: IJWTService) =>
       new FirebaseAuthController('/api/auth', app, userDao, firebaseJWTService)
   );
 
   container.register(
     Dep.PostController,
     [Dep.App, Dep.PostDao, Dep.SocketService],
-    (app: Express, postDao: IDao<IPost>, socketService: SocketService) =>
+    (app: Express, postDao: IBaseDao<IPost>, socketService: SocketService) =>
       new PostController('/api', app, postDao, socketService)
   );
 
@@ -72,7 +72,7 @@ export const registerControllers = (container: IDependencyContainer): void => {
     (
       app: Express,
       followDao: IFollowDao,
-      userDao: IDao<IUser>,
+      userDao: IBaseDao<IUser>,
       notificationDao,
       socketService: ISocketService
     ) =>
@@ -115,7 +115,7 @@ export const registerControllers = (container: IDependencyContainer): void => {
   container.register(
     Dep.SearchController,
     [Dep.App, Dep.UserDao, Dep.PostDao],
-    (app: Express, userDao: IDao<IUser>, postDao: IDao<IPost>) =>
+    (app: Express, userDao: IBaseDao<IUser>, postDao: IBaseDao<IPost>) =>
       new SearchController('/api', app, userDao, postDao)
   );
 };

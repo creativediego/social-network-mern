@@ -7,9 +7,9 @@ import HttpResponse from '../shared/HttpResponse';
 import { Express, Router } from 'express';
 import IFollowController from './IFollowController';
 import { adaptRequest } from '../shared/adaptRequest';
-import IDao from '../../daos/shared/IDao';
-import NotificationDao from '../../daos/notifications/NotificationsDao';
-import INotification from '../../models/notifications/INotification';
+import IBaseDao from '../../daos/shared/IDao';
+import { INotificationDao } from '../../daos/notifications/NotificationDao';
+import { INotification } from '../../models/notifications/INotification';
 import { isAuthenticated } from '../auth/isAuthenticated';
 import { NotificationType } from '../../models/notifications/NotificationType';
 import { ISocketService } from '../../services/ISocketService';
@@ -19,8 +19,8 @@ import { ISocketService } from '../../services/ISocketService';
  */
 export default class FollowController implements IFollowController {
   private readonly followDao: IFollowDao;
-  private readonly userDao: IDao<IUser>;
-  private readonly notificationDao: NotificationDao;
+  private readonly userDao: IBaseDao<IUser>;
+  private readonly notificationDao: INotificationDao;
   private readonly socketService: ISocketService;
 
   /**
@@ -31,8 +31,8 @@ export default class FollowController implements IFollowController {
     path: string,
     app: Express,
     followDao: IFollowDao,
-    userDao: IDao<IUser>,
-    notificationDao: NotificationDao,
+    userDao: IBaseDao<IUser>,
+    notificationDao: INotificationDao,
     socketService: ISocketService
   ) {
     this.followDao = followDao;
@@ -90,15 +90,15 @@ export default class FollowController implements IFollowController {
       userNotified: followeeId,
       userActing: followerId,
     };
-    const followNotification: INotification =
-      await this.notificationDao.createNotification(notificationBody);
+    // const followNotification: INotification =
+    //   await this.notificationDao.createNotification(notificationBody);
 
-    // Emit a new update to the Socket server when a new follow notification is created
-    this.socketService.emitToRoom(
-      followeeId.toString(),
-      'NEW_NOTIFICATION',
-      followNotification
-    );
+    // // Emit a new update to the Socket server when a new follow notification is created
+    // this.socketService.emitToRoom(
+    //   followeeId.toString(),
+    //   'NEW_NOTIFICATION',
+    //   followNotification
+    // );
 
     return okResponse(newFollow);
   };

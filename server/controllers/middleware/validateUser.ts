@@ -1,6 +1,6 @@
 import { param, body } from 'express-validator';
 import { UserErrorMessages as UserValidationMessages } from '../../models/users/UserErrorMessages';
-import { AccountType } from '../../models/users/AccoutType';
+import { UserAccountType } from '../../models/users/UserAccoutType';
 
 export const validateProfile = [
   param('userId').trim().isString(),

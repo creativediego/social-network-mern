@@ -4,9 +4,10 @@ import IUser from '../users/IUser';
  * Model interface for a post.
  */
 export default interface IPost {
+  id: string;
   post: string;
   author: IUser;
-  stats?: {
+  stats: {
     likes: number;
     dislikes: number;
     replies: number;

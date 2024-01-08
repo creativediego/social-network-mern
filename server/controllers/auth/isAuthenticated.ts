@@ -35,6 +35,7 @@ export const isAuthenticated = async (
 
     if (!dbUser) {
       const decodedUser: IUser = {
+        id: '',
         uid: decoded.uid,
         email: decoded.email || '',
         name: decoded.name,

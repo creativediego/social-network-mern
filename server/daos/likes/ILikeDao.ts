@@ -11,8 +11,4 @@ export default interface ILikeDao {
   createLike(uid: string, postId: string): Promise<IPost>;
   createDislike(uid: string, postId: string): Promise<IPost>;
   deleteLike(uid: string, postId: string): Promise<IPost>;
-  deleteDislike(uid: string, postId: string): Promise<IPost>;
-  findAllUsersByPostLike(postId: string): Promise<IUser[]>;
-  findAllPostsLikedByUser(uid: string): Promise<IPost[]>;
-  findAllPostsDislikedByUser(uid: string): Promise<IPost[]>;
 }

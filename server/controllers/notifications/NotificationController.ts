@@ -4,8 +4,8 @@ import { Express, Router } from 'express';
 import { adaptRequest } from '../shared/adaptRequest';
 import { okResponse as okResponse } from '../shared/createResponse';
 import { isAuthenticated } from '../auth/isAuthenticated';
-import INotification from '../../models/notifications/INotification';
-import NotificationDao from '../../daos/notifications/NotificationsDao';
+import { INotification } from '../../models/notifications/INotification';
+import { INotificationDao } from '../../daos/notifications/NotificationDao';
 import { Server } from 'socket.io';
 import { ISocketService } from '../../services/ISocketService';
 /**
@@ -13,7 +13,7 @@ import { ISocketService } from '../../services/ISocketService';
  * @class
  */
 export default class NotificationController {
-  private readonly notificationDao: NotificationDao;
+  private readonly notificationDao: INotificationDao;
   private readonly socketService: ISocketService;
 
   /** Constructs the notifications controller with an notificationDao implementation. Defines the endpoint paths, middleware, method types, and handler methods associated with each endpoint.
@@ -23,18 +23,13 @@ export default class NotificationController {
   constructor(
     path: string,
     app: Express,
-    notificationDao: NotificationDao,
+    notificationDao: INotificationDao,
     socketServer: ISocketService
   ) {
     this.notificationDao = notificationDao;
     this.socketService = socketServer;
     const router = Router();
-    router.get(
-      '/notifications',
-      isAuthenticated,
 
-      adaptRequest(this.findAllNotifications)
-    );
     router.get(
       '/users/:userId/notifications',
       isAuthenticated,
@@ -71,19 +66,20 @@ export default class NotificationController {
    */
   createNotification = async (req: HttpRequest): Promise<HttpResponse> => {
     const userNotifiedId = req.params.userId;
+    return okResponse(userNotifiedId);
 
-    const notification: INotification =
-      await this.notificationDao.createNotification(req.body);
+    //   const notification: INotification;
+    //   // await this.notificationDao.createNotification(req.body);
 
-    // Emit an update to the socket server that there's a new like notification
+    //   // Emit an update to the socket server that there's a new like notification
 
-    this.socketService.emitToRoom(
-      req.body.userNotified,
-      'NEW_NOTIFICATION',
-      notification
-    );
-    // new notification
-    return okResponse(notification);
+    //   this.socketService.emitToRoom(
+    //     req.body.userNotified,
+    //     'NEW_NOTIFICATION',
+    //     notification
+    //   );
+    //   // new notification
+    //   return okResponse(notification);
   };
 
   /**
@@ -94,20 +90,8 @@ export default class NotificationController {
    */
   findNotifications = async (req: HttpRequest): Promise<HttpResponse> => {
     const notifications: INotification[] =
-      await this.notificationDao.findAllNotificationsForUser(req.params.userId);
+      await this.notificationDao.findAllNotifications(req.params.userId);
     return okResponse(notifications.reverse());
-  };
-
-  /**
-   * Processes the request of finding all all notifications in the database (used for testing).
-   * Calls the notifications dao to find the notifications, and returns the notifications back to the client.
-   * @param {HttpRequest} req the request data containing client data
-   * @returns {HttpResponse} the response data to be sent to the client
-   */
-  findAllNotifications = async (req: HttpRequest): Promise<HttpResponse> => {
-    const notifications: INotification[] =
-      await this.notificationDao.findAllNotifications();
-    return okResponse(notifications);
   };
 
   /**
@@ -119,7 +103,7 @@ export default class NotificationController {
     req: HttpRequest
   ): Promise<HttpResponse> => {
     const nid = req.params.nid;
-    const readNotification = await this.notificationDao.updateReadNotification(
+    const readNotification = await this.notificationDao.markNotificationRead(
       nid
     );
 
@@ -136,9 +120,7 @@ export default class NotificationController {
    */
   findUnreadNotifications = async (req: HttpRequest): Promise<HttpResponse> => {
     const undreadNotifications: INotification[] =
-      await this.notificationDao.findUnreadNotificationsForUser(
-        req.params.userId
-      );
+      await this.notificationDao.findAllUnreadNotifications(req.params.userId);
     return okResponse(undreadNotifications);
   };
 

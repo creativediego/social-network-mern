@@ -1,35 +1,34 @@
 import IGenericController from '../shared/IGenericController';
-import IDao from '../../daos/shared/IDao';
+import IBaseDao from '../../daos/shared/IDao';
 import IUser from '../../models/users/IUser';
 import HttpRequest from '../shared/HttpRequest';
 import HttpResponse from '../shared/HttpResponse';
-import { okResponse } from '../shared/createResponse';
+import { notFound, okResponse } from '../shared/createResponse';
 import { Express, Router } from 'express';
 import { adaptRequest } from '../shared/adaptRequest';
 import { isAuthenticated } from '../auth/isAuthenticated';
 import { validateProfile } from '../middleware/validateUser';
-import { body, validationResult } from 'express-validator';
 import { validateResults } from '../middleware/validateResults';
 
 /**
  * Processes the requests and responses dealing with the user resource. Implements {@link IController}.
  */
 export class UserController implements IGenericController {
-  private readonly dao: IDao<IUser>;
+  private readonly dao: IBaseDao<IUser>;
 
   /**
    * Constructs the user controller by calling the super abstract, setting the dao, and configuring the endpoint paths.
-   * @param dao a user dao that implements {@link IDao}
+   * @param dao a user dao that implements {@link IBaseDao}
    */
 
-  public constructor(path: string, app: Express, dao: IDao<IUser>) {
+  public constructor(path: string, app: Express, dao: IBaseDao<IUser>) {
     this.dao = dao;
     const router = Router();
     router.get('/', adaptRequest(this.findAll));
-    router.post('/:nameOrUsername', adaptRequest(this.findAllByField));
+    router.post('/:username', adaptRequest(this.findAllByUsername));
     // router.post('/', validateProfile, adaptRequest(this.create));
     router.get('/:userId', adaptRequest(this.findById));
-    router.get('/profile/:username', adaptRequest(this.findByField));
+    router.get('/profile/:username', adaptRequest(this.findOneByUsername));
     router.put(
       '/:userId',
       isAuthenticated,
@@ -58,18 +57,27 @@ export class UserController implements IGenericController {
    * @returns {HttpResponse} the response data to be sent to the client
    */
   findById = async (req: HttpRequest): Promise<HttpResponse> => {
-    const dbUser: IUser = await this.dao.findById(req.params.userId);
+    const dbUser: IUser | null = await this.dao.findOneById(req.params.userId);
+    if (!dbUser) {
+      return notFound({ user: dbUser });
+    }
     return okResponse(dbUser);
   };
 
-  findByField = async (req: HttpRequest): Promise<HttpResponse> => {
-    const dbUser: IUser = await this.dao.findByField(req.params.username);
+  findOneByUsername = async (req: HttpRequest): Promise<HttpResponse> => {
+    const dbUser: IUser | null = await this.dao.findOne({
+      username: req.params.username,
+    });
+
+    if (!dbUser) {
+      return notFound({ user: dbUser });
+    }
     return okResponse(dbUser);
   };
 
-  findAllByField = async (req: HttpRequest): Promise<HttpResponse> => {
-    const nameOrUsername = req.params.nameOrUsername;
-    const dbUsers: IUser[] = await this.dao.findAllByField(nameOrUsername);
+  findAllByUsername = async (req: HttpRequest): Promise<HttpResponse> => {
+    const username = req.params.username;
+    const dbUsers: IUser[] = await this.dao.findAll({ username });
     return okResponse(dbUsers);
   };
 
@@ -99,7 +107,7 @@ export class UserController implements IGenericController {
    * @returns {HttpResponse} the response data to be sent to the client
    */
   delete = async (req: HttpRequest): Promise<HttpResponse> => {
-    const deleteCount: number = await this.dao.delete(req.user.uid);
+    const deleteCount: boolean = await this.dao.delete(req.user.uid);
     return okResponse(deleteCount);
   };
 }

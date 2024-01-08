@@ -1,13 +1,11 @@
 /**
  * Represents the generic operations of a DAO. The DAO acts as a layer of abstraction between the controller and the database by performing all the database-related operations.
  */
-export default interface IDao<T> {
-  findAll(): Promise<T[]>;
-  findById(field: string): Promise<T>;
-  findByField(value: string, field?: string): Promise<any>;
-  findAllByField(field: string): Promise<T[]>;
-  exists(resource: T): Promise<boolean>;
-  create(type: T): Promise<T>;
-  update(id: string, type: T): Promise<T>;
-  delete(tuidId: string): Promise<any>;
+export default interface IBaseDao<T> {
+  findAll(criteria?: Partial<T>): Promise<T[]>;
+  findOneById(id: string): Promise<T | null>;
+  findOne(criteria: Partial<T>): Promise<T | null>;
+  create(entity: T): Promise<T>;
+  update(id: string, data: T): Promise<T>;
+  delete(id: string): Promise<boolean>;
 }

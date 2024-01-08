@@ -1,8 +1,8 @@
 import IUser from '../models/users/IUser';
-import IDao from '../daos/shared/IDao';
+import IBaseDao from '../daos/shared/IDao';
 import { mockUser, mockUsers } from './mockUsers';
 
-export default class MockUserDao implements IDao<IUser> {
+export default class MockUserDao implements IBaseDao<IUser> {
   findAllByField(field: string): Promise<any> {
     throw new Error('Method not implemented.');
   }
@@ -15,7 +15,7 @@ export default class MockUserDao implements IDao<IUser> {
   findAll(): Promise<IUser[]> {
     return Promise.resolve(mockUsers);
   }
-  findById(id: string): Promise<IUser> {
+  findOneById(id: string): Promise<IUser> {
     return Promise.resolve({ ...mockUser, id });
   }
   create = async (user: IUser): Promise<IUser> => {

@@ -4,11 +4,12 @@ import IUser from '../users/IUser';
 /**
  * Model interface for a notification.
  */
-export default interface INotification {
-  type?: NotificationType;
+export interface INotification {
+  id: string;
+  type: NotificationType;
   content: string;
-  userNotified: IUser;
-  userActing: IUser;
-  resourceId?: string;
-  read?: boolean;
+  fromUser: IUser;
+  toUser: IUser;
+  entityId: string;
+  read: boolean;
 }

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import IUser from '../../models/users/IUser';
-import { AccountType } from '../../models/users/AccoutType';
-import { AccountStatus } from '../../models/users/AccountStatus';
+import { UserAccountType } from '../../models/users/UserAccoutType';
+import { UserAccountStatus } from '../../models/users/UserAccountStatus';
 import { formatJSON } from '../util/formatJSON';
 import { formatUserJSON } from '../util/formatUserJSON';
 
@@ -15,8 +15,8 @@ import { formatUserJSON } from '../util/formatUserJSON';
  * @param {String} email unique email
  * @param {String} profilePhoto photo URL string
  * @param {String} headerImage header image URL string
- * @param {AccountType} accountType account type
- * @param {AccountStatus} accountStatus account status
+ * @param {UserAccountType} accountType account type
+ * @param {UserAccountStatus} accountStatus account status
  * @param {String} bio biography
  * @param {String} longitude longitude
  * @param {String} latitude latitude
@@ -37,14 +37,14 @@ const UserSchema = new mongoose.Schema<IUser>(
     // location: { longitude: String, latitude: String, select: false },
     accountType: {
       type: String,
-      enum: AccountType,
-      default: AccountType.Personal,
+      enum: UserAccountType,
+      default: UserAccountType.Personal,
       // required: true,
     },
     accountStatus: {
       type: String,
-      enum: AccountStatus,
-      default: AccountStatus.Active,
+      enum: UserAccountStatus,
+      default: UserAccountStatus.Active,
     },
     followerCount: { type: Number, default: 0 },
     followeeCount: { type: Number, default: 0 },

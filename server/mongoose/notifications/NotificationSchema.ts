@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import MongooseException from '../../errors/MongooseException';
 import { NotificationType } from '../../models/notifications/NotificationType';
-import INotification from '../../models/notifications/INotification';
+import { INotification } from '../../models/notifications/INotification';
 import { formatJSON } from '../util/formatJSON';
 
 /**
@@ -18,12 +18,13 @@ const NotificationSchema = new mongoose.Schema<INotification>(
   {
     type: { type: String, enum: NotificationType, required: true },
     content: { type: String },
-    userNotified: {
+    entityId: { type: String, required: true },
+    toUser: {
       type: Schema.Types.ObjectId,
       ref: 'UserModel',
       required: true,
     },
-    userActing: {
+    fromUser: {
       type: Schema.Types.ObjectId,
       ref: 'UserModel',
       required: true,
@@ -34,6 +35,13 @@ const NotificationSchema = new mongoose.Schema<INotification>(
     timestamps: true,
     collection: 'notifications',
   }
+);
+// Create a unique compound index based on 'userNotified' and 'userActing'
+// This works by creating a unique index on the combination of the two fields.
+// This will prevent a user from liking a post more than once.
+NotificationSchema.index(
+  { type: 1, userActing: 1, userNotified: 1 },
+  { unique: true }
 );
 
 formatJSON(NotificationSchema);

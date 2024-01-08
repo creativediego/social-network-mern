@@ -1,22 +1,19 @@
-import IPostDao from './IPostDao';
 import { Model } from 'mongoose';
 import IPost from '../../models/posts/IPost';
 import IErrorHandler from '../../errors/IErrorHandler';
 import { PostDaoErrors } from './PostDaoErrors';
 import IUser from '../../models/users/IUser';
-import Post from '../../models/posts/Post';
 import DaoNullException from '../../errors/DaoNullException';
-import IDao from '../shared/IDao';
+import IBaseDao from '../shared/IDao';
 import IHashtag from '../../models/hashtags/IHashtag';
 
 /**
  * DAO database CRUD operations for the post resource. Takes the injected dependencies of a {@link Model<IPost>} ORM model and an {@link IErrorHandler} error handler.
  */
-export default class PostDao implements IDao<IPost> {
+export default class PostDao implements IBaseDao<IPost> {
   private readonly postModel: Model<IPost>;
   private readonly userModel: Model<IUser>;
   private readonly hashtagModel: Model<IHashtag>;
-  private readonly errorHandler: IErrorHandler;
 
   /**
    * Builds the DAO by setting model and error handler injected dependencies to state.
@@ -26,15 +23,17 @@ export default class PostDao implements IDao<IPost> {
   public constructor(
     postModel: Model<IPost>,
     userModel: Model<IUser>,
-    hashtagModel: Model<IHashtag>,
-    errorHandler: IErrorHandler
+    hashtagModel: Model<IHashtag>
   ) {
     this.postModel = postModel;
     this.userModel = userModel;
     this.hashtagModel = hashtagModel;
-    this.errorHandler = errorHandler;
     Object.freeze(this); // Make this object immutable.
   }
+
+  findOne = async (criteria: Partial<IPost>): Promise<IPost | null> =>
+    this.postModel.findOne(criteria || {});
+
   findAllByField = async (keyword: string): Promise<any> => {
     const output: IPost[] = [];
     const hashtagsWithPosts = await this.hashtagModel
@@ -67,21 +66,10 @@ export default class PostDao implements IDao<IPost> {
    */
 
   findByField = async (userId: string): Promise<IPost[]> => {
-    try {
-      const posts = await this.postModel
-        .find({ author: userId })
-        .sort({ createdAt: 'descending' })
-        .populate('author');
-      return this.errorHandler.objectOrNullException(
-        posts,
-        PostDaoErrors.TUIT_NOT_FOUND
-      );
-    } catch (err) {
-      throw this.errorHandler.handleError(
-        PostDaoErrors.DB_ERROR_FINDING_TUITS,
-        err
-      );
-    }
+    return await this.postModel
+      .find({ author: userId })
+      .sort({ createdAt: 'descending' })
+      .populate('author');
   };
 
   /**
@@ -89,17 +77,10 @@ export default class PostDao implements IDao<IPost> {
    * @returns an array of posts
    */
   findAll = async (): Promise<IPost[]> => {
-    try {
-      return await this.postModel
-        .find()
-        .sort({ createdAt: 'descending' })
-        .populate('author');
-    } catch (err) {
-      throw this.errorHandler.handleError(
-        PostDaoErrors.DB_ERROR_FINDING_TUITS,
-        err
-      );
-    }
+    return await this.postModel
+      .find()
+      .sort({ createdAt: 'descending' })
+      .populate('author');
   };
 
   /**
@@ -107,33 +88,8 @@ export default class PostDao implements IDao<IPost> {
    * @param {string} postId the id of the post
    * @returns the post
    */
-  findById = async (postId: string): Promise<IPost> => {
-    try {
-      const post = await this.postModel.findById(postId).populate('author');
-      return this.errorHandler.objectOrNullException(
-        post,
-        PostDaoErrors.TUIT_NOT_FOUND
-      );
-    } catch (err) {
-      throw this.errorHandler.handleError(
-        PostDaoErrors.DB_ERROR_FINDING_TUITS,
-        err
-      );
-    }
-  };
-
-  exists = async (post: IPost): Promise<boolean> => {
-    try {
-      const dbPost: IUser | null = await this.postModel.findOne({
-        post: post.post,
-        author: post.author,
-      });
-      if (dbPost === null) return false;
-      else return true;
-    } catch (err) {
-      throw this.errorHandler.handleError(PostDaoErrors.DB_ERROR_EXISTS, err);
-    }
-  };
+  findOneById = async (id: string): Promise<IPost | null> =>
+    await this.postModel.findById(id).populate('author');
 
   /**
    * Create a new post document with all its data by calling the Mongoose PostModel.
@@ -141,40 +97,19 @@ export default class PostDao implements IDao<IPost> {
    * @returns the newly created post
    */
   create = async (postData: IPost): Promise<IPost> => {
-    console.log(postData);
-    try {
-      // Check if user exists first.
-      const existingUser: IUser | null = await this.userModel.findOne({
-        _id: postData.author.id,
-      });
-      console.log('existingUser', existingUser);
+    // Check if user exists first.
+    const existingUser: IUser | null = await this.userModel.findOne({
+      _id: postData.author.id,
+    });
 
-      if (existingUser === null) {
-        throw new DaoNullException(PostDaoErrors.NO_USER_FOUND);
-      } else {
-        // Validate post and create.
-        const validatedPost: IPost = new Post(postData.post, existingUser);
-        const newPost = await (
-          await this.postModel.create(validatedPost)
-        ).populate('author');
+    if (existingUser === null) {
+      throw new DaoNullException(PostDaoErrors.NO_USER_FOUND);
+    } else {
+      const newPost = await (
+        await this.postModel.create(postData)
+      ).populate('author');
 
-        // if (postData.hashtags && postData.hashtags.length > 0) {
-        //   for (const hashtag of postData.hashtags) {
-        //     await this.hashtagModel.findOneAndUpdate(
-        //       { post: newPost._id, hashtag },
-        //       { hashtag },
-        //       { upsert: true }
-        //     );
-        //   }
-        // }
-
-        return newPost;
-      }
-    } catch (err) {
-      throw this.errorHandler.handleError(
-        PostDaoErrors.DB_ERROR_CREATING_TUIT,
-        err
-      );
+      return newPost;
     }
   };
 
@@ -184,46 +119,27 @@ export default class PostDao implements IDao<IPost> {
    * @param {IPost} post the post with the information used for the update.
    * @returns the updated post
    */
-  update = async (postId: string, post: IPost): Promise<IPost> => {
-    try {
-      const updatedPost: IPost | null = await this.postModel
-        .findOneAndUpdate({ _id: postId }, post, {
+  update = async (
+    postId: string,
+    post: Partial<IPost>
+  ): Promise<IPost | null> =>
+    this.postModel
+      .findOneAndUpdate(
+        { _id: postId },
+        { ...post },
+        {
           new: true,
-        })
-        .populate('author');
-      return this.errorHandler.objectOrNullException(
-        updatedPost,
-        PostDaoErrors.TUIT_NOT_FOUND
-      );
-    } catch (err) {
-      throw this.errorHandler.handleError(
-        PostDaoErrors.DB_ERROR_UPDATING_TUIT,
-        err
-      );
-    }
-  };
+        }
+      )
+      .populate('author');
 
   /**
    * Deletes a particular post from the database.
    * @param {string} postId the id of the post.
    * @returns the deleted post
    */
-  delete = async (postId: string): Promise<IPost> => {
-    try {
-      const postToDelete = await this.postModel
-        .findOneAndDelete({
-          _id: postId,
-        })
-        .populate('author');
-      return this.errorHandler.objectOrNullException(
-        postToDelete,
-        PostDaoErrors.TUIT_NOT_FOUND
-      );
-    } catch (err) {
-      throw this.errorHandler.handleError(
-        PostDaoErrors.DB_ERROR_DELETING_TUIT,
-        err
-      );
-    }
+  delete = async (postId: string): Promise<boolean> => {
+    const deleted = await this.postModel.deleteOne({ _id: postId });
+    return deleted.acknowledged;
   };
 }

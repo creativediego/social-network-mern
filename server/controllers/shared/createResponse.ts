@@ -6,6 +6,11 @@ export const okResponse = <T>(data: T): HttpResponse => ({
   body: data,
 });
 
+export const notFound = <T>(data?: T): HttpResponse => ({
+  code: StatusCode.notFound,
+  body: data,
+});
+
 export const unauthorizedResponse = (message: string): HttpResponse => ({
   code: StatusCode.unauthorized,
   error: message,

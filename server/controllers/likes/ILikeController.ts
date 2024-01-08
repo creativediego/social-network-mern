@@ -8,8 +8,7 @@ import IGenericController from '../shared/IGenericController';
  */
 export default interface ILikeController {
   userLikesPost(req: HttpRequest): Promise<HttpResponse>;
-  userDislikesPost(req: HttpRequest): Promise<HttpResponse>;
-  findAllUsersByPostLike(req: HttpRequest): Promise<HttpResponse>;
+  userUnlikesPost(req: HttpRequest): Promise<HttpResponse>;
+  findAllUsersWhoLikedPost(req: HttpRequest): Promise<HttpResponse>;
   findAllPostsLikedByUser(req: HttpRequest): Promise<HttpResponse>;
-  findAllPostsDislikedByUser(req: HttpRequest): Promise<HttpResponse>;
 }

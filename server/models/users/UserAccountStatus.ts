@@ -3,7 +3,7 @@
  * @enum {string}
  * Allowed types of user account status
  */
-export enum AccountStatus {
+export enum UserAccountStatus {
   Active = 'ACTIVE',
   Suspended = 'SUSPENDED',
   Banned = 'BANNED',

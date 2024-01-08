@@ -2,8 +2,8 @@ import IUser from './IUser';
 import InvalidEntityException from '../../errors/InvalidEntityException';
 import { UserErrorMessages } from './UserErrorMessages';
 import { isValidRegex } from '../../shared/validateWithRegex';
-import { AccountStatus } from './AccountStatus';
-import { AccountType } from './AccoutType';
+import { UserAccountStatus } from './UserAccountStatus';
+import { UserAccountType } from './UserAccoutType';
 import IValidator from '../../shared/IValidator';
 
 /**
@@ -64,8 +64,8 @@ export default class UserValidator implements IValidator<IUser> {
   private validateAccountType(type: string | undefined) {
     if (!type) return;
     else if (
-      !Object.values(AccountType).includes(
-        type.trim().toUpperCase() as AccountType
+      !Object.values(UserAccountType).includes(
+        type.trim().toUpperCase() as UserAccountType
       )
     ) {
       throw new InvalidEntityException(UserErrorMessages.INVALID_ACCOUNT_TYPE);
