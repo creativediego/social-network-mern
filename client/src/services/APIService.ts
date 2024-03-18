@@ -1,6 +1,12 @@
-import axios, { AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
-import { ILogger, logger } from '../util/apiErrorHandling';
+import axios, {
+  AxiosResponse,
+  AxiosRequestConfig,
+  AxiosError,
+  InternalAxiosRequestConfig,
+} from 'axios';
+// import { ILogger, logger } from '../util/apiErrorHandling';
 import { IAlert } from '../interfaces/IError';
+import { IServerError } from '../interfaces/IServerError';
 
 export enum ReqType {
   GET = 'GET',
@@ -20,35 +26,17 @@ export interface APIServiceI {
 
 class APIServiceImpl implements APIServiceI {
   private API = axios.create();
-  private logger: ILogger<AxiosError, Promise<void>>;
 
-  private constructor(logger: ILogger<AxiosError, Promise<void>>) {
+  private constructor() {
     // only gets called once when the instance is created in the static method below
-    this.API.interceptors.request.use(this.setHeaders);
-    this.logger = logger;
+    this.API.interceptors.request.use(this.setHeaders); // Bind the context of 'this' to the setHeaders method
   }
 
-  private handleError = (error: AxiosError, errorMessage?: string) => {
-    if (!error.response) {
-      throw new Error('Network Error');
-    }
-    this.logger.logError(
-      error.response.data.error || { message: error.response.data }
-    );
-
-    if (error.response.status === 401) {
-      throw new Error('401');
-    }
-
-    throw new Error(
-      errorMessage ||
-        error.response.data.message ||
-        error.response.data.error.message ||
-        'Sorry, something went wrong!'
-    );
-  };
-
-  private setHeaders(config: AxiosRequestConfig): AxiosRequestConfig {
+  private setHeaders(
+    config: AxiosRequestConfig
+  ):
+    | InternalAxiosRequestConfig<any>
+    | Promise<InternalAxiosRequestConfig<any>> {
     const token = localStorage.getItem('token');
 
     if (config.headers) {
@@ -59,8 +47,41 @@ class APIServiceImpl implements APIServiceI {
       };
     }
 
-    return config;
+    return config as InternalAxiosRequestConfig<any>;
   }
+
+  private handleError = (
+    error: AxiosError<IServerError>,
+    errorMessage?: string
+  ) => {
+    if (!error.response) {
+      throw new Error('Network Error');
+    }
+
+    if (error.response.status === 401) {
+      throw new Error('401');
+    }
+
+    throw new Error(
+      errorMessage ||
+        error.response.data.error.message ||
+        'Sorry, something went wrong!'
+    );
+  };
+
+  // private setHeaders(config: AxiosRequestConfig): AxiosRequestConfig {
+  //   const token = localStorage.getItem('token');
+
+  //   if (config.headers) {
+  //     config.headers.authorization = `Bearer ${token}`;
+  //   } else {
+  //     config.headers = {
+  //       authorization: `Bearer ${token}`,
+  //     };
+  //   }
+
+  //   return config;
+  // }
 
   public makeRequest = async <T, U = undefined>(
     url: string,
@@ -76,7 +97,7 @@ class APIServiceImpl implements APIServiceI {
       });
       return response.data;
     } catch (err) {
-      const error = err as AxiosError;
+      const error = err as AxiosError<IServerError>;
       this.handleError(error, errorMessage);
       throw new Error(errorMessage);
     }
@@ -84,15 +105,13 @@ class APIServiceImpl implements APIServiceI {
 
   private static instance: APIServiceImpl;
 
-  public static getInstance(
-    logger: ILogger<IAlert, Promise<void>>
-  ): APIServiceImpl {
+  public static getInstance(): APIServiceImpl {
     if (!APIServiceImpl.instance) {
-      APIServiceImpl.instance = new APIServiceImpl(logger);
+      APIServiceImpl.instance = new APIServiceImpl();
     }
     return APIServiceImpl.instance;
   }
 }
 
-export const apiService = APIServiceImpl.getInstance(logger);
+export const apiService = APIServiceImpl.getInstance();
 export const callAPI = apiService.makeRequest;

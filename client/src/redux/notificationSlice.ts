@@ -8,11 +8,9 @@ import {
   createSlice,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import {
-  findNotifications,
-  findUnreadNotifications,
-  markNotificationAsRead,
-} from '../services/notificationAPI';
+
+import { notificationService } from '../services/notificationService';
+
 import { INotification } from '../interfaces/INotification';
 import type { RootState } from './store';
 
@@ -20,7 +18,7 @@ export const findNotificationsThunk = createAsyncThunk(
   'notifications/findNotifications',
   async (data, ThunkAPI: any) => {
     const userId = ThunkAPI.getState().user.data.id;
-    const notifications = await findNotifications(userId);
+    const notifications = await notificationService.findNotifications(userId);
     return notifications;
   }
 );
@@ -29,7 +27,9 @@ export const findUnreadNotificationsThunk = createAsyncThunk(
   'notifications/findUnreadNotifications',
   async (data, ThunkAPI: any) => {
     const userId = ThunkAPI.getState().user.data.id;
-    const notifications = await findUnreadNotifications(userId);
+    const notifications = await notificationService.findUnreadNotifications(
+      userId
+    );
     return notifications;
   }
 );
@@ -37,7 +37,9 @@ export const findUnreadNotificationsThunk = createAsyncThunk(
 export const markNotificationReadThunk = createAsyncThunk(
   'notifications/markNotificationRead',
   async (notificationId: string, ThunkAPI: any) => {
-    const notification = await markNotificationAsRead(notificationId);
+    const notification = await notificationService.markNotificationAsRead(
+      notificationId
+    );
     return notification;
   }
 );

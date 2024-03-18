@@ -6,11 +6,7 @@ import {
 } from '@reduxjs/toolkit';
 import { IUser } from '../interfaces/IUser';
 import type { RootState } from './store';
-import {
-  APIfindAllFollowers,
-  APIfollowUser,
-  APIunfollowUser,
-} from '../services/followAPI';
+import { followService } from '../services/followService';
 import IFollow from '../interfaces/IFollow';
 import { userService } from '../services/userService';
 
@@ -28,7 +24,7 @@ const follow = createAsyncThunk(
     { authUserId, followeeId }: { authUserId: string; followeeId: string },
     thunkAPI
   ) => {
-    return await APIfollowUser(authUserId, followeeId);
+    return await followService.followUser(authUserId, followeeId);
   }
 );
 
@@ -42,7 +38,7 @@ const unfollow = createAsyncThunk(
     { authUserId, followeeId }: { authUserId: string; followeeId: string },
     thunkAPI
   ) => {
-    return await APIunfollowUser(authUserId, followeeId);
+    return await followService.unfollowUser(authUserId, followeeId);
   }
 );
 
@@ -50,11 +46,13 @@ const checkIfFollowed = createAsyncThunk(
   'follow/check-if-followed',
   async (otherUserId: string, thunkAPI) => {
     // Fetches the list of followers of the other user
-    const otherUserFollowers = await APIfindAllFollowers(otherUserId); // Gets the authenticated user ID from the Redux store
+    const otherUserFollowers = await followService.findAllFollowers(
+      otherUserId
+    ); // Gets the authenticated user ID from the Redux store
     const state = thunkAPI.getState() as RootState;
     const authUserId = state.user.data.id; // Checks if the authenticated user is in the list of followers of the other user
     const isFollowed: boolean = otherUserFollowers.some(
-      (follower) => follower.id === authUserId
+      (follower: IUser) => follower.id === authUserId
     );
     return isFollowed;
   }
