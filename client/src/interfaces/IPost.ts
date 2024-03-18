@@ -10,7 +10,6 @@ export interface IPost {
   id: string;
   post: string;
   author: IUser;
-  createdAt: string;
   image?: string;
   imageFile?: File;
   youtube?: string;
@@ -18,4 +17,6 @@ export interface IPost {
   stats: IPostStats;
   likedBy: string[];
   dislikedBy: string[];
+  createdAt: string;
+  updatedAt?: string;
 }

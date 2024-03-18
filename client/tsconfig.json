@@ -6,6 +6,7 @@
       "strict": true,
       "strictNullChecks": true,
       "noImplicitAny": true,
+      "types": ["jest", "node"]
     },
     "exclude": [ // Exclude test files from compilation
       "node_modules",

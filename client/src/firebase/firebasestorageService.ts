@@ -27,7 +27,7 @@ export const firebaseUploadFile = async (
   }
 };
 
-export const uploadAvatar = async (file: File): Promise<string> => {
+export const firebaseUploadAvatar = async (file: File): Promise<string> => {
   const firebaseUser = auth.currentUser;
   if (!firebaseUser) {
     throw new Error(errors.NOT_LOGGED_IN);
@@ -38,7 +38,9 @@ export const uploadAvatar = async (file: File): Promise<string> => {
   );
 };
 
-export const uploadHeaderImage = async (file: File): Promise<string> => {
+export const firebaseUploadHeaderImage = async (
+  file: File
+): Promise<string> => {
   const firebaseUser = auth.currentUser;
   if (!firebaseUser) {
     throw new Error(errors.NOT_LOGGED_IN);

@@ -2,15 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { INotification } from '../../../interfaces/INotification';
 
-export interface NavLink {
+export interface INavLink {
   label: string;
-  icon: string;
   path: string;
-  color: string;
+  icon?: string;
+  color?: string;
 }
 
 interface NavigationItemProps {
-  link: NavLink;
+  link: INavLink;
   pathname: string;
   notifications: INotification[];
   unreadMessageCount: number;

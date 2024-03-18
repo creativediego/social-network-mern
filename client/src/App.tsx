@@ -1,13 +1,20 @@
 import React, { useEffect } from 'react';
 import { useAppDispatch } from './redux/hooks';
-import { GenericError } from './components';
+import { GenericError, VerifyEmail } from './components';
 import './styles.css';
 import MainView from './pages/MainView/MainView';
 import { LoginPage, LandingPage } from './pages';
 import { Routes, Route, HashRouter } from 'react-router-dom';
 import { useAuthUser } from './hooks/useAuthUser';
 import { clearUser, fetchProfileThunk } from './redux/userSlice';
-import { onFirebaseSessionExpired } from './firebase/firebaseAuthService';
+import { onFirebaseSessionChange } from './firebase/firebaseAuthService';
+import { getLocalAuthToken } from './util/tokenManagement';
+import {
+  disconnectSocket,
+  enableSocketListeners,
+} from './services/socketService';
+import { useUpdateProfile } from './forms/UpdateProfileForm/useUpdateProfile';
+import { useSignUpForm } from './forms/SignupForm/useSignupForm';
 
 /**
  * Main entry point and control hub for the application.
@@ -17,33 +24,38 @@ import { onFirebaseSessionExpired } from './firebase/firebaseAuthService';
  */
 function App(): JSX.Element {
   // Fetches user authentication and profile status
-  const { profileComplete, isLoggedIn } = useAuthUser();
+  const { isVerified, completedSignup, isLoggedIn } = useSignUpForm();
   const dispatch = useAppDispatch();
 
   // On component mount, fetch user profile information and check for session expiration
   useEffect(() => {
-    onFirebaseSessionExpired(() => dispatch(clearUser()));
-    dispatch(fetchProfileThunk());
+    // Enable socket listeners if the user is logged in
+    if (getLocalAuthToken()) {
+      dispatch(fetchProfileThunk());
+      enableSocketListeners();
+    } else {
+      disconnectSocket();
+    }
+    // Clear user profile information if the session expires
+    const onSessionExpired = () => dispatch(clearUser());
+    onFirebaseSessionChange(onSessionExpired);
   }, [dispatch]);
 
   return (
     <div>
       <HashRouter>
         <Routes>
-          <Route
-            path='/*'
-            element={
-              // Renders the MainView if the user is logged in and has a complete profile
-              profileComplete && isLoggedIn ? (
-                <MainView />
-              ) : (
-                // Displays LandingPage with LoginPage if the user is not logged in or the profile is incomplete
+          {completedSignup && <Route path='/*' element={<MainView />}></Route>}
+          {!completedSignup && (
+            <Route
+              path='/*'
+              element={
                 <LandingPage>
-                  <LoginPage />
+                  {isLoggedIn && !isVerified ? <VerifyEmail /> : <LoginPage />}
                 </LandingPage>
-              )
-            }
-          ></Route>
+              }
+            ></Route>
+          )}
 
           {/* Route for displaying error pages */}
           <Route

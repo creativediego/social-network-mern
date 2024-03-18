@@ -29,12 +29,8 @@ import { useToggleAnimation } from '../../../hooks/useToggleAnimation';
 
 const LikeButton = (): JSX.Element | null => {
   const userId = useAuthUser().user.id;
-  const { post, postService } = usePost();
-  const { setError } = useAlert();
-  const { handleReaction, loading } = useReactToPost(
-    postService.likePost,
-    setError
-  );
+  const { post } = usePost();
+  const { handleReaction, loading } = useReactToPost();
   const { animationClass, handleAnimation } = useToggleAnimation(
     'fa-beat',
     1000

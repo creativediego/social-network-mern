@@ -1,33 +1,21 @@
-import { useEffect, useRef, useState } from 'react';
-import { StoragePaths } from '../interfaces/ImageTypes';
-import { firebaseUploadFile } from '../firebase/firebasestorageService';
-import { useAuthUser } from './useAuthUser';
-import { useAlert } from './useAlert';
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
 
-export const useUploadFile = (filePath: StoragePaths) => {
-  const { user } = useAuthUser();
-  const [loading, setLoading] = useState(false);
-  const [fileURL, setFileURL] = useState('');
+export const useUploadFile = () => {
+  const [filePreview, setImagePreview] = useState('');
+  const [file, setFile] = useState<File | null>(null);
   const isMounted = useRef(true);
-  const { setError } = useAlert();
 
-  const uploadFile = async (file: File | null, filename: string) => {
-    if (!file) return;
-    const path = `${filePath}/${user.uid}/${filename}`;
-    setLoading(true);
-    try {
-      const newFileURL = await firebaseUploadFile(path, file);
-      if (isMounted) {
-        setLoading(false);
-        setFileURL(newFileURL);
-      }
-    } catch (err) {
-      setLoading(false);
-      setError(
-        'Sorry, we ran into an error uploading your profile image. Try again later.'
-      );
+  const handleImageChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+      setFile(file);
     }
-  };
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -35,5 +23,9 @@ export const useUploadFile = (filePath: StoragePaths) => {
     };
   }, []);
 
-  return { uploadFile, loading, fileURL };
+  return {
+    filePreview,
+    file,
+    handleImageChange,
+  };
 };

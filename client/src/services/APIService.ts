@@ -2,7 +2,7 @@ import axios, { AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
 import { ILogger, logger } from '../util/apiErrorHandling';
 import { IAlert } from '../interfaces/IError';
 
-export enum Requests {
+export enum ReqType {
   GET = 'GET',
   POST = 'POST',
   PUT = 'PUT',
@@ -12,7 +12,7 @@ export enum Requests {
 export interface APIServiceI {
   makeRequest<T, U = undefined>(
     url: string,
-    method: Requests,
+    method: ReqType,
     errorMessage?: string,
     data?: U
   ): Promise<T>;
@@ -28,20 +28,24 @@ class APIServiceImpl implements APIServiceI {
     this.logger = logger;
   }
 
-  private handleError = <T>(errorMessage?: string) => {
-    return (error: AxiosError): T => {
-      if (!error.response) {
-        throw new Error('Network Error');
-      }
-      this.logger.logError(
-        error.response.data.error || { message: error.response.data }
-      );
-      throw new Error(
-        errorMessage ||
-          error.response.data.message ||
-          'Sorry, something went wrong!'
-      );
-    };
+  private handleError = (error: AxiosError, errorMessage?: string) => {
+    if (!error.response) {
+      throw new Error('Network Error');
+    }
+    this.logger.logError(
+      error.response.data.error || { message: error.response.data }
+    );
+
+    if (error.response.status === 401) {
+      throw new Error('401');
+    }
+
+    throw new Error(
+      errorMessage ||
+        error.response.data.message ||
+        error.response.data.error.message ||
+        'Sorry, something went wrong!'
+    );
   };
 
   private setHeaders(config: AxiosRequestConfig): AxiosRequestConfig {
@@ -60,7 +64,7 @@ class APIServiceImpl implements APIServiceI {
 
   public makeRequest = async <T, U = undefined>(
     url: string,
-    method: Requests,
+    method: ReqType,
     errorMessage?: string,
     data?: U
   ): Promise<T> => {
@@ -71,8 +75,9 @@ class APIServiceImpl implements APIServiceI {
         data,
       });
       return response.data;
-    } catch (error) {
-      this.handleError(errorMessage);
+    } catch (err) {
+      const error = err as AxiosError;
+      this.handleError(error, errorMessage);
       throw new Error(errorMessage);
     }
   };

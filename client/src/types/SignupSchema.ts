@@ -2,6 +2,19 @@ import { z } from 'zod';
 
 export const SignupSchema = z
   .object({
+    name: z
+      .string()
+      .regex(
+        /^[A-Za-z0-9 ,.'\\-]{3,20}$/,
+        'Name should be 3-20 characters and should not include any special character!'
+      ),
+
+    username: z
+      .string()
+      .regex(
+        /^[A-Za-z0-9]{3,16}$/,
+        'Username should be 3-16 characters and should not include any special character.'
+      ),
     email: z.string().email(),
     password: z
       .string()

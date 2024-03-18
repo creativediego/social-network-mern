@@ -8,7 +8,6 @@ import {
   BookmarksPage,
   ProfilePage,
   ExplorePage,
-  NotificationsPage,
   MorePage,
   ListsPage,
   SearchPage,
@@ -46,7 +45,7 @@ const MainView = (): JSX.Element => {
             <Route path='/:username/*' element={<ProfilePage />} />
             <Route path='/home' element={<PostsPage />} />
             <Route path='/explore' element={<ExplorePage />} />
-            <Route path='/notifications/*' element={<NotificationsPage />} />
+            {/* <Route path='/notifications/*' element={<NotificationsPage />} /> */}
             <Route path='/bookmarks' element={<BookmarksPage />} />
             <Route path='/lists' element={<ListsPage />} />
             <Route path='/more' element={<MorePage />} />
@@ -73,9 +72,7 @@ const MainView = (): JSX.Element => {
         </div>
 
         {/* Right column containing the 'What's Happening' widget */}
-        <div className='ttr-right-column'>
-          <WhatsHappeningWidget />
-        </div>
+        <div className='ttr-right-column'>{/* <WhatsHappeningWidget /> */}</div>
       </div>
     </div>
   );

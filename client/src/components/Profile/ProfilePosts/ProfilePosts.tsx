@@ -1,8 +1,9 @@
 import React, { memo } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { useProfilePosts } from './useProfilePosts';
+import { useFetchPosts } from './useFetchPosts';
 import PostsList from '../../Posts/PostsLists/PostsList';
 import ProfileNav from '../ProfileNav/ProfileNav';
+import Loader from '../../Loader/Loader';
 
 /**
  * `ProfilePostsProps` is an interface that defines the properties for the `ProfilePosts` component.
@@ -33,24 +34,22 @@ interface ProfilePostsProps {
  *
  * @returns {JSX.Element} A JSX element representing the profile posts.
  */
-const ProfilePosts = ({ userId, username }: ProfilePostsProps) => {
-  const { myPosts, likedPosts, dislikedPosts, loading } =
-    useProfilePosts(userId);
+const ProfilePosts = ({ userId, username }: ProfilePostsProps): JSX.Element => {
+  const { myPosts, likedPosts, loading, lastElementRef, hasMore } =
+    useFetchPosts(userId);
   return (
     <>
-      {userId && !loading && (
+      {
         <div className='p2'>
           <ProfileNav username={username} />
           <Routes>
             <Route path='/posts' element={<PostsList posts={myPosts} />} />
             <Route path='/likes' element={<PostsList posts={likedPosts} />} />
-            <Route
-              path='/dislikes'
-              element={<PostsList posts={dislikedPosts} />}
-            />
           </Routes>
+          {loading && <Loader loading={loading} message='Loading Posts' />}
+          {!loading && hasMore && <div ref={lastElementRef}></div>}
         </div>
-      )}
+      }
     </>
   );
 };

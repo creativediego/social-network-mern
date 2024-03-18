@@ -21,10 +21,13 @@ import React, { memo } from 'react';
  * @returns {JSX.Element} A JSX element representing the user's avatar image.
  */
 interface AvatarImageProps {
-  profilePhoto: string;
+  profilePhoto: string | undefined;
   size: Number;
 }
 const AvatarImage = ({ profilePhoto, size }: AvatarImageProps): JSX.Element => {
+  const defaultAvatar = profilePhoto
+    ? profilePhoto
+    : '../images/default-avatar.png';
   return (
     <div
       className='position-relative'
@@ -40,7 +43,7 @@ const AvatarImage = ({ profilePhoto, size }: AvatarImageProps): JSX.Element => {
           width: `${size}px`,
           border: 'black solid 5px',
         }}
-        src={`${profilePhoto || `../images/default-avatar.png`}`}
+        src={`${defaultAvatar}`}
       />
     </div>
   );

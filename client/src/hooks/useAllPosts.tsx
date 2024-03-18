@@ -3,10 +3,14 @@ import { IPost } from '../interfaces/IPost';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 
 import {
+  selectAllPosts,
+  removeAllPosts,
   findAllPostsThunk,
   selectPostsLoading,
-  selectAllPosts,
+  selectHasMorePosts,
 } from '../redux/postSlice';
+import { useInfiniteScroll } from './useInfiniteScroll';
+import { IQueryParams } from '../interfaces/IQueryParams';
 
 const PostContext = createContext<IPost | null>(null);
 
@@ -27,18 +31,32 @@ export const PostProvider = ({
  * Custom hook that manages the state of fetching posts, liking, disliking, and deleting.
  */
 export const useAllPosts = () => {
+  console.log('all posts');
   const posts = useAppSelector(selectAllPosts);
   const loading = useAppSelector(selectPostsLoading);
+  const hasMore = useAppSelector(selectHasMorePosts);
   const dispatch = useAppDispatch();
+  const fetchPosts = async (queryParams: IQueryParams) => {
+    dispatch(findAllPostsThunk(queryParams));
+  };
+  const queryParams = { page: 0, limit: 3 };
+  const { lastElementRef } = useInfiniteScroll(
+    fetchPosts,
+    queryParams,
+    loading,
+    hasMore
+  );
 
   useEffect(() => {
-    if (posts.length === 0) {
-      dispatch(findAllPostsThunk());
-    }
-  }, [dispatch, posts.length]);
+    return () => {
+      dispatch(removeAllPosts());
+    };
+  }, [dispatch]);
 
   return {
     posts,
     loading,
+    lastElementRef,
+    hasMore,
   };
 };

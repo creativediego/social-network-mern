@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { IPost } from '../../../interfaces/IPost';
-import { createPostThunk, selectPostsLoading } from '../../../redux/postSlice';
+import { createPostThunk, selectPostLoading } from '../../../redux/postSlice';
 import { useAuthUser } from '../../../hooks/useAuthUser';
 
 /**
@@ -21,7 +21,7 @@ import { useAuthUser } from '../../../hooks/useAuthUser';
 const useNewPost = () => {
   const { user: authUser } = useAuthUser();
   const dispatch = useAppDispatch();
-  const loading = useAppSelector(selectPostsLoading);
+  const loading = useAppSelector(selectPostLoading);
 
   // State to manage the image file and its preview
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -68,7 +68,7 @@ const useNewPost = () => {
       setPost(updatedPost);
 
       // Dispatch action to create the post via Redux thunk
-      await dispatch(createPostThunk({ userId: authUser.id, post, imageFile }));
+      await dispatch(createPostThunk({ post, imageFile }));
       setImagePreview('');
     } catch (error) {
       // Handle any errors during post creation

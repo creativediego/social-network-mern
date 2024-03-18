@@ -11,7 +11,7 @@ export const useFollow = (userId: string) => {
   const dispatch = useAppDispatch();
   const { user: authUser } = useAuthUser();
   const loading = useAppSelector(selectProfileLoading);
-  const isFollowed = useAppSelector(selectProfileIsFollowed);
+  // const isFollowed = useAppSelector(selectProfileIsFollowed);
 
   const followUser = () => {
     if (userId === authUser.id) {
@@ -26,6 +26,10 @@ export const useFollow = (userId: string) => {
     }
     dispatch(unfollowThunk({ authUserId: authUser.id, followeeId: userId }));
   };
+
+  const isFollowed = () => {
+    
+  }
 
   return {
     isFollowed,

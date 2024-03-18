@@ -1,7 +1,7 @@
 import { urlConfig } from '../config/appConfig';
 import { IChat } from '../interfaces/IChat';
 import { IMessage } from '../interfaces/IMessage';
-import { APIServiceI, Requests, apiService } from './APIService';
+import { APIServiceI, ReqType, apiService } from './APIService';
 
 const CHAT_API_URL = urlConfig.chatApi;
 
@@ -38,7 +38,7 @@ class ChatServiceImpl implements IChatService {
     const url = `${this.url}/${chatId}`;
     return await this.APIService.makeRequest<IChat>(
       url,
-      Requests.GET,
+      ReqType.GET,
       'Error finding chat. Try again later.'
     );
   };
@@ -46,7 +46,7 @@ class ChatServiceImpl implements IChatService {
   public createChat = async (chat: IChat): Promise<IChat> => {
     return await this.APIService.makeRequest<IChat, IChat>(
       this.url,
-      Requests.POST,
+      ReqType.POST,
       'Error creating chat. Try again later.',
       chat
     );
@@ -56,7 +56,7 @@ class ChatServiceImpl implements IChatService {
     const url = `${this.url}/${chatId}`;
     return await this.APIService.makeRequest<IChat>(
       url,
-      Requests.DELETE,
+      ReqType.DELETE,
       'Error deleting chat. Try again later.'
     );
   };
@@ -65,7 +65,7 @@ class ChatServiceImpl implements IChatService {
     const url = `${this.url}/messages/inbox`;
     return await this.APIService.makeRequest<IMessage[]>(
       url,
-      Requests.GET,
+      ReqType.GET,
       'Error finding inbox messages. Try again later.'
     );
   };
@@ -74,7 +74,7 @@ class ChatServiceImpl implements IChatService {
     const url = `${this.url}/${chatId}/messages`;
     return await this.APIService.makeRequest<IMessage[]>(
       url,
-      Requests.GET,
+      ReqType.GET,
       'Error finding messages by chat. Try again later.'
     );
   };
@@ -83,7 +83,7 @@ class ChatServiceImpl implements IChatService {
     const url = `${this.url}/messages/sent`;
     return await this.APIService.makeRequest<IMessage[]>(
       url,
-      Requests.GET,
+      ReqType.GET,
       'Error finding messages user sent. Try again later.'
     );
   };
@@ -92,7 +92,7 @@ class ChatServiceImpl implements IChatService {
     const url = `${this.url}/${message.chatId}/messages`;
     return this.APIService.makeRequest<IMessage, { content: string }>(
       url,
-      Requests.POST,
+      ReqType.POST,
       'Error sending message. Try again later.',
       { content: message.content }
     );
@@ -101,13 +101,12 @@ class ChatServiceImpl implements IChatService {
     const url = `${this.url}/${message.chatId}/messages/${message.id}`;
     return this.APIService.makeRequest<IMessage>(
       url,
-      Requests.DELETE,
+      ReqType.DELETE,
       'Error deleting message. Try again later.'
     );
   }
 }
 
-export const chatService = ChatServiceImpl.getInstance(
-  CHAT_API_URL,
-  apiService
-);
+const chatService = ChatServiceImpl.getInstance(CHAT_API_URL, apiService);
+
+export { ChatServiceImpl, chatService };

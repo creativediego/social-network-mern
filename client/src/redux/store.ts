@@ -1,33 +1,11 @@
-import {
-  Middleware,
-  MiddlewareAPI,
-  configureStore,
-  isRejectedWithValue,
-} from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import { rootReducer } from './rootReducer';
-import { postApi } from './postApi';
-
-export const rtkQueryErrorLogger: Middleware =
-  (api: MiddlewareAPI) => (next) => (action) => {
-    // RTK Query uses `createAsyncThunk` from redux-toolkit under the hood, so we're able to utilize these matchers!
-    if (isRejectedWithValue(action)) {
-      console.warn('We got a rejected action!');
-      console.warn({
-        title: 'Async error!',
-        message:
-          'data' in action.error
-            ? (action.error.data as { message: string }).message
-            : action.error.message,
-      });
-    }
-
-    return next(action);
-  };
+import reduxErrorMiddleware from './reduxErrorMiddleware';
 
 const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(postApi.middleware, rtkQueryErrorLogger),
+    getDefaultMiddleware().concat(reduxErrorMiddleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

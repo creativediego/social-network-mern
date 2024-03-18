@@ -9,7 +9,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { selectUnreadCount } from '../../redux/inboxSlice';
 import { useAuthUser } from '../../hooks/useAuthUser';
-import { NavLink } from './NavigationItem/NavigationItem';
+import { INavLink } from './NavigationItem/NavigationItem';
 
 /**
  * Displays the main navigation menu of the app.
@@ -35,14 +35,12 @@ const Navigation = (): JSX.Element => {
     messageColor = 'white';
   }
 
-  useEffect(() => {
-    dispatch(findUnreadNotificationsThunk());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(findUnreadNotificationsThunk());
+  // }, [dispatch]);
 
-  const links: NavLink[] = [
-    // { label: 'Poster', icon: 'fa-square-t', path: '/poster', color: 'white' },
+  const links: INavLink[] = [
     { label: 'Home', icon: 'fa-home', path: '/home', color: 'white' },
-    // { label: 'Explore', icon: 'fa-hashtag', path: '/explore', color: 'white' },
     {
       label: 'Notifications',
       icon: 'fa-bell',

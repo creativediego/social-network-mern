@@ -16,7 +16,7 @@ const FollowButton = ({ userId }: FollowButtonProps): JSX.Element => {
       {
         // If the authenticated user is following this user, display the unFollow button.
         // Otherwise, display the follow button
-        isFollowed ? (
+        true ? (
           <span
             className='btn btn-light mx-2 rounded-pill'
             onClick={unfollowUser}

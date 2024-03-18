@@ -4,9 +4,9 @@ export interface INotification {
   id: string;
   type: string;
   content: string;
+  fromUser: IUser;
   userNotified: IUser;
-  userActing: IUser;
-  resourceId?: string;
-  read: string;
+  resourceId: string;
+  read: boolean;
   createdAt: string;
 }

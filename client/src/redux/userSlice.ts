@@ -2,67 +2,84 @@
  * Includes redux state management for user actions such as login and update user.
  */
 import {
+  AnyAction,
   createAsyncThunk,
   createSelector,
   createSlice,
   PayloadAction,
+  ThunkDispatch,
 } from '@reduxjs/toolkit';
-import {
-  AUTHlogin,
-  AUTHloginWithGoogle,
-  AUTHlogout,
-  AUTHregister,
-  getProfile,
-} from '../services/authAPI';
-import { withErrorHandling } from './reduxErrorHandler';
-import {
-  clearLocalAuthToken,
-  getLocalAuthToken,
-} from '../util/tokenManagement';
-import * as socketService from './redux-socket-service';
+import { authService } from '../services/authService';
+import { clearLocalAuthToken } from '../util/tokenManagement';
 import { IUser } from '../interfaces/IUser';
 import { INotification } from '../interfaces/INotification';
 import type { RootState } from './store';
 import { setSuccessAlert } from './alertSlice';
 import { clearProfile } from './profileSlice';
 import { clearChat } from './chatSlice';
-import { APIupdateUser } from '../services/userAPI';
-import { firebaseUploadFile } from '../firebase/firebasestorageService';
+import {
+  firebaseUploadAvatar,
+  firebaseUploadFile,
+  firebaseUploadHeaderImage,
+} from '../firebase/firebasestorageService';
+import { userService } from '../services/userService';
+import {
+  firebaseGoogleLogin,
+  firebaseIsEmailVerified,
+  firebaseLoginWithEmail,
+  fireBaseRegisterUser,
+  firebaseSendVerificationEmail,
+  firebaseUpdateEmail,
+  firebaseUpdatePassword,
+} from '../firebase/firebaseAuthService';
 
-/**
- * Updates redux state with user profile after calling getProfile from user service.
- */
+const setLoginHelper = async (
+  dispatch: ThunkDispatch<unknown, unknown, AnyAction>,
+  user: IUser
+) => {
+  const isVerified = await firebaseIsEmailVerified();
+  dispatch(setIsVerified(isVerified));
+  dispatch(checkCompletedProfile(user));
+  dispatch(setAuthUser(user));
+};
+
 const fetchProfile = createAsyncThunk(
   'users/fetchProfile',
   async (_, ThunkAPI) => {
-    try {
-      // When there is no token, return the initial state user.
-      const constLocalToken = getLocalAuthToken();
-      if (!constLocalToken) {
-        return false;
-      }
-      const profile = await getProfile();
-      const profileComplete = isProfileComplete(profile);
-      const state = ThunkAPI.getState() as RootState;
-      if (!state.user.socketConnected) {
-        socketService.enableListeners(ThunkAPI.dispatch);
-      }
-      return { profile, profileComplete };
-    } catch (err) {
-      ThunkAPI.dispatch(clearUser());
-      throw err; // will be handled by error handler wrapper
-    }
+    const user = await authService.getProfile();
+    setLoginHelper(ThunkAPI.dispatch, user);
+    return user;
   }
 );
 
 const register = createAsyncThunk(
   'users/register',
   async (
-    { email, password }: { email: string; password: string },
+    {
+      email,
+      password,
+      name,
+      username,
+    }: { email: string; password: string; name: string; username: string },
     ThunkAPI
   ) => {
-    await AUTHregister(email, password);
-    ThunkAPI.dispatch(fetchProfile());
+    const fbUser = await fireBaseRegisterUser(email, password);
+    const newUser = await authService.register({
+      email,
+      password,
+      name,
+      username,
+      uid: fbUser.uid,
+    });
+    setLoginHelper(ThunkAPI.dispatch, newUser);
+    return;
+  }
+);
+
+const verifyEmail = createAsyncThunk(
+  'users/verifyEmail',
+  async (_, ThunkAPI) => {
+    await firebaseSendVerificationEmail();
   }
 );
 
@@ -76,16 +93,37 @@ const login = createAsyncThunk(
     { email, password }: { email: string; password: string },
     ThunkAPI
   ) => {
-    await AUTHlogin(email, password);
-    return ThunkAPI.dispatch(fetchProfile());
+    await firebaseLoginWithEmail(email, password);
+    const user = await authService.getProfile();
+    setLoginHelper(ThunkAPI.dispatch, user);
+    return user;
   }
 );
 
 const loginWithGoogle = createAsyncThunk(
   'users/loginWithGoogle',
   async (_, ThunkAPI) => {
-    await AUTHloginWithGoogle();
-    return ThunkAPI.dispatch(fetchProfile());
+    await firebaseGoogleLogin();
+    const user = await authService.getProfile();
+    setLoginHelper(ThunkAPI.dispatch, user);
+    return user;
+  }
+);
+
+const registerWithGoogle = createAsyncThunk(
+  'users/registerWithGoogle',
+  async (_, ThunkAPI) => {
+    const fbUser = await firebaseGoogleLogin();
+    const user: Partial<IUser> = {
+      uid: fbUser.uid,
+      email: fbUser.email || '',
+      name: fbUser.displayName || '',
+      profilePhoto: fbUser.photoURL || '',
+      registeredWithProvider: true,
+    };
+    const newUser = await authService.register(user);
+    setLoginHelper(ThunkAPI.dispatch, newUser);
+    return user;
   }
 );
 
@@ -93,12 +131,11 @@ const loginWithGoogle = createAsyncThunk(
  * Logs the user out by calling the logout service.
  */
 const logout = createAsyncThunk('users/logout', async (_: void, ThunkAPI) => {
-  await AUTHlogout();
   clearLocalAuthToken();
   ThunkAPI.dispatch(clearChat());
   ThunkAPI.dispatch(clearUser());
   ThunkAPI.dispatch(clearProfile());
-  socketService.disconnect();
+  await authService.logout();
 });
 
 const uploadAvatar = createAsyncThunk(
@@ -114,22 +151,45 @@ const uploadAvatar = createAsyncThunk(
  */
 const updateUser = createAsyncThunk(
   'users/update',
-  async (user: IUser, ThunkAPI) => {
-    const updatedUser = await APIupdateUser(user);
-
+  async (
+    {
+      user,
+      profilePhoto,
+      headerImage,
+    }: { user: IUser; profilePhoto: File | null; headerImage: File | null },
+    ThunkAPI
+  ) => {
+    const state = ThunkAPI.getState() as RootState;
+    const existingUser = state.user.data;
+    if (user.email && user.email !== existingUser.email) {
+      await firebaseUpdateEmail(user.email);
+    }
+    if (user.password && user.password !== existingUser.password) {
+      await firebaseUpdatePassword(user.password);
+    }
+    if (profilePhoto) {
+      const avatarURL = await firebaseUploadAvatar(profilePhoto);
+      user.profilePhoto = avatarURL;
+    }
+    if (headerImage) {
+      const headerURL = await firebaseUploadHeaderImage(headerImage);
+      user.headerImage = headerURL;
+    }
+    const updatedUser = await userService.updateUser(user);
     ThunkAPI.dispatch(
       setSuccessAlert({ message: 'Profile updated successfully.' })
     );
-    const profileComplete = isProfileComplete(updatedUser);
-
-    return { updatedUser, profileComplete };
+    ThunkAPI.dispatch(checkCompletedProfile(updatedUser));
+    ThunkAPI.dispatch(setAuthUser(updatedUser));
+    return;
   }
 );
 export interface UserState {
   data: IUser;
   loading: boolean;
   socketConnected: boolean;
-  profileComplete: boolean;
+  completedSignup: boolean;
+  verified: boolean;
   isLoggedIn: boolean;
   notifications: INotification[];
   unreadNotifications: INotification[];
@@ -151,17 +211,11 @@ const initialState: UserState = {
   data: initialUser,
   isLoggedIn: false,
   socketConnected: false,
-  profileComplete: false,
+  completedSignup: false,
+  verified: false,
   notifications: [],
   unreadNotifications: [],
   loading: false,
-};
-
-const isProfileComplete = (user: IUser): boolean => {
-  if (!user || !user.username) {
-    return false;
-  }
-  return true;
 };
 
 const userSlice = createSlice({
@@ -173,6 +227,7 @@ const userSlice = createSlice({
     },
     setAuthUser: (state, action: PayloadAction<IUser>) => {
       state.data = action.payload;
+      state.isLoggedIn = true;
     },
     connectSocket: (state) => {
       state.socketConnected = true;
@@ -183,37 +238,31 @@ const userSlice = createSlice({
     clearUser: (state) => {
       state.isLoggedIn = false;
       state.data = initialUser;
-      state.profileComplete = false;
-      clearLocalAuthToken();
-      AUTHlogout();
+      state.completedSignup = false;
       state.socketConnected = false;
     },
     updateAuthUser: (state, action: PayloadAction<IUser>) => {
       state.data = { ...state.data, ...action.payload };
+    },
+    setIsVerified: (state, action: PayloadAction<boolean>) => {
+      state.verified = action.payload;
+    },
+    checkCompletedProfile: (state, action: PayloadAction<IUser>) => {
+      const user = action.payload;
+      if (!user || !user.username || !user.name || !user.profilePhoto) {
+        state.completedSignup = false;
+      } else {
+        state.completedSignup = true;
+      }
     },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchProfile.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(
-      fetchProfile.fulfilled,
-      (
-        state,
-        action: PayloadAction<
-          false | { profile: IUser; profileComplete: boolean }
-        >
-      ) => {
-        state.loading = false;
-        if (action.payload !== false) {
-          state.data = action.payload.profile;
-          state.isLoggedIn = true;
-          state.socketConnected = true;
-          state.profileComplete = action.payload.profileComplete;
-        }
-      }
-    );
-
+    builder.addCase(fetchProfile.fulfilled, (state) => {
+      state.loading = false;
+    });
     builder.addCase(fetchProfile.rejected, (state) => {
       state.loading = false;
     });
@@ -221,17 +270,9 @@ const userSlice = createSlice({
     builder.addCase(updateUser.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(
-      updateUser.fulfilled,
-      (
-        state,
-        action: PayloadAction<{ updatedUser: IUser; profileComplete: boolean }>
-      ) => {
-        state.loading = false;
-        state.data = { ...state.data, ...action.payload.updatedUser };
-        state.profileComplete = action.payload.profileComplete;
-      }
-    );
+    builder.addCase(updateUser.fulfilled, (state) => {
+      state.loading = false;
+    });
     builder.addCase(updateUser.rejected, (state) => {
       state.loading = false;
     });
@@ -243,6 +284,16 @@ const userSlice = createSlice({
       state.loading = false;
     });
     builder.addCase(register.rejected, (state) => {
+      state.loading = false;
+    });
+
+    builder.addCase(verifyEmail.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(verifyEmail.fulfilled, (state) => {
+      state.loading = false;
+    });
+    builder.addCase(verifyEmail.rejected, (state) => {
       state.loading = false;
     });
 
@@ -278,6 +329,20 @@ const userSlice = createSlice({
       state.loading = false;
     });
 
+    builder.addCase(registerWithGoogle.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(
+      registerWithGoogle.fulfilled,
+      (state, action: PayloadAction<Partial<IUser>>) => {
+        state.data = { ...state.data, ...action.payload };
+        state.loading = false;
+      }
+    );
+    builder.addCase(registerWithGoogle.rejected, (state) => {
+      state.loading = false;
+    });
+
     builder.addCase(uploadAvatar.pending, (state) => {
       state.loading = true;
     });
@@ -310,9 +375,14 @@ export const selectIsLoggedIn = createSelector(
   (isLoggedIn) => isLoggedIn
 );
 
-export const selectIsProfileComplete = createSelector(
-  (state: RootState) => state.user.profileComplete,
-  (profileComplete) => profileComplete
+export const selectCompletedSignup = createSelector(
+  (state: RootState) => state.user,
+  (user) => user.isLoggedIn && user.verified && user.completedSignup
+);
+
+export const selectIsVerified = createSelector(
+  (state: RootState) => state.user,
+  (user) => user.verified
 );
 
 export const {
@@ -321,15 +391,19 @@ export const {
   clearUser,
   updateAuthUser,
   setAuthUser,
+  checkCompletedProfile,
+  setIsVerified,
 } = userSlice.actions;
 
 // Export async thunks with error handling decorator
-export const fetchProfileThunk = withErrorHandling(fetchProfile);
-export const registerThunk = withErrorHandling(register);
-export const loginThunk = withErrorHandling(login);
-export const loginWithGoogleThunk = withErrorHandling(loginWithGoogle);
-export const logoutThunk = withErrorHandling(logout);
-export const updateUserThunk = withErrorHandling(updateUser);
-export const uploadAvatarThunk = withErrorHandling(uploadAvatar);
+export const fetchProfileThunk = fetchProfile;
+export const registerThunk = register;
+export const loginThunk = login;
+export const loginWithGoogleThunk = loginWithGoogle;
+export const logoutThunk = logout;
+export const updateUserThunk = updateUser;
+export const uploadAvatarThunk = uploadAvatar;
+export const registerWithGoogleThunk = registerWithGoogle;
+export const verifyEmailThunk = verifyEmail;
 
 export default userSlice.reducer;

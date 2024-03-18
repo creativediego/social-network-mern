@@ -1,4 +1,3 @@
-import { SignupSchemaT } from './SignupSchema';
 import { z } from 'zod';
 
 export const UpdateProfileSchema = z
@@ -10,13 +9,14 @@ export const UpdateProfileSchema = z
         /^[A-Za-z0-9 ,.'\\-]{3,20}$/,
         'Name should be 3-20 characters and should not include any special character!'
       ),
-    bio: z.string().min(0).max(280, 'Bio should not exceed 280 characters.'),
+
     username: z
       .string()
       .regex(
         /^[A-Za-z0-9]{3,16}$/,
         'Username should be 3-16 characters and should not include any special character.'
       ),
+
     password: z
       .string()
       .refine(
@@ -32,6 +32,17 @@ export const UpdateProfileSchema = z
       )
       .optional(),
     confirmPassword: z.string().optional(),
+    bio: z
+      .string()
+      .min(0)
+      .max(280, 'Bio should not exceed 280 characters.')
+      .optional(),
+    profilePhoto: z.instanceof(FileList).transform((list) => list.item(0)),
+    // .refine(
+    //   (file) => file?.size && file.size < 1 * 1024 * 1024,
+    //   'Avatar image size should be less than 1MB.'
+    // ),
+    headerImage: z.instanceof(FileList).transform((list) => list.item(0)),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords must match',

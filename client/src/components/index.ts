@@ -24,6 +24,7 @@ import HeaderImageUpload from '../forms/UpdateProfileForm/HeaderImageUpload';
 import ReactionButton from './Posts/ReactionButton.tsx/ReactionButton';
 import LikeButton from './Posts/LikeButton/LikeButton';
 import OptionMenu from './OptionMenu/OptionMenu';
+import VerifyEmail from './VerifyEmail/VerifyEmail';
 export {
   AlertBox,
   GenericError,
@@ -51,4 +52,5 @@ export {
   LikeButton,
   HeaderImageUpload,
   OptionMenu,
+  VerifyEmail,
 };

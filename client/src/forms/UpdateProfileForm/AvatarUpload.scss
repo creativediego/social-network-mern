@@ -20,7 +20,8 @@
 }
 
 .avatar-input {
-    display: none;
+    visibility: hidden;
+    padding: 0 !important;
 }
 
 .header-image-container {

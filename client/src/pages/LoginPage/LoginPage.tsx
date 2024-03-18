@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AlertBox } from '../../components';
 import { SignupForm, LoginForm } from '../../forms';
 import { useAlert } from '../../hooks/useAlert';
 import AppConfig from '../../config';
 import { useAuthUser } from '../../hooks/useAuthUser';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * `LoginPage` is a component that displays the login page.
@@ -20,7 +21,14 @@ import { useAuthUser } from '../../hooks/useAuthUser';
  */
 const LoginPage = (): JSX.Element => {
   const { error } = useAlert();
-  const { loginWithGoogle } = useAuthUser();
+  const { loginWithGoogle, isLoggedIn, isVerified } = useAuthUser();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isLoggedIn && !isVerified) {
+      navigate('/verify-email');
+    }
+  }, [isLoggedIn, isVerified, navigate]);
 
   return (
     <div>
@@ -47,7 +55,7 @@ const LoginPage = (): JSX.Element => {
           </div>
         </div>
       </div>
-      {error && <AlertBox message={error.message} />}
+      {error && error.message && <AlertBox message={error.message} />}
     </div>
   );
 };

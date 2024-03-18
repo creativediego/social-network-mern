@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { NewPost, Loader, PostsList, AvatarImage } from '../../components';
-import { useAppSelector } from '../../redux/hooks';
-import { selectAuthUser } from '../../redux/userSlice';
-import { useAllPosts } from '../../hooks/useAllPosts';
+import { useAuthUser } from '../../hooks/useAuthUser';
+import { useFetchPosts } from '../../components/Profile/ProfilePosts/useFetchPosts';
 
 /**
  * `PostsPage` is a component that renders the home page with a list of posts.
@@ -21,8 +20,13 @@ import { useAllPosts } from '../../hooks/useAllPosts';
  * @returns {JSX.Element} A JSX element representing the home page with a list of posts.
  */
 const PostsPage = (): JSX.Element => {
-  const { posts, loading } = useAllPosts();
-  const authUser = useAppSelector(selectAuthUser);
+  const { user } = useAuthUser();
+  const {
+    homePagePosts: posts,
+    loading,
+    lastElementRef,
+    hasMore,
+  } = useFetchPosts(user.id);
   return (
     <section className='ttr-home'>
       <div className='border border-bottom-0'>
@@ -30,15 +34,16 @@ const PostsPage = (): JSX.Element => {
         {posts && (
           <div className='d-flex'>
             <div className='p-2'>
-              <AvatarImage profilePhoto={authUser.profilePhoto} size={70} />
+              <AvatarImage profilePhoto={user.profilePhoto} size={70} />
             </div>
             <NewPost /> {/* Component to create a new post */}
           </div>
         )}
       </div>
-      <Loader loading={loading} message={'Loading Posts'} />
       {posts && <PostsList posts={posts} />}
+      {hasMore && <div ref={lastElementRef}></div>}
+      <Loader loading={loading} message={'Loading Posts'} />
     </section>
   );
 };
-export default PostsPage;
+export default memo(PostsPage);

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Placeholder } from 'react-bootstrap';
 import { UseFormRegisterReturn, FieldErrors } from 'react-hook-form';
 
 interface InputFieldProps {
@@ -8,6 +9,8 @@ interface InputFieldProps {
   register: UseFormRegisterReturn; // Correct type from react-hook-form
   error: Partial<FieldErrors>; // Correct type from react-hook-form
   disabled?: boolean;
+  hide?: boolean;
+  placeholder?: string;
 }
 
 const ReactHookFormInput = ({
@@ -17,9 +20,11 @@ const ReactHookFormInput = ({
   register,
   error,
   disabled,
+  hide,
+  placeholder,
 }: InputFieldProps) => (
   <>
-    {!disabled ? (
+    {!hide ? (
       <div>
         <label className='form-label' htmlFor={id}>
           {label}
@@ -30,6 +35,7 @@ const ReactHookFormInput = ({
           id={id}
           {...register}
           disabled={disabled ? disabled : false}
+          placeholder={placeholder}
         />
         {error[id] && (
           <span className='text-danger validation-error'>{`${error[id]?.message}`}</span>

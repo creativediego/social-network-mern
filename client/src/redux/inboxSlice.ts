@@ -9,7 +9,6 @@ import { IChat } from '../interfaces/IChat';
 import { IMessage } from '../interfaces/IMessage';
 import type { RootState } from './store';
 import { chatService } from '../services/chatService';
-import { withErrorHandling } from './reduxErrorHandler';
 
 /**
  * Fetch inbox messages.
@@ -112,7 +111,7 @@ export const { selectAll: selectAllInboxMessages } = inboxAdapter.getSelectors(
 );
 export const { updateInbox } = messageInboxSlice.actions;
 
-export const findInboxMessagesThunk = withErrorHandling(findInboxMessages);
-export const deleteInboxChatThunk = withErrorHandling(deleteInboxChat);
+export const findInboxMessagesThunk = findInboxMessages;
+export const deleteInboxChatThunk = deleteInboxChat;
 
 export default messageInboxSlice.reducer;

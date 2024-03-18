@@ -77,9 +77,20 @@ export function useSearch<T>(
       }
     };
 
-    fetchData();
+    // Debounce the search to prevent spamming the API. Only search after 500ms of no typing.
+    const handler = setTimeout(() => {
+      fetchData();
+    }, 500);
+    // Cleanup function to clear the timeout from the previous render.
+    return () => clearTimeout(handler);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]); // Only re-run the effect if query changes.
+
+  useEffect(() => {
+    const query = searchParams.get('q') || '';
+    setQuery(query);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]); // Only re-run the effect if searchParams changes.
 
   return { results, query, setQuery, loading };
 }

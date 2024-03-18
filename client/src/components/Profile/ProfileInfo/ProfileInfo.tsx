@@ -80,7 +80,7 @@ const ProfileInfo = ({
                   size='lg'
                   withClose={true}
                 >
-                  <UpdateProfileForm user={profileUser} />
+                  <UpdateProfileForm />
                 </PopupModal>
               </span>
             )}

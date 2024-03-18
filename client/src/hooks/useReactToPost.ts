@@ -1,87 +1,68 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { IPost } from '../interfaces/IPost';
-import { useAppDispatch } from '../redux/hooks';
-import { updatePosts } from '../redux/postSlice';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import {
+  removeAllPosts,
+  removePost,
+  selectPostLoading,
+  userLikesPostThunk,
+  userUnlikesPostThunk,
+} from '../redux/postSlice';
 import { usePost } from '../components/Posts/Post/hooks/usePost';
 import { useAuthUser } from './useAuthUser';
-import { useIsMounted } from './useIsMounted';
+import { useDispatch } from 'react-redux';
 
 /**
- * Custom hook for handling reactions to a post
- * @param {Function} apiCall - Function to call API for updating post reactions
- * @param {Function} setError - Function to handle error messages
- * @returns {Object} - Object containing the reaction handling function, loading state, and reacted state
+ * Custom React hook for managing user reactions to a post.
+ * @returns {object} An object containing functions and states related to post reactions.
  */
-export const useReactToPost = (
-  apiCall: (postId: string) => Promise<IPost>,
-  setError: (message: string) => void
-) => {
-  // State hooks and references
-  const isMounted = useIsMounted();
+export const useReactToPost = () => {
+  // Get the current post and user from other custom hooks and Redux store
   const { post } = usePost();
   const { user } = useAuthUser();
-  const [loading, setLoading] = useState(false);
+  const loading = useAppSelector(selectPostLoading);
   const dispatch = useAppDispatch();
 
   // Determine if the current user has reacted to the post
   const userReacted = useMemo(
-    () => post && post.likedBy.includes(user.id),
-    [post, user.id]
+    () => post.likedBy.includes(user.id),
+    [post.likedBy, user.id]
   );
 
   /**
-   * Function to handle post reaction
-   * @param {string} postId - ID of the post to react to
+   * Function to handle post reaction.
+   * @param {string} postId - ID of the post to react to.
    */
   const handleReaction = useCallback(
     async (postId: string) => {
       if (!post) return;
 
-      const rollbackPost = post;
+      // Optimistically update the post stats based on user reaction
+      const likedBy = userReacted
+        ? post.likedBy.filter((id) => id !== user.id)
+        : [...post.likedBy, user.id];
+      const likes =
+        post.stats.likes + (userReacted ? (post.stats.likes > 0 ? -1 : 0) : 1);
 
-      try {
-        setLoading(true);
-        // Optimistically update the post stats based on user reaction
-        const optimisticPost: IPost = {
-          ...post,
-          likedBy: [...post.likedBy, user.id],
-          stats: {
-            ...post.stats,
-            likes:
-              post.stats.likes +
-              (userReacted ? (post.stats.likes > 0 ? -1 : 0) : 1),
-          },
-        };
+      const optimisticPost: IPost = {
+        ...post,
+        likedBy,
+        stats: {
+          ...post.stats,
+          likes,
+        },
+      };
 
-        // Dispatch the optimistic post update
-        dispatch(updatePosts(optimisticPost));
-
-        // Fetch updated post data from the API
-        const updatedPost = await apiCall(postId);
-
-        setLoading(false);
-
-        // Update the post if the component is still mounted
-        if (isMounted) {
-          dispatch(updatePosts(updatedPost));
-        }
-      } catch (err) {
-        setLoading(false);
-        dispatch(updatePosts(rollbackPost));
-
-        const error = err as Error;
-        // Set error message if the component is still mounted
-        if (isMounted) {
-          setError(error.message);
-        }
+      // Fetch updated post data from the API
+      if (!userReacted) {
+        dispatch(userLikesPostThunk({ postId, optimisticPost }));
+      } else {
+        dispatch(userUnlikesPostThunk({ postId, optimisticPost }));
       }
     },
-    [dispatch, setError, apiCall, post, userReacted]
+    [dispatch, post, user.id, userReacted]
   );
 
-  // Determine if the current user has reacted and not loading
-  const reacted = userReacted && !loading;
-
   // Return the reaction handling function and related states
-  return { handleReaction, loading, reacted };
+  return { handleReaction, loading, reacted: userReacted };
 };

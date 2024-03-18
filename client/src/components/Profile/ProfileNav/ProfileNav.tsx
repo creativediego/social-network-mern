@@ -1,32 +1,38 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { INavLink } from '../../Navigation/NavigationItem/NavigationItem';
 
+/**
+ * Props for the ProfileNav component.
+ *
+ * @interface ProfileNavProps
+ * @property {string} username - The username for which the navigation links are displayed.
+ */
 interface ProfileNavProps {
   username: string;
 }
+
+/**
+ * ProfileNav component displays navigation links for a user's profile page.
+ *
+ * @param {ProfileNavProps} props - The props for the component.
+ * @returns {JSX.Element} - A JSX element representing the profile navigation.
+ */
 const ProfileNav = ({ username }: ProfileNavProps): JSX.Element => {
-  const navItems = [
+  const navItems: INavLink[] = [
     {
-      title: 'Posts',
-      link: `/${username}/posts`,
+      label: 'Posts',
+      path: `/${username}/posts`,
     },
-    { title: 'Likes', link: `/${username}/likes` },
-    { title: 'Dislikes', link: `/${username}/dislikes` },
-    // { title: 'Posts and Replies', link: `/${userId}/posts-and-replies` },
-    // { title: 'Media', link: `/${userId}/media` },
+    { label: 'Likes', path: `/${username}/likes` },
   ];
+
   return (
     <ul className='mt-4 nav nav-pills nav-fill'>
       {navItems.map((item) => (
-        <li key={item.link} className='nav-item'>
-          <NavLink
-            to={item.link}
-            // className={`nav-link ${
-            //   location.pathname.indexOf(item.link) === 0 ? 'active' : ''
-            // }`}
-            className='nav-link'
-          >
-            {item.title}
+        <li key={item.path} className='nav-item'>
+          <NavLink to={item.path} className='nav-link'>
+            {item.label}
           </NavLink>
         </li>
       ))}

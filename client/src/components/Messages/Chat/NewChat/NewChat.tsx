@@ -3,19 +3,22 @@ import { Link } from 'react-router-dom';
 import { ActionButton, Loader, PopupModal, Search } from '../../..';
 import useToggle from '../../../../hooks/useToggle';
 import { IUser } from '../../../../interfaces/IUser';
-import { APIfindAllUsersByName } from '../../../../services/userAPI';
-import { useSearch } from '../../../Search/useSearch';
+import { useSearch } from '../../../Search/hooks/useSearch';
 import { useNewChat } from './hooks/useNewChat';
 import NewChatSelectedUsersList from './NewChatSelectedUsersList';
 import NewChatUsersResultsList from './NewChatUsersResultsList';
+import { userSearchService } from '../../../../services/searchService';
 
 /**
  * Displays a new chat button and new chat model, where the user can initiate a new chat.
  */
 const NewChat = () => {
   const [showModal, toggleModal] = useToggle(false);
-  const { searchResults, searchLoading, searchValue, setSearch } =
-    useSearch<IUser>(APIfindAllUsersByName);
+  const initialEmptyResults: IUser[] = [];
+  const { results, loading, query, setQuery } = useSearch(
+    userSearchService,
+    initialEmptyResults
+  );
   const {
     newChatLoading,
     selectedUsers,
@@ -36,8 +39,8 @@ const NewChat = () => {
         show={showModal}
       >
         <Search
-          searchValue={searchValue}
-          setSearchValue={setSearch}
+          query={query}
+          setQuery={setQuery}
           placeHolder='Search for people to start new chat'
         />
         <NewChatSelectedUsersList
@@ -45,8 +48,8 @@ const NewChat = () => {
           removeSelectedUser={removeSelectedUser}
         />
         <hr />
-        <Loader loading={searchLoading} />
-        {searchResults && searchResults.length > 0 && (
+        <Loader loading={loading} />
+        {results && results.length > 0 && (
           <>
             <div className='d-flex justify-content-between align-items-center'>
               <h6 className='mt-4'>Results</h6>
@@ -69,7 +72,7 @@ const NewChat = () => {
               )}
             </div>
             <NewChatUsersResultsList
-              searchResults={searchResults}
+              searchResults={results}
               selectUsersForChat={selectUsersForChat}
             />
           </>

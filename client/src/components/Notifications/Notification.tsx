@@ -24,15 +24,15 @@ const Notification = ({
   let notificationLink: NotificationLink = {
     MESSAGES: {
       link: '/messages',
-      content: `${notification.userActing.username} messaged you.`,
+      content: `${notification.userNotified.username} messaged you.`,
     },
     LIKES: {
-      link: `${notification.userActing.username}/${notification.resourceId}/posts`,
-      content: `${notification.userActing.username} liked your post.`,
+      link: `${notification.userNotified.username}/${notification.resourceId}/posts`,
+      content: `${notification.userNotified.username} liked your post.`,
     },
     FOLLOWS: {
-      link: `/${notification.userActing.username}`,
-      content: `${notification.userActing.username} followed you.`,
+      link: `/${notification.userNotified.username}`,
+      content: `${notification.userNotified.username} followed you.`,
     },
   };
 
@@ -55,12 +55,12 @@ const Notification = ({
           // }}
         >
           <div className='pe-2'>
-            {notification.userActing && (
+            {notification.userNotified && (
               <img
                 src={
-                  notification.userActing.profilePhoto
-                    ? notification.userActing.profilePhoto
-                    : `../images/${notification.userActing.username}.jpg`
+                  notification.userNotified.profilePhoto
+                    ? notification.userNotified.profilePhoto
+                    : `../images/${notification.userNotified.username}.jpg`
                 }
                 className='ttr-post-avatar-logo rounded-circle'
                 alt='profile'

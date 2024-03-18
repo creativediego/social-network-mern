@@ -1,25 +1,35 @@
 import { IPost } from '../interfaces/IPost';
 import { logToConsole } from '../util/logToConsole';
-import { APIServiceI, Requests, apiService } from './APIService';
+import { APIServiceI, ReqType, apiService } from './APIService';
 import { urlConfig } from '../config/appConfig';
+import { IQueryParams } from '../interfaces/IQueryParams';
+
+const DEFAULT_PAGE = 1;
+const DEFAULT_LIMIT = 20;
 
 export interface IPostService {
-  findAllPosts: () => Promise<IPost[]>;
+  findAllPosts: (queryParams: IQueryParams) => Promise<IPost[]>;
   findAllPostsByKeyword: (keyword: string) => Promise<IPost[]>;
-  findAllPostsByUser: (userId: string) => Promise<IPost[]>;
-  createPost: (userId: string, post: IPost) => Promise<IPost>;
+  findAllPostsByUser: (
+    userId: string,
+    queryParams: IQueryParams
+  ) => Promise<IPost[]>;
+  createPost: (post: IPost) => Promise<IPost>;
   updatePost: (postId: string, post: IPost) => Promise<IPost>;
   deletePost: (postId: string) => Promise<IPost>;
   likePost: (postId: string) => Promise<IPost>;
-  dislikePost: (postId: string) => Promise<IPost>;
-  findAllPostsLikedByUser: (userId: string) => Promise<IPost[]>;
+  unlikePost: (postId: string) => Promise<IPost>;
+  findAllPostsLikedByUser: (
+    userId: string,
+    queryParams: IQueryParams
+  ) => Promise<IPost[]>;
   findAllPostsDislikedByUser: (userId: string) => Promise<IPost[]>;
 }
 
 class PostServiceImpl implements IPostService {
   private url: string;
   private APIService: APIServiceI;
-
+  private static instance: PostServiceImpl;
   private constructor(url: string, apiService: APIServiceI) {
     this.url = url;
     this.APIService = apiService;
@@ -30,40 +40,48 @@ class PostServiceImpl implements IPostService {
     url: string,
     APIService: APIServiceI
   ): PostServiceImpl {
-    return new PostServiceImpl(url, APIService);
+    if (!this.instance) {
+      this.instance = new PostServiceImpl(url, APIService);
+    }
+    return this.instance;
   }
 
-  public findAllPosts = async (): Promise<IPost[]> => {
-    return await this.APIService.makeRequest<IPost[]>(
-      this.url,
-      Requests.GET,
+  public findAllPosts = async (queryParams: IQueryParams): Promise<IPost[]> => {
+    const { page = DEFAULT_PAGE, limit = DEFAULT_LIMIT } = queryParams;
+    return await this.APIService.makeRequest<IPost[], number>(
+      `${this.url}?page=${page}&limit=${limit}`,
+      ReqType.GET,
       'Error finding posts. Try again later.'
     );
   };
 
   public findAllPostsByKeyword = async (keyword: string): Promise<IPost[]> => {
-    const url = `${this.url}/search/${keyword}`;
+    const url = `${this.url}?keyword=${keyword}`;
     return await this.APIService.makeRequest<IPost[]>(
       url,
-      Requests.GET,
+      ReqType.GET,
       'Error finding posts by keyword. Try again later.'
     );
   };
 
-  public findAllPostsByUser = async (userId: string): Promise<IPost[]> => {
-    const url = `${this.url}/${userId}/posts`;
+  public findAllPostsByUser = async (
+    authorId: string,
+    queryParams: IQueryParams
+  ): Promise<IPost[]> => {
+    const { page = DEFAULT_PAGE, limit = DEFAULT_LIMIT } = queryParams;
+    const url = `${this.url}?authorId=${authorId}&page=${page}&limit=${limit}`;
     return await this.APIService.makeRequest<IPost[]>(
       url,
-      Requests.GET,
+      ReqType.GET,
       'Error finding posts by user. Try again later.'
     );
   };
 
-  public createPost = async (userId: string, post: IPost): Promise<IPost> => {
-    const url = `${this.url}/${userId}/posts`;
+  public createPost = async (post: IPost): Promise<IPost> => {
+    const url = `${this.url}`;
     return await this.APIService.makeRequest<IPost, IPost>(
       url,
-      Requests.POST,
+      ReqType.POST,
       'Error creating post. Try again later.',
       post
     );
@@ -73,7 +91,7 @@ class PostServiceImpl implements IPostService {
     const url = `${this.url}/${postId}`;
     return await this.APIService.makeRequest<IPost, IPost>(
       url,
-      Requests.PUT,
+      ReqType.PUT,
       'Error updating post.',
       post
     );
@@ -83,35 +101,39 @@ class PostServiceImpl implements IPostService {
     const url = `${this.url}/${postId}`;
     return await this.APIService.makeRequest<IPost>(
       url,
-      Requests.DELETE,
+      ReqType.DELETE,
       'Error deleting post. Try again later.'
     );
   };
 
   public likePost = async (postId: string): Promise<IPost> => {
-    const url = `${this.url}/${postId}/likes`;
+    const url = `${this.url}/likes/${postId}`;
     logToConsole('URL:', url);
     return await this.APIService.makeRequest<IPost>(
       url,
-      Requests.POST,
+      ReqType.POST,
       'Error liking post. Try again later.'
     );
   };
 
-  public dislikePost = async (postId: string): Promise<IPost> => {
-    const url = `${this.url}/${postId}/dislikes`;
+  public unlikePost = async (postId: string): Promise<IPost> => {
+    const url = `${this.url}/likes/${postId}`;
     return await this.APIService.makeRequest<IPost>(
       url,
-      Requests.POST,
+      ReqType.DELETE,
       'Error disliking post. Try again later.'
     );
   };
 
-  public findAllPostsLikedByUser = async (userId: string): Promise<IPost[]> => {
-    const url = `${this.url}/${userId}/likes`;
+  public findAllPostsLikedByUser = async (
+    userId: string,
+    queryParams: IQueryParams
+  ): Promise<IPost[]> => {
+    const { page = DEFAULT_PAGE, limit = DEFAULT_LIMIT } = queryParams;
+    const url = `${this.url}/likes/${userId}?page=${page}&limit=${limit}`;
     return await this.APIService.makeRequest<IPost[]>(
       url,
-      Requests.GET,
+      ReqType.GET,
       'Error getting posts. Try again later.'
     );
   };
@@ -119,10 +141,10 @@ class PostServiceImpl implements IPostService {
   public findAllPostsDislikedByUser = async (
     userId: string
   ): Promise<IPost[]> => {
-    const url = `${this.url}/${userId}/dislikes`;
+    const url = `${this.url}/dislikes/${userId}`;
     return await this.APIService.makeRequest<IPost[]>(
       url,
-      Requests.GET,
+      ReqType.GET,
       'Error getting posts. Try again later.'
     );
   };

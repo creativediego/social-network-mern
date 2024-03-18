@@ -43,7 +43,10 @@ const Loader = ({
   color,
 }: LoaderProps): JSX.Element => {
   return (
-    <span className='d-flex justify-content-center' data-testid='loader'>
+    <span
+      className='d-flex justify-content-center mt-3 mb-3'
+      data-testid='loader'
+    >
       {loading && message ? <span className='me-2'>{message} </span> : null}
       {loading && (
         <span>

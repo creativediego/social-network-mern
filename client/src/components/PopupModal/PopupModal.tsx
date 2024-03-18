@@ -6,7 +6,7 @@ interface PopupModalProps {
   title: string | JSX.Element;
   show: boolean;
   size: 'sm' | 'lg';
-  closeModal: () => void;
+  closeModal?: () => void;
   action?: () => void;
   actionLabel?: string;
   locked?: boolean;

@@ -10,7 +10,6 @@ import { IMessage } from '../interfaces/IMessage';
 import { IUser } from '../interfaces/IUser';
 import { chatService } from '../services/chatService';
 import type { RootState } from './store';
-import { withErrorHandling } from './reduxErrorHandler';
 
 /**
  * Fetch a specific chat and all messages related to it.
@@ -189,9 +188,9 @@ export const { selectAll: selectAllParticipants } =
   );
 export const { upsertChatMessage, clearChat } = chatSlice.actions;
 
-export const findMessagesByChatThunk = withErrorHandling(findMessagesByChat);
-export const sendMessageThunk = withErrorHandling(sendMessage);
-export const deleteMessageThunk = withErrorHandling(deleteMessage);
-export const createChat = withErrorHandling(createChatThunk);
+export const findMessagesByChatThunk = findMessagesByChat;
+export const sendMessageThunk = sendMessage;
+export const deleteMessageThunk = deleteMessage;
+export const createChat = createChatThunk;
 
 export default chatSlice.reducer;

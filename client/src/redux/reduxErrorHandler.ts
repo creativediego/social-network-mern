@@ -28,6 +28,13 @@ export const withErrorHandling = <T extends ThunkFunction>(asyncThunk: T) => {
       const action = await dispatch(asyncThunk(...args));
       // For thunks that return an error
       if (action.error) {
+        if (action.error.code === 401) {
+          // Handle 401 error by clearing user state
+          dispatchGlobalError(
+            dispatch,
+            new FriendlyError('Error: Log in again to continue.')
+          );
+        }
         dispatchGlobalError(dispatch, new FriendlyError(action.error.message));
         // For thunks that dispatch other thunks, we need to check if the inner thunk has an error
       } else if (action.payload && action.payload.error) {

@@ -35,7 +35,7 @@ export const logError = async (error: IAlert): Promise<void> => {
   if (process.env.REACT_APP_ENV === 'production') {
     // TODO: Log error to third-party service.
   } else {
-    console.log(error.message);
+    console.log(error);
   }
 };
 

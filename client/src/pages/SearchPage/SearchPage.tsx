@@ -28,7 +28,6 @@ const SearchPage = (): JSX.Element => {
     allSearchService,
     initialEmptyResults
   );
-
   /**
    * Toggles the active tab that filters the search results.
    * @param tab the tab type to toggle
@@ -73,10 +72,18 @@ const SearchPage = (): JSX.Element => {
         );
 
       case 'people':
-        return <PeopleSearchResults users={results.users} />;
+        return results.users.length > 0 ? (
+          <PeopleSearchResults users={results.users} />
+        ) : (
+          <p>No users found.</p>
+        );
 
       case 'posts':
-        return <PostsList posts={results.posts} showOptions={false} />;
+        return results.posts.length > 0 ? (
+          <PostsList posts={results.posts} showOptions={false} />
+        ) : (
+          <p>No posts found.</p>
+        );
 
       default:
         return null;
@@ -86,8 +93,8 @@ const SearchPage = (): JSX.Element => {
   return (
     <div>
       <Search
-        searchValue={query}
-        setSearchValue={setQuery}
+        query={query}
+        setQuery={setQuery}
         placeHolder='Search for users or posts'
       />
 

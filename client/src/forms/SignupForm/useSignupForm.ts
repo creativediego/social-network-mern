@@ -5,13 +5,20 @@ import {
   registerThunk,
   selectAuthUserLoading,
   selectIsLoggedIn,
-  selectIsProfileComplete,
+  selectCompletedSignup,
+  selectIsVerified,
+  verifyEmailThunk,
+  registerWithGoogleThunk,
 } from '../../redux/userSlice';
 import { SignupSchemaT, SignupSchema } from '../../types/SignupSchema';
+import { useCallback, useEffect, useState } from 'react';
+import { firebaseSendVerificationEmail } from '../../firebase/firebaseAuthService';
 
 export const useSignUpForm = () => {
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
-  const profileComplete = useAppSelector(selectIsProfileComplete);
+  const isVerified = useAppSelector(selectIsVerified);
+  const [verificationResent, setVerificationResent] = useState(false);
+  const completedSignup = useAppSelector(selectCompletedSignup);
   const dispatch = useAppDispatch();
   const loading = useAppSelector(selectAuthUserLoading);
   const {
@@ -23,18 +30,47 @@ export const useSignUpForm = () => {
     mode: 'onBlur',
   });
 
-  const onSubmit = async (data: SignupSchemaT) => {
-    dispatch(registerThunk({ email: data.email, password: data.password }));
-  };
+  const onSubmit = useCallback(
+    async (data: SignupSchemaT) => {
+      dispatch(
+        registerThunk({
+          email: data.email,
+          password: data.password,
+          name: data.name,
+          username: data.username,
+        })
+      );
+    },
+    [dispatch]
+  );
 
-  const submitForm = (event: React.FormEvent) => {
-    event.preventDefault();
-    handleSubmit(onSubmit)();
-  };
+  const registerWithEmail = useCallback(
+    (event: React.FormEvent) => {
+      event.preventDefault();
+      handleSubmit(onSubmit)();
+    },
+    [handleSubmit, onSubmit]
+  );
+
+  const registerWithGoogle = useCallback(() => {
+    dispatch(registerWithGoogleThunk());
+  }, [dispatch]);
+
+  const sendVerificationEmail = useCallback(async () => {
+    if (verificationResent) return;
+    dispatch(verifyEmailThunk());
+    setVerificationResent(true);
+  }, [dispatch, verificationResent]);
+
   return {
-    completeSignup: !profileComplete && isLoggedIn,
+    isLoggedIn,
+    isVerified,
+    verificationResent,
+    completedSignup,
     loading,
-    submitForm,
+    registerWithEmail,
+    registerWithGoogle,
+    sendVerificationEmail,
     register,
     errors,
   };

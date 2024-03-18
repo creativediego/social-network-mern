@@ -5,6 +5,8 @@ import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   sendEmailVerification,
+  updateEmail,
+  updatePassword,
   User,
 } from 'firebase/auth';
 import { setLocalAuthToken } from '../util/tokenManagement';
@@ -23,6 +25,49 @@ export const firebaseGoogleLogin = async (): Promise<User> => {
     throw new FriendlyError(
       'Login with Google error: Please try logging in later.'
     );
+  }
+};
+
+export const firebaseUpdateEmail = async (email: string) => {
+  try {
+    const user = auth.currentUser;
+    if (user) {
+      return await updateEmail(user, email);
+    }
+  } catch (error) {
+    throw new FriendlyError('Error updating email.');
+  }
+};
+
+export const firebaseUpdatePassword = async (password: string) => {
+  try {
+    const user = auth.currentUser;
+    if (user) {
+      return await updatePassword(user, password);
+    }
+  } catch (error) {
+    throw new FriendlyError('Error updating password.');
+  }
+};
+
+export const firebaseIsEmailVerified = (): Promise<boolean> => {
+  return new Promise((resolve) => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        user.reload().then(() => {
+          resolve(user.emailVerified);
+        });
+      } else {
+        resolve(false);
+      }
+      unsubscribe(); // Stop listening for further changes
+    });
+  });
+};
+export const firebaseSendVerificationEmail = async (): Promise<void> => {
+  const user = auth.currentUser;
+  if (user) {
+    await sendEmailVerification(user, { url: process.env.REACT_APP_BASE_URL! });
   }
 };
 
@@ -56,6 +101,7 @@ export const fireBaseRegisterUser = async (
       email,
       password
     );
+
     const user = credentials.user; // signed in
     await sendEmailVerification(user, { url: CLIENT_URL });
     setLocalAuthToken(await user.getIdToken());
@@ -68,33 +114,32 @@ export const fireBaseRegisterUser = async (
   }
 };
 
-export const onFirebaseAuthStateChange = async (
-  activeAction: Function,
-  expiredAction: Function
-) => {
-  auth.onAuthStateChanged(function (user: any) {
+export const onFirebaseSessionChange = async (expiredAction: () => void) => {
+  auth.onAuthStateChanged(async function (user: User | null) {
     if (user) {
-      setLocalAuthToken(user.accessToken);
-      return activeAction();
+      const token = await user.getIdToken();
+      setLocalAuthToken(token);
     } else {
       return expiredAction();
     }
   });
 };
 
-export const onFirebaseSessionExpired = async (expiredAction: Function) => {
-  auth.onIdTokenChanged(function (user: any) {
-    if (!user) {
-      return expiredAction();
-    }
-  });
+export const isFirebaseSessionValid = async () => {
+  const user = auth.currentUser;
+  if (user) {
+    setLocalAuthToken(await user.getIdToken());
+    return true;
+  } else {
+    return false;
+  }
 };
 
 export const firebaseLogout = async () => {
   await auth.signOut();
 };
 
-export const firebaseIsLoggedIn = async () => {
+export const isLoggedIntoFirebase = async () => {
   const user = auth.currentUser;
   if (user) {
     return true;
@@ -103,11 +148,11 @@ export const firebaseIsLoggedIn = async () => {
   }
 };
 
-// Check if Firebase provider is email/password.
-export const isFirebaseIsEmailProvider = async () => {
+// Checks if user registered with provider other than email/password
+export const registeredWithProvider = async () => {
   const user = auth.currentUser;
   if (user) {
-    return user.providerData[0].providerId === 'password';
+    return user.providerData[0].providerId !== 'password';
   } else {
     return false;
   }

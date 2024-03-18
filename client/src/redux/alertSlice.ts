@@ -1,5 +1,5 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IAlert, IGlobalError } from '../interfaces/IError';
+import { IAlert } from '../interfaces/IError';
 import type { RootState } from './store';
 
 /**
