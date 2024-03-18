@@ -20,7 +20,7 @@
 
 //   public logError = async (error: IAlert): Promise<void> => {
 //     // If in production, log error to third-party service.
-//     if (process.env.REACT_APP_ENV === 'production') {
+//     if (import.meta.env.VITE_ENV === 'production') {
 //       // TODO: Log error to third-party service.
 //     } else {
 //       console.log(error.message);
@@ -32,7 +32,7 @@
 
 // export const logError = async (error: IAlert): Promise<void> => {
 //   // If in production, log error to third-party service.
-//   if (process.env.REACT_APP_ENV === 'production') {
+//   if (import.meta.env.VITE_ENV === 'production') {
 //     // TODO: Log error to third-party service.
 //   } else {
 //     console.log(error);

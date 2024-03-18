@@ -67,7 +67,7 @@ export const firebaseIsEmailVerified = (): Promise<boolean> => {
 export const firebaseSendVerificationEmail = async (): Promise<void> => {
   const user = auth.currentUser;
   if (user) {
-    await sendEmailVerification(user, { url: process.env.REACT_APP_BASE_URL! });
+    await sendEmailVerification(user, { url: import.meta.env.VITE_BASE_URL! });
   }
 };
 
