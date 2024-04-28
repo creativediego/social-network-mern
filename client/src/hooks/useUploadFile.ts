@@ -4,7 +4,6 @@ export const useUploadFile = () => {
   const [filePreview, setImagePreview] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const isMounted = useRef(true);
-
   const handleImageChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {

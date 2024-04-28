@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ReactHookFormInput } from '../';
+import { ReactHookFormInput, ReactHookImageInput } from '../';
 import {
   UpdateProfileSchemaT,
   UpdateProfileSchema,
@@ -33,6 +33,7 @@ const UpdateProfileForm = (): JSX.Element => {
     register,
     handleSubmit,
     setValue,
+    control,
     formState: { errors },
   } = useForm<UpdateProfileSchemaT>({
     resolver: zodResolver(UpdateProfileSchema),
@@ -53,7 +54,6 @@ const UpdateProfileForm = (): JSX.Element => {
       headerImageFile
     );
   };
-  console.log(user);
   const isFirstRun = useRef(true); // ensures that existing user data is only set once
   useEffect(() => {
     if (!isFirstRun.current) {
@@ -69,39 +69,47 @@ const UpdateProfileForm = (): JSX.Element => {
       isFirstRun.current = false;
     }
   }, [setValue, user, isFirstRun]);
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='form-container'>
       <div className='mb-5 position-relative bg-white'>
         <div>
-          <HeaderImageUpload
-            user={user}
-            imagePreview={headerImagePreview}
-            register={register('headerImage')}
-            handleChange={handleHeaderImageChange}
-          />
-          <AvatarUpload
-            user={user}
-            imagePreview={avatarPreview}
-            handleChange={handleAvatarImageChange}
-            register={register('profilePhoto')}
-          />
+          <HeaderImageUpload user={user} imagePreview={headerImagePreview}>
+            <ReactHookImageInput
+              id='headerImage'
+              control={control}
+              className='avatar-input'
+              handleFileChange={handleHeaderImageChange}
+            />
+          </HeaderImageUpload>
+          <AvatarUpload user={user} imagePreview={avatarPreview}>
+            <ReactHookImageInput
+              id='profilePhoto'
+              control={control}
+              className='avatar-input'
+              handleFileChange={handleAvatarImageChange}
+            />
+          </AvatarUpload>
         </div>
       </div>
-
+      {errors.profilePhoto && (
+        <div className='alert alert-warning'>{`${errors.profilePhoto.message}`}</div>
+      )}
+      {errors.headerImage && (
+        <div className='alert alert-warning'>{`${errors.headerImage.message}`}</div>
+      )}
       <ReactHookFormInput
         label='Name'
         id='name'
         type='name'
         register={register('name')}
-        error={errors}
+        errors={errors}
       />
       <ReactHookFormInput
         label='Username'
         id='username'
         type='username'
         register={register('username')}
-        error={errors}
+        errors={errors}
         disabled={user.username !== undefined && user.username !== ''}
       />
 
@@ -110,7 +118,7 @@ const UpdateProfileForm = (): JSX.Element => {
         id='email'
         type='email'
         register={register('email')}
-        error={errors}
+        errors={errors}
         disabled={user.registeredWithProvider}
       />
       <ReactHookFormInput
@@ -118,7 +126,7 @@ const UpdateProfileForm = (): JSX.Element => {
         id='password'
         type='password'
         register={register('password')}
-        error={errors}
+        errors={errors}
         hide={user.registeredWithProvider || !completedSignup}
       />
       <ReactHookFormInput
@@ -126,7 +134,7 @@ const UpdateProfileForm = (): JSX.Element => {
         id='confirmPassword'
         type='password'
         register={register('confirmPassword')}
-        error={errors}
+        errors={errors}
         hide={user.registeredWithProvider || !completedSignup}
       />
       <ReactHookFormInput
@@ -135,12 +143,9 @@ const UpdateProfileForm = (): JSX.Element => {
         type='bio'
         register={register('bio')}
         placeholder='(optional)'
-        error={errors}
+        errors={errors}
       />
       <ActionButton position={'right'} loading={loading} />
-      {errors.profilePhoto && (
-        <div className='alert alert-danger'>{`${errors.profilePhoto.message}`}</div>
-      )}
     </form>
   );
 };

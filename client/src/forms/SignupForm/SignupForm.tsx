@@ -29,7 +29,6 @@ const SignupForm = (): JSX.Element => {
     completedSignup,
     loading,
     registerWithEmail,
-    registerWithGoogle,
     register,
     errors,
   } = useSignUpForm();
@@ -57,7 +56,7 @@ const SignupForm = (): JSX.Element => {
               id='name'
               type='name'
               register={register('name')}
-              error={errors}
+              errors={errors}
               hide={user.registeredWithProvider}
             />
 
@@ -66,7 +65,7 @@ const SignupForm = (): JSX.Element => {
               id='username'
               type='username'
               register={register('username')}
-              error={errors}
+              errors={errors}
             />
 
             <ReactHookFormInput
@@ -74,7 +73,7 @@ const SignupForm = (): JSX.Element => {
               id='email'
               type='email'
               register={register('email')}
-              error={errors}
+              errors={errors}
               hide={user.registeredWithProvider}
             />
 
@@ -83,7 +82,7 @@ const SignupForm = (): JSX.Element => {
               id='password'
               type='password'
               register={register('password')}
-              error={errors}
+              errors={errors}
               hide={user.registeredWithProvider}
             />
             <ReactHookFormInput
@@ -91,7 +90,7 @@ const SignupForm = (): JSX.Element => {
               id='confirmPassword'
               type='password'
               register={register('confirmPassword')}
-              error={errors}
+              errors={errors}
               hide={user.registeredWithProvider}
             />
             <ActionButton position={'right'} loading={loading} />

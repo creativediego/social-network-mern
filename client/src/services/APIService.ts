@@ -55,7 +55,9 @@ class APIServiceImpl implements APIServiceI {
     errorMessage?: string
   ) => {
     if (!error.response) {
-      throw new Error('Network Error');
+      throw new Error(
+        'Network Error: Cannot reach server. Please try again later.'
+      );
     }
 
     if (error.response.status === 401) {

@@ -35,11 +35,7 @@ interface AlertBoxProps {
  *
  * @returns {JSX.Element | null} A JSX element representing the alert box if the message exists, or null otherwise.
  */
-const AlertBox = ({
-  heading,
-  message,
-  variant,
-}: AlertBoxProps): JSX.Element | null => {
+const AlertBox = ({ heading, message, variant }: AlertBoxProps) => {
   const [show, setShow] = React.useState(true);
   const { clearAllAlerts } = useAlert();
 
@@ -54,6 +50,7 @@ const AlertBox = ({
   if (show) {
     return (
       <Alert
+        aria-label='alert'
         variant={variant ? variant : 'warning'}
         className='alert-fixed'
         onClose={() => {

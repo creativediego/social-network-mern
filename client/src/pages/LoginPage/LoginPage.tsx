@@ -47,15 +47,20 @@ const LoginPage = (): JSX.Element => {
         </div>
 
         <div className='d-flex justify-content-between mt-3'>
-          <div
+          <button
+            name='google-login'
             className='btn btn-light rounded-pill w-100'
             onClick={loginWithGoogle}
           >
-            <i className='fa-brands fa-google'></i> Login with Google
-          </div>
+            <i className='fa-brands fa-google'></i> Log in with Google
+          </button>
         </div>
       </div>
-      {error && error.message && <AlertBox message={error.message} />}
+      {error && error.message && (
+        <div id='login-error'>
+          <AlertBox message={error.message} />
+        </div>
+      )}
     </div>
   );
 };

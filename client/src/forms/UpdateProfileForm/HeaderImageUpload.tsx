@@ -6,21 +6,16 @@ import { IUser } from '../../interfaces/IUser';
 import { useUploadFile } from '../../hooks/useUploadFile';
 import { useUpdateProfile } from './useUpdateProfile';
 import { UseFormRegisterReturn } from 'react-hook-form';
+import { ImageUploadProps } from './AvatarUpload';
 
 /**
  * Displays user's background header image. Handles state upload via props.
  */
-export interface ImageUploadProps {
-  user: IUser;
-  register?: UseFormRegisterReturn;
-  imagePreview: string | undefined;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
+
 const HeaderImageUpload = ({
   user,
-  register,
   imagePreview,
-  handleChange,
+  children,
 }: ImageUploadProps) => {
   const imageURL = imagePreview || user.headerImage;
 
@@ -40,15 +35,7 @@ const HeaderImageUpload = ({
           <i className='fa-solid fa-camera'></i>
         </div>
       </label>
-
-      <input
-        className='avatar-input'
-        type='file'
-        id='headerImage'
-        accept='image/*'
-        {...register}
-        onChange={handleChange}
-      />
+      {children}
     </div>
   );
 };

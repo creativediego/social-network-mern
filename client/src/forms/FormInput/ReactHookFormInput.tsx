@@ -7,7 +7,7 @@ interface InputFieldProps {
   id: string;
   type: string;
   register: UseFormRegisterReturn; // Correct type from react-hook-form
-  error: Partial<FieldErrors>; // Correct type from react-hook-form
+  errors: Partial<FieldErrors>; // Correct type from react-hook-form
   disabled?: boolean;
   hide?: boolean;
   placeholder?: string;
@@ -18,7 +18,7 @@ const ReactHookFormInput = ({
   id,
   type,
   register,
-  error,
+  errors,
   disabled,
   hide,
   placeholder,
@@ -37,8 +37,8 @@ const ReactHookFormInput = ({
           disabled={disabled ? disabled : false}
           placeholder={placeholder}
         />
-        {error[id] && (
-          <span className='text-danger validation-error'>{`${error[id]?.message}`}</span>
+        {errors[id] && (
+          <span className='text-danger validation-error'>{`${errors[id]?.message}`}</span>
         )}
       </div>
     ) : null}

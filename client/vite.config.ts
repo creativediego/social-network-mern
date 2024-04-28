@@ -21,4 +21,11 @@ export default defineConfig({
       },
     }),
   ],
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    css: true,
+    setupFiles: './setupTests.ts',
+    dir: 'src/pages',
+  },
 });

@@ -1,17 +1,22 @@
 import React, { memo } from 'react';
 import { AvatarImage } from '../../components';
 import './AvatarUpload.scss';
-import { ImageUploadProps } from './HeaderImageUpload';
+import { IUser } from '../../interfaces/IUser';
+
+export interface ImageUploadProps {
+  imagePreview: string | undefined;
+  user: IUser;
+  children: React.ReactElement<HTMLInputElement>;
+}
 
 /**
  * Displays user's profile photo and upload functionality. Handles upload via props function.
  */
 
 const AvatarUpload = ({
-  register,
   imagePreview,
-  handleChange,
   user,
+  children,
 }: ImageUploadProps): JSX.Element => {
   const avatar = imagePreview || user.profilePhoto;
   return (
@@ -30,14 +35,7 @@ const AvatarUpload = ({
               </div>
             </div>
           </label>
-          <input
-            className='avatar-input'
-            type='file'
-            id='profilePhoto'
-            accept='image/*'
-            {...register}
-            onChange={handleChange}
-          />
+          {children}
         </div>
       </div>
     </div>

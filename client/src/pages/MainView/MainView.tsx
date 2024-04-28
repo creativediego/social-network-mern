@@ -72,7 +72,9 @@ const MainView = (): JSX.Element => {
         </div>
 
         {/* Right column containing the 'What's Happening' widget */}
-        <div className='ttr-right-column'>{/* <WhatsHappeningWidget /> */}</div>
+        <div className='ttr-right-column'>
+          <WhatsHappeningWidget />
+        </div>
       </div>
     </div>
   );

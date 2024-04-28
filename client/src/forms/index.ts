@@ -4,6 +4,7 @@ import SignupForm from './SignupForm/SignupForm';
 import UpdateProfileForm from './UpdateProfileForm/UpdateProfileForm';
 import Form from './FormContainer/Form';
 import ReactHookFormInput from './FormInput/ReactHookFormInput';
+import ReactHookImageInput from './FormInput/ReactHookImageInput';
 
 export {
   FormField,
@@ -12,4 +13,5 @@ export {
   UpdateProfileForm,
   Form,
   ReactHookFormInput,
+  ReactHookImageInput,
 };

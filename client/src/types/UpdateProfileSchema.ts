@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+const FILE_SIZE = 1048576; // 1MB
+
 export const UpdateProfileSchema = z
   .object({
     email: z.string().email(),
@@ -37,12 +39,22 @@ export const UpdateProfileSchema = z
       .min(0)
       .max(280, 'Bio should not exceed 280 characters.')
       .optional(),
-    profilePhoto: z.instanceof(FileList).transform((list) => list.item(0)),
-    // .refine(
-    //   (file) => file?.size && file.size < 1 * 1024 * 1024,
-    //   'Avatar image size should be less than 1MB.'
-    // ),
-    headerImage: z.instanceof(FileList).transform((list) => list.item(0)),
+    profilePhoto: z
+      .instanceof(FileList)
+      .optional()
+      .refine((fileList) => fileList && fileList.length > 0, {
+        message: 'Please upload an avatar image.',
+      })
+      .refine((fileList) => fileList && fileList[0].size <= FILE_SIZE, {
+        message: 'Image file must be less than 1MB.',
+      }),
+    headerImage: z
+      .instanceof(FileList)
+      .optional()
+      .refine((fileList) => fileList && fileList[0].size <= FILE_SIZE, {
+        message: 'Image file must be less than 1MB.',
+      })
+      .optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords must match',
