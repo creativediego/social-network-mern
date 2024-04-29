@@ -65,7 +65,6 @@ const UpdateProfileForm = (): JSX.Element => {
       setValue('username', user.username);
       setValue('bio', user.bio);
       setValue('email', user.email);
-
       isFirstRun.current = false;
     }
   }, [setValue, user, isFirstRun]);

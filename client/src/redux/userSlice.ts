@@ -33,7 +33,7 @@ import {
   firebaseUpdatePassword,
 } from '../firebase/firebaseAuthService';
 
-const setLoginHelper = async (
+const verifyUserHelper = async (
   dispatch: ThunkDispatch<unknown, unknown, AnyAction>,
   user: IUser
 ) => {
@@ -47,7 +47,7 @@ const fetchProfile = createAsyncThunk(
   'users/fetchProfile',
   async (_, ThunkAPI) => {
     const user = await authService.getProfile();
-    setLoginHelper(ThunkAPI.dispatch, user);
+    verifyUserHelper(ThunkAPI.dispatch, user);
     return user;
   }
 );
@@ -71,7 +71,7 @@ const register = createAsyncThunk(
       username,
       uid: fbUser.uid,
     });
-    setLoginHelper(ThunkAPI.dispatch, newUser);
+    verifyUserHelper(ThunkAPI.dispatch, newUser);
     return;
   }
 );
@@ -95,7 +95,7 @@ const login = createAsyncThunk(
   ) => {
     await firebaseLoginWithEmail(email, password);
     const user = await authService.getProfile();
-    setLoginHelper(ThunkAPI.dispatch, user);
+    verifyUserHelper(ThunkAPI.dispatch, user);
     return user;
   }
 );
@@ -105,7 +105,7 @@ const loginWithGoogle = createAsyncThunk(
   async (_, ThunkAPI) => {
     await firebaseGoogleLogin();
     const user = await authService.getProfile();
-    setLoginHelper(ThunkAPI.dispatch, user);
+    verifyUserHelper(ThunkAPI.dispatch, user);
     return user;
   }
 );
@@ -122,7 +122,7 @@ const registerWithGoogle = createAsyncThunk(
       registeredWithProvider: true,
     };
     const newUser = await authService.register(user);
-    setLoginHelper(ThunkAPI.dispatch, newUser);
+    verifyUserHelper(ThunkAPI.dispatch, newUser);
     return user;
   }
 );
@@ -249,7 +249,7 @@ const userSlice = createSlice({
     },
     checkCompletedProfile: (state, action: PayloadAction<IUser>) => {
       const user = action.payload;
-      if (!user || !user.username || !user.name || !user.profilePhoto) {
+      if (!user || !user.username || !user.name || !user.email) {
         state.completedSignup = false;
       } else {
         state.completedSignup = true;

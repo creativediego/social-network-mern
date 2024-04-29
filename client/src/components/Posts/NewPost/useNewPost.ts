@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { IPost } from '../../../interfaces/IPost';
 import { createPostThunk, selectPostLoading } from '../../../redux/postSlice';
 import { useAuthUser } from '../../../hooks/useAuthUser';
+import { set } from 'react-hook-form';
 
 /**
  * A custom hook managing the state and logic for creating a new post.
@@ -22,10 +23,10 @@ const useNewPost = () => {
   const { user: authUser } = useAuthUser();
   const dispatch = useAppDispatch();
   const loading = useAppSelector(selectPostLoading);
-
   // State to manage the image file and its preview
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [postImage, setPostImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState('');
+  const [errors, setErrors] = useState<string[]>([]);
 
   // State for the new post content
   const [post, setPost] = useState<IPost>({
@@ -49,27 +50,39 @@ const useNewPost = () => {
    *
    * @param {File | null} file - The image file selected by the user.
    */
-  const handleSetImageFile = useCallback((file: File | null) => {
-    setImageFile(file);
+  const handleSetPostImage = useCallback((file: File | null) => {
+    setPostImage(file);
   }, []);
+
+  const validatePost = (content: string): string[] => {
+    const errors: string[] = [];
+    if (!content || content.trim().length > 280) {
+      errors.push('Post content must be between 1 and 280 characters.');
+    }
+    // Validate image for 1MB
+    if (postImage && postImage.size > 1024 * 1024) {
+      errors.push('Post image must be less than 1MB.');
+    }
+    return errors;
+  };
 
   /**
    * Creates a new post using the entered content and uploaded image.
    */
-  const handleCreatePost = async () => {
+  const handleCreatePost = async (): Promise<void> => {
+    const validationErrors = validatePost(post.post);
+    setErrors(validationErrors);
+    if (validationErrors.length > 0) {
+      return;
+    }
+    // Clear the post content after creation
+    const updatedPost: IPost = { ...post, post: '', image: '', hashtags: [] };
+    setPost(updatedPost);
     try {
-      if (!post.post) {
-        // Handle case when post content is empty
-        return;
-      }
-
-      // Clear the post content after creation
-      const updatedPost: IPost = { ...post, post: '', image: '', hashtags: [] };
-      setPost(updatedPost);
-
       // Dispatch action to create the post via Redux thunk
-      await dispatch(createPostThunk({ post, imageFile }));
+      await dispatch(createPostThunk({ post, imageFile: postImage }));
       setImagePreview('');
+      setErrors([]);
     } catch (error) {
       // Handle any errors during post creation
       console.error('Failed to create post:', error);
@@ -82,6 +95,10 @@ const useNewPost = () => {
    * @param {React.ChangeEvent<HTMLTextAreaElement>} e - The change event from the text area.
    */
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    // Auto-resize the text area as the user types
+    e.currentTarget.style.height = 'auto';
+    e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
+    // Update the post content and extract hashtags
     const postContent: string = e.target.value;
     const updatedPost = {
       ...post,
@@ -105,22 +122,23 @@ const useNewPost = () => {
    * Creates a preview of the selected image file when uploaded.
    */
   useEffect(() => {
-    if (!imageFile) {
+    if (!postImage) {
       setImagePreview('');
       return;
     }
-    const objectUrl = URL.createObjectURL(imageFile);
+    const objectUrl = URL.createObjectURL(postImage);
     setImagePreview(objectUrl);
 
     return () => URL.revokeObjectURL(objectUrl);
-  }, [imageFile]);
+  }, [postImage]);
 
   // Return the state and functions for creating a new post
   return {
     post,
+    errors,
     loading,
     setPost,
-    handleSetImageFile,
+    handleSetPostImage,
     imagePreview,
     handleInputChange,
     handleCreatePost,

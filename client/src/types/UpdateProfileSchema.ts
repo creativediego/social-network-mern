@@ -45,14 +45,15 @@ export const UpdateProfileSchema = z
       .refine((fileList) => fileList && fileList.length > 0, {
         message: 'Please upload an avatar image.',
       })
-      .refine((fileList) => fileList && fileList[0].size <= FILE_SIZE, {
-        message: 'Image file must be less than 1MB.',
+      .optional()
+      .refine((fileList) => !fileList || fileList[0].size <= FILE_SIZE, {
+        message: 'Avatar file must be less than 1MB.',
       }),
     headerImage: z
       .instanceof(FileList)
       .optional()
       .refine((fileList) => fileList && fileList[0].size <= FILE_SIZE, {
-        message: 'Image file must be less than 1MB.',
+        message: 'Background file must be less than 1MB.',
       })
       .optional(),
   })

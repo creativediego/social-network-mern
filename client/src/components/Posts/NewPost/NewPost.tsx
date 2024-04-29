@@ -1,4 +1,5 @@
 import React from 'react';
+import './NewPost.scss';
 import PostImage from '../PostImage/PostImage';
 import PostImageUpload from './PostImageUpload';
 import useNewPost from './useNewPost';
@@ -16,21 +17,24 @@ const NewPost = (): JSX.Element => {
     post,
     loading,
     handleInputChange,
-    handleSetImageFile,
+    handleSetPostImage,
     handleCreatePost,
     imagePreview,
+    errors,
   } = useNewPost();
 
   return (
     <div className='p-2 w-100'>
       {/* Text area for entering post content */}
-      <textarea
-        id='new-post'
-        onChange={handleInputChange}
-        placeholder="What's happening?"
-        className='w-100 border-0 p-2'
-        value={post.post}
-      ></textarea>
+      {
+        <textarea
+          id='new-post'
+          onChange={handleInputChange}
+          placeholder="What's happening?"
+          className='w-100 border-0 p-2'
+          value={post.post}
+        ></textarea>
+      }
 
       {/* Display hashtags if available */}
       {post.hashtags && (
@@ -53,7 +57,7 @@ const NewPost = (): JSX.Element => {
       <div className='row'>
         <div className='col-10 ttr-font-size-150pc text-primary mt-4'>
           {/* Component to upload an image */}
-          <PostImageUpload setImageFile={handleSetImageFile} />
+          <PostImageUpload setImageFile={handleSetPostImage} />
         </div>
         <div className='col-2 mt-4'>
           <SubmitButton
@@ -64,6 +68,12 @@ const NewPost = (): JSX.Element => {
           />
         </div>
       </div>
+      {errors.length > 0 &&
+        errors.map((error, index) => (
+          <p className='alert alert-warning mt-3' key={index}>
+            {error}
+          </p>
+        ))}
     </div>
   );
 };

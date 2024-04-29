@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Placeholder } from 'react-bootstrap';
 import { UseFormRegisterReturn, FieldErrors } from 'react-hook-form';
 
@@ -45,4 +45,4 @@ const ReactHookFormInput = ({
   </>
 );
 
-export default ReactHookFormInput;
+export default memo(ReactHookFormInput);
