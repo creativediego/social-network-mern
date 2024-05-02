@@ -40,7 +40,7 @@ const Navigation = (): JSX.Element => {
   // }, [dispatch]);
 
   const links: INavLink[] = [
-    { label: 'Home', icon: 'fa-home', path: '/home', color: 'white' },
+    { label: 'Home', icon: 'fa-home', path: '/', color: 'white' },
     {
       label: 'Notifications',
       icon: 'fa-bell',

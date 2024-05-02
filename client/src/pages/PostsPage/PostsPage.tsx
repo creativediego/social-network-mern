@@ -21,12 +21,7 @@ import { useFetchPosts } from '../../components/Profile/ProfilePosts/useFetchPos
  */
 const PostsPage = (): JSX.Element => {
   const { user } = useAuthUser();
-  const {
-    homePagePosts: posts,
-    loading,
-    lastElementRef,
-    hasMore,
-  } = useFetchPosts(user.id);
+  const { posts, loading, lastElementRef, hasMore } = useFetchPosts(user.id);
   return (
     <section className='ttr-home'>
       <div className='border border-bottom-0'>

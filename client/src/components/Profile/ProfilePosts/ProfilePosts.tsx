@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useFetchPosts } from './useFetchPosts';
 import PostsList from '../../Posts/PostsLists/PostsList';
@@ -35,15 +35,16 @@ interface ProfilePostsProps {
  * @returns {JSX.Element} A JSX element representing the profile posts.
  */
 const ProfilePosts = ({ userId, username }: ProfilePostsProps): JSX.Element => {
-  const { myPosts, likedPosts, loading, lastElementRef, hasMore } =
+  const { posts, likedPosts, loading, lastElementRef, hasMore } =
     useFetchPosts(userId);
+
   return (
     <>
       {
         <div className='p2'>
           <ProfileNav username={username} />
           <Routes>
-            <Route path='/posts' element={<PostsList posts={myPosts} />} />
+            <Route path='/posts' element={<PostsList posts={posts} />} />
             <Route path='/likes' element={<PostsList posts={likedPosts} />} />
           </Routes>
           {loading && <Loader loading={loading} message='Loading Posts' />}

@@ -7,7 +7,7 @@ import PostContent from '../../components/Posts/Post/PostContent';
 import { Link } from 'react-router-dom';
 
 const WhatsHappeningWidget = (): JSX.Element => {
-  const { posts } = useAllPosts();
+  // const { posts } = useAllPosts();
   const sortByLikes = (a: IPost, b: IPost) => {
     if (a.stats.likes < b.stats.likes) {
       return 1;
@@ -28,7 +28,7 @@ const WhatsHappeningWidget = (): JSX.Element => {
       </div> */}
       <div className='bg-secondary bg-opacity-10 ttr-rounded-15px mt-2 p-2'>
         <h5>Popular Posts</h5>
-        {posts
+        {/* {posts
           .sort(sortByLikes)
           .slice(0, 3)
           .map((post) => {
@@ -60,7 +60,7 @@ const WhatsHappeningWidget = (): JSX.Element => {
                 </Link>
               </div>
             );
-          })}
+          })} */}
       </div>
     </div>
   );

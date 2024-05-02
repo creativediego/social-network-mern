@@ -43,7 +43,7 @@ const MainView = (): JSX.Element => {
             {/* Routing setup for different paths */}
             <Route path='/' element={<PostsPage />} />
             <Route path='/:username/*' element={<ProfilePage />} />
-            <Route path='/home' element={<PostsPage />} />
+            {/* <Route path='/home' element={<PostsPage />} /> */}
             <Route path='/explore' element={<ExplorePage />} />
             {/* <Route path='/notifications/*' element={<NotificationsPage />} /> */}
             <Route path='/bookmarks' element={<BookmarksPage />} />

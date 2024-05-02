@@ -31,9 +31,9 @@ import { IQueryParams } from '../../../interfaces/IQueryParams';
 export const useFetchPosts = (
   userId: string
 ): {
-  homePagePosts: Array<IPost>; // Posts liked by the user.
-  myPosts: Array<IPost>; // User's own posts.
+  posts: Array<IPost>;
   likedPosts: Array<IPost>; // Posts liked by the user.
+  clearPosts: () => void;
   loading: boolean; // True if the data is being fetched, false otherwise.
   lastElementRef: React.MutableRefObject<HTMLDivElement | null>;
   hasMore: boolean;
@@ -43,8 +43,7 @@ export const useFetchPosts = (
   // Extract the page information from the URL
   const url = location.pathname.split('/')[2];
   const dispatch = useAppDispatch();
-  const homePagePosts = useAppSelector(selectAllPosts);
-  const myPosts = useAppSelector(selectAllPosts);
+  const posts = useAppSelector(selectAllPosts);
   const likedPosts = useAppSelector(selectAllPostsLikedByUser);
   const loading = useAppSelector(selectPostsLoading);
   const hasMore = useAppSelector(selectHasMorePosts);
@@ -79,6 +78,10 @@ export const useFetchPosts = (
     hasMore
   );
 
+  const clearPosts = useCallback(() => {
+    dispatch(removeAllPosts());
+  }, [dispatch]);
+
   useEffect(() => {
     // Initial fetch of posts
     fetchPosts(defaultQueryParams);
@@ -90,9 +93,9 @@ export const useFetchPosts = (
 
   // Return the user's own posts, liked posts, and loading state
   return {
-    homePagePosts,
-    myPosts,
+    posts,
     likedPosts,
+    clearPosts,
     loading,
     lastElementRef,
     hasMore,

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuthUser } from '../../../hooks/useAuthUser';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import {
+  clearProfile,
   findProfileThunk,
   selectProfile,
   selectProfileLoading,
@@ -21,21 +22,22 @@ import { IUser } from '../../../interfaces/IUser';
  */
 export const useProfile = (username: string) => {
   const dispatch = useAppDispatch();
+  const loading: boolean = useAppSelector(selectProfileLoading);
   const profileUser: IUser = useAppSelector(selectProfile);
   const { user: authUser } = useAuthUser();
-  const [isAuthUser, setIsAuthUser] = useState<boolean>(false);
-  const loading: boolean = useAppSelector(selectProfileLoading);
 
   useEffect(() => {
     if (!username) return;
-
     dispatch(findProfileThunk(username));
-    setIsAuthUser(authUser.id === profileUser?.id);
-  }, [dispatch, username, authUser.id, profileUser?.id]);
+    // Clear the profile data when the component unmounts
+    return () => {
+      dispatch(clearProfile());
+    };
+  }, [dispatch, username]);
 
   return {
     profileUser,
-    isAuthUser,
+    isAuthUser: authUser?.username === username,
     loading,
   };
 };

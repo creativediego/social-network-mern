@@ -21,7 +21,7 @@ const ProfilePage = () => {
   let { username } = useParams();
   username = username || '';
   const { profileUser, isAuthUser, loading } = useProfile(username);
-  console.log(profileUser);
+
   return (
     <div className='ttr-profile'>
       {profileUser && (
