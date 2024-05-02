@@ -35,7 +35,7 @@ const AvatarImage = ({ profilePhoto, size }: AvatarImageProps): JSX.Element => {
     >
       <img
         className='position-relative h-100 img-fluid  rounded-circle bg-white img-fluid'
-        alt='user profile'
+        alt='profile photo'
         style={{
           objectFit: 'cover',
           objectPosition: 'center',

@@ -29,17 +29,23 @@ function App(): JSX.Element {
 
   // On component mount, fetch user profile information and check for session expiration
   useEffect(() => {
-    // Enable socket listeners if the user is logged in
+    // Fetch profile on page load if user has a valid auth token
     if (getLocalAuthToken()) {
       dispatch(fetchProfileThunk());
+      // Clear user profile information if the session expires
+      const onSessionExpired = () => dispatch(clearUser());
+      onFirebaseSessionChange(onSessionExpired);
+    }
+  }, [dispatch]);
+
+  // Enable or disable socket listeners based on user authentication status
+  useEffect(() => {
+    if (isLoggedIn) {
       enableSocketListeners();
     } else {
       disconnectSocket();
     }
-    // Clear user profile information if the session expires
-    const onSessionExpired = () => dispatch(clearUser());
-    onFirebaseSessionChange(onSessionExpired);
-  }, [dispatch]);
+  }, [isLoggedIn]);
 
   return (
     <div>

@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import Loader from '../Loader/Loader';
 
@@ -30,6 +30,12 @@ const SubmitButton = ({
   color,
   loading,
 }: SubmitButtonProps) => {
+  useEffect(() => {
+    // Cleanup function to reset loading state if component unmounts
+    return () => {
+      loading = false;
+    };
+  });
   return (
     <span className={`fa-pull-${position ? position : 'right'} mt-2`}>
       <Button
