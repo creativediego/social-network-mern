@@ -15,7 +15,7 @@ import { IUser } from '../interfaces/IUser';
 import { INotification } from '../interfaces/INotification';
 import type { RootState } from './store';
 import { setSuccessAlert } from './alertSlice';
-import { clearProfile } from './profileSlice';
+import { clearProfile, setProfileUser } from './profileSlice';
 import { clearChat } from './chatSlice';
 import {
   firebaseUploadAvatar,
@@ -181,6 +181,7 @@ const updateUser = createAsyncThunk(
     );
     ThunkAPI.dispatch(checkCompletedProfile(updatedUser));
     ThunkAPI.dispatch(setAuthUser(updatedUser));
+    ThunkAPI.dispatch(setProfileUser(updatedUser));
     return;
   }
 );
