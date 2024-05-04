@@ -1,7 +1,5 @@
-import { IUser } from './IUser';
-
 export default interface IFollow {
-  follower: IUser;
-  followee: IUser;
-  accepted: boolean;
+  followerId: string;
+  followeeId: string;
+  accepted?: boolean;
 }

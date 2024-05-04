@@ -1,4 +1,3 @@
-import React from 'react';
 import { Loader } from '..';
 import { useFollow } from './useFollow';
 
@@ -10,23 +9,27 @@ interface FollowButtonProps {
  */
 const FollowButton = ({ userId }: FollowButtonProps): JSX.Element => {
   const { loading, isFollowed, followUser, unfollowUser } = useFollow(userId);
-
   return (
     <span>
       {
         // If the authenticated user is following this user, display the unFollow button.
         // Otherwise, display the follow button
-        true ? (
-          <span
+        isFollowed ? (
+          <button
+            disabled={loading}
             className='btn btn-light mx-2 rounded-pill'
             onClick={unfollowUser}
           >
             <Loader loading={loading} content='Unfollow' />
-          </span>
+          </button>
         ) : (
-          <span className='btn btn-dark mx-2 rounded-pill' onClick={followUser}>
+          <button
+            disabled={loading}
+            className='btn btn-dark mx-2 rounded-pill'
+            onClick={followUser}
+          >
             <Loader loading={loading} content='Follow' />
-          </span>
+          </button>
         )
       }
     </span>

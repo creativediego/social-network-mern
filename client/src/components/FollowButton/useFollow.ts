@@ -1,35 +1,43 @@
+import { useEffect } from 'react';
 import { useAuthUser } from '../../hooks/useAuthUser';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import {
   followThunk,
   selectProfileIsFollowed,
-  selectProfileLoading,
   unfollowThunk,
+  isFollowedThunk,
+  selectFollowLoading,
 } from '../../redux/profileSlice';
 
 export const useFollow = (userId: string) => {
   const dispatch = useAppDispatch();
   const { user: authUser } = useAuthUser();
-  const loading = useAppSelector(selectProfileLoading);
-  // const isFollowed = useAppSelector(selectProfileIsFollowed);
+  const loading = useAppSelector(selectFollowLoading);
+  const isFollowed = useAppSelector(selectProfileIsFollowed);
 
   const followUser = () => {
     if (userId === authUser.id) {
       return;
     }
-    dispatch(followThunk({ authUserId: authUser.id, followeeId: userId }));
+    dispatch(followThunk(userId));
   };
 
   const unfollowUser = () => {
     if (userId === authUser.id) {
       return;
     }
-    dispatch(unfollowThunk({ authUserId: authUser.id, followeeId: userId }));
+    dispatch(unfollowThunk(userId));
   };
 
-  const isFollowed = () => {
-    
-  }
+  const checkFollowed = (userId) => {
+    dispatch(isFollowedThunk(userId));
+  };
+
+  useEffect(() => {
+    if (authUser.id && userId) {
+      checkFollowed(userId);
+    }
+  }, []);
 
   return {
     isFollowed,

@@ -3,12 +3,13 @@ import IFollow from '../interfaces/IFollow';
 import { IUser } from '../interfaces/IUser';
 import { APIServiceI, ReqType, apiService } from './APIService';
 
-const USERS_API = `${urlConfig.apiURL}/users`;
+const FOLLOW_API = `${urlConfig.apiURL}/users`;
 
 interface IFollowService {
-  followUser: (userId: string, followeeId: string) => Promise<IFollow>;
-  unfollowUser: (userId: string, followeeId: string) => Promise<IFollow>;
+  followUser: (userId: string) => Promise<number>;
+  unfollowUser: (followeeId: string) => Promise<number>;
   findAllFollowers: (userId: string) => Promise<IUser[]>;
+  isFollowed: (followerId: string, followeeId: string) => Promise<boolean>;
 }
 
 class FollowServiceImpl implements IFollowService {
@@ -25,23 +26,28 @@ class FollowServiceImpl implements IFollowService {
     return new FollowServiceImpl(usersAPI, apiService);
   }
 
-  public followUser = async (userId: string, followeeId: string) => {
-    const url = `${this.usersAPI}/${userId}/follows`;
-    return await this.apiService.makeRequest<IFollow, { followeeId: string }>(
-      url,
+  public followUser = async (userId: string) => {
+    return await this.apiService.makeRequest<number>(
+      `${FOLLOW_API}/${userId}/follow`,
       ReqType.POST,
-      'Error following user. Try again later.',
-      { followeeId }
+      'Error following user. Try again later.'
     );
   };
 
-  public unfollowUser = async (userId: string, followeeId: string) => {
-    const url = `${this.usersAPI}/${userId}/follows`;
-    return await this.apiService.makeRequest<IFollow, { data: string }>(
+  public unfollowUser = async (userId: string) => {
+    const url = `${FOLLOW_API}/${userId}/unfollow`;
+    return await this.apiService.makeRequest<number>(
       url,
       ReqType.DELETE,
-      'Error unfollowing user. Try again later.',
-      { data: followeeId }
+      'Error unfollowing user. Try again later.'
+    );
+  };
+
+  public isFollowed = async (userId: string) => {
+    return await this.apiService.makeRequest<boolean>(
+      `${FOLLOW_API}/${userId}/follow`,
+      ReqType.GET,
+      'Error checking follow.'
     );
   };
 
@@ -51,7 +57,7 @@ class FollowServiceImpl implements IFollowService {
   };
 }
 
-const followService = FollowServiceImpl.getInstance(USERS_API, apiService);
+const followService = FollowServiceImpl.getInstance(FOLLOW_API, apiService);
 export { followService, FollowServiceImpl };
 
 // // Create a Follows object encompassing the relationship between the given users

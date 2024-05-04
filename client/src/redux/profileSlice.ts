@@ -20,11 +20,9 @@ const findProfile = createAsyncThunk(
 
 const follow = createAsyncThunk(
   'profile/follow-user',
-  async (
-    { authUserId, followeeId }: { authUserId: string; followeeId: string },
-    thunkAPI
-  ) => {
-    return await followService.followUser(authUserId, followeeId);
+  async (userId: string, thunkAPI) => {
+    const followerCount = await followService.followUser(userId);
+    return followerCount;
   }
 );
 
@@ -34,26 +32,17 @@ const follow = createAsyncThunk(
  */
 const unfollow = createAsyncThunk(
   'profile/unfollow-user',
-  async (
-    { authUserId, followeeId }: { authUserId: string; followeeId: string },
-    thunkAPI
-  ) => {
-    return await followService.unfollowUser(authUserId, followeeId);
+  async (userId: string, thunkAPI) => {
+    const followerCount = await followService.unfollowUser(userId);
+    return followerCount;
   }
 );
 
-const checkIfFollowed = createAsyncThunk(
-  'follow/check-if-followed',
-  async (otherUserId: string, thunkAPI) => {
+const isFollowed = createAsyncThunk(
+  'follow/isFollowed',
+  async (userId: string, thunkAPI) => {
     // Fetches the list of followers of the other user
-    const otherUserFollowers = await followService.findAllFollowers(
-      otherUserId
-    ); // Gets the authenticated user ID from the Redux store
-    const state = thunkAPI.getState() as RootState;
-    const authUserId = state.user.data.id; // Checks if the authenticated user is in the list of followers of the other user
-    const isFollowed: boolean = otherUserFollowers.some(
-      (follower: IUser) => follower.id === authUserId
-    );
+    const isFollowed = await followService.isFollowed(userId);
     return isFollowed;
   }
 );
@@ -61,7 +50,8 @@ const checkIfFollowed = createAsyncThunk(
 interface ProfileState {
   user: IUser;
   isFollowedByAuthUser: boolean;
-  loading: boolean;
+  profileLoading: boolean;
+  followLoading: boolean;
 }
 
 const emptyUser = {
@@ -76,8 +66,9 @@ const emptyUser = {
 
 const initialState: ProfileState = {
   user: emptyUser,
-  loading: false,
-  isFollowedByAuthUser: true,
+  profileLoading: false,
+  followLoading: false,
+  isFollowedByAuthUser: false,
 };
 
 const profileSlice = createSlice({
@@ -93,45 +84,48 @@ const profileSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(findProfile.pending, (state) => {
-      state.loading = true;
+      state.profileLoading = true;
     });
     builder.addCase(
       findProfile.fulfilled,
       (state, action: PayloadAction<IUser>) => {
-        state.loading = false;
+        state.profileLoading = false;
         state.user = action.payload;
       }
     );
     builder.addCase(findProfile.rejected, (state) => {
-      state.loading = false;
+      state.followLoading = false;
     });
 
-    builder.addCase(checkIfFollowed.fulfilled, (state, action) => {
+    builder.addCase(isFollowed.fulfilled, (state, action) => {
+      state.followLoading = false;
       state.isFollowedByAuthUser = action.payload;
     });
     builder.addCase(follow.pending, (state) => {
-      state.loading = true;
+      state.followLoading = true;
     });
     builder.addCase(
       follow.fulfilled,
-      (state, action: PayloadAction<IFollow>) => {
-        state.loading = false;
-        state.user = action.payload.followee; // Updates details of the followed user
+      (state, action: PayloadAction<number>) => {
+        state.followLoading = false;
+        state.user.followerCount = action.payload;
+        state.isFollowedByAuthUser = true;
       }
     );
     builder.addCase(follow.rejected, (state) => {
-      state.loading = false;
+      state.followLoading = false;
     });
 
     // Reducers for handling unfollow action lifecycle
     builder.addCase(unfollow.pending, (state) => {
-      state.loading = true;
+      state.followLoading = true;
     });
     builder.addCase(
       unfollow.fulfilled,
-      (state, action: PayloadAction<IFollow>) => {
-        state.loading = false;
-        state.user = action.payload.followee; // Updates details of the unfollowed user
+      (state, action: PayloadAction<number>) => {
+        state.followLoading = false;
+        state.isFollowedByAuthUser = false;
+        state.user.followerCount = action.payload;
       }
     );
   },
@@ -143,7 +137,12 @@ export const selectProfile = createSelector(
 );
 
 export const selectProfileLoading = createSelector(
-  (state: RootState) => state.profile.loading,
+  (state: RootState) => state.profile.profileLoading,
+  (loading) => loading
+);
+
+export const selectFollowLoading = createSelector(
+  (state: RootState) => state.profile.followLoading,
   (loading) => loading
 );
 
@@ -157,5 +156,6 @@ export const { setProfileUser, clearProfile } = profileSlice.actions;
 export const findProfileThunk = findProfile;
 export const followThunk = follow;
 export const unfollowThunk = unfollow;
+export const isFollowedThunk = isFollowed;
 
 export default profileSlice.reducer;

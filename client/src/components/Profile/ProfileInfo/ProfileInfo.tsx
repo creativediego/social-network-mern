@@ -98,7 +98,7 @@ const ProfileInfo = ({
               {profileUser ? profileUser.followerCount : 0}
             </b>{' '}
             Followers
-            {!isAuthUser && <FollowButton userId={profileUser.name} />}
+            {!isAuthUser && <FollowButton userId={profileUser.id} />}
           </div>
         </>
       )}
