@@ -5,7 +5,7 @@ export interface INotification {
   type: string;
   content: string;
   fromUser: IUser;
-  userNotified: IUser;
+  toUser: IUser;
   resourceId: string;
   read: boolean;
   createdAt: string;

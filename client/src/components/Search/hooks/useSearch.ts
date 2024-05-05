@@ -4,6 +4,7 @@ import { ISearchService } from '../../../interfaces/ISearchService';
 import { useSearchParams } from 'react-router-dom';
 import { useAlert } from '../../../hooks/useAlert';
 import { useIsMounted } from '../../../hooks/useIsMounted';
+import { set } from 'react-hook-form';
 
 /**
  * `useSearch` is a custom hook that manages search functionality.
@@ -36,11 +37,13 @@ export function useSearch<T>(
   query: string;
   setQuery: React.Dispatch<React.SetStateAction<string>>;
   loading: boolean;
+  searchPerformed: boolean;
 } {
   const [results, setResults] = useState<T>(initialResults);
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState<string>(searchParams.get('q') || '');
   const [loading, setLoading] = useState<boolean>(false);
+  const [searchPerformed, setSearchPerformed] = useState<boolean>(false);
   const isMounted = useIsMounted();
   const { clearErrors, setError } = useAlert();
 
@@ -64,6 +67,7 @@ export function useSearch<T>(
           setLoading(true);
           const searchResults = await searchService.search(query);
           setLoading(false);
+          setSearchPerformed(true);
           if (isMounted) {
             setResults(searchResults);
           }
@@ -92,5 +96,5 @@ export function useSearch<T>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]); // Only re-run the effect if searchParams changes.
 
-  return { results, query, setQuery, loading };
+  return { results, query, setQuery, loading, searchPerformed };
 }

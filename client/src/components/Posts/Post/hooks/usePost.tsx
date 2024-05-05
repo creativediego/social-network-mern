@@ -1,4 +1,10 @@
-import React, { useContext, createContext, ReactNode } from 'react';
+import React, {
+  useContext,
+  createContext,
+  ReactNode,
+  useState,
+  useEffect,
+} from 'react';
 import { IPost } from '../../../../interfaces/IPost';
 import { IPostService } from '../../../../services/postService';
 
@@ -11,6 +17,7 @@ import { IPostService } from '../../../../services/postService';
  */
 interface IPostContext {
   post: IPost;
+  setPost: (post: IPost) => void;
   postService: IPostService;
 }
 
@@ -43,16 +50,21 @@ export const PostContext: React.Context<IPostContext | null> =
  * @returns {JSX.Element} A JSX element representing the PostProvider component.
  */
 export const PostProvider = ({
-  post,
+  initialPost,
   postService,
   children,
 }: {
-  post: IPost;
+  initialPost: IPost;
   postService: IPostService;
   children: ReactNode;
 }): JSX.Element => {
+  const [post, setPost] = useState<IPost>(initialPost);
+
+  useEffect(() => {
+    setPost(initialPost);
+  }, [initialPost]);
   return (
-    <PostContext.Provider value={{ post, postService }}>
+    <PostContext.Provider value={{ post, setPost, postService }}>
       {children}
     </PostContext.Provider>
   );
@@ -76,7 +88,7 @@ export const usePost = (): IPostContext => {
   if (!context) {
     throw new Error('usePost must be used within a PostProvider');
   }
-  const { post, postService } = context;
+  const { post, setPost, postService } = context;
 
-  return { post, postService };
+  return { post, setPost, postService };
 };

@@ -24,10 +24,8 @@ const SearchPage = (): JSX.Element => {
     users: [],
     posts: [],
   };
-  const { query, setQuery, results, loading } = useSearch<ISearchResults>(
-    allSearchService,
-    initialEmptyResults
-  );
+  const { query, setQuery, results, loading, searchPerformed } =
+    useSearch<ISearchResults>(allSearchService, initialEmptyResults);
   /**
    * Toggles the active tab that filters the search results.
    * @param tab the tab type to toggle
@@ -44,10 +42,18 @@ const SearchPage = (): JSX.Element => {
       return <Loader loading={loading} />;
     }
 
+    if (!searchPerformed) {
+      return (
+        <div className='text-center mt-5'>
+          <h5>Try searching for a post or user keyword.</h5>
+        </div>
+      );
+    }
+
     if (results.users.length === 0 && results.posts.length === 0) {
       return (
         <div className='text-center mt-5'>
-          <h5>No results found</h5>
+          <h5>No results found.</h5>
         </div>
       );
     }
@@ -86,7 +92,11 @@ const SearchPage = (): JSX.Element => {
         );
 
       default:
-        return null;
+        return (
+          <div className='text-center mt-5'>
+            <h5>No results found</h5>
+          </div>
+        );
     }
   };
 

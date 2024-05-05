@@ -18,7 +18,7 @@ import { useDispatch } from 'react-redux';
  */
 export const useReactToPost = () => {
   // Get the current post and user from other custom hooks and Redux store
-  const { post } = usePost();
+  const { post, setPost } = usePost();
   const { user } = useAuthUser();
   const loading = useAppSelector(selectPostLoading);
   const dispatch = useAppDispatch();
@@ -59,6 +59,9 @@ export const useReactToPost = () => {
       } else {
         dispatch(userUnlikesPostThunk({ postId, optimisticPost }));
       }
+
+      // Update the post in the context
+      setPost(optimisticPost);
     },
     [dispatch, post, user.id, userReacted]
   );

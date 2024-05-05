@@ -18,19 +18,19 @@ export const findNotificationsThunk = createAsyncThunk(
   'notifications/findNotifications',
   async (data, ThunkAPI: any) => {
     const userId = ThunkAPI.getState().user.data.id;
-    const notifications = await notificationService.findNotifications(userId);
+    const notifications = await notificationService.findNotifications();
     return notifications;
   }
 );
 
-export const findUnreadNotificationsThunk = createAsyncThunk(
-  'notifications/findUnreadNotifications',
-  async (data, ThunkAPI: any) => {
+export const getNotificationCountThunk = createAsyncThunk(
+  'notifications/findNotificationCount',
+  async (_, ThunkAPI: any) => {
     const userId = ThunkAPI.getState().user.data.id;
-    const notifications = await notificationService.findUnreadNotifications(
-      userId
-    );
-    return notifications;
+    console.log('getting count');
+    const count = await notificationService.getNotificationCount();
+    console.log('noti count', count);
+    return count;
   }
 );
 
@@ -40,13 +40,14 @@ export const markNotificationReadThunk = createAsyncThunk(
     const notification = await notificationService.markNotificationAsRead(
       notificationId
     );
-    return notification;
+    return notificationId;
   }
 );
 
 export interface NotificationsState {
   all: INotification[];
   loading: boolean;
+  notificationCount: number;
 }
 
 const notificationAdapter = createEntityAdapter<INotification>({
@@ -56,13 +57,35 @@ const notificationAdapter = createEntityAdapter<INotification>({
 
 const notificationSlice = createSlice({
   name: 'notifications',
-  initialState: notificationAdapter.getInitialState({ loading: false }),
+  initialState: notificationAdapter.getInitialState({
+    loading: false,
+    notificationCount: 0,
+  }),
   reducers: {
-    upsertNotification: (state, action: PayloadAction<INotification>) => {
+    addNotification: (state, action: PayloadAction<INotification>) => {
       notificationAdapter.addOne(state, action.payload);
+      state.notificationCount += 1;
+    },
+    deleteNotification: (state, action: PayloadAction<INotification>) => {
+      notificationAdapter.removeOne(state, action.payload.id);
+      state.notificationCount -= 1;
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(getNotificationCountThunk.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(
+      getNotificationCountThunk.fulfilled,
+      (state, action: PayloadAction<number>) => {
+        state.loading = false;
+        state.notificationCount = action.payload;
+      }
+    );
+    builder.addCase(getNotificationCountThunk.rejected, (state) => {
+      state.loading = false;
+    });
+
     builder.addCase(findNotificationsThunk.pending, (state) => {
       state.loading = true;
     });
@@ -76,27 +99,15 @@ const notificationSlice = createSlice({
     builder.addCase(findNotificationsThunk.rejected, (state) => {
       state.loading = false;
     });
-    builder.addCase(findUnreadNotificationsThunk.pending, (state) => {
-      state.loading = true;
-    });
-    builder.addCase(
-      findUnreadNotificationsThunk.fulfilled,
-      (state, action: PayloadAction<INotification[]>) => {
-        state.loading = false;
-        notificationAdapter.setAll(state, action.payload);
-      }
-    );
-    builder.addCase(findUnreadNotificationsThunk.rejected, (state) => {
-      state.loading = false;
-    });
     builder.addCase(markNotificationReadThunk.pending, (state) => {
       state.loading = true;
     });
     builder.addCase(
       markNotificationReadThunk.fulfilled,
-      (state, action: PayloadAction<INotification>) => {
+      (state, action: PayloadAction<string>) => {
         state.loading = false;
-        notificationAdapter.upsertOne(state, action.payload);
+        notificationAdapter.removeOne(state, action.payload);
+        state.notificationCount -= 1;
       }
     );
     builder.addCase(markNotificationReadThunk.rejected, (state) => {
@@ -122,5 +133,11 @@ export const selectNotificationsLoading = createSelector(
   (loading) => loading
 );
 
-export const { upsertNotification } = notificationSlice.actions;
+export const selectNotificationCount = createSelector(
+  (state: RootState) => state.notifications.notificationCount,
+  (count) => count
+);
+
+export const { addNotification, deleteNotification } =
+  notificationSlice.actions;
 export default notificationSlice.reducer;

@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import {
-  findUnreadNotificationsThunk,
+  findNotificationsThunk,
   markNotificationReadThunk,
   selectAllNotifications,
   selectNotificationsLoading,
@@ -23,7 +23,7 @@ const useNotifications = () => {
   );
 
   useEffect(() => {
-    dispatch(findUnreadNotificationsThunk());
+    dispatch(findNotificationsThunk());
   }, [dispatch]);
 
   return {

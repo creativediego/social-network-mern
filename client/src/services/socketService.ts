@@ -1,7 +1,10 @@
 import io, { Socket } from 'socket.io-client';
 import { urlConfig } from '../config/appConfig';
 import store, { AppDispatch } from '../redux/store';
-import { upsertNotification } from '../redux/notificationSlice';
+import {
+  deleteNotification,
+  addNotification,
+} from '../redux/notificationSlice';
 import { addPost, removePost, updatePosts } from '../redux/postSlice';
 import { INotification } from '../interfaces/INotification';
 import { IPost } from '../interfaces/IPost';
@@ -11,6 +14,13 @@ const SOCKET_URL = urlConfig.serverURL;
 
 let socket: Socket;
 let listening: boolean = false;
+const SOCKET_EVENTS = [
+  'NEW_NOTIFICATION',
+  'DELETE_NOTIFICATION',
+  'NEW_POST',
+  'UPDATED_POST',
+  'DELETED_POST',
+];
 
 const handleSocketEvent = (
   eventName: string,
@@ -20,12 +30,17 @@ const handleSocketEvent = (
   console.log('socket event received', eventName, payload);
   switch (eventName) {
     case 'NEW_NOTIFICATION':
-      dispatch(upsertNotification(payload as INotification));
+      dispatch(addNotification(payload as INotification));
+      break;
+    case 'DELETE_NOTIFICATION':
+      console.log('SOCKET: DELETE_NOTIFICATION', payload);
+      dispatch(deleteNotification(payload as INotification));
       break;
     case 'NEW_POST':
       dispatch(addPost(payload as IPost));
       break;
     case 'UPDATED_POST':
+      console.log('updated post', payload);
       dispatch(updatePosts(payload as IPost));
       break;
     case 'DELETED_POST':
@@ -47,12 +62,7 @@ export const enableSocketListeners = () => {
   });
 
   socket.once('connect', () => {
-    for (const eventName of [
-      'NEW_NOTIFICATION',
-      'NEW_POST',
-      'UPDATED_POST',
-      'DELETED_POST',
-    ]) {
+    for (const eventName of SOCKET_EVENTS) {
       socket.on(eventName, (payload) => {
         handleSocketEvent(eventName, payload, store.dispatch);
       });
@@ -68,12 +78,7 @@ export const enableSocketListeners = () => {
 };
 
 const disableListeners = () => {
-  for (const eventName of [
-    'NEW_NOTIFICATION',
-    'NEW_POST',
-    'UPDATED_POST',
-    'DELETED_POST',
-  ]) {
+  for (const eventName of SOCKET_EVENTS) {
     socket.off(eventName);
   }
 

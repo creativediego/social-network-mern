@@ -43,7 +43,7 @@ const Post = ({ post }: PostProps): JSX.Element => {
 
   return (
     post && (
-      <PostProvider post={post} postService={postService}>
+      <PostProvider initialPost={post} postService={postService}>
         <li className='p-2 ttr-post list-group-item d-flex rounded-0'>
           <PostAuthorAvatar post={post} />
           <div className='w-100'>

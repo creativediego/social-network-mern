@@ -1,15 +1,9 @@
 import React from 'react';
 import './navigation.css';
 import { useLocation, Link } from 'react-router-dom';
-import { useEffect } from 'react';
-import {
-  findUnreadNotificationsThunk,
-  selectUnreadNotifications,
-} from '../../redux/notificationSlice';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { selectUnreadCount } from '../../redux/inboxSlice';
 import { useAuthUser } from '../../hooks/useAuthUser';
 import { INavLink } from './NavigationItem/NavigationItem';
+import { useNavigationNotifications } from './useNavigationNotifications';
 
 /**
  * Displays the main navigation menu of the app.
@@ -17,27 +11,21 @@ import { INavLink } from './NavigationItem/NavigationItem';
 const Navigation = (): JSX.Element => {
   const { pathname } = useLocation();
   const { user: authUser } = useAuthUser();
-  const dispatch = useAppDispatch();
-  const notifications = useAppSelector(selectUnreadNotifications);
-  const unreadMessageCount = useAppSelector(selectUnreadCount);
+  const { unreadNotifications, unreadMessages } = useNavigationNotifications();
 
   let notificationColor;
   let messageColor;
 
-  if (notifications.length > 0) {
+  if (unreadNotifications > 0) {
     notificationColor = '#2a9fd6';
   } else {
     notificationColor = 'white';
   }
-  if (unreadMessageCount > 0) {
+  if (unreadMessages > 0) {
     messageColor = '#2a9fd6';
   } else {
     messageColor = 'white';
   }
-
-  // useEffect(() => {
-  //   dispatch(findUnreadNotificationsThunk());
-  // }, [dispatch]);
 
   const links: INavLink[] = [
     { label: 'Home', icon: 'fa-home', path: '/', color: 'white' },
@@ -91,21 +79,21 @@ const Navigation = (): JSX.Element => {
                     style={{ color: link.color }}
                   >
                     {link.label === 'Notifications' &&
-                    notifications.length > 0 ? (
+                    unreadNotifications > 0 ? (
                       <span
                         className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger'
                         style={{ fontSize: '.7rem' }}
                       >
-                        {notifications.length}
+                        {unreadNotifications}
                       </span>
                     ) : null}
 
-                    {link.label === 'Messages' && unreadMessageCount > 0 ? (
+                    {link.label === 'Messages' && unreadMessages > 0 ? (
                       <span
                         className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger'
                         style={{ fontSize: '.7rem' }}
                       >
-                        {unreadMessageCount}
+                        {unreadMessages}
                       </span>
                     ) : null}
                   </i>
