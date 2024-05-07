@@ -1,23 +1,20 @@
-import BookmarkDao from '../daos/bookmarks/BookmarkDao';
-import FollowDao from '../daos/follows/FollowDao';
-import { LikeDao } from '../daos/likes/LikeDao';
-import MessageDao from '../daos/messages/MessageDao';
-import { NotificationDao } from '../daos/notifications/NotificationDao';
-import PostDao from '../daos/posts/PostDao';
-import UserDao from '../daos/users/UserDao';
-import DaoErrorHandler from '../errors/DaoErrorHandler';
-import BookmarkModel from '../mongoose/bookmarks/BookmarkModel';
-import DislikeModel from '../mongoose/dislikes/DislikeModel';
-import FollowModel from '../mongoose/follows/FollowModel';
-import HashtagModel from '../mongoose/hashtags/HashtagModel';
-import LikeModel from '../mongoose/likes/LikeModel';
-import ConversationModel from '../mongoose/messages/ChatModel';
-import MessageModel from '../mongoose/messages/MessageModel';
-import PostModel from '../mongoose/posts/PostModel';
-import UserModel from '../mongoose/users/UserModel';
-import { IDependencyContainer } from './IDependencyContainer';
-import IErrorHandler from '../errors/IErrorHandler';
+import { LikeDao } from '../features/like/daos/LikeDao';
+import { NotificationDao } from '../features/notification/daos/NotificationDao';
+import { PostDao } from '../features/post/daos/PostDao';
+import { UserDao } from '../features/user/daos/UserDao';
+import HashtagModel from '../features/hashtag/models/HashtagModel';
+import LikeModel from '../features/like/models/LikeModel';
+import ChatModel from '../features/chat/models/chat/ChatModel';
+import MessageModel from '../features/chat/models/message/ChatMessageModel';
+import PostModel from '../features/post/models/PostModel';
+import UserModel from '../features/user/models/UserModel';
+import { IDependencyContainer } from '../common/interfaces/IDependencyContainer';
 import { Dep } from './Dependencies';
+import { HashTagDao } from '../features/hashtag/daos/HashtagDao';
+import NotificationModel from '../features/notification/models/NotificationModel';
+import { ChatDao } from '../features/chat/daos/ChatDao';
+import FollowDao from '../features/follow/daos/FollowDao';
+import FollowModel from '../features/follow/models/FollowModel';
 
 /**
  * registerDAOs function.
@@ -31,47 +28,37 @@ import { Dep } from './Dependencies';
  */
 
 export const registerDAOs = (container: IDependencyContainer): void => {
-  container.register(Dep.DaoErrorHandler, [], () => new DaoErrorHandler());
+  container.register(Dep.UserDao, [], () => new UserDao(UserModel));
+  container.register(Dep.PostDao, [], () => new PostDao(PostModel));
+  container.register(Dep.LikeDao, [], () => new LikeDao(LikeModel));
+  container.register(Dep.FollowDao, [], () => new FollowDao(FollowModel));
   container.register(
-    Dep.BookmarkDao,
-    [Dep.DaoErrorHandler],
-    (daoErrorHandler: IErrorHandler) =>
-      new BookmarkDao(BookmarkModel, daoErrorHandler)
+    Dep.ChatDao,
+    [],
+    () => new ChatDao(MessageModel, ChatModel)
   );
+  container.register(Dep.HashtagDao, [], () => new HashTagDao(HashtagModel));
   container.register(
-    Dep.UserDao,
-    [Dep.DaoErrorHandler],
-    (daoErrorHandler: IErrorHandler) => new UserDao(UserModel, daoErrorHandler)
-  );
-  container.register(
-    Dep.FollowDao,
-    [Dep.DaoErrorHandler],
-    (daoErrorHandler: IErrorHandler) =>
-      new FollowDao(FollowModel, daoErrorHandler)
+    Dep.NotificationDao,
+    [],
+    () => new NotificationDao(NotificationModel)
   );
 
-  container.register(
-    Dep.LikeDao,
-    [Dep.DaoErrorHandler],
-    (daoErrorHandler: IErrorHandler) =>
-      new LikeDao(LikeModel, DislikeModel, PostModel, daoErrorHandler)
-  );
+  // container.register(
+  //   Dep.MessageDao,
+  //   [Dep.DaoErrorHandler],
+  //   (daoErrorHandler: IErrorHandler) =>
+  //     new MessageDao(MessageModel, ConversationModel, daoErrorHandler)
+  // );
 
-  container.register(
-    Dep.PostDao,
-    [Dep.DaoErrorHandler],
-    (daoErrorHandler: IErrorHandler) =>
-      new PostDao(PostModel, UserModel, HashtagModel, daoErrorHandler)
-  );
+  // container.register(
+  //   Dep.FollowDao,
+  //   [Dep.DaoErrorHandler],
+  //   (daoErrorHandler: IErrorHandler) =>
+  //     new FollowDao(FollowModel, daoErrorHandler)
+  // );
 
-  container.register(
-    Dep.MessageDao,
-    [Dep.DaoErrorHandler],
-    (daoErrorHandler: IErrorHandler) =>
-      new MessageDao(MessageModel, ConversationModel, daoErrorHandler)
-  );
-
-  container.register(Dep.NotificationDao, [], () =>
-    NotificationDao.getInstance()
-  );
+  // container.register(Dep.NotificationDao, [], () =>
+  //   NotificationDao.getInstance()
+  // );
 };

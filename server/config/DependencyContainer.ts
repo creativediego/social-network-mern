@@ -1,6 +1,6 @@
 import { Dep } from './Dependencies';
-import { IDependencyContainer } from './IDependencyContainer';
-import { ISingletonDependency } from './ISingletonDependency';
+import { IDependencyContainer } from '../common/interfaces/IDependencyContainer';
+import { ISingletonDependency } from '../common/interfaces/ISingletonDependency';
 
 /**
  * DependencyContainer class.
@@ -16,10 +16,24 @@ import { ISingletonDependency } from './ISingletonDependency';
  * @implements {IDependencyContainer}
  */
 
-export class DependencyContainer implements IDependencyContainer {
-  private dependencies = new Map<string, ISingletonDependency<any>>();
-  private instances = new Map<string, any>();
+class DependencyContainer implements IDependencyContainer {
+  public static instance: DependencyContainer;
+  private dependencies = new Map<Dep, ISingletonDependency<unknown>>();
+  private instances = new Map<Dep, any>();
 
+  private constructor() {}
+
+  /**
+   * Returns the singleton instance of the DependencyContainer.
+   * @returns the singleton instance of the DependencyContainer
+   */
+  public static getInstance(): DependencyContainer {
+    if (!DependencyContainer.instance) {
+      DependencyContainer.instance = new DependencyContainer();
+    }
+
+    return DependencyContainer.instance;
+  }
   /**
    * Registers a dependency. If a dependency with the same name is already registered, it throws an error.
    * @param name the name of the dependency
@@ -51,10 +65,10 @@ export class DependencyContainer implements IDependencyContainer {
    * @param name 'name' of the dependency
    * @returns the dependency singleton
    */
-  resolve<T>(name: string): T {
+  resolve<T>(name: Dep): T {
     if (!this.instances.has(name)) {
       const dependency = this.dependencies.get(name) as ISingletonDependency<T>;
-      const resolvedDependencies = dependency.dependencies.map((dep: string) =>
+      const resolvedDependencies = dependency.dependencies.map((dep: Dep) =>
         this.resolve(dep)
       );
       const instance = dependency.implementation(...resolvedDependencies);
@@ -64,3 +78,5 @@ export class DependencyContainer implements IDependencyContainer {
     return this.instances.get(name) as T;
   }
 }
+
+export const dependencyContainer = DependencyContainer.getInstance();

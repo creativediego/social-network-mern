@@ -12,7 +12,7 @@
     "start": "node build/server.js",
     "dev": "nodemon -L ./server.ts",
     "build": "tsc --project ./",
-    "test": "jest --watchAll --detectOpenHandles --verbose --coverage",
+    "test": "jest tests/unit/post/daos --watchAll --detectOpenHandles --verbose --coverage",
     "docs": "rm -r build;  tsc --project ./; jsdoc --configure jsdoc.json --verbose"
   },
   "author": "",
@@ -34,11 +34,13 @@
     "@types/passport-local": "^1.0.34",
     "@types/socket.io": "^3.0.2",
     "@types/swagger-ui-express": "^4.1.3",
+    "@types/winston": "^2.4.4",
     "bcrypt": "^5.0.1",
     "clean-jsdoc-theme": "^3.3.3",
     "cookie-parse": "^0.4.0",
     "cookie-session": "^2.0.0",
     "cors": "^2.8.5",
+    "date-fns": "^3.1.0",
     "dotenv": "^16.3.1",
     "express": "^4.17.2",
     "express-validator": "^6.14.0",
@@ -57,7 +59,8 @@
     "socket.io": "^4.4.1",
     "ts-jest": "^27.1.3",
     "ts-node": "^10.4.0",
-    "typedoc": "^0.22.12"
+    "typedoc": "^0.22.12",
+    "winston": "^3.11.0"
   },
   "devDependencies": {
     "dotenv-cli": "^7.3.0",

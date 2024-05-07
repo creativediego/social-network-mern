@@ -1,0 +1,11 @@
+// Purpose: Enum for socket events to be used in the socket service.
+export enum SocketEvents {
+  NEW_POST = 'NEW_POST',
+  UPDATE_POST = 'UPDATED_POST',
+  DELETE_POST = 'DELETED_POST',
+  NEW_MESSAGE = 'NEW_MESSAGE',
+  DELETE_MESSAGE = 'DELETED_MESSAGE',
+  NEW_NOTIFICATION = 'NEW_NOTIFICATION',
+  DELETE_NOTIFICATION = 'DELETE_NOTIFICATION',
+  MARK_CHAT_READ = 'MARK_CHAT_READ',
+}

@@ -1,45 +1,31 @@
 import dotenv from 'dotenv';
 import path from 'path';
-import express, { Express, Response, Request } from 'express';
-import { connectToDatabase } from './config/configDatabase';
+import express, { Response, Request } from 'express';
+import { configDatabase } from './config/configDatabase';
 import { Connection } from 'mongoose';
-import { DependencyContainer } from './config/DependencyContainer';
-import { Dep } from './config/Dependencies';
-import { Server, createServer } from 'http';
-import { registerDAOs } from './config/registerDAOs';
-import { registerServices } from './config/registerServices';
-import { registerControllers } from './config/registerControllers';
-import { configMiddleWare } from './config/configExpress';
-import { handleCentralError } from './errors/handleCentralError';
+import { configExpressApp } from './config/configExpressApp';
+import { seedDb } from './seedData';
+import { InMemoryMongoServer } from './tests/mocks/configInMemoryMongo';
 dotenv.config();
 
-// Set up dependencies container that will be used to inject all dependencies.
-// Begin with Express app and http server.
-const dependencies = new DependencyContainer();
-dependencies.register(Dep.App, [], () => express());
-dependencies.register(Dep.HttpServer, [Dep.App], (app: Express) =>
-  createServer(app)
-);
-const app = dependencies.resolve<Express>(Dep.App);
-const httpServer = dependencies.resolve<Server>(Dep.HttpServer);
+// Config app and http server with middleware and dependencies.
+const { app, httpServer, logger } = configExpressApp('/api');
 
-// Config middleware and init other dependencies
-configMiddleWare(app);
-registerDAOs(dependencies);
-registerServices(dependencies);
-registerControllers(dependencies);
-app.use(handleCentralError);
-
-// Example hello world route with typescript types.
-app.get('/api', (req: Request, res: Response) => {
-  res.send('Hello world!');
-});
-
-// Set up db with
+// Set up dev or prod database connection with helper.
 let db: Connection;
 (async () => {
-  db = await connectToDatabase(process.env.API_MONGO_URI!);
+  try {
+    db = await configDatabase(process.env.API_MONGO_URI!, logger);
+  } catch (error) {
+    logger.error('Database connection error:', error);
+    process.exit(1);
+  }
 })();
+
+// Health check endpoint
+app.get('/api/health', (req: Request, res: Response) => {
+  res.status(200).json({ status: 'healthy' });
+});
 
 // Serve react app static files in production
 if (process.env.ENV! === 'production') {
@@ -49,20 +35,20 @@ if (process.env.ENV! === 'production') {
 
 // Start server on specified port
 httpServer.listen(process.env.API_PORT!, () => {
-  console.log(`Server running on port: ${process.env.API_PORT!}`);
+  logger.info(`Server running on port: ${process.env.API_PORT!}`);
 });
 
 // Graceful shutdown
 process.on('SIGINT', async () => {
-  console.log('Server shutting down...');
+  logger.info('Server shutting down...');
   try {
     // Close the MongoDB connection gracefully.
     db.close();
-    console.log('Database connection closed.');
+    logger.info('Database connection closed.');
 
     // Close the HTTP server gracefully.
     httpServer.close(() => {
-      console.log('HTTP server closed.');
+      logger.info('HTTP server closed.');
       process.exit(0);
     });
   } catch (error) {
