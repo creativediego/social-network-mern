@@ -34,7 +34,7 @@ const NewChat = () => {
       </div>
       <PopupModal
         title='Start a new chat'
-        size='sm'
+        size='lg'
         closeModal={toggleModal}
         show={showModal}
       >

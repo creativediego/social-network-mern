@@ -4,3 +4,15 @@
     overflow-x: hidden;
     padding: 1rem;
 }
+
+::-webkit-scrollbar {
+    width: 10px; /* width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+    background: #333; /* color of the track */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888; /* color of the thumb */
+}

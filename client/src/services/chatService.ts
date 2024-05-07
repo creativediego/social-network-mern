@@ -9,11 +9,14 @@ export interface IChatService {
   findChat(chatId: string): Promise<IChat>;
   createChat(chat: IChat): Promise<IChat>;
   deleteChat(chatId: string): Promise<IChat>;
-  findInboxMessages(userId: string): Promise<IMessage[]>;
+  getUnreadChatCount(): Promise<number>;
+  getUnreadChatIds(): Promise<string[]>;
+  markMessageRead(messageId: string): Promise<IMessage>;
+  findInboxChats(userId: string): Promise<IMessage[]>;
   findMessagesByChat(chatId: string): Promise<IMessage[]>;
   findMessagesUserSent(userId: string): Promise<IMessage[]>;
   sendMessage(message: IMessage): Promise<IMessage>;
-  deleteMessage(message: IMessage): Promise<IMessage>;
+  deleteMessage(messageId: string): Promise<IMessage>;
 }
 
 // implement the interface with singleton pattern. Also taken in a url and an APIServiceI as a dependency.
@@ -61,12 +64,30 @@ class ChatServiceImpl implements IChatService {
     );
   };
 
-  public findInboxMessages = async (userId: string): Promise<IMessage[]> => {
-    const url = `${this.url}/messages/inbox`;
+  public getUnreadChatCount(): Promise<number> {
+    const url = `${this.url}/count`;
+    return this.APIService.makeRequest<number>(
+      url,
+      ReqType.GET,
+      'Error getting new message notifications. Try again later.'
+    );
+  }
+
+  public getUnreadChatIds(): Promise<string[]> {
+    const url = `${this.url}/unread`;
+    return this.APIService.makeRequest<string[]>(
+      url,
+      ReqType.GET,
+      'Error getting new message notifications. Try again later.'
+    );
+  }
+
+  public findInboxChats = async (userId: string): Promise<IMessage[]> => {
+    const url = `${this.url}`;
     return await this.APIService.makeRequest<IMessage[]>(
       url,
       ReqType.GET,
-      'Error finding inbox messages. Try again later.'
+      'Error finding inbox chats. Try again later.'
     );
   };
 
@@ -76,6 +97,15 @@ class ChatServiceImpl implements IChatService {
       url,
       ReqType.GET,
       'Error finding messages by chat. Try again later.'
+    );
+  };
+
+  public markMessageRead = async (messageId: string): Promise<IMessage> => {
+    const url = `${this.url}/messages/${messageId}`;
+    return await this.APIService.makeRequest<IMessage>(
+      url,
+      ReqType.PUT,
+      'Error marking message as read. Try again later.'
     );
   };
 
@@ -90,15 +120,15 @@ class ChatServiceImpl implements IChatService {
 
   sendMessage(message: IMessage): Promise<IMessage> {
     const url = `${this.url}/${message.chatId}/messages`;
-    return this.APIService.makeRequest<IMessage, { content: string }>(
+    return this.APIService.makeRequest<IMessage, IMessage>(
       url,
       ReqType.POST,
       'Error sending message. Try again later.',
-      { content: message.content }
+      message
     );
   }
-  deleteMessage(message: IMessage): Promise<IMessage> {
-    const url = `${this.url}/${message.chatId}/messages/${message.id}`;
+  deleteMessage(messageId: string): Promise<IMessage> {
+    const url = `${this.url}/messages/${messageId}`;
     return this.APIService.makeRequest<IMessage>(
       url,
       ReqType.DELETE,

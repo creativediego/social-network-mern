@@ -27,7 +27,7 @@ const useChatMessageOptions = (message: IMessage) => {
 
   useEffect(() => {
     if (modalConfirmed && confirmDelete) {
-      dispatch(deleteMessageThunk(message));
+      dispatch(deleteMessageThunk(message.id));
       dispatch(closeModal());
     }
   }, [modalConfirmed, confirmDelete, dispatch, message]);

@@ -5,7 +5,6 @@ import './styles.css';
 import MainView from './pages/MainView/MainView';
 import { LoginPage, LandingPage } from './pages';
 import { Routes, Route, HashRouter } from 'react-router-dom';
-import { useAuthUser } from './hooks/useAuthUser';
 import { clearUser, fetchProfileThunk } from './redux/userSlice';
 import { onFirebaseSessionChange } from './firebase/firebaseAuthService';
 import { getLocalAuthToken } from './util/tokenManagement';

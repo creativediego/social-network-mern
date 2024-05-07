@@ -7,6 +7,6 @@ export const urlConfig = {
   userApi: `${import.meta.env.VITE_SERVER_URL}/api/users`,
   likeApi: `${import.meta.env.VITE_SERVER_URL}/api/posts/likes`,
   dislikeApi: `${import.meta.env.VITE_SERVER_URL}/api/posts/dislikes`,
-  chatApi: `${import.meta.env.VITE_SERVER_URL}/api/chat`,
+  chatApi: `${import.meta.env.VITE_SERVER_URL}/api/chats`,
   notificationApi: `${import.meta.env.VITE_SERVER_URL}/api/notifications`,
 };

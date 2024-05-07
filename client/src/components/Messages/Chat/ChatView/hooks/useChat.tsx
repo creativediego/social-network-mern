@@ -30,19 +30,11 @@ const useChat = () => {
   useEffect(() => {
     if (chatId && chatId !== 'undefined') {
       dispatch(findMessagesByChat(chatId));
-      dispatch(findInboxMessages());
     }
     return () => {
       dispatch(clearChat());
     };
   }, [dispatch, chatId]);
-
-  // When messages are loaded, will make a call to fetch the inbox again, which will updated unread message count in navigation.
-  useEffect(() => {
-    if (messages.length > 0) {
-      dispatch(findInboxMessages());
-    }
-  }, [dispatch, messages]);
 
   return { activeChatId: chatId, messages, participants, loading };
 };

@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { clearChat } from '../../../../redux/chatSlice';
 import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
 import {
+  clearInbox,
   inboxLoadingSelector,
   selectAllInboxMessages,
 } from '../../../../redux/inboxSlice';
@@ -47,8 +48,10 @@ const useInbox = (): {
   );
 
   useEffect(() => {
-    dispatch(clearChat());
     dispatch(findInboxMessages());
+    return () => {
+      dispatch(clearInbox());
+    };
   }, [dispatch]);
   return {
     messages,

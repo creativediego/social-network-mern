@@ -3,7 +3,7 @@ import { IUser } from './IUser';
 export interface IMessage {
   id: string;
   sender: IUser;
-  recipients: [];
+  recipients: string[];
   chatId: string;
   content: string;
   deletedBy: string[];

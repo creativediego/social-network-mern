@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import './navigation.css';
 import { useLocation, Link } from 'react-router-dom';
 import { useAuthUser } from '../../hooks/useAuthUser';
@@ -11,7 +11,7 @@ import { useNavigationNotifications } from './useNavigationNotifications';
 const Navigation = (): JSX.Element => {
   const { pathname } = useLocation();
   const { user: authUser } = useAuthUser();
-  const { unreadNotifications, unreadMessages } = useNavigationNotifications();
+  const { unreadNotifications, unreadChats } = useNavigationNotifications();
 
   let notificationColor;
   let messageColor;
@@ -21,7 +21,7 @@ const Navigation = (): JSX.Element => {
   } else {
     notificationColor = 'white';
   }
-  if (unreadMessages > 0) {
+  if (unreadChats > 0) {
     messageColor = '#2a9fd6';
   } else {
     messageColor = 'white';
@@ -88,12 +88,12 @@ const Navigation = (): JSX.Element => {
                       </span>
                     ) : null}
 
-                    {link.label === 'Messages' && unreadMessages > 0 ? (
+                    {link.label === 'Messages' && unreadChats > 0 ? (
                       <span
                         className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger'
                         style={{ fontSize: '.7rem' }}
                       >
-                        {unreadMessages}
+                        {unreadChats}
                       </span>
                     ) : null}
                   </i>
@@ -108,4 +108,4 @@ const Navigation = (): JSX.Element => {
   );
 };
 
-export default Navigation;
+export default memo(Navigation);

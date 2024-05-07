@@ -29,7 +29,7 @@ export const useFollow = (userId: string) => {
     dispatch(unfollowThunk(userId));
   };
 
-  const checkFollowed = (userId) => {
+  const checkFollowed = (userId: string) => {
     dispatch(isFollowedThunk(userId));
   };
 

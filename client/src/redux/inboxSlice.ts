@@ -9,6 +9,7 @@ import { IChat } from '../interfaces/IChat';
 import { IMessage } from '../interfaces/IMessage';
 import type { RootState } from './store';
 import { chatService } from '../services/chatService';
+import { removeUnreadChatId } from './chatSlice';
 
 /**
  * Fetch inbox messages.
@@ -18,15 +19,17 @@ export const findInboxMessages = createAsyncThunk(
   async (_, ThunkAPI) => {
     const state = ThunkAPI.getState() as RootState;
     const userId = state.user.data.id;
-    const inboxMessages = await chatService.findInboxMessages(userId);
+    const inboxMessages = await chatService.findInboxChats(userId);
+    console.log('inbox messages', inboxMessages);
     return inboxMessages;
   }
 );
 
 export const deleteInboxChat = createAsyncThunk(
   'messages/deleteInboxChat',
-  async (chatId: string, _) => {
+  async (chatId: string, ThunkAPI) => {
     const delChat = await chatService.deleteChat(chatId);
+    ThunkAPI.dispatch(removeUnreadChatId(chatId));
     return delChat;
   }
 );
@@ -46,11 +49,14 @@ const messageInboxSlice = createSlice({
     unreadCount: 0,
   }),
   reducers: {
-    updateInbox: (state, action: PayloadAction<IMessage>) => {
+    addInboxMessage: (state, action: PayloadAction<IMessage>) => {
       inboxAdapter.upsertOne(state, action.payload);
     },
     decreaseUnreadCount: (state) => {
       state.unreadCount--;
+    },
+    clearInbox: (state) => {
+      inboxAdapter.removeAll(state);
     },
   },
   // Manages the async call states for creating conversations.
@@ -109,7 +115,7 @@ export const selectUnreadCount = createSelector(
 export const { selectAll: selectAllInboxMessages } = inboxAdapter.getSelectors(
   (state: RootState) => state.messagesInbox
 );
-export const { updateInbox } = messageInboxSlice.actions;
+export const { addInboxMessage, clearInbox } = messageInboxSlice.actions;
 
 export const findInboxMessagesThunk = findInboxMessages;
 export const deleteInboxChatThunk = deleteInboxChat;

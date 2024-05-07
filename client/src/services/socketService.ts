@@ -9,6 +9,8 @@ import { addPost, removePost, updatePosts } from '../redux/postSlice';
 import { INotification } from '../interfaces/INotification';
 import { IPost } from '../interfaces/IPost';
 import { IMessage } from '../interfaces/IMessage';
+import { markMessageReadThunk, upsertChatMessage } from '../redux/chatSlice';
+import { addInboxMessage } from '../redux/inboxSlice';
 
 const SOCKET_URL = urlConfig.serverURL;
 
@@ -18,8 +20,9 @@ const SOCKET_EVENTS = [
   'NEW_NOTIFICATION',
   'DELETE_NOTIFICATION',
   'NEW_POST',
-  'UPDATED_POST',
-  'DELETED_POST',
+  'NEW_MESSAGE',
+  'UPDATE_POST',
+  'DELETE_POST',
 ];
 
 const handleSocketEvent = (
@@ -39,13 +42,21 @@ const handleSocketEvent = (
     case 'NEW_POST':
       dispatch(addPost(payload as IPost));
       break;
-    case 'UPDATED_POST':
+    case 'UPDATE_POST':
       console.log('updated post', payload);
       dispatch(updatePosts(payload as IPost));
       break;
-    case 'DELETED_POST':
+    case 'DELETE_POST':
       dispatch(removePost(payload as string));
       break;
+
+    case 'NEW_MESSAGE':
+      console.log('new message', payload);
+      const message = payload as IMessage;
+      dispatch(upsertChatMessage(message));
+      dispatch(addInboxMessage(message));
+      dispatch(markMessageReadThunk(message));
+
     // Add more cases for other socket events as needed
   }
 };

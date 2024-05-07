@@ -4,15 +4,24 @@ import {
   getNotificationCountThunk,
   selectNotificationCount,
 } from '../../redux/notificationSlice';
+import {
+  getUnreadChatIdsThunk,
+  selectUnreadChatCount,
+} from '../../redux/chatSlice';
 
 export const useNavigationNotifications = () => {
   const dispatch = useAppDispatch();
   const unreadNotifications = useAppSelector(selectNotificationCount);
-  const unreadMessages = 0;
+  const unreadChats = useAppSelector(selectUnreadChatCount);
 
   useEffect(() => {
-    dispatch(getNotificationCountThunk());
+    if (unreadNotifications === 0) {
+      dispatch(getNotificationCountThunk());
+    }
+    if (unreadChats === 0) {
+      dispatch(getUnreadChatIdsThunk());
+    }
   }, []);
 
-  return { unreadNotifications, unreadMessages };
+  return { unreadNotifications, unreadChats };
 };

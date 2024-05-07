@@ -28,7 +28,7 @@ const useChatMessageForm = () => {
         label: '',
         required: true,
         value: '',
-        pattern: '^[a-zA-Z0-9]{0,280}$',
+        pattern: '^[ws.,!?@#$%^&*()-+=<>;:\'"/\\\\]+$',
       },
     });
 

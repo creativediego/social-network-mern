@@ -21,6 +21,7 @@ export const useAuthUser = () => {
   const loading = useAppSelector(selectAuthUserLoading);
   const { setError } = useAlert();
   const dispatch = useAppDispatch();
+  console.log('userId', user.id);
 
   const [loginUser, setLoginUser] = useState<{
     email: string;
@@ -55,11 +56,6 @@ export const useAuthUser = () => {
   const logout = useCallback(async () => {
     dispatch(logoutThunk());
   }, [dispatch]);
-
-  useEffect(() => {
-    if (!isLoggedIn) {
-    }
-  }, [isLoggedIn]);
 
   return {
     user,

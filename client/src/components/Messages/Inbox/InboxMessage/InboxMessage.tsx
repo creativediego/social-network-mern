@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthUser } from '../../../../hooks/useAuthUser';
 import { IMessage } from '../../../../interfaces/IMessage';
@@ -14,9 +14,18 @@ interface InboxMessageProps {
 const InboxMessage = ({ message }: InboxMessageProps) => {
   const { user: authUser } = useAuthUser();
 
+  // Calculate background class based on message.readBy
+  const backgroundClass = useMemo(() => {
+    console.log('\nINBOX MESSAGE RENDERING\n');
+    console.log('\nMESSAGE\n', message);
+    console.log('userid', authUser.id);
+    console.log('readBy', message.readBy);
+    return message.readBy.includes(authUser.id) ? '' : 'bg-primary';
+  }, [message.readBy, authUser.id]);
+
   return (
     <li className='p-2 inbox-item list-group-item rounded-0 bg-info m-0 px-0 py-0'>
-      <div className={`d-flex p-2  bg-secondary rounded-0 inbox-item`}>
+      <div className={`d-flex p-2 rounded-0 inbox-item ${backgroundClass}`}>
         <Link
           style={{ zIndex: '1', flex: '1' }}
           to={`/messages/${message.chatId}`}

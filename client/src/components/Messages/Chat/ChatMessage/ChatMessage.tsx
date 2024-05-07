@@ -55,7 +55,7 @@ const ChatMessage = ({ message }: MessageProps) => {
   return (
     <div className={`chat-message-wrapper mb-4 d-flex ${position}`}>
       {displayAvatar && (
-        <span style={{ width: '50px' }}>
+        <span style={{ width: '40px' }}>
           <Link to={`/${message.sender && message.sender.username}/posts`}>
             <img
               className='img-fluid rounded-circle'

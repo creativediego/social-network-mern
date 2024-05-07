@@ -16,9 +16,13 @@ import type { RootState } from './store';
  */
 export const findMessagesByChat = createAsyncThunk(
   'chat/findAllMessages',
-  async (chatId: string, _) => {
+  async (chatId: string, ThunkAPI) => {
+    // Get the chat meta data and messages
     const chat = await chatService.findChat(chatId);
     const messages = await chatService.findMessagesByChat(chatId);
+    console.log('MESSAGE VY CHAT', messages);
+    // Mark chat as read in local state
+    ThunkAPI.dispatch(removeUnreadChatId(chatId));
     return { chat, messages };
   }
 );
@@ -31,16 +35,19 @@ export const sendMessage = createAsyncThunk(
   async (content: string, ThunkAPI) => {
     const state = ThunkAPI.getState() as RootState;
     const chatId = state.chat.id;
+    const recipients = state.chat.participantIds;
+
     const message: IMessage = {
       id: '',
       chatId,
       content,
       sender: state.user.data,
-      recipients: [],
-      readBy: [],
+      recipients: recipients,
+      readBy: [state.user.data.id],
       deletedBy: [],
       createdAt: '',
     };
+    console.log('message to send', message);
 
     const newMessage = await chatService.sendMessage(message);
     return newMessage;
@@ -49,8 +56,8 @@ export const sendMessage = createAsyncThunk(
 
 export const deleteMessage = createAsyncThunk(
   'chat/message/delete',
-  async (message: IMessage, ThunkAPI) => {
-    const deletedMessage = await chatService.deleteMessage(message);
+  async (messageId: string, ThunkAPI) => {
+    const deletedMessage = await chatService.deleteMessage(messageId);
     return deletedMessage;
   }
 );
@@ -60,9 +67,40 @@ export const deleteMessage = createAsyncThunk(
 //  */
 export const createChatThunk = createAsyncThunk(
   'messages/createChat',
-  async (chat: IChat, ThunkAPI) => {
+  async (chat: IChat, _) => {
     const newChat = await chatService.createChat(chat);
+    console.log('new chat', newChat);
+
     return newChat;
+  }
+);
+
+export const getUnreadChatCountThunk = createAsyncThunk(
+  'chat/getUnreadChatCount',
+  async (_, ThunkAPI) => {
+    const count = await chatService.getUnreadChatCount();
+    console.log('unread chat count', count);
+    return count;
+  }
+);
+
+export const getUnreadChatIdsThunk = createAsyncThunk(
+  'chat/getUnreadChatIds',
+  async (_, ThunkAPI) => {
+    const ids = await chatService.getUnreadChatIds();
+    return ids;
+  }
+);
+
+export const markMessageReadThunk = createAsyncThunk(
+  'chat/markMessageRead',
+  async (message: IMessage, ThunkAPI) => {
+    const state = ThunkAPI.getState() as RootState;
+    // If the message is in the current chat, mark it as read
+    if (state.chat.id === message.chatId) {
+      const readMessage = await chatService.markMessageRead(message.id);
+    }
+    return;
   }
 );
 
@@ -83,18 +121,75 @@ const chatSlice = createSlice({
   initialState: chatAdapter.getInitialState({
     id: '',
     participants: participantsAdapter.getInitialState(),
+    participantIds: [] as string[],
     loading: false,
+    unreadChatCount: 0,
+    unreadChatIds: [] as string[],
   }),
   reducers: {
     upsertChatMessage: (state, action: PayloadAction<IMessage>) => {
-      chatAdapter.upsertOne(state, action.payload);
+      if (state.id === action.payload.chatId) {
+        chatAdapter.upsertOne(state, action.payload);
+      }
+      if (state.id !== action.payload.chatId) {
+        if (!state.unreadChatIds.includes(action.payload.chatId)) {
+          state.unreadChatIds.push(action.payload.chatId);
+        }
+      }
     },
     clearChat: (state) => {
       chatAdapter.removeAll(state);
       state.id = '';
     },
+    removeUnreadChatId: (state, action: PayloadAction<string>) => {
+      state.unreadChatIds = state.unreadChatIds.filter(
+        (id) => id !== action.payload
+      );
+    },
   },
   extraReducers: (builder) => {
+    builder.addCase(markMessageReadThunk.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(markMessageReadThunk.fulfilled, (state) => {
+      state.loading = false;
+    });
+    builder.addCase(markMessageReadThunk.rejected, (state) => {
+      state.loading = false;
+    });
+
+    builder.addCase(getUnreadChatCountThunk.pending, (state) => {
+      state.loading = true;
+    });
+
+    builder.addCase(getUnreadChatIdsThunk.pending, (state) => {
+      state.loading = true;
+    });
+
+    builder.addCase(
+      getUnreadChatIdsThunk.fulfilled,
+      (state, action: PayloadAction<string[]>) => {
+        state.loading = false;
+        state.unreadChatIds = action.payload;
+      }
+    );
+
+    builder.addCase(getUnreadChatIdsThunk.rejected, (state) => {
+      state.loading = false;
+    });
+
+    builder.addCase(
+      getUnreadChatCountThunk.fulfilled,
+      (state, action: PayloadAction<number>) => {
+        state.loading = false;
+        state.unreadChatCount = action.payload;
+      }
+    );
+
+    builder.addCase(getUnreadChatCountThunk.rejected, (state) => {
+      state.loading = false;
+    });
+
     builder.addCase(deleteMessage.pending, (state) => {
       state.loading = true;
     });
@@ -129,6 +224,10 @@ const chatSlice = createSlice({
           state.participants,
           action.payload.chat.participants
         );
+        state.participantIds = action.payload.chat.participants.map(
+          (participant) => participant.id
+        );
+        state.unreadChatCount -= 1;
       }
     );
     builder.addCase(findMessagesByChat.rejected, (state) => {
@@ -174,6 +273,16 @@ export const selectActiveChatId = createSelector(
   (chat) => chat.id
 );
 
+export const selectChatParticipants = createSelector(
+  (state: RootState) => state.chat,
+  (chat) => chat.participants.ids.map((id) => chat.participants.entities[id])
+);
+
+export const selectUnreadChatCount = createSelector(
+  (state: RootState) => state.chat,
+  (chat) => chat.unreadChatIds.length
+);
+
 export const selectChatLoading = createSelector(
   (state: RootState) => state.chat,
   (chat) => chat.loading
@@ -186,7 +295,8 @@ export const { selectAll: selectAllParticipants } =
   participantsAdapter.getSelectors(
     (state: RootState) => state.chat.participants
   );
-export const { upsertChatMessage, clearChat } = chatSlice.actions;
+export const { upsertChatMessage, clearChat, removeUnreadChatId } =
+  chatSlice.actions;
 
 export const findMessagesByChatThunk = findMessagesByChat;
 export const sendMessageThunk = sendMessage;
