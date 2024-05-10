@@ -14,7 +14,7 @@ export const useChatMessage = (message: IMessage) => {
   const [showOptions, setShowOptions] = useState(false);
 
   const handleDeleteMessage = useCallback(() => {
-    dispatch(deleteMessage(message));
+    dispatch(deleteMessage(message.id));
   }, [dispatch, message]);
 
   return {

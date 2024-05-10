@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 import reactRefresh from '@vitejs/plugin-react';
 import svgrPlugin from 'vite-plugin-svgr';
 
@@ -12,6 +12,7 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  base: './', // Set the base URL to the current directory
   plugins: [
     reactRefresh(),
     svgrPlugin({

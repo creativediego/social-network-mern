@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent, screen } from '@testing-library/react';
-import ActionButton from './ActionButton';
+import { ActionButton } from '..';
 
 describe('ActionButton', () => {
   it('should render with default label.', () => {

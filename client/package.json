@@ -1,6 +1,5 @@
 {
   "name": "social-network-react-client",
-  "homepage": ".",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -33,7 +32,7 @@
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
-    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/jest-dom": "^6.4.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
     "@types/jest": "^29.5.12",
@@ -46,13 +45,13 @@
     "jest-environment-jsdom": "^29.7.0",
     "react-test-renderer": "^18.2.0",
     "ts-jest": "^29.1.2",
-    "vite": "^5.1.6",
+    "vite": "^5.2.11",
     "vite-plugin-svgr": "4.2.0",
-    "vitest": "^1.4.0"
+    "vitest": "^1.6.0"
   },
   "scripts": {
     "start": "vite",
-    "test": "vitest",
+    "test": "jest",
     "build": "tsc && vite build",
     "serve": "vite preview",
     "docs": "rm -r docs; jsdoc --configure jsdoc.json --verbose"

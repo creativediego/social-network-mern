@@ -8,7 +8,7 @@ import notificationsReducer from './notificationSlice';
 import messagesInboxReducer from './inboxSlice';
 import chatReducer from './chatSlice';
 import modalReducer from './modalSlice';
-import { postApi } from './postApi';
+// import { postApi } from './postApi';
 
 export const rootReducer = combineReducers({
   alert: alertReducer,
@@ -20,5 +20,5 @@ export const rootReducer = combineReducers({
   messagesInbox: messagesInboxReducer,
   chat: chatReducer,
   modal: modalReducer,
-  [postApi.reducerPath]: postApi.reducer,
+  // [postApi.reducerPath]: postApi.reducer,
 });
