@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import IBookmark from './IBookmark';
-import ILike from '../../like/models/ILike';
+import { ILike } from '../../like/models/ILike';
 import BookmarkSchema from './BookmarkSchema';
 
 /**

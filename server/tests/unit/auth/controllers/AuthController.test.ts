@@ -14,7 +14,7 @@ const mockUser = mockUsers[0];
 
 const userDao: IUserDao = {
   findById: jest.fn(),
-  findByField: jest.fn(),
+  findOne: jest.fn(),
   findAll: jest.fn(),
   create: jest.fn().mockResolvedValue(mockUser),
   update: jest.fn(),

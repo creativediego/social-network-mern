@@ -1,4 +1,4 @@
-import IHttpRequest from '../interfaces/IHttpRequest';
+import { IHttpRequest } from '../interfaces/IHttpRequest';
 import { ILogger } from '../logger/ILogger';
 
 export function logRequest(req: IHttpRequest, logger: ILogger): void {

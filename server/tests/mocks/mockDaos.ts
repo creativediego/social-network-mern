@@ -11,7 +11,7 @@ import { mockUsers } from './mockUsers';
 const mockUser = mockUsers[0];
 export const mockUserDao: IUserDao = {
   findById: jest.fn(),
-  findByField: jest.fn().mockReturnValue(mockUser),
+  findOne: jest.fn().mockReturnValue(mockUser),
   findAll: jest.fn(),
   create: jest.fn().mockReturnValue(mockUser),
   update: jest.fn(),

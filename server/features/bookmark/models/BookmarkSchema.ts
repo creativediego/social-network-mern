@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
-import MongooseError from '../../../common/errors/MongooseError';
+import { MongooseError } from '../../../common/errors/MongooseError';
 import IBookmark from './IBookmark';
-import IUser from '../../user/models/IUser';
+import { IUser } from '../../user/models/IUser';
 import UserModel from '../../user/models/UserModel';
 import { formatSchemaJSON } from '../../../common/util/formatSchemaJSON';
 

@@ -7,7 +7,6 @@ export const mockPostService: IPostService = {
   findAllPostsByAuthorId: jest.fn(),
   findAll: jest.fn().mockResolvedValue(mockPosts),
   findById: jest.fn().mockResolvedValue(mockPosts[0]),
-  findOne: jest.fn().mockResolvedValue(mockPosts[0]),
   create: jest.fn().mockResolvedValue(mockPosts[0]),
   update: jest.fn(),
   delete: jest.fn(),
