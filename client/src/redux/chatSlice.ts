@@ -20,7 +20,6 @@ export const findMessagesByChat = createAsyncThunk(
     // Get the chat meta data and messages
     const chat = await chatService.findChat(chatId);
     const messages = await chatService.findMessagesByChat(chatId);
-    console.log('MESSAGE VY CHAT', messages);
     // Mark chat as read in local state
     ThunkAPI.dispatch(removeUnreadChatId(chatId));
     return { chat, messages };
@@ -47,7 +46,6 @@ export const sendMessage = createAsyncThunk(
       deletedBy: [],
       createdAt: '',
     };
-    console.log('message to send', message);
 
     const newMessage = await chatService.sendMessage(message);
     return newMessage;
@@ -69,8 +67,6 @@ export const createChatThunk = createAsyncThunk(
   'messages/createChat',
   async (chat: IChat, _) => {
     const newChat = await chatService.createChat(chat);
-    console.log('new chat', newChat);
-
     return newChat;
   }
 );
@@ -79,7 +75,6 @@ export const getUnreadChatCountThunk = createAsyncThunk(
   'chat/getUnreadChatCount',
   async (_, ThunkAPI) => {
     const count = await chatService.getUnreadChatCount();
-    console.log('unread chat count', count);
     return count;
   }
 );

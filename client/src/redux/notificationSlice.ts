@@ -27,9 +27,7 @@ export const getNotificationCountThunk = createAsyncThunk(
   'notifications/findNotificationCount',
   async (_, ThunkAPI: any) => {
     const userId = ThunkAPI.getState().user.data.id;
-    console.log('getting count');
     const count = await notificationService.getNotificationCount();
-    console.log('noti count', count);
     return count;
   }
 );

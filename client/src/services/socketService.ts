@@ -30,20 +30,17 @@ const handleSocketEvent = (
   payload: string | IPost | INotification | IMessage,
   dispatch: AppDispatch
 ) => {
-  console.log('socket event received', eventName, payload);
   switch (eventName) {
     case 'NEW_NOTIFICATION':
       dispatch(addNotification(payload as INotification));
       break;
     case 'DELETE_NOTIFICATION':
-      console.log('SOCKET: DELETE_NOTIFICATION', payload);
       dispatch(deleteNotification(payload as INotification));
       break;
     case 'NEW_POST':
       dispatch(addPost(payload as IPost));
       break;
     case 'UPDATE_POST':
-      console.log('updated post', payload);
       dispatch(updatePosts(payload as IPost));
       break;
     case 'DELETE_POST':
@@ -51,7 +48,6 @@ const handleSocketEvent = (
       break;
 
     case 'NEW_MESSAGE':
-      console.log('new message', payload);
       const message = payload as IMessage;
       dispatch(upsertChatMessage(message));
       dispatch(addInboxMessage(message));

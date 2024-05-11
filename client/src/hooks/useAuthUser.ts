@@ -21,7 +21,6 @@ export const useAuthUser = () => {
   const loading = useAppSelector(selectAuthUserLoading);
   const { setError } = useAlert();
   const dispatch = useAppDispatch();
-  console.log('userId', user.id);
 
   const [loginUser, setLoginUser] = useState<{
     email: string;

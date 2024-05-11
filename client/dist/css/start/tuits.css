@@ -1,0 +1,86 @@
+.ttr-posts .ttr-post-avatar-logo {
+    width: 48px;
+}
+
+.ttr-posts .ttr-post-image {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.ttr-posts .ttr-post {
+    max-width: 550px;
+    width: 100%;
+    display: flex;
+    padding: 10px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #EEEEEE;
+    border-top: none;
+    overflow-x: hidden;
+}
+.ttr-posts .ttr-post:first-child {
+    border-top: 1px solid
+    #EEEEEE;
+}
+
+.ttr-posts .ttr-column-left {
+    width: 60px;
+}
+.ttr-posts .ttr-column-right {
+    max-width: 490px;
+    width: 100%;
+    padding-left: 10px;
+}
+.ttr-posts .ttr-post-heading {
+    margin-bottom: 10px;
+}
+
+.ttr-posts .ttr-post-image-wrapper {
+    position: relative;
+}
+
+.ttr-posts .ttr-post-image-overlay {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    font-size: 2em;
+    color: white;
+    font-weight: bolder;
+}
+.ttr-posts .ttr-rounded-border {
+    border-radius: 15px;
+}
+.ttr-posts .ttr-circle-border {
+    border-radius: 50%;
+}
+.ttr-posts .ttr-responsive-video {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    border-radius: 15px;
+    margin-top: 10px;
+}
+
+.ttr-posts .ttr-responsive-video::after {
+    display: block;
+    content: "";
+    padding-top: 56.25%;
+}
+
+.ttr-posts .ttr-responsive-video iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.ttr-posts .ttr-post-table {
+    overflow-x: auto;
+}
+
+.ttr-posts .ttr-overflow-auto {
+    margin-top: 10px;
+    max-height: 300px;
+    overflow: auto;
+}

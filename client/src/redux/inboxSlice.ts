@@ -20,7 +20,6 @@ export const findInboxMessages = createAsyncThunk(
     const state = ThunkAPI.getState() as RootState;
     const userId = state.user.data.id;
     const inboxMessages = await chatService.findInboxChats(userId);
-    console.log('inbox messages', inboxMessages);
     return inboxMessages;
   }
 );
