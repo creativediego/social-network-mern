@@ -25,10 +25,13 @@ export class SocketService implements ISocketService {
     this.userDao = userDao;
     this.logger = logger;
 
+    // Configuring allowed origins from environment variable
+    const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [];
+
     // Initializing Socket.IO server with provided HTTP server instance
     this.io = new ioServer(httpServer, {
       cors: {
-        origin: process.env.API_CLIENT_URL!, // Configuring CORS for client URL
+        origin: allowedOrigins,
         credentials: true,
         methods: ['GET', 'POST'],
       },

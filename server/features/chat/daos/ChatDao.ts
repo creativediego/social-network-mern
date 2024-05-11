@@ -35,8 +35,6 @@ export class ChatDao implements IChatDao {
   createChat = async (chat: IChat): Promise<IChat> => {
     try {
       let participantsIds = chat.participants.map((user) => user.id);
-      console.log('create chat participants ids', participantsIds);
-
       let type: ChatType;
       if (chat.participants.length > 2) {
         type = ChatType.Group;
@@ -89,7 +87,6 @@ export class ChatDao implements IChatDao {
     userId: string,
     messageId: string
   ): Promise<IChatMessage> => {
-    console.log('mark message read', userId, messageId);
     const updatedMessage = await this.messageModel.findOneAndUpdate(
       {
         _id: messageId,
@@ -141,7 +138,6 @@ export class ChatDao implements IChatDao {
   };
 
   createMessage = async (message: IChatMessage): Promise<IChatMessage> => {
-    console.log('message to create', message);
     try {
       // Create the message.
       const dbMessage = await this.messageModel.create({
@@ -247,7 +243,6 @@ export class ChatDao implements IChatDao {
           },
         },
       ]);
-      console.log(messages);
       return messages; // Return the processed message list
     } catch (err) {
       // Handle errors by throwing a custom error with additional info
@@ -283,7 +278,6 @@ export class ChatDao implements IChatDao {
       if (!message) {
         throw new DatabaseError('Message to delete not found.');
       }
-      console.log('message deleted', message);
       return message;
     } catch (err) {
       throw new DatabaseError('Failed to delete message.', err);

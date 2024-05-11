@@ -19,7 +19,7 @@ export async function configDatabase(
   options?: ConnectionOptions
 ): Promise<Connection> {
   try {
-    if (process.env.ENV === 'development') {
+    if (process.env.NODE_ENV === 'development') {
       const mongoServer = new InMemoryMongoServer();
       await mongoServer.connect();
       const devURI = mongoServer.getUri();

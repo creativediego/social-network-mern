@@ -52,7 +52,6 @@ export class ChatService implements IChatService {
 
     // Emit to client sockets
     const recipientIds = newMessage.recipients;
-    console.log('RECIPIENT Ids', recipientIds);
     for (const recipientId of recipientIds) {
       if (recipientId !== message.sender.id) {
         this.socketService.emitToUser(

@@ -291,7 +291,6 @@ describe('PostDao', () => {
       const deletedCount = await postDao.deleteManyByAuthorId(mockUser.id);
       expect(deletedCount).toBe(2);
       const postByAuthor = await postDao.findAllPostsByAuthorId(mockUser.id);
-      console.log(postByAuthor);
       expect(postByAuthor).toEqual([]);
     });
   });

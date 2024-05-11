@@ -7,7 +7,6 @@ export const validateResults = (
   next: NextFunction
 ) => {
   const errors = validationResult(req);
-  console.log('ERROR FROM VALIDATION', errors.array());
   if (errors.isEmpty()) {
     return next();
   }
@@ -15,6 +14,5 @@ export const validateResults = (
     message: errors.array(),
     code: Code.badRequest,
   };
-  console.log(errors);
   res.status(Code.badRequest).json({ error: errorContent });
 };

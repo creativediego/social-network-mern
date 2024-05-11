@@ -16,7 +16,7 @@ import cors from 'cors';
  */
 export const configCors = (app: Express) => {
   app.use(express.json());
-  const allowedOrigins = [process.env.API_CLIENT_URL!];
+  const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [];
 
   app.use(
     cors({

@@ -4,8 +4,7 @@ import express, { Response, Request } from 'express';
 import { configDatabase } from './config/configDatabase';
 import { Connection } from 'mongoose';
 import { configExpressApp } from './config/configExpressApp';
-import { seedDb } from './seedData';
-import { InMemoryMongoServer } from './tests/mocks/configInMemoryMongo';
+
 dotenv.config();
 
 // Config app and http server with middleware and dependencies.
@@ -28,7 +27,7 @@ app.get('/api/health', (req: Request, res: Response) => {
 });
 
 // Serve react app static files in production
-if (process.env.ENV! === 'production') {
+if (process.env.NODE_ENV! === 'production') {
   app.set('trust proxy', 1); // trust first proxy
   app.use(express.static(path.join(__dirname, '../../client/build'))); // serve react app
 }
@@ -43,7 +42,7 @@ process.on('SIGINT', async () => {
   logger.info('Server shutting down...');
   try {
     // Close the MongoDB connection gracefully.
-    db.close();
+    await db.close();
     logger.info('Database connection closed.');
 
     // Close the HTTP server gracefully.

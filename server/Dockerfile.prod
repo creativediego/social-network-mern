@@ -3,7 +3,13 @@ FROM node:18.12.0-alpine as builder
 
 WORKDIR /usr/src/app
 
-COPY package.json package-lock.json ./
+# Install python3, make, and g++ for node-gyp
+RUN apk update && apk add python3 make g++
+
+# Copying package.json separately
+COPY package.json ./
+
+# Install dependencies
 RUN npm install --omit=dev
 COPY . .
 RUN npm run build
@@ -13,10 +19,12 @@ FROM node:18.12.0-alpine
 
 WORKDIR /usr/src/app
 
-COPY --from=builder /usr/src/app/package.json /usr/src/app/package-lock.json ./
+# Copy all node_modules from the builder stage
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+
+COPY --from=builder /usr/src/app/package.json  ./
 COPY --from=builder /usr/src/app/build ./build
 
-RUN npm install --only=production
 
 EXPOSE 4000
 

@@ -35,7 +35,6 @@ export class PostController implements IPostController {
   public findAllPostsByAuthorId = async (
     req: IHttpRequest
   ): Promise<IHttpResponse<IPost[]>> => {
-    console.log('called');
     const page = parseInt(req.query.page as string);
     const limit = parseInt(req.query.limit as string);
     const filter: FilterOptions<IPost> = {

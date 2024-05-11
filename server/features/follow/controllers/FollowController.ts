@@ -47,8 +47,6 @@ export default class FollowController implements IFollowController {
   ): Promise<IHttpResponse<number>> => {
     const followerId = req.user.id;
     const followeeId = req.params.userId;
-    console.log('followerId', followerId);
-    console.log('followeeId', followeeId);
     const followerCount = await this.followService.createFollow(
       followerId,
       followeeId
@@ -83,12 +81,10 @@ export default class FollowController implements IFollowController {
   ): Promise<IHttpResponse<boolean>> => {
     const followerId: string = req.user.id;
     const followeeId: string = req.params.userId;
-    console.log('finding follow', req.body);
     const follow: IFollow | null = await this.followService.findFollow(
       followerId,
       followeeId
     );
-    console.log('finding follow results:', follow);
     if (!follow) {
       return okResponse(false);
     }
