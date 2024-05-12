@@ -190,9 +190,7 @@ const postSlice = createSlice({
       state.allPostsLoading = false;
     });
 
-    builder.addCase(userLikesPost.pending, (state) => {
-      state.singlePostLoading = true;
-    });
+    builder.addCase(userLikesPost.pending, (state) => {});
     builder.addCase(
       userLikesPost.fulfilled,
       (state, action: PayloadAction<IPost>) => {
@@ -203,13 +201,8 @@ const postSlice = createSlice({
         });
       }
     );
-    builder.addCase(userLikesPost.rejected, (state) => {
-      state.singlePostLoading = false;
-    });
 
-    builder.addCase(userUnlikesPost.pending, (state) => {
-      state.singlePostLoading = true;
-    });
+    builder.addCase(userUnlikesPost.pending, (state) => {});
     builder.addCase(
       userUnlikesPost.fulfilled,
       (state, action: PayloadAction<IPost>) => {
@@ -220,9 +213,6 @@ const postSlice = createSlice({
         });
       }
     );
-    builder.addCase(userUnlikesPost.rejected, (state) => {
-      state.singlePostLoading = false;
-    });
 
     builder.addCase(findUserPosts.pending, (state) => {
       state.allPostsLoading = true;

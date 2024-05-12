@@ -1,7 +1,7 @@
 version: '3'
 services:
-  social-client-prod:
-    image: ${REPO_NAME}:client-${ENV}-latest
+  buzzcentral-client-prod:
+    image: buzzcentral:client-${NODE_ENV}-latest
     env_file: ${ENV_FILE}
     # restart: unless-stopped # restart on failure
     stdin_open: true # allow input from terminal
@@ -11,8 +11,8 @@ services:
       - ${TLS_CERT_FILE}:/keys/tls_cert.pem
       - ${TLS_KEY_FILE}:/keys/tls_key.pem
   
-  social-api-prod:
-    image: ${REPO_NAME}:server-${ENV}-latest
+  buzzcentral-api-prod:
+    image: buzzcentral:server-${NODE_ENV}-latest
     env_file: ${ENV_FILE}
     # restart: unless-stopped
     ports:

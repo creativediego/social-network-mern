@@ -35,12 +35,15 @@ export class LikeController implements ILikeController {
   userUnlikesPost = async (
     req: IHttpRequest
   ): Promise<IHttpResponse<IPost>> => {
+    console.log('post Id', req.params.postId);
     const updatedPost = await this.likeService.userUnlikesPost(
       req.user.id,
       req.params.postId
     );
 
-    this.logger.info(`User ${req.user.username} unliked post ${req.body.post}`);
+    this.logger.info(
+      `User ${req.user.username} unliked post ${updatedPost.id}`
+    );
     return okResponse(updatedPost);
   };
 

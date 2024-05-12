@@ -31,7 +31,6 @@ export const PostProvider = ({
  * Custom hook that manages the state of fetching posts, liking, disliking, and deleting.
  */
 export const useAllPosts = () => {
-  console.log('all posts');
   const posts = useAppSelector(selectAllPosts);
   const loading = useAppSelector(selectPostsLoading);
   const hasMore = useAppSelector(selectHasMorePosts);

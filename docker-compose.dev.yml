@@ -20,17 +20,17 @@ services:
     volumes:
       - ./server/:/usr/src/app
       - /usr/src/app/node_modules
-    # depends_on:
-    #   - social-mongo-dev
-  # social-mongo-dev:
-  #   image: mongo:4.4-bionic
-  #   ports:
-  #     - "27017:27017"
-  #   volumes: # persist local db data onto container
-  #     - social-mongo-data:/data/db
+    depends_on:
+      - mondogo-dev
+  mondogo-dev:
+    image: mongo:4.4-bionic
+    ports:
+      - "27017:27017"
+    volumes: # persist local db data onto container
+      - mongo-dev-data:/data/db
     # persist local data for dev on container. see comments from react app
     
   
-# volumes:
-#   social-mongo-data:
-#     driver: local
+volumes:
+  mongo-dev-data:
+    driver: local

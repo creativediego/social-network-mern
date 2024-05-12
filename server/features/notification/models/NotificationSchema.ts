@@ -35,13 +35,10 @@ const NotificationSchema = new mongoose.Schema<INotification>(
     collection: 'notifications',
   }
 );
-// Create a unique compound index based on 'userNotified' and 'userActing'
+// Create a unique compound index
 // This works by creating a unique index on the combination of the two fields.
 // This will prevent a user from liking a post more than once.
-NotificationSchema.index(
-  { type: 1, userActing: 1, userNotified: 1 },
-  { unique: true }
-);
+NotificationSchema.index({ type: 1, fromUser: 1, toUser: 1 }, { unique: true });
 
 formatSchemaJSON(NotificationSchema);
 export default NotificationSchema;

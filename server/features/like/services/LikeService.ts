@@ -42,18 +42,19 @@ export class LikeService implements ILikeService {
     userId: string,
     postId: string
   ): Promise<IPost> => {
+    // Check if post exists
     const existingPost = await this.postDao.findById(postId);
     if (!existingPost) {
       throw new ServiceError('Post not found.');
     }
-
+    // Check if user has already liked the post
     const likedBy = existingPost.likedBy.map((id) => id.toString());
     if (likedBy.includes(userId)) {
       return existingPost;
     }
-
+    // Create like
     await this.likeDao.createLike(userId, postId);
-
+    // Update post stats
     const postToUpdate: Partial<IPost> = {
       likedBy: [...existingPost.likedBy, userId],
       stats: { ...existingPost.stats, likes: existingPost.stats.likes + 1 },
@@ -87,12 +88,14 @@ export class LikeService implements ILikeService {
     if (!existingPost) {
       throw new ServiceError('Post not found. Cannot unlike post.');
     }
+    // Check if user has already liked the post
     const updatedPost = await this.postDao.update(postId, {
       likedBy: [
         ...existingPost.likedBy.filter((id) => id.toString() !== userId),
       ],
       stats: { ...existingPost.stats, likes: existingPost.stats.likes - 1 },
     });
+
     const notification = await this.notificationDao.findNotification(
       NotificationType.LIKE,
       userId,

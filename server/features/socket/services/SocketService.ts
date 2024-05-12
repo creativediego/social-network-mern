@@ -3,8 +3,6 @@ import { Server } from 'http';
 import dotenv from 'dotenv';
 import { ISocketService } from './ISocketService';
 import { IJWTService } from '../../../common/auth/services/IJWTService';
-import { IBaseDao } from '../../../common/interfaces/IBaseDao';
-import { IUser } from '../../user/models/IUser';
 import { ServiceError } from '../../../common/errors/ServiceError';
 import { ILogger } from '../../../common/logger/ILogger';
 import { IUserDao } from '../../user/daos/IUserDao';

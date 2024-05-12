@@ -16,10 +16,6 @@ const InboxMessage = ({ message }: InboxMessageProps) => {
 
   // Calculate background class based on message.readBy
   const backgroundClass = useMemo(() => {
-    console.log('\nINBOX MESSAGE RENDERING\n');
-    console.log('\nMESSAGE\n', message);
-    console.log('userid', authUser.id);
-    console.log('readBy', message.readBy);
     return message.readBy.includes(authUser.id) ? '' : 'bg-primary';
   }, [message.readBy, authUser.id]);
 

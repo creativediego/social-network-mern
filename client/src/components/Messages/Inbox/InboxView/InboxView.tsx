@@ -19,7 +19,6 @@ import { IMessage } from '../../../../interfaces/IMessage';
  */
 const InboxView = (): JSX.Element => {
   const { messages, loading } = useInbox();
-  console.log('\nINBOX RENDERING\n');
 
   if (loading) {
     return <Loader loading={loading} size='fs-4' />;
