@@ -24,6 +24,14 @@ const findAllPosts = createAsyncThunk(
   }
 );
 
+const findTopPostsByLikes = createAsyncThunk(
+  'posts/findTopPostsByLikes',
+  async (queryParams: IQueryParams, ThunkAPI) => {
+    const posts = await postService.findTopPostsByLikes(queryParams);
+    return posts;
+  }
+);
+
 /**
  * Uses post service to crate a post and then makes another call to fetch all posts to update state.
  */
@@ -124,7 +132,9 @@ const postSlice = createSlice({
   initialState: postAdapter.getInitialState({
     allPostsLoading: false,
     singlePostLoading: false,
+    topPostsLoading: false,
     moreToFetch: false,
+    topPosts: [] as IPost[],
   }),
   reducers: {
     addPost: (state, action: PayloadAction<IPost>) => {
@@ -156,6 +166,21 @@ const postSlice = createSlice({
     builder.addCase(findAllPosts.pending, (state) => {
       state.allPostsLoading = true;
     });
+
+    builder.addCase(findTopPostsByLikes.pending, (state) => {
+      state.topPostsLoading = true;
+    });
+    builder.addCase(
+      findTopPostsByLikes.fulfilled,
+      (state, action: PayloadAction<IPost[]>) => {
+        state.topPostsLoading = false;
+        state.topPosts = action.payload;
+      }
+    );
+    builder.addCase(findTopPostsByLikes.rejected, (state) => {
+      state.topPostsLoading = false;
+    });
+
     builder.addCase(
       findAllPosts.fulfilled,
       (state, action: PayloadAction<IPost[]>) => {
@@ -250,6 +275,11 @@ export const selectPostsLoading = createSelector(
   (loading) => loading
 );
 
+export const selectTopPostsLoading = createSelector(
+  (state: RootState) => state.posts.topPostsLoading,
+  (loading) => loading
+);
+
 export const selectPostLoading = createSelector(
   (state: RootState) => state.posts.singlePostLoading,
   (loading) => loading
@@ -263,6 +293,11 @@ export const selectHasMorePosts = createSelector(
 export const selectAllPosts = createSelector(
   (state: RootState) => postAdapter.getSelectors().selectAll(state.posts),
   (posts) => posts
+);
+
+export const selectTopPosts = createSelector(
+  (state: RootState) => state.posts.topPosts,
+  (topPosts) => topPosts
 );
 
 export const selectAllPostsByUser = createSelector(
@@ -305,3 +340,4 @@ export const userLikesPostThunk = userLikesPost;
 export const userUnlikesPostThunk = userUnlikesPost;
 export const findUserPostsThunk = findUserPosts;
 export const findLikedPostsThunk = findLikedPosts;
+export const findTopPostsByLikesThunk = findTopPostsByLikes;

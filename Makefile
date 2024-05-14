@@ -60,7 +60,7 @@ copy:
     tar xzf app_file.tar.gz -C app && rm app_file.tar.gz' && \
     echo "Tar file unpacked inside the app folder on the server."
     
-deploy: copy
+deploy: build-production copy
 	echo "\nDeploying app on server..." && \
     ssh -i $(PEM) $(SERVER) 'cd /root/buzzcentral/app && \
     make build-production && make run-production' && \
@@ -70,12 +70,12 @@ deploy: copy
 # # Builds client and server with prod config but with local port 80 caddy client srv.
 build-production-local:
 	cd client && docker build \
-	--build-arg CADDYFILE=Caddyfile.local \
+	--build-arg CADDYFILE=Caddyfile.local --build-arg ENV_FILE=./.env.production.local \
 	-f Dockerfile.prod -t buzzcentral:client-production-latest .
-	cd server && docker build \
+	cd server && docker build --build-arg ENV_FILE=./.env.production.local \
 	-f Dockerfile.prod -t buzzcentral:server-production-latest .
 
 run-production-local: cleanup
-	NODE_ENV=production API_PORT=4000 CLIENT_PORT=80 ENV_FILE=./.env.local \
+	NODE_ENV=production API_PORT=4000 CLIENT_PORT=80 \
     TLS_CERT_FILE=./tls_cert.pem TLS_KEY_FILE=./tls_key.pem \
 	docker compose -f docker-compose.prod.yml --verbose up --detach

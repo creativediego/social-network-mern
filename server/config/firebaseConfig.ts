@@ -1,5 +1,13 @@
 import dotenv from 'dotenv';
 import * as admin from 'firebase-admin';
+import serviceAccountProdKey from '../firebase.production.key.json';
+import serviceAccountDevKey from '../firebase.development.key.json';
+
+const serviceAccountKey =
+  process.env.NODE_ENV === 'production'
+    ? serviceAccountProdKey
+    : serviceAccountDevKey;
+
 dotenv.config();
 
 /**
@@ -12,9 +20,7 @@ dotenv.config();
  * @module firebaseConfig
  */
 admin.initializeApp({
-  credential: admin.credential.cert(
-    JSON.parse(process.env.API_FIREBASE_CREDENTIALS!)
-  ),
+  credential: admin.credential.cert(serviceAccountKey as admin.ServiceAccount),
 });
 
 export default admin;

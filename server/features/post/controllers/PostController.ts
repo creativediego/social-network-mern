@@ -89,13 +89,14 @@ export class PostController implements IPostController {
     } else if (authorId) {
       return this.findAllPostsByAuthorId(req);
     }
-
     const page = parseInt(req.query.page as string);
     const limit = parseInt(req.query.limit as string);
+    const orderBy = req.query.orderBy as string;
     const filter: FilterOptions<IPost> = {
       page,
       limit,
       order: 'desc',
+      orderBy: orderBy || 'createdAt',
     };
     const posts: IPost[] = await this.postService.findAll(filter);
     this.logger.info(

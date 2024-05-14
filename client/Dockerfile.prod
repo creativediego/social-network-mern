@@ -16,6 +16,9 @@ RUN npm run build
 # Use a smaller Caddy base image for serving static files
 FROM caddy:2.4.3-alpine
 
+# Set environment variables
+ENV ENV_FILE=$ENV_FILE
+
 ARG CADDYFILE
 COPY ${CADDYFILE} /etc/caddy/Caddyfile
 

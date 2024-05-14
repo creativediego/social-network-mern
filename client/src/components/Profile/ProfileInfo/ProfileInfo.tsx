@@ -56,7 +56,9 @@ const ProfileInfo = ({
           <div
             className='mb-5 position-relative bg-primary'
             style={{
-              backgroundImage: `url('${profileUser.headerImage})`,
+              backgroundImage: profileUser.headerImage
+                ? `url(${profileUser.headerImage})`
+                : 'none',
               backgroundSize: 'cover',
               height: '200px',
             }}

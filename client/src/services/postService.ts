@@ -24,6 +24,7 @@ export interface IPostService {
     queryParams: IQueryParams
   ) => Promise<IPost[]>;
   findAllPostsDislikedByUser: (userId: string) => Promise<IPost[]>;
+  findTopPostsByLikes: (queryParams: IQueryParams) => Promise<IPost[]>;
 }
 
 class PostServiceImpl implements IPostService {
@@ -51,7 +52,7 @@ class PostServiceImpl implements IPostService {
     return await this.APIService.makeRequest<IPost[], number>(
       `${this.url}?page=${page}&limit=${limit}`,
       ReqType.GET,
-      'Error finding posts. Try again later.'
+      'Error finding top posts. Try again later.'
     );
   };
 
@@ -61,6 +62,18 @@ class PostServiceImpl implements IPostService {
       url,
       ReqType.GET,
       'Error finding posts by keyword. Try again later.'
+    );
+  };
+
+  public findTopPostsByLikes = async (
+    queryParams: IQueryParams
+  ): Promise<IPost[]> => {
+    const { page = DEFAULT_PAGE, limit = DEFAULT_LIMIT } = queryParams;
+    const url = `${this.url}/?orderBy=stats%2Elikes&limit=${limit}&page=${page}`;
+    return await this.APIService.makeRequest<IPost[]>(
+      url,
+      ReqType.GET,
+      'Error finding top posts. Try again later.'
     );
   };
 

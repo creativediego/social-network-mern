@@ -2,7 +2,6 @@ version: '3'
 services:
   buzzcentral-client-prod:
     image: buzzcentral:client-${NODE_ENV}-latest
-    env_file: ${ENV_FILE}
     # restart: unless-stopped # restart on failure
     stdin_open: true # allow input from terminal
     ports:
@@ -13,7 +12,6 @@ services:
   
   buzzcentral-api-prod:
     image: buzzcentral:server-${NODE_ENV}-latest
-    env_file: ${ENV_FILE}
     # restart: unless-stopped
     ports:
       - "${API_PORT}:${API_PORT}"
