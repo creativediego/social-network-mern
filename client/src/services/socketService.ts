@@ -12,7 +12,7 @@ import { IMessage } from '../interfaces/IMessage';
 import { markMessageReadThunk, upsertChatMessage } from '../redux/chatSlice';
 import { addInboxMessage } from '../redux/inboxSlice';
 
-const SOCKET_URL = urlConfig.serverURL;
+const SOCKET_URL = urlConfig.apiURL;
 
 let socket: Socket;
 let listening: boolean = false;

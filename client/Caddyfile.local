@@ -1,16 +1,8 @@
-localhost:80 {
+buzzcentral.app:443 {
+  tls /keys/tls_cert.pem /keys/tls_key.pem 
   root * /srv
-  route {
-    handle /api* {
-      reverse_proxy social-api-server:4000
-    }
-    @notApi {
-      file {
-        try_files {path} /index.html
-      }
-    }
-    handle @notApi {
-      file_server
-    }
+  handle /api* {
+    reverse_proxy app-buzzcentral-api-prod-1:4000
   }
+  try_files {path} /index.html
 }

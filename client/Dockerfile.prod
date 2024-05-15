@@ -8,6 +8,11 @@ COPY package.json ./
 # Install client-side dependencies excluding dev dependencies
 RUN npm install 
 
+# Copy the custom named .env file based on argument
+ARG ENV_FILE
+COPY $ENV_FILE .env
+
+# Copy the rest of the files
 COPY . .
 
 # Build the static React files
@@ -16,8 +21,6 @@ RUN npm run build
 # Use a smaller Caddy base image for serving static files
 FROM caddy:2.4.3-alpine
 
-# Set environment variables
-ENV ENV_FILE=$ENV_FILE
 
 ARG CADDYFILE
 COPY ${CADDYFILE} /etc/caddy/Caddyfile

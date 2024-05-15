@@ -3,8 +3,11 @@ buzzcentral.app:443 {
   root * /srv
   route {
     handle /api* {
-      reverse_proxy social-api-server:4000
+      reverse_proxy app-buzzcentral-api-prod-1:4000
     }
+     handle /socket.io/* {
+      reverse_proxy app-buzzcentral-api-prod-1:4000
+    } 
     @notApi {
       file {
         try_files {path} /index.html

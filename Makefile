@@ -14,40 +14,27 @@ run-dev:
 # Builds client and server with prod config 
 build-client-production:
 	cd client && docker build \
-	--build-arg CADDYFILE=Caddyfile.production \
-	-f Dockerfile.prod -t social-app:client-production-latest .
+	--build-arg CADDYFILE=Caddyfile.production --build-arg ENV_FILE=.env.production \
+	-f Dockerfile.prod -t buzzcentral:client-production-latest .
 	
 build-server-production:
-	cd server && docker build \
-	-f Dockerfile.prod -t social-app:server-production-latest .
+	cd server && docker build --build-arg ENV_FILE=.env.production \
+	-f Dockerfile.prod -t buzzcentral:server-production-latest .
 
 build-production: build-client-production build-server-production
 	
-run-production: cleanup
-	NODE_ENV=production API_PORT=4000 CLIENT_PORT=443 ENV_FILE=./.env.production \
+run-production: stop-production
+	NODE_ENV=production API_PORT=4000 CLIENT_PORT=443  \
     TLS_CERT_FILE=./tls_cert.pem TLS_KEY_FILE=./tls_key.pem \
-	docker compose --env-file -f docker-compose.prod.yml --verbose up --detach
+	docker compose -f docker-compose.prod.yml --verbose up --detach
+
+stop-production:
+	NODE_ENV=production API_PORT=4000 CLIENT_PORT=443  \
+	TLS_CERT_FILE=./tls_cert.pem TLS_KEY_FILE=./tls_key.pem \
+	docker compose -f docker-compose.prod.yml down
 
 cleanup:
-    @CLIENT_CONTAINER=$$(docker ps -qf ancestor=buzzcentral:client-production-latest); \
-    @SERVER_CONTAINER=$$(docker ps -qf ancestor=buzzcentral:server-production-latest); \
-    if [ -n "$$CLIENT_CONTAINER" ]; then \
-        echo "Stopping and removing client container: $$CLIENT_CONTAINER"; \
-        docker stop $$CLIENT_CONTAINER; \
-        docker rm $$CLIENT_CONTAINER; \
-    else \
-        echo "No client container running."; \
-    fi; \
-    if [ -n "$$SERVER_CONTAINER" ]; then \
-        echo "Stopping and removing server container: $$SERVER_CONTAINER"; \
-        docker stop $$SERVER_CONTAINER; \
-        docker rm $$SERVER_CONTAINER; \
-    else \
-        echo "No server container running."; \
-    fi
-
-stop:
-	docker compose down
+	docker rmi $(docker images -q)
 
 copy:
 	echo "\nCompressing local files..." && \
@@ -60,19 +47,23 @@ copy:
     tar xzf app_file.tar.gz -C app && rm app_file.tar.gz' && \
     echo "Tar file unpacked inside the app folder on the server."
     
-deploy: build-production copy
+deploy: 
 	echo "\nDeploying app on server..." && \
+    echo "\nSSHing..." && \
     ssh -i $(PEM) $(SERVER) 'cd /root/buzzcentral/app && \
-    make build-production && make run-production' && \
-    echo "App deployed successfully."
+    echo "\nBuilding containers..." && \
+    make build-production && \
+    echo "\nRunning containers..." && \
+    make run-production && \
+    echo "App deployed successfully."'
 
 # ### LOCAL (production config)
 # # Builds client and server with prod config but with local port 80 caddy client srv.
 build-production-local:
 	cd client && docker build \
-	--build-arg CADDYFILE=Caddyfile.local --build-arg ENV_FILE=./.env.production.local \
+	--build-arg CADDYFILE=Caddyfile.local --build-arg ENV_FILE=./.env.productionlocal \
 	-f Dockerfile.prod -t buzzcentral:client-production-latest .
-	cd server && docker build --build-arg ENV_FILE=./.env.production.local \
+	cd server && docker build --build-arg ENV_FILE=./.env.productionlocal \
 	-f Dockerfile.prod -t buzzcentral:server-production-latest .
 
 run-production-local: cleanup
