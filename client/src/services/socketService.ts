@@ -12,10 +12,9 @@ import { IMessage } from '../interfaces/IMessage';
 import { markMessageReadThunk, upsertChatMessage } from '../redux/chatSlice';
 import { addInboxMessage } from '../redux/inboxSlice';
 
-const SOCKET_URL = urlConfig.apiURL;
+const SOCKET_URL = urlConfig.serverURL;
 
 let socket: Socket;
-let listening: boolean = false;
 const SOCKET_EVENTS = [
   'NEW_NOTIFICATION',
   'DELETE_NOTIFICATION',
@@ -58,10 +57,6 @@ const handleSocketEvent = (
 };
 
 export const enableSocketListeners = () => {
-  if (listening) {
-    return;
-  }
-
   socket = io(`${SOCKET_URL}`, {
     query: { token: localStorage.getItem('token') },
     transports: ['polling'],
@@ -74,9 +69,6 @@ export const enableSocketListeners = () => {
         handleSocketEvent(eventName, payload, store.dispatch);
       });
     }
-
-    // Add similar event listeners for other actions and slices as needed
-    listening = true;
   });
 
   socket.on('disconnect', () => {
@@ -88,9 +80,6 @@ const disableListeners = () => {
   for (const eventName of SOCKET_EVENTS) {
     socket.off(eventName);
   }
-
-  // Remove listeners for other events and slices as needed
-  listening = false;
 };
 
 export const disconnectSocket = () => {
@@ -98,5 +87,4 @@ export const disconnectSocket = () => {
     return;
   }
   socket.disconnect();
-  listening = false;
 };

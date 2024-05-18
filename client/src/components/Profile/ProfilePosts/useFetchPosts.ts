@@ -10,6 +10,7 @@ import {
   selectAllPostsLikedByUser,
   selectHasMorePosts,
   findAllPostsThunk,
+  selectAllPostsByUser,
 } from '../../../redux/postSlice';
 import { useLocation } from 'react-router-dom';
 import { IPost } from '../../../interfaces/IPost';
@@ -32,6 +33,7 @@ export const useFetchPosts = (
   userId: string
 ): {
   posts: Array<IPost>;
+  userPosts: Array<IPost>;
   likedPosts: Array<IPost>; // Posts liked by the user.
   clearPosts: () => void;
   loading: boolean; // True if the data is being fetched, false otherwise.
@@ -44,6 +46,7 @@ export const useFetchPosts = (
   const url = location.pathname.split('/')[2];
   const dispatch = useAppDispatch();
   const posts = useAppSelector(selectAllPosts);
+  const userPosts = useAppSelector(selectAllPostsByUser);
   const likedPosts = useAppSelector(selectAllPostsLikedByUser);
   const loading = useAppSelector(selectPostsLoading);
   const hasMore = useAppSelector(selectHasMorePosts);
@@ -94,6 +97,7 @@ export const useFetchPosts = (
   // Return the user's own posts, liked posts, and loading state
   return {
     posts,
+    userPosts,
     likedPosts,
     clearPosts,
     loading,

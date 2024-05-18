@@ -37,7 +37,6 @@ const MainView = (): JSX.Element => {
         <div className='ttr-left-column'>
           <Navigation />
         </div>
-
         {/* Center column containing various pages */}
         <div className='ttr-center-column'>
           <Routes>

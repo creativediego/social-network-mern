@@ -23,7 +23,7 @@ const HeaderImageUpload = ({
     <div
       className='d-flex flex-column header-image-container bg-dark d-flex justify-content-center align-items-center'
       style={{
-        backgroundImage: `url('${imageURL}')`,
+        backgroundImage: imageURL ? `url(${imageURL})` : 'none',
         backgroundSize: 'cover',
       }}
     >

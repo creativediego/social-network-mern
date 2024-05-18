@@ -30,7 +30,7 @@ const NewChat = () => {
   return (
     <>
       <div className='mb-3'>
-        <ActionButton label='+ New Chat' submitAction={toggleModal} />
+        <ActionButton label='+ New' submitAction={toggleModal} />
       </div>
       <PopupModal
         title='Start a new chat'

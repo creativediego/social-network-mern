@@ -50,7 +50,7 @@ const Notification = ({
               src={
                 notification.toUser.profilePhoto
                   ? notification.toUser.profilePhoto
-                  : `../images/${notification.toUser.username}.jpg`
+                  : `/images/default-avatar.png`
               }
               className='ttr-post-avatar-logo rounded-circle'
               alt='profile'

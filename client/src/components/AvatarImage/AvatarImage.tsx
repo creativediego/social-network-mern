@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 
 /**
  * `AvatarImage` is a component that renders a user's avatar image.
@@ -27,7 +27,7 @@ interface AvatarImageProps {
 const AvatarImage = ({ profilePhoto, size }: AvatarImageProps): JSX.Element => {
   const defaultAvatar = profilePhoto
     ? profilePhoto
-    : '../images/default-avatar.png';
+    : '/images/default-avatar.png';
   return (
     <div
       className='position-relative'
@@ -35,7 +35,7 @@ const AvatarImage = ({ profilePhoto, size }: AvatarImageProps): JSX.Element => {
     >
       <img
         className='position-relative h-100 img-fluid  rounded-circle bg-white img-fluid'
-        alt='profile photo'
+        alt="user's profile photo"
         style={{
           objectFit: 'cover',
           objectPosition: 'center',

@@ -35,7 +35,7 @@ interface ProfilePostsProps {
  * @returns {JSX.Element} A JSX element representing the profile posts.
  */
 const ProfilePosts = ({ userId, username }: ProfilePostsProps): JSX.Element => {
-  const { posts, likedPosts, loading, lastElementRef, hasMore } =
+  const { userPosts, likedPosts, loading, lastElementRef, hasMore } =
     useFetchPosts(userId);
 
   return (
@@ -44,7 +44,7 @@ const ProfilePosts = ({ userId, username }: ProfilePostsProps): JSX.Element => {
         <div className='p2'>
           <ProfileNav username={username} />
           <Routes>
-            <Route path='/posts' element={<PostsList posts={posts} />} />
+            <Route path='/posts' element={<PostsList posts={userPosts} />} />
             <Route path='/likes' element={<PostsList posts={likedPosts} />} />
           </Routes>
           {loading && <Loader loading={loading} message='Loading Posts' />}

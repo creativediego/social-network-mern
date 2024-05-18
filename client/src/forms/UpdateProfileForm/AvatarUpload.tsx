@@ -19,7 +19,7 @@ const AvatarUpload = ({
   children,
 }: ImageUploadProps): JSX.Element => {
   const avatar =
-    imagePreview || user.profilePhoto || '/public/images/default-avatar.png';
+    imagePreview || user.profilePhoto || '/images/default-avatar.png';
   return (
     <div className='left-0 position-absolute avatar-container  '>
       <div className='position-relative justify-content-center align-items-center d-flex'>

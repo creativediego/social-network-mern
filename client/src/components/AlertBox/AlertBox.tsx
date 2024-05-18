@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import './AlertBox.scss';
 import { useAlert } from '../../hooks/useAlert';
@@ -36,10 +36,10 @@ interface AlertBoxProps {
  * @returns {JSX.Element | null} A JSX element representing the alert box if the message exists, or null otherwise.
  */
 const AlertBox = ({ heading, message, variant }: AlertBoxProps) => {
-  const [show, setShow] = React.useState(true);
+  const [show, setShow] = useState(true);
   const { clearAllAlerts } = useAlert();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!message) {
       setShow(false);
     } else {
@@ -50,7 +50,7 @@ const AlertBox = ({ heading, message, variant }: AlertBoxProps) => {
   if (show) {
     return (
       <Alert
-        aria-label='alert'
+        aria-label={`${variant ? variant : 'warning'} alert: ${heading}`}
         variant={variant ? variant : 'warning'}
         className='alert-fixed'
         onClose={() => {

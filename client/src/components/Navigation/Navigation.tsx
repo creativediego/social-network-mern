@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import './navigation.css';
 import { useLocation, Link } from 'react-router-dom';
 import { useAuthUser } from '../../hooks/useAuthUser';
@@ -59,7 +59,7 @@ const Navigation = (): JSX.Element => {
 
   return (
     <div className='ttr-navigation'>
-      <ul className='list-group'>
+      <ul className='list-group nav-group'>
         {links.map((link, ndx) => {
           return (
             <li

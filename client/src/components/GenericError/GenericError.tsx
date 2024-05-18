@@ -1,8 +1,5 @@
-import React from 'react';
-
 /**
- * Generic error content that can be added to a landing page..
- *
+ * Generic error content that can be added to a landing page.
  */
 import { urlConfig } from '../../config/appConfig';
 const GenericError = (): JSX.Element => {
