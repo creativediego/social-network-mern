@@ -1,18 +1,19 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { FormField } from '../../../../forms';
 import useChatMessageForm from './useChatMessageForm';
 
 /**
- * ChatMessageForm component.
+ * `ChatMessageForm` is a component that displays a form for sending chat messages.
+ * It uses the `useChatMessageForm` custom hook to manage the form state and handle form submission.
  *
- * This component displays an input to write and send a new message in the active chat.
- * It uses the `useChatMessageForm` custom hook to manage the state.
+ * @returns {JSX.Element} The `ChatMessageForm` component, which includes a text field for the message and a submit button.
+ * The message field is managed by the `messageFieldAttributes` and `setMessage` values from the `useChatMessageForm` hook.
+ * The form submission is handled by the `submitMessage` function from the `useChatMessageForm` hook.
  *
- * The `messageFieldAttributes` object represents the attributes of the message field.
- * The `setMessage` function sets the value of the message field.
- * The `submitMessage` function submits the new message.
+ * @example
+ * <ChatMessageForm />
  *
- * @returns {JSX.Element} The form with the message field and the submit button.
+ * @see {@link useChatMessageForm} for the hook that provides the form state and actions.
  */
 const ChatMessageForm = () => {
   const { messageFieldAttributes, setMessage, submitMessage } =

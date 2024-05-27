@@ -1,8 +1,16 @@
 #chat-window {
-    height: 60vh;
+    height: 100%;
     overflow: scroll;
     overflow-x: hidden;
     padding: 1rem;
+}
+
+#chat-frame {
+    height: 80vh;
+}
+
+.chat-input {
+    width: 100%;
 }
 
 ::-webkit-scrollbar {

@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 
 /**
  * `LoaderProps` is an interface that defines the properties for the `Loader` component.

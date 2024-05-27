@@ -1,19 +1,19 @@
 import { useLayoutEffect, useRef } from 'react';
 
 /**
- * `useScrollToBottom` is a custom hook that manages scrolling to the bottom of a container.
+ * `useScrollToBottom` is a custom hook that manages the scrolling of a chat window.
+ * It uses the `useRef` and `useLayoutEffect` hooks from React to create a reference to the chat window and to scroll to the bottom of the chat window when the loading state changes.
  *
- * It uses the `useRef` hook to create a reference to the container.
- * It uses the `useLayoutEffect` hook to scroll to the bottom of the container when the `loading` state changes to false.
+ * @param {boolean} loading - The loading state of the chat. The chat window is scrolled to the bottom when loading is false.
  *
- * @hook
- * @param {boolean} loading - A boolean indicating whether the content of the container is loading.
+ * @returns {object} An object containing the following values:
+ * - `windowRef`: A reference to the chat window. This can be attached to a `div` element to allow the hook to control its scroll position.
+ *
  * @example
- * Example usage of useScrollToBottom hook
  * const { windowRef } = useScrollToBottom(loading);
  *
- * @returns {{ windowRef: React.RefObject<HTMLDivElement> }} An object containing:
- * - `windowRef`: A reference to the container that should be scrolled to the bottom.
+ * @see {@link useLayoutEffect} for the hook that allows side effects to be performed synchronously after all DOM mutations.
+ * @see {@link useRef} for the hook that allows a mutable value to be stored that persists across re-renders.
  */
 const useScrollToBottom = (
   loading: boolean

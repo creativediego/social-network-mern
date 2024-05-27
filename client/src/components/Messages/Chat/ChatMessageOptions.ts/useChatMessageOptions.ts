@@ -8,6 +8,23 @@ import {
   selectConfirmModal,
 } from '../../../../redux/modalSlice';
 
+/**
+ * `useChatMessageOptions` is a custom hook that provides state and actions for the chat message options.
+ * It uses the `useAppDispatch` and `useAppSelector` hooks from Redux to interact with the global state.
+ *
+ * @param {IMessage} message - The message for which to display options.
+ *
+ * @returns {object} An object containing the following values:
+ * - `handleDelete`: A function to handle the deletion of the message. It opens a confirmation modal before deleting the message.
+ *
+ * @example
+ * const { handleDelete } = useChatMessageOptions(message);
+ *
+ * @see {@link useAppDispatch} and {@link useAppSelector} for the hooks that provide access to the Redux store.
+ * @see {@link deleteMessageThunk} for the action that deletes a message from the chat.
+ * @see {@link openModal} and {@link closeModal} for the actions that manage the confirmation modal.
+ */
+
 const useChatMessageOptions = (message: IMessage) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const modalConfirmed = useAppSelector(selectConfirmModal);

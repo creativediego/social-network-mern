@@ -22,43 +22,47 @@ const ChatView = () => {
 
   return (
     <>
-      <div className='mt-4 mb-4 d-flex justify-content-center'>
-        {participants.map((participant: IUser) => {
-          if (participant.id !== user.id) {
-            return (
-              <Link to={`/${participant.username}/posts`} key={participant.id}>
-                <div className='d-flex flex-column justify-content-center align-items-center'>
-                  <div>
-                    <AvatarImage
-                      profilePhoto={participant.profilePhoto}
-                      size={50}
-                    />
-                  </div>
-                  <div className='d-flex  flex-column'>
-                    <div
-                      className='badge rounded-pill bg-light m-1'
-                      key={participant.id}
-                    >
-                      {participant.name}
+      <div id='chat-frame' className='d-flex flex-column'>
+        <div className='mt-4 mb-4 d-flex justify-content-center'>
+          {participants.map((participant: IUser) => {
+            if (participant.id !== user.id) {
+              return (
+                <Link
+                  to={`/${participant.username}/posts`}
+                  key={participant.id}
+                >
+                  <div className='d-flex flex-column justify-content-center align-items-center'>
+                    <div>
+                      <AvatarImage
+                        profilePhoto={participant.profilePhoto}
+                        size={50}
+                      />
+                    </div>
+                    <div className='d-flex  flex-column'>
+                      <div
+                        className='badge rounded-pill bg-light m-1'
+                        key={participant.id}
+                      >
+                        {participant.name}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            );
-          }
-        })}
-      </div>
-      <div id='chat-window'>
-        <Loader loading={loading} />
-        {messages.length > 0 &&
-          messages.map((message: IMessage) => (
-            <ChatMessage message={message} key={message.id} />
-          ))}
-
-        <div ref={windowRef} />
-      </div>
-      <div>
-        <ChatMessageForm />
+                </Link>
+              );
+            }
+          })}
+        </div>
+        <div id='chat-window'>
+          <Loader loading={loading} />
+          {messages.length > 0 &&
+            messages.map((message: IMessage) => (
+              <ChatMessage message={message} key={message.id} />
+            ))}
+          <div ref={windowRef}> </div>
+        </div>
+        <div className='align-self-end chat-input'>
+          <ChatMessageForm />
+        </div>
       </div>
     </>
   );

@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import './ChatMessage.scss';
 import moment from 'moment';
 import { IMessage } from '../../../../interfaces/IMessage';
@@ -17,20 +17,24 @@ import ChatMessageOptions from '../ChatMessageOptions.ts/ChatMessageOptions';
 interface MessageProps {
   message: IMessage;
 }
-
 /**
- * ChatMessage component.
+ * `ChatMessage` is a component that displays a single chat message.
+ * It uses the `useAuthUser` custom hook to determine if the message was sent by the logged-in user.
  *
- * This component displays a single chat message.
- * It uses the `useAuthUser` custom hook to get the current logged in user.
- * It uses the `useMemo` hook from React to determine if the logged in user is the sender of the message.
+ * @param {object} props - The properties passed to the component.
+ * @param {IMessage} props.message - The message to display in the `ChatMessage` component.
  *
- * The `bgColor` and `position` variables determine the background color and position of the message based on whether the logged in user is the sender.
+ * @returns {JSX.Element} The `ChatMessage` component, which includes the message text and sender's avatar.
+ * The appearance of the message depends on whether it was sent by the logged-in user or another user.
+ * Messages from the logged-in user are displayed on the right with a primary background color,
+ * while messages from other users are displayed on the left with a light background color.
  *
- * @param {{ message: IMessage }} props - The props.
- * @param {IMessage} props.message - The message to display.
- * @returns {JSX.Element} The chat message with the sender's name, the message text, and the message options.
+ * @example
+ * <ChatMessage message={message} />
+ *
+ * @see {@link useAuthUser} for the hook that provides the authenticated user.
  */
+
 const ChatMessage = ({ message }: MessageProps) => {
   const { user } = useAuthUser();
   const isLoggedInUser = useMemo(

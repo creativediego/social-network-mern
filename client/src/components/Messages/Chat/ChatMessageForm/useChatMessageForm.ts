@@ -1,18 +1,22 @@
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback, FormEvent } from 'react';
 import { FormFieldI } from '../../../../interfaces/FormFieldI';
 import { useAppDispatch } from '../../../../redux/hooks';
 import { sendMessage } from '../../../../redux/chatSlice';
 
 /**
- * useChatMessageForm hook.
+ * `useChatMessageForm` is a custom hook that provides state and actions for the chat message form.
+ * It uses the `useAppDispatch` hook from Redux to dispatch actions, and `useState` and `useCallback` from React to manage local state.
  *
- * This custom hook manages the state of setting and sending a new chat message in the active chat.
- * It uses the `useAppDispatch` hook from Redux and the `useState` and `useCallback` hooks from React.
+ * @returns {object} An object containing the following values:
+ * - `messageFieldAttributes`: An object containing the attributes for the message field in the form.
+ * - `setMessage`: A function to update the value of the message field.
+ * - `submitMessage`: A function to handle form submission and dispatch the `sendMessage` action.
  *
- * The `messageFieldAttributes` state is an object that represents the attributes of the message field.
- * The `setMessage` function is a callback that sets the value of the message field.
+ * @example
+ * const { messageFieldAttributes, setMessage, submitMessage } = useChatMessageForm();
  *
- * @returns {{ messageFieldAttributes: FormFieldI, setMessage: (e: React.FormEvent<HTMLInputElement>) => void }} An object with the `messageFieldAttributes` state and the `setMessage` function.
+ * @see {@link useAppDispatch} for the hook that provides access to the Redux store.
+ * @see {@link sendMessage} for the action that sends a chat message.
  */
 const useChatMessageForm = () => {
   const dispatch = useAppDispatch();
@@ -32,7 +36,7 @@ const useChatMessageForm = () => {
       },
     });
 
-  const setMessage = useCallback((e: React.FormEvent<HTMLInputElement>) => {
+  const setMessage = useCallback((e: FormEvent<HTMLInputElement>) => {
     const element: HTMLInputElement = e.currentTarget;
     setMessageFieldAttributes((prevState) => ({
       ...prevState,
@@ -44,7 +48,7 @@ const useChatMessageForm = () => {
   }, []);
 
   const submitMessage = useCallback(
-    (e: React.FormEvent<HTMLFormElement>): void => {
+    (e: FormEvent<HTMLFormElement>): void => {
       e.preventDefault();
       const content = messageFieldAttributes['message'].value;
       if (!content) return;
