@@ -1,4 +1,3 @@
-import React from 'react';
 import '.././Posts.scss';
 import { usePost } from '../Post/hooks/usePost';
 import { usePostOptions } from './hooks/usePostOptions';

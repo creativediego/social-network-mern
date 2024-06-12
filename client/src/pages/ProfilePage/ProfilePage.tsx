@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Loader, ProfileInfo, ProfilePosts } from '../../components';
 import { useProfile } from '../../components/Profile/ProfileInfo/useProfile';

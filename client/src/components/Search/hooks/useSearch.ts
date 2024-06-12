@@ -1,10 +1,8 @@
-// useSearch.ts
 import { useState, useEffect } from 'react';
 import { ISearchService } from '../../../interfaces/ISearchService';
 import { useSearchParams } from 'react-router-dom';
 import { useAlert } from '../../../hooks/useAlert';
 import { useIsMounted } from '../../../hooks/useIsMounted';
-import { set } from 'react-hook-form';
 
 /**
  * `useSearch` is a custom hook that manages search functionality.
@@ -87,13 +85,11 @@ export function useSearch<T>(
     }, 500);
     // Cleanup function to clear the timeout from the previous render.
     return () => clearTimeout(handler);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]); // Only re-run the effect if query changes.
 
   useEffect(() => {
     const query = searchParams.get('q') || '';
     setQuery(query);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]); // Only re-run the effect if searchParams changes.
 
   return { results, query, setQuery, loading, searchPerformed };

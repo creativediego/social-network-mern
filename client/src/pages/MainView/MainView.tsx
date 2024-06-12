@@ -1,4 +1,3 @@
-import React from 'react';
 import './MainView.css';
 import { Routes, Route } from 'react-router-dom';
 import { AlertBox, Navigation, PopupModal } from '../../components';

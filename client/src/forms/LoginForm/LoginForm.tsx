@@ -1,4 +1,4 @@
-import React from 'react';
+import { FormEvent } from 'react';
 import { Button } from 'react-bootstrap';
 import { AlertBox, Loader, PopupModal } from '../../components';
 import FormField from '../FormInput/FormField';
@@ -49,7 +49,7 @@ const LoginForm = (): JSX.Element => {
               dataTestId='login-user'
               placeholder='email'
               value={loginUser.email}
-              onChange={(e: React.FormEvent<HTMLInputElement>) =>
+              onChange={(e: FormEvent<HTMLInputElement>) =>
                 handleSetLoginUser(e)
               }
             />

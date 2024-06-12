@@ -1,4 +1,5 @@
-import React, {
+import {
+  Context,
   useContext,
   createContext,
   ReactNode,
@@ -9,11 +10,11 @@ import { IPost } from '../../../../interfaces/IPost';
 import { IPostService } from '../../../../services/postService';
 
 /**
- * `IPostContext` is the interface for the context of a single post.
+ * `IPostContext` is an interface for the context of the `PostProvider`.
+ * It includes a `post` field, which is an `IPost`, a `setPost` function, which sets the `post`, and a `postService`, which is the post API service.
  *
- * @typedef {Object} IPostContext
- * @property {IPost} post - The post object.
- * @property {IPostService} postService - The post service object.
+ * @see {@link IPost} for the interface of a post.
+ * @see {@link IPostService} for the interface of a post service.
  */
 interface IPostContext {
   post: IPost;
@@ -22,32 +23,34 @@ interface IPostContext {
 }
 
 /**
- * `PostContext` is the context for a single post.
- * It gives nested components (such as stats) access to its data.
+ * `PostContext` is a context for providing the `post`, `setPost` function, and `postService` to child components.
+ * It is created with `React.createContext` and its initial value is `null`.
  *
- * @type {React.Context<IPostContext | null>}
+ * @see {@link React.createContext} for the function that creates the context.
+ * @see {@link IPostContext} for the interface of the context.
  */
-
-export const PostContext: React.Context<IPostContext | null> =
+export const PostContext: Context<IPostContext | null> =
   createContext<IPostContext | null>(null);
 
 /**
- * `PostProvider` is a context provider for a single post.
- * It provides the post and post service to its child components.
+ * `PostProvider` is a component that provides the `post`, `setPost` function, and `postService` to child components via the `PostContext`.
+ * It uses the `useState` and `useEffect` hooks from React to manage the `post` state and update it with the post context.
  *
- * @component
+ * @param {PostProviderProps} props - The properties passed to the component.
+ * @param {IPost} props.initialPost - The initial post.
+ * @param {IPostService} props.postService - The post service.
+ * @param {ReactNode} props.children - The children to be rendered in the provider.
+ *
+ * @returns {JSX.Element} The `PostProvider` component, which includes the `PostContext.Provider` that provides the `post`, `setPost` function, and `postService` to child components.
+ *
  * @example
- * Example usage of PostProvider component
- * <PostProvider post={samplePost} postService={samplePostService}>
+ * <PostProvider initialPost={initialPost} postService={postService}>
  *   <ChildComponent />
  * </PostProvider>
  *
- * @param {Object} props - The properties that define the PostProvider component.
- * @param {IPost} props.post - The post object to be provided.
- * @param {IPostService} props.postService - The post service object to be provided.
- * @param {ReactNode} props.children - The child components.
- *
- * @returns {JSX.Element} A JSX element representing the PostProvider component.
+ * @see {@link PostContext} for the context that provides the `post`, `setPost` function, and `postService`.
+ * @see {@link PostProviderProps} for the interface of the properties.
+ * @see {@link useState} and {@link useEffect} for the hooks that manage the `post` state and update it when the `initialPost` prop changes.
  */
 export const PostProvider = ({
   initialPost,
@@ -71,17 +74,18 @@ export const PostProvider = ({
 };
 
 /**
- * `usePost` is a custom hook that provides the post and post service from the `PostContext`.
+ * `usePost` is a custom hook that provides the `post`, `setPost` function, and `postService` from the `PostContext`.
+ * It uses the `useContext` hook from React to access the `PostContext`.
+ * If the `usePost` hook is used outside of a `PostProvider`, it throws an error.
  *
- * It should be used within a `PostProvider` component.
+ * @returns {IPostContext} An object containing the `post`, `setPost` function, and `postService`.
  *
- * @hook
  * @example
- * Example usage of usePost hook
- * const { post, postService } = usePost();
+ * const { post, setPost, postService } = usePost();
  *
- * @returns {IPostContext} The post and post service from the `PostContext`.
- * @throws {Error} If `usePost` is used outside a `PostProvider` component.
+ * @see {@link PostContext} for the context that provides the `post`, `setPost` function, and `postService.
+ * @see {@link useContext} for the hook that accesses the context.
+ * @see {@link IPostContext} for the interface of the returned object.
  */
 export const usePost = (): IPostContext => {
   const context = useContext(PostContext);

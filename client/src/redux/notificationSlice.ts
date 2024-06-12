@@ -1,5 +1,24 @@
 /**
- * Includes redux state management for user actions such as login and update user.
+ * This module defines the notification slice of the Redux store for managing notifications in the application.
+ *
+ * The notification slice of the store uses the `createEntityAdapter` function from Redux Toolkit to generate a set of reducer functions and selectors.
+ *
+ * The `INotification` interface defines the shape of the notification data.
+ *
+ * The `notificationService` is used to interact with the notification API.
+ *
+ * The `findNotificationsThunk` async thunk fetches the notifications for the current user and updates the state.
+ *
+ * The `getNotificationCountThunk` async thunk fetches the count of notifications for the current user and updates the state.
+ *
+ * @module notificationSlice
+ * @see {@link createEntityAdapter} for the function that generates a set of reducer functions and selectors.
+ * @see {@link createSlice} for the function that generates the slice.
+ * @see {@link PayloadAction} for the type of all dispatched actions.
+ * @see {@link createSelector} for the function that creates memoized selectors.
+ * @see {@link INotification} for the type of the notification data.
+ * @see {@link notificationService} for the service that interacts with the notification API.
+ * @see {@link RootState} for the type of the root state.
  */
 import {
   createAsyncThunk,

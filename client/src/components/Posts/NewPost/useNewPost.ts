@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { IPost } from '../../../interfaces/IPost';
 import { createPostThunk, selectPostLoading } from '../../../redux/postSlice';
 import { useAuthUser } from '../../../hooks/useAuthUser';
-import { set } from 'react-hook-form';
 
 /**
  * A custom hook managing the state and logic for creating a new post.

@@ -14,6 +14,9 @@ export interface IUserService<IUser> {
   findFollow: (uid: string, followeeId: string) => Promise<boolean>;
 }
 
+/**
+ * Class that interacts with the User Service API. It contains methods that create a user, find a user by username, update a user, find all users, find a user by id, delete a user, follow a user, delete a follow, and find a follow.
+ */
 class UserServiceImpl implements IUserService<IUser> {
   private static instance: UserServiceImpl;
   private readonly apiURL: string;

@@ -27,6 +27,9 @@ export interface IPostService {
   findTopPostsByLikes: (queryParams: IQueryParams) => Promise<IPost[]>;
 }
 
+/**
+ * Class that interacts with the Post Service API. It contains methods that find all posts, find posts by keyword, find posts by user, create a post, update a post, delete a post, like a post, unlike a post, find all posts liked by a user, find all posts disliked by a user, and find top posts by likes.
+ */
 class PostServiceImpl implements IPostService {
   private url: string;
   private APIService: APIServiceI;

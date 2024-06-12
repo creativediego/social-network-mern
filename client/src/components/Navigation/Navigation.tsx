@@ -6,7 +6,15 @@ import { INavLink } from './NavigationItem/NavigationItem';
 import { useNavigationNotifications } from './useNavigationNotifications';
 
 /**
- * Displays the main navigation menu of the app.
+ * `Navigation` is a component that renders the main navigation menu of the application.
+ * It uses the `useLocation` hook from React Router to get the current location, and the `useAppSelector` hook from Redux to get the notifications and unread message count.
+ * It maps over the `NAV_LINKS` array to render a `NavigationItem` for each link.
+ *
+ * @returns {JSX.Element} The `Navigation` component, which includes a list of `NavigationItem` components.
+ *
+ * @example
+ * <Navigation />
+ *
  */
 const Navigation = (): JSX.Element => {
   const { pathname } = useLocation();

@@ -1,5 +1,8 @@
 import { z } from 'zod';
 
+/**
+ * SignupSchema is a zod schema for validating the signup form data.
+ */
 export const SignupSchema = z
   .object({
     name: z

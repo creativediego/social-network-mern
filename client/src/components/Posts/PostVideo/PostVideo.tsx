@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { usePost } from '../Post/hooks/usePost';
 
 /**

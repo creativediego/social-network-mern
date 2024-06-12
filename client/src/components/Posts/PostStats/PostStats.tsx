@@ -1,4 +1,3 @@
-import React from 'react';
 import { usePost } from '../Post/hooks/usePost';
 import { LikeButton } from '../../../components';
 

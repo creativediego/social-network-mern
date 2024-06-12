@@ -1,3 +1,30 @@
+/**
+ * This module defines the inbox slice of the Redux store for managing inbox messages in the application.
+ *
+ * The inbox slice of the store uses the `createEntityAdapter` function from Redux Toolkit to generate a set of reducer functions and selectors.
+ *
+ * The `IChat` and `IMessage` interfaces define the shape of the chat and message data respectively.
+ *
+ * The `chatService` is used to interact with the chat API.
+ *
+ * The `findInboxMessages` async thunk fetches the inbox messages for the current user.
+ *
+ * The `deleteInboxChat` async thunk deletes a specific chat from the inbox.
+ *
+ * The `markChatAsRead` async thunk marks a specific chat as read.
+ *
+ * The `markChatAsUnread` async thunk marks a specific chat as unread.
+ *
+ * @module inboxSlice
+ * @see {@link createEntityAdapter} for the function that generates a set of reducer functions and selectors.
+ * @see {@link createSlice} for the function that generates the slice.
+ * @see {@link PayloadAction} for the type of all dispatched actions.
+ * @see {@link createSelector} for the function that creates memoized selectors.
+ * @see {@link IChat} for the type of the chat data.
+ * @see {@link IMessage} for the type of the message data.
+ * @see {@link chatService} for the service that interacts with the chat API.
+ * @see {@link RootState} for the type of the root state.
+ */
 import {
   createAsyncThunk,
   createEntityAdapter,

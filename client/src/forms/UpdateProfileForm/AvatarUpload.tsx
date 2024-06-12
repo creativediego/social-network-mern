@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo, ReactElement } from 'react';
 import { AvatarImage } from '../../components';
 import './AvatarUpload.scss';
 import { IUser } from '../../interfaces/IUser';
@@ -6,11 +6,27 @@ import { IUser } from '../../interfaces/IUser';
 export interface ImageUploadProps {
   imagePreview: string | undefined;
   user: IUser;
-  children: React.ReactElement<HTMLInputElement>;
+  children: ReactElement<HTMLInputElement>;
 }
 
 /**
- * Displays user's profile photo and upload functionality. Handles upload via props function.
+ * `AvatarUpload` is a component that displays the user's profile photo and provides upload functionality.
+ * It takes in `imagePreview`, `user`, and `children` as properties.
+ * The `imagePreview` string is used as the URL of the image to display.
+ * The `user` object is used to get the user's profile photo if `imagePreview` is not provided.
+ * The `children` element is expected to be an `input` element for the file upload.
+ *
+ * @param {ImageUploadProps} props - The properties passed to the component.
+ * @param {string | undefined} props.imagePreview - The URL of the image to display.
+ * @param {IUser} props.user - The user object to get the profile photo from.
+ * @param {ReactElement<HTMLInputElement>} props.children - The `input` element for the file upload.
+ *
+ * @returns {JSX.Element} The `AvatarUpload` component, which includes the user's profile photo and the file upload functionality.
+ *
+ * @example
+ * <AvatarUpload imagePreview={imagePreview} user={user}>
+ *   <input type="file" />
+ * </AvatarUpload>
  */
 
 const AvatarUpload = ({

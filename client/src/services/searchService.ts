@@ -1,3 +1,6 @@
+/**
+ * Interacts with the Search API. It contains methods that search for users, posts, and all.
+ */
 import { IPost } from '../interfaces/IPost';
 import { ISearchResults } from '../interfaces/ISearchResults';
 import { ISearchService } from '../interfaces/ISearchService';

@@ -14,6 +14,9 @@ interface ILikeService {
   userDislikesPost: (postId: string) => Promise<IPost>;
 }
 
+/**
+ * Class that interacts with the Like Service API. It contains methods that find all posts liked by a user, find all posts disliked by a user, find all users that liked a post, like a post, and dislike a post.
+ */
 class LikeServiceImpl implements ILikeService {
   private usersAPI: string;
   private postsAPI: string;

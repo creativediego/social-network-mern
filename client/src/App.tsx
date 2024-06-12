@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useAppDispatch } from './redux/hooks';
 import { GenericError, VerifyEmail } from './components';
 import './styles.css';
@@ -12,7 +12,6 @@ import {
   disconnectSocket,
   enableSocketListeners,
 } from './services/socketService';
-import { useUpdateProfile } from './forms/UpdateProfileForm/useUpdateProfile';
 import { useSignUpForm } from './forms/SignupForm/useSignupForm';
 
 /**

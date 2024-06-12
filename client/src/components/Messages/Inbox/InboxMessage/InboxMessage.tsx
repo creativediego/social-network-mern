@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthUser } from '../../../../hooks/useAuthUser';
 import { IMessage } from '../../../../interfaces/IMessage';
@@ -9,7 +9,21 @@ interface InboxMessageProps {
 }
 
 /**
- * A component to render each latest message.
+ * `InboxMessage` is a component that renders each latest message in the inbox.
+ * It uses the `useMemo` and `useAuthUser` hooks to calculate the background class based on whether the message has been read by the authenticated user.
+ *
+ * @param {InboxMessageProps} props - The properties passed to the component.
+ * @param {IMessage} props.message - The message to be rendered.
+ *
+ * @returns {JSX.Element} The `InboxMessage` component, which includes a list item with the message and a link to the chat.
+ *
+ * @example
+ * <InboxMessage message={message} />
+ *
+ * @see {@link useAuthUser} for the hook that provides the authenticated user.
+ * @see {@link useMemo} for the hook that calculates the background class.
+ * @see {@link IMessage} for the interface of a message.
+ * @see {@link InboxOptions} for the component that provides options for the inbox.
  */
 const InboxMessage = ({ message }: InboxMessageProps) => {
   const { user: authUser } = useAuthUser();

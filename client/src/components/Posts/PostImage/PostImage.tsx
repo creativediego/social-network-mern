@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from 'react';
+import { memo, useEffect, useState } from 'react';
 import './PostImage.scss';
 
 /**
@@ -14,7 +14,7 @@ interface PostImageProps {
   deletable: boolean;
 }
 const PostImage = ({ imageURL, deletable }: PostImageProps): JSX.Element => {
-  const [image, setImage] = React.useState(imageURL);
+  const [image, setImage] = useState(imageURL);
 
   // Update image display when imageURL changes
   useEffect(() => {

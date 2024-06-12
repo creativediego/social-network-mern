@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ReactHookFormInput, ReactHookImageInput } from '../';
@@ -15,6 +15,23 @@ import { useAuthUser } from '../../hooks/useAuthUser';
 import { useUpdateProfile } from './useUpdateProfile';
 import { useUploadFile } from '../../hooks/useUploadFile';
 
+/**
+ * `UpdateProfileForm` is a component that renders a form for updating the user's profile.
+ * It uses several hooks to manage the form state and behavior.
+ * The `useAuthUser` hook is used to get the current user and their state.
+ * The `useUpdateProfile` hook is used to get the function to update the user's profile.
+ * The `useUploadFile` hook is used twice to manage the state of the avatar and header image uploads.
+ * The `useForm` hook from React Hook Form is used with a Zod schema for form validation.
+ * The `onSubmit` function is called when the form is submitted to update the user's profile.
+ *
+ * @returns {JSX.Element} The `UpdateProfileForm` component, which includes a form for updating the user's profile.
+ *
+ * @see {@link useAuthUser} for the hook that gets the current user and their state.
+ * @see {@link useUpdateProfile} for the hook that gets the function to update the user's profile.
+ * @see {@link useUploadFile} for the hook that manages the state of the avatar and header image uploads.
+ * @see {@link useForm} for the hook that manages the form state.
+ * @see {@link zodResolver} for the function that resolves the Zod schema.
+ */
 const UpdateProfileForm = (): JSX.Element => {
   const { user, completedSignup, loading } = useAuthUser();
   const { updateProfile } = useUpdateProfile();

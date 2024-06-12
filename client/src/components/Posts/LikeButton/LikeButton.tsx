@@ -1,9 +1,8 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import '.././Posts.scss';
 import { useAuthUser } from '../../../hooks/useAuthUser';
 import { usePost } from '../Post/hooks/usePost';
 import { useReactToPost } from '../../../hooks/useReactToPost';
-import { useAlert } from '../../../hooks/useAlert';
 import { ReactionButton } from '../../../components';
 import { useToggleAnimation } from '../../../hooks/useToggleAnimation';
 

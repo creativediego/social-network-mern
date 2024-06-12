@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from 'react';
+import { memo } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useFetchPosts } from './useFetchPosts';
 import PostsList from '../../Posts/PostsLists/PostsList';

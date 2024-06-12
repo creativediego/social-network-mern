@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import './LandingPage.scss';
 import AppConfig from '../../config';
 

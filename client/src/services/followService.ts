@@ -12,6 +12,9 @@ interface IFollowService {
   isFollowed: (followerId: string, followeeId: string) => Promise<boolean>;
 }
 
+/**
+ * Interacts with the Follow API. It contains methods that follow a user, unfollow a user, find all followers, and check if a user is followed.
+ */
 class FollowServiceImpl implements IFollowService {
   private usersAPI: string;
   private apiService: APIServiceI;

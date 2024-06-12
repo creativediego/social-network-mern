@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { AlertBox } from '../../components';
 import { SignupForm, LoginForm } from '../../forms';
 import { useAlert } from '../../hooks/useAlert';

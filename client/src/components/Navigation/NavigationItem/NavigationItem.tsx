@@ -1,7 +1,9 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { INotification } from '../../../interfaces/INotification';
 
+/**
+ * Interface for the navigation link. It contains the label, path, icon, and color of the link.
+ */
 export interface INavLink {
   label: string;
   path: string;
@@ -9,6 +11,9 @@ export interface INavLink {
   color?: string;
 }
 
+/**
+ * `NavigationItemProps` is an interface for the properties of the `NavigationItem` component. It contains the link, pathname, notifications, and unread message count.
+ */
 interface NavigationItemProps {
   link: INavLink;
   pathname: string;
@@ -16,6 +21,24 @@ interface NavigationItemProps {
   unreadMessageCount: number;
 }
 
+/**
+ * `NavigationItem` is a component that renders a navigation item in the sidebar.
+ * It uses the `getNotificationBadge` function to determine whether to display a notification badge.
+ *
+ * @param {NavigationItemProps} props - The properties passed to the component.
+ * @param {INavLink} props.link - The link of the navigation item.
+ * @param {string} props.pathname - The current pathname.
+ * @param {INotification[]} props.notifications - The notifications for the user.
+ * @param {number} props.unreadMessageCount - The count of unread messages.
+ *
+ * @returns {JSX.Element} The `NavigationItem` component, which includes a link to the specified path and a notification badge if there are any notifications.
+ *
+ * @example
+ * <NavigationItem link={link} pathname={pathname} notifications={notifications} unreadMessageCount={unreadMessageCount} />
+ *
+ * @see {@link INavLink} for the interface of a navigation link.
+ * @see {@link INotification} for the interface of a notification.
+ */
 const NavigationItem = ({
   link,
   pathname,

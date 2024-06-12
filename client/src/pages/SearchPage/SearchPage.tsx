@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Nav, TabContent } from 'react-bootstrap';
 import { Search, Loader, PostsList } from '../../components';
 import { useSearch } from '../../components/Search/hooks/useSearch';

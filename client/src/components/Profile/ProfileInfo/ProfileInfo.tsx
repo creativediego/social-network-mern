@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import LogoutButton from '../LogoutButton/LogoutButton';
 import { AvatarImage } from '../../../components';
 import { UpdateProfileForm } from '../../../forms';

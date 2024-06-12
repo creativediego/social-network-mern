@@ -1,3 +1,29 @@
+/**
+ * This module defines the post slice of the Redux store for managing posts in the application.
+ *
+ * The post slice of the store uses the `createEntityAdapter` function from Redux Toolkit to generate a set of reducer functions and selectors.
+ *
+ * The `IPost` and `IQueryParams` interfaces define the shape of the post data and query parameters respectively.
+ *
+ * The `postService` is used to interact with the post API.
+ *
+ * The `uploadPostImage` function is used to upload post images to Firebase storage.
+ *
+ * The `findAllPosts` async thunk fetches all posts based on the provided query parameters and updates the state.
+ *
+ * The `findTopPostsByLikes` async thunk fetches the top posts sorted by likes.
+ *
+ * @module postSlice
+ * @see {@link createEntityAdapter} for the function that generates a set of reducer functions and selectors.
+ * @see {@link createSlice} for the function that generates the slice.
+ * @see {@link PayloadAction} for the type of all dispatched actions.
+ * @see {@link createSelector} for the function that creates memoized selectors.
+ * @see {@link IPost} for the type of the post data.
+ * @see {@link IQueryParams} for the type of the query parameters.
+ * @see {@link postService} for the service that interacts with the post API.
+ * @see {@link uploadPostImage} for the function that uploads post images to Firebase storage.
+ * @see {@link RootState} for the type of the root state.
+ */
 import {
   createAsyncThunk,
   createEntityAdapter,

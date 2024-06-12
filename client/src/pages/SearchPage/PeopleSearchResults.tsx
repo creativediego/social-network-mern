@@ -1,4 +1,4 @@
-import React from 'react';
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { AvatarImage } from '../../components';
 import { IUser } from '../../interfaces/IUser';
@@ -66,4 +66,4 @@ const UserSearchResults = ({
   return <div>{users.map((user: IUser) => getPersonElement(user))}</div>;
 };
 
-export default React.memo(UserSearchResults);
+export default memo(UserSearchResults);

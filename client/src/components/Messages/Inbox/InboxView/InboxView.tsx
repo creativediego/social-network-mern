@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import InboxMessage from '../InboxMessage/InboxMessage';
 import useInbox from './useInbox';
 import { Loader } from '../../../index';

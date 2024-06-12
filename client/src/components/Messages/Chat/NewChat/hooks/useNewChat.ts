@@ -19,7 +19,24 @@ export interface NewChatActions {
 }
 
 /**
- * Manages the state of creating a new chat. Used with NewChat component.
+ * `useNewChat` is a custom hook that manages the state and actions for creating a new chat.
+ * It uses the `useRef`, `useState`, `useCallback`, `useNavigate`, and `useAppSelector` hooks from React, React Router, and Redux to manage local state, navigate to different routes, and interact with the global state.
+ *
+ * @returns {NewChatActions} An object containing the following values:
+ * - `newChatLoading`: A boolean indicating whether a new chat is being created.
+ * - `selectedUsers`: An array of users selected to be in the new chat.
+ * - `selectUsersForChat`: A function to select a user to be in the new chat.
+ * - `removeSelectedUser`: A function to remove a selected user from the new chat.
+ * - `createNewChat`: A function to create the new chat and navigate to it.
+ * - `activeChatId`: The ID of the active chat.
+ *
+ * @example
+ * const { newChatLoading, selectedUsers, selectUsersForChat, removeSelectedUser, createNewChat, activeChatId } = useNewChat();
+ *
+ * @see {@link useNavigate} for the hook that provides navigation functionality.
+ * @see {@link useAppSelector} for the hook that provides access to the Redux store.
+ * @see {@link selectAuthUser} and {@link selectActiveChatId} for the selectors that provide the authenticated user and the active chat ID.
+ * @see {@link createChatThunk} for the action that creates a new chat.
  */
 export const useNewChat = (): NewChatActions => {
   const isMounted = useRef(true);

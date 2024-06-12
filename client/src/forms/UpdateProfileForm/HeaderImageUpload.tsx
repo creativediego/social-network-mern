@@ -1,17 +1,26 @@
-import React, { memo, useEffect } from 'react';
+import { memo } from 'react';
 import './AvatarUpload.scss';
-import { Loader } from '../../components';
-import { StoragePaths } from '../../interfaces/ImageTypes';
-import { IUser } from '../../interfaces/IUser';
-import { useUploadFile } from '../../hooks/useUploadFile';
-import { useUpdateProfile } from './useUpdateProfile';
-import { UseFormRegisterReturn } from 'react-hook-form';
 import { ImageUploadProps } from './AvatarUpload';
 
 /**
- * Displays user's background header image. Handles state upload via props.
+ * `HeaderImageUpload` is a component that displays the user's header image and provides upload functionality.
+ * It takes in `imagePreview`, `user`, and `children` as properties.
+ * The `imagePreview` string is used as the URL of the image to display.
+ * The `user` object is used to get the user's header image if `imagePreview` is not provided.
+ * The `children` element is expected to be an `input` element for the file upload.
+ *
+ * @param {ImageUploadProps} props - The properties passed to the component.
+ * @param {string | undefined} props.imagePreview - The URL of the image to display.
+ * @param {IUser} props.user - The user object to get the header image from.
+ * @param {ReactElement<HTMLInputElement>} props.children - The `input` element for the file upload.
+ *
+ * @returns {JSX.Element} The `HeaderImageUpload` component, which includes the user's header image and the file upload functionality.
+ *
+ * @example
+ * <HeaderImageUpload imagePreview={imagePreview} user={user}>
+ *   <input type="file" />
+ * </HeaderImageUpload>
  */
-
 const HeaderImageUpload = ({
   user,
   imagePreview,

@@ -1,6 +1,33 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { IQueryParams } from '../interfaces/IQueryParams';
 
+/**
+ * `useInfiniteScroll` is a custom hook that provides infinite scrolling functionality.
+ * It takes in `fetchFunction`, `queryParams`, `loading`, and `hasMore` as arguments.
+ * The `fetchFunction` function is used to fetch more data when the last element is in view.
+ * The `queryParams` object is used as the query parameters for fetching data.
+ * The `loading` boolean is used to prevent fetching more data while data is still loading.
+ * The `hasMore` boolean is used to prevent fetching more data when there is no more data to fetch.
+ * The hook uses the `useState`, `useEffect`, `useRef`, and `useCallback` hooks from React to manage the infinite scrolling.
+ * The hook returns `lastElementRef` which should be attached to the last element in the list.
+ *
+ * @param {(queryParams: IQueryParams) => Promise<void>} fetchFunction - The function to fetch more data.
+ * @param {IQueryParams} queryParams - The query parameters for fetching data.
+ * @param {boolean} loading - Whether data is still loading.
+ * @param {boolean} hasMore - Whether there is more data to fetch.
+ *
+ * @returns {Object} The `lastElementRef` to attach to the last element in the list.
+ *
+ * @example
+ * const lastElementRef = useInfiniteScroll(fetchFunction, queryParams, loading, hasMore);
+ * <div ref={lastElementRef} />
+ *
+ * @see {@link useState} for the hook that manages the page state.
+ * @see {@link useEffect} for the hook that sets up the Intersection Observer.
+ * @see {@link useRef} for the hook that manages the Intersection Observer and last element refs.
+ * @see {@link useCallback} for the hook that memoizes the `fetchMoreData` function.
+ */
+
 export function useInfiniteScroll(
   fetchFunction: (queryParams: IQueryParams) => Promise<void>,
   queryParams: IQueryParams,

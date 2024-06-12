@@ -1,4 +1,3 @@
-import React from 'react';
 import './NewPost.scss';
 import PostImage from '../PostImage/PostImage';
 import PostImageUpload from './PostImageUpload';
@@ -6,11 +5,18 @@ import useNewPost from './useNewPost';
 import SubmitButton from '../../SubmitButton/SubmitButton';
 
 /**
- * Displays a form for a user to submit a new post.
+ * `NewPost` is a component that renders a form for creating a new post.
+ * It uses the `useNewPost` custom hook to get the state and actions for the new post, and the `PostImage` and `PostImageUpload` components to render the post image and the image upload field.
+ * It includes a text area for entering the post content, and a `SubmitButton` component for submitting the form.
  *
- * Manages the input fields for creating a new post, including text content and image upload.
+ * @returns {JSX.Element} The `NewPost` component, which includes a form for creating a new post.
  *
- * @returns {JSX.Element} JSX for the new post form
+ * @example
+ * <NewPost />
+ *
+ * @see {@link useNewPost} for the custom hook that provides the state and actions for the new post.
+ * @see {@link PostImage} and {@link PostImageUpload} for the components that render the post image and the image upload field.
+ * @see {@link SubmitButton} for the component that renders the submit button.
  */
 const NewPost = (): JSX.Element => {
   const {

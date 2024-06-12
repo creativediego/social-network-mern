@@ -1,4 +1,3 @@
-import React from 'react';
 import moment from 'moment';
 import { IPost } from '../../../interfaces/IPost';
 import { Link } from 'react-router-dom';

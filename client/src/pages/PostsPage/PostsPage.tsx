@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { NewPost, Loader, PostsList, AvatarImage } from '../../components';
 import { useAuthUser } from '../../hooks/useAuthUser';
 import { useFetchPosts } from '../../components/Profile/ProfilePosts/useFetchPosts';

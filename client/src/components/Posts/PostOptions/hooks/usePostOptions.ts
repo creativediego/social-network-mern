@@ -9,19 +9,21 @@ import {
 import { deletePostThunk } from '../../../../redux/postSlice';
 
 /**
- * `usePostDeletion` is a custom hook that provides the functionality to delete a post.
+ * `usePostOptions` is a custom hook that provides a function for handling the deletion of a post.
+ * It uses the `useState`, `useCallback`, and `useEffect` hooks from React to manage the state and side effects, and the `useAppDispatch` and `useAppSelector` hooks from Redux to dispatch actions and select state from the Redux store.
+ * When the `handleDelete` function is called, it sets `confirmDelete` to `true` and dispatches an action to open a modal with a title of 'Delete post?', a content of 'Are you sure you want to delete this post?', and an action label of 'Delete'.
  *
- * It uses the `useAppDispatch` and `useAppSelector` hooks from Redux to dispatch actions and select state.
+ * @param {IPost} post - The post to be deleted.
  *
- * @hook
+ * @returns {{ handleDelete: Function }} An object containing the `handleDelete` function.
+ *
  * @example
- * Example usage of usePostDeletion hook
- * const { handleDeletePost } = usePostDeletion(post);
+ * const { handleDelete } = usePostOptions(post);
  *
- * @param {IPost} post - The post object to delete.
- *
- * @returns {{ handleDeletePost: Function, loading: boolean }} An object containing the `handleDeletePost` function and the `loading` state. */
-
+ * @see {@link useState}, {@link useCallback}, and {@link useEffect} for the hooks that manage the state and side effects.
+ * @see {@link useAppDispatch} and {@link useAppSelector} for the hooks that dispatch actions and select state from the Redux store.
+ * @see {@link openModal} for the action that opens the modal.
+ */
 export const usePostOptions = (post: IPost): { handleDelete: Function } => {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const modalConfirmed = useAppSelector(selectConfirmModal);

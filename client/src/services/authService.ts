@@ -3,12 +3,18 @@ import { urlConfig } from '../config/appConfig';
 import { firebaseLogout } from '../firebase/firebaseAuthService';
 import { APIServiceI, ReqType, apiService } from './APIService';
 
+/**
+ * Interface for the Authentication API.
+ */
 export interface IAuthService<T> {
   register: (user: Partial<T>) => Promise<T>;
   logout: () => Promise<void>;
   getProfile: () => Promise<T>;
 }
 
+/**
+ * Interacts with the Authentication API. It contains methods that register a user, log out a user, and get a user's profile.
+ */
 class AuthServiceImpl implements IAuthService<IUser> {
   private static instance: AuthServiceImpl;
   private readonly url: string;

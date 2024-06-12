@@ -1,5 +1,13 @@
 /**
- * Includes redux state management for user actions such as login and update user.
+ * This module manages the state and provides Redux actions and reducers for user-related operations.
+ *
+ * It handles actions such as user login, user registration, and updating user information.
+ *
+ * The state, actions, and reducers are defined using Redux Toolkit's `createSlice` function.
+ *
+ * The async thunks defined in this module interact with the authentication and user APIs to perform server-side operations.
+ *
+ * @module userSlice
  */
 import {
   AnyAction,

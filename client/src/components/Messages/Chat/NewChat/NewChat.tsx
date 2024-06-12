@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { ActionButton, Loader, PopupModal, Search } from '../../..';
 import useToggle from '../../../../hooks/useToggle';
@@ -10,7 +9,19 @@ import NewChatUsersResultsList from './NewChatUsersResultsList';
 import { userSearchService } from '../../../../services/searchService';
 
 /**
- * Displays a new chat button and new chat model, where the user can initiate a new chat.
+ * `NewChat` is a component that allows the user to initiate a new chat.
+ * It uses the `useToggle`, `useSearch`, and `useNewChat` hooks to manage the modal visibility, user search, and new chat creation.
+ *
+ * @returns {JSX.Element} The `NewChat` component, which includes a button to open the new chat modal, a search bar to find users, and a list of selected users.
+ * When the user clicks the 'Create' button, the `createNewChat` function from the `useNewChat` hook is called.
+ *
+ * @example
+ * <NewChat />
+ *
+ * @see {@link useToggle} for the hook that manages the modal visibility.
+ * @see {@link useSearch} for the hook that manages the user search.
+ * @see {@link useNewChat} for the hook that manages the new chat creation.
+ * @see {@link ActionButton}, {@link Loader}, {@link PopupModal}, {@link Search}, {@link NewChatSelectedUsersList}, and {@link NewChatUsersResultsList} for the components used in the `NewChat` component.
  */
 const NewChat = () => {
   const [showModal, toggleModal] = useToggle(false);

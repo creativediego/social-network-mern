@@ -1,5 +1,4 @@
-import React, { memo } from 'react';
-import { Link } from 'react-router-dom';
+import { memo } from 'react';
 import { INotification } from '../../interfaces/INotification';
 import './Notification.scss';
 
@@ -15,6 +14,24 @@ interface NotificationProps {
 interface NotificationLink {
   [key: string]: { link: string; content: string };
 }
+
+/**
+ * `Notification` is a component that renders a single notification.
+ * It uses the `handleMarkAsRead` function to mark the notification as read when it is clicked.
+ * It creates a `notificationLink` object to determine the link and content of the notification based on its type.
+ *
+ * @param {NotificationProps} props - The properties passed to the component.
+ * @param {INotification} props.notification - The notification to be rendered.
+ * @param {(notificationId: string) => void} props.handleMarkAsRead - The function to mark the notification as read.
+ *
+ * @returns {JSX.Element} The `Notification` component, which includes a link with the notification content and a button to mark the notification as read.
+ *
+ * @example
+ * <Notification notification={notification} handleMarkAsRead={handleMarkAsRead} />
+ *
+ * @see {@link INotification} for the interface of a notification.
+ * @see {@link NotificationLink} for the interface of a notification link.
+ */
 
 const Notification = ({
   notification,

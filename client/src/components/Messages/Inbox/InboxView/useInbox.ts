@@ -1,5 +1,4 @@
 import { useCallback, useEffect } from 'react';
-import { clearChat } from '../../../../redux/chatSlice';
 import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
 import {
   clearInbox,

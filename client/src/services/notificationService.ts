@@ -16,6 +16,9 @@ interface INotificationService {
   markNotificationAsRead: (nid: string) => Promise<INotification>;
 }
 
+/**
+ * Class that interacts with the Notification Service API. It contains methods that find notifications, get the number of unread notifications, and mark a notification as read.
+ */
 class NotificationServiceImpl implements INotificationService {
   private notificationsAPI: string;
   private APIService: APIServiceI;

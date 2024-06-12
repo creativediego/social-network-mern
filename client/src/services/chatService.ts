@@ -5,6 +5,9 @@ import { APIServiceI, ReqType, apiService } from './APIService';
 
 const CHAT_API_URL = urlConfig.chatApi;
 
+/**
+ * Interface for the Chat Service API.
+ */
 export interface IChatService {
   findChat(chatId: string): Promise<IChat>;
   createChat(chat: IChat): Promise<IChat>;
@@ -19,7 +22,9 @@ export interface IChatService {
   deleteMessage(messageId: string): Promise<IMessage>;
 }
 
-// implement the interface with singleton pattern. Also taken in a url and an APIServiceI as a dependency.
+/**
+ * Class that implements the IChatService interface. It contains methods that find a chat, create a chat, delete a chat, get the number of unread messages, get the ids of unread messages, mark a message as read, find inbox chats, find messages by chat, find messages user sent, send a message, and delete a message.
+ */
 class ChatServiceImpl implements IChatService {
   private url: string;
   private APIService: APIServiceI;

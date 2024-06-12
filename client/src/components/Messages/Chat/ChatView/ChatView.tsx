@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import './ChatView.scss';
 import ChatMessage from '../ChatMessage/ChatMessage';
 import useChat from './hooks/useChat';

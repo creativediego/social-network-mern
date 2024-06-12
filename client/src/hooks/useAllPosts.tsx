@@ -1,4 +1,4 @@
-import React, { useEffect, createContext, ReactNode } from 'react';
+import { useEffect, createContext, ReactNode } from 'react';
 import { IPost } from '../interfaces/IPost';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 
@@ -28,7 +28,20 @@ export const PostProvider = ({
 };
 
 /**
- * Custom hook that manages the state of fetching posts, liking, disliking, and deleting.
+ * `useAllPosts` is a custom hook that manages the state of fetching posts, liking, disliking, and deleting.
+ * It uses several selectors from the `postSlice` to get the current post state from the Redux store.
+ * It also uses the `useAppDispatch` hook to get the dispatch function from the Redux store.
+ * The `fetchPosts` function is used to dispatch the `findAllPostsThunk` action to the Redux store.
+ * The `queryParams` object is used as the query parameters for fetching posts.
+ *
+ * @returns {Object} The state and functions related to the posts.
+ *
+ * @example
+ * const { posts, loading, hasMore, fetchPosts } = useAllPosts();
+ * fetchPosts(queryParams);
+ *
+ * @see {@link useAppSelector} for the hook that selects state from the Redux store.
+ * @see {@link useAppDispatch} for the hook that dispatches actions to the Redux store.
  */
 export const useAllPosts = () => {
   const posts = useAppSelector(selectAllPosts);

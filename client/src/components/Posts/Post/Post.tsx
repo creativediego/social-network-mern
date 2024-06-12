@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import PostStats from '../PostStats/PostStats';
 import PostImage from '../PostImage/PostImage';
 import { PostProvider } from './hooks/usePost';
@@ -38,7 +38,7 @@ export interface PostProps {
  */
 
 const Post = ({ post }: PostProps): JSX.Element => {
-  const postWordArray = post.post.split(' ');
+  const postWordArray = post.post.split(' '); // Split the post into an array of words
   const { user } = useAuthUser();
 
   return (

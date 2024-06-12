@@ -1,3 +1,6 @@
+/**
+ * This file contains the socket service that listens to socket events from the server.
+ */
 import io, { Socket } from 'socket.io-client';
 import { urlConfig } from '../config/appConfig';
 import store, { AppDispatch } from '../redux/store';

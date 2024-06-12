@@ -4,10 +4,11 @@ import axios, {
   AxiosError,
   InternalAxiosRequestConfig,
 } from 'axios';
-// import { ILogger, logger } from '../util/apiErrorHandling';
-import { IAlert } from '../interfaces/IError';
 import { IServerError } from '../interfaces/IServerError';
 
+/**
+ * Enum for the different types of requests
+ */
 export enum ReqType {
   GET = 'GET',
   POST = 'POST',
@@ -15,6 +16,9 @@ export enum ReqType {
   DELETE = 'DELETE',
 }
 
+/**
+ * Interface for the APIService class. It contains a method that makes a request to the server.
+ */
 export interface APIServiceI {
   makeRequest<T, U = undefined>(
     url: string,
@@ -24,6 +28,9 @@ export interface APIServiceI {
   ): Promise<T>;
 }
 
+/**
+ * Class that implements the APIServiceI interface. It contains methods that make requests to the server. It uses Axios to make the requests. Methods include setting headers, handling errors, and making requests.
+ */
 class APIServiceImpl implements APIServiceI {
   private API = axios.create();
 
@@ -70,20 +77,6 @@ class APIServiceImpl implements APIServiceI {
         'Sorry, something went wrong!'
     );
   };
-
-  // private setHeaders(config: AxiosRequestConfig): AxiosRequestConfig {
-  //   const token = localStorage.getItem('token');
-
-  //   if (config.headers) {
-  //     config.headers.authorization = `Bearer ${token}`;
-  //   } else {
-  //     config.headers = {
-  //       authorization: `Bearer ${token}`,
-  //     };
-  //   }
-
-  //   return config;
-  // }
 
   public makeRequest = async <T, U = undefined>(
     url: string,

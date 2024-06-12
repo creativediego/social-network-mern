@@ -2,6 +2,9 @@ import { z } from 'zod';
 
 const FILE_SIZE = 1048576; // 1MB
 
+/**
+ * UpdateProfileSchema is a zod schema for validating the update profile form data.
+ */
 export const UpdateProfileSchema = z
   .object({
     email: z.string().email(),

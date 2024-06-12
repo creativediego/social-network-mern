@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { ReactHookFormInput, UpdateProfileForm } from '../';
 import { ActionButton, PopupModal } from '../../components';
 import { Button } from 'react-bootstrap';

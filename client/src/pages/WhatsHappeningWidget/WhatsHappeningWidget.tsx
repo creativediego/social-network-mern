@@ -5,6 +5,24 @@ import { Link } from 'react-router-dom';
 import { useTopPosts } from './useTopPosts';
 import { Loader } from '../../components';
 
+/**
+ * `WhatsHappeningWidget` is a functional component that displays a list of popular posts.
+ * It uses the `useTopPosts` hook to fetch the top 5 posts.
+ * The `Loader` component is displayed while the posts are loading.
+ * Each post is displayed with its creation time in a human-readable format using the `moment` library.
+ * The creation time is displayed in a `h3` element with the classes `fs-6` and `fw-lighter`.
+ * The `post.id` is used as the key for each post element.
+ *
+ * @returns {JSX.Element} A `div` element with the class `ttr-whats-happening p-2` that contains the list of popular posts.
+ *
+ * @example
+ * <WhatsHappeningWidget />
+ *
+ * @see {@link useTopPosts} for the hook that fetches the top posts.
+ * @see {@link Loader} for the component that displays the loading state.
+ * @see {@link moment} for the library that formats the creation time.
+ */
+
 const WhatsHappeningWidget = (): JSX.Element => {
   const { posts, loading } = useTopPosts(5);
 

@@ -1,3 +1,23 @@
+/**
+ * This module defines the chat slice of the Redux store for managing chat and message data in the application.
+ *
+ * The chat slice of the store uses the `createEntityAdapter` function from Redux Toolkit to generate a set of reducer functions and selectors.
+ *
+ * The `IChat`, `IMessage`, and `IUser` interfaces define the shape of the chat, message, and user data respectively.
+ *
+ * The `chatService` is used to interact with the chat API.
+ *
+ * @module chatSlice
+ * @see {@link createEntityAdapter} for the function that generates a set of reducer functions and selectors.
+ * @see {@link createSlice} for the function that generates the slice.
+ * @see {@link PayloadAction} for the type of all dispatched actions.
+ * @see {@link createSelector} for the function that creates memoized selectors.
+ * @see {@link IChat} for the type of the chat data.
+ * @see {@link IMessage} for the type of the message data.
+ * @see {@link IUser} for the type of the user data.
+ * @see {@link chatService} for the service that interacts with the chat API.
+ * @see {@link RootState} for the type of the root state.
+ */
 import {
   createEntityAdapter,
   createSlice,

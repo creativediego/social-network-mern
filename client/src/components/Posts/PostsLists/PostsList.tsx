@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import '.././Posts.scss';
 import Post from '../Post/Post';
 import { IPost } from '../../../interfaces/IPost';

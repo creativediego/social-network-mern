@@ -1,3 +1,27 @@
+/**
+ * This module defines the profile slice of the Redux store for managing user profiles in the application.
+ *
+ * The profile slice of the store uses the `createEntityAdapter` function from Redux Toolkit to generate a set of reducer functions and selectors.
+ *
+ * The `IUser` and `IFollow` interfaces define the shape of the user and follow data respectively.
+ *
+ * The `userService` and `followService` are used to interact with the user and follow APIs respectively.
+ *
+ * The `findProfile` async thunk fetches a user profile based on the provided username and updates the state.
+ *
+ * The `follow` async thunk follows a user based on the provided user ID and updates the follower count in the state.
+ *
+ * @module profileSlice
+ * @see {@link createEntityAdapter} for the function that generates a set of reducer functions and selectors.
+ * @see {@link createSlice} for the function that generates the slice.
+ * @see {@link PayloadAction} for the type of all dispatched actions.
+ * @see {@link createSelector} for the function that creates memoized selectors.
+ * @see {@link IUser} for the type of the user data.
+ * @see {@link IFollow} for the type of the follow data.
+ * @see {@link userService} for the service that interacts with the user API.
+ * @see {@link followService} for the service that interacts with the follow API.
+ * @see {@link RootState} for the type of the root state.
+ */
 import {
   createAsyncThunk,
   createSelector,
@@ -7,7 +31,6 @@ import {
 import { IUser } from '../interfaces/IUser';
 import type { RootState } from './store';
 import { followService } from '../services/followService';
-import IFollow from '../interfaces/IFollow';
 import { userService } from '../services/userService';
 
 const findProfile = createAsyncThunk(

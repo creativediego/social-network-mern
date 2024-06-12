@@ -1,10 +1,25 @@
-import React, { useEffect, memo } from 'react';
+import { useEffect, memo } from 'react';
 import { OptionItem, useOptionMenu } from './OptionMenuProvider';
 
 interface OptionMenuProps {
   customOptions: OptionItem[];
 }
 
+/**
+ * `OptionMenu` is a component that renders a dropdown menu with custom options.
+ * It uses the `useOptionMenu` custom hook to get the state and actions for the option menu, and the `useEffect` hook to add and remove the custom options when the component mounts and unmounts.
+ *
+ * @param {OptionMenuProps} props - The properties passed to the component.
+ * @param {OptionItem[]} props.customOptions - The custom options to be added to the option menu.
+ *
+ * @returns {JSX.Element} The `OptionMenu` component, which includes a button to toggle the option menu and a dropdown menu with the options.
+ *
+ * @example
+ * <OptionMenu customOptions={customOptions} />
+ *
+ * @see {@link useOptionMenu} for the custom hook that provides the state and actions for the option menu.
+ * @see {@link OptionItem} for the interface of an option item.
+ */
 const OptionMenu = ({ customOptions }: OptionMenuProps) => {
   const { showMenu, toggleShowMenu, options, addOption, removeOption } =
     useOptionMenu();
