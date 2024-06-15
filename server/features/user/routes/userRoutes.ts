@@ -1,12 +1,13 @@
 import { Router } from 'express';
-import { check } from 'express-validator';
 import { IDependencyContainer } from '../../../common/interfaces/IDependencyContainer';
 import { Dep } from '../../../config/Dependencies';
 import { adaptRequest } from '../../../common/middleware/adaptRequest';
 import { isAuthenticated } from '../../../common/auth/util/isAuthenticated';
 import { IUserController } from '../controllers/IUserController';
-import { validateResults } from '../../../common/middleware/validateResults';
 
+/**
+ * Configures the user routes. It uses the user controller to handle the HTTP requests. It also uses the adaptRequest middleware to adapt the Express request and response objects to standardized objects. It also uses the isAuthenticated middleware to check if the user is authenticated before allowing access to certain routes. Dependency injection is used to resolve the user controller.
+ */
 export function configUserRoutes(
   dependencyContainer: IDependencyContainer
 ): Router {

@@ -1,3 +1,6 @@
+/**
+ * Represents the filter options that can be used to filter the results of a query.
+ */
 export interface FilterOptions<T> {
   criteria?: Partial<T>;
   page?: number;

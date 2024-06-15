@@ -1,6 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
 import { IChatMessage } from './IChatMessage';
-import UserSchema from '../../../user/models/UserSchema';
 import { formatSchemaJSON } from '../../../../common/util/formatSchemaJSON';
 
 /**

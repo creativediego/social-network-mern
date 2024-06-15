@@ -4,9 +4,10 @@ import { IChatMessage } from '../models/message/IChatMessage';
 import { IChatDao } from './IChatDao';
 import { ChatType } from '../models/chat/ChatType';
 import { DatabaseError } from '../../../common/errors/DatabaseError';
-const mongoose = require('mongoose');
-const ObjectId = mongoose.Types.ObjectId;
 
+/**
+ * Data Access Object (DAO) for chat-related operations. Implements {@link IChatDao}.
+ */
 export class ChatDao implements IChatDao {
   private readonly messageModel: Model<IChatMessage>;
   private readonly chatModel: Model<IChat>;

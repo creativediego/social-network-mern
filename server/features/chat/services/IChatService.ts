@@ -1,6 +1,9 @@
 import { IChat } from '../models/chat/IChat';
 import { IChatMessage } from '../models/message/IChatMessage';
 
+/**
+ * Common service interface operations for the chat related operations.
+ */
 export interface IChatService {
   createChat(chat: IChat): Promise<IChat>;
   findChatById(chatId: string): Promise<IChat | null>;

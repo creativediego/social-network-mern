@@ -1,3 +1,6 @@
+/**
+ * Error messages for the user DAO.
+ */
 export enum UserErrorMessages {
   INVALID_NAME = 'Name must be greater than 2 characters and less than 50.',
   INVALID_EMAIL = 'Invalid email.',

@@ -1,7 +1,7 @@
 import { Dep } from '../../config/Dependencies';
 
 /**
- * Dependency container interface used to register and resolve dependencies.
+ * Dependency container interface used to register and resolve dependencies in the entire backend.
  */
 export interface IDependencyContainer {
   register<T>(

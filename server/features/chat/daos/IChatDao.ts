@@ -2,7 +2,7 @@ import { IChat } from '../models/chat/IChat';
 import { IChatMessage } from '../models/message/IChatMessage';
 
 /**
- * Common DAO interface operations for the messages resources.
+ * Common DAO interface operations for the chat related operations.
  */
 export interface IChatDao {
   createChat(conversation: IChat): Promise<IChat>;

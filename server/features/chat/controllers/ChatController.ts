@@ -13,9 +13,9 @@ import { ILogger } from '../../../common/logger/ILogger';
 import { ControllerError } from '../../../common/errors/ControllerError';
 
 /**
- * Represents an implementation of an {@link IChatController}
+ * Controller class for chat-related operations. Implements {@link IChatController}.
  */
-export default class MessageController implements IChatController {
+export default class ChatController implements IChatController {
   private readonly chatService: IChatService;
   private readonly logger: ILogger;
 

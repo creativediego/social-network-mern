@@ -2,6 +2,9 @@ import { Model } from 'mongoose';
 import { DatabaseError } from '../errors/DatabaseError';
 import { FilterOptions, IBaseDao } from './IBaseDao';
 
+/**
+ * Abstract class that implements the IBaseDao interface. It contains common methods that interact with the database.
+ */
 export abstract class AbstractMongoDAO<T> implements IBaseDao<T> {
   public readonly model: Model<T>;
   private entityName: string;

@@ -1,9 +1,7 @@
 import { INotificationDao } from '../../notification/daos/NotificationDao';
 import { ServiceError } from '../../../common/errors/ServiceError';
-import { ILike } from '../models/ILike';
 import { NotificationType } from '../../notification/models/NotificationType';
 import { IPost } from '../../post/models/IPost';
-import { IUser } from '../../user/models/IUser';
 import { ISocketService } from '../../socket/services/ISocketService';
 import { ILikeDao } from '../daos/ILikeDao';
 import { IPostDao } from '../../post/daos/IPostDao';
@@ -16,6 +14,9 @@ export interface ILikeService {
   // findAllUsersWhoLikedPost(postId: string): Promise<IUser[]>;
 }
 
+/**
+ * Service that handles the business logic for the like feature. It contains methods that allow a user to like or unlike a post, and find all posts liked by a user.
+ */
 export class LikeService implements ILikeService {
   private readonly postDao: IPostDao;
   private readonly likeDao: ILikeDao;

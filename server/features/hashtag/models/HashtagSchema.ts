@@ -2,6 +2,9 @@ import mongoose, { Schema } from 'mongoose';
 import { IHashtag } from './IHashtag';
 import { formatSchemaJSON } from '../../../common/util/formatSchemaJSON';
 
+/**
+ * Mongoose schema for the hashtag feature.
+ */
 const HashtagSchema = new mongoose.Schema<IHashtag>(
   {
     hashtag: { type: String, required: true },

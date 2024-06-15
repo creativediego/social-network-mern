@@ -13,7 +13,7 @@ import { ControllerError } from '../../../common/errors/ControllerError';
 import { IUserController } from './IUserController';
 
 /**
- * Processes the requests and responses dealing with the user resource. Implements {@link IBaseController}.
+ * Processes the CRUD requests and responses dealing with the user resource. Implements {@link IBaseController}.
  */
 export class UserController implements IUserController {
   private readonly dao: IUserDao;

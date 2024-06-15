@@ -10,6 +10,9 @@ import { AuthError } from '../../errors/AuthError';
 
 dotenv.config();
 
+/**
+ * Middleware that checks if a user is authenticated.
+ */
 export const isAuthenticated = async (
   req: Request,
   res: Response,
@@ -51,7 +54,7 @@ export const isAuthenticated = async (
         id: '',
         uid: decoded.uid,
         email: decoded.email || '',
-        profilePhoto: decoded.picture || '',
+        profilePhoto: '',
         name: decoded.name,
         registeredWithProvider:
           decoded.firebase.sign_in_provider !== 'password',

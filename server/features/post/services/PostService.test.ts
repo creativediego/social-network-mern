@@ -13,16 +13,16 @@
 // import { mockPosts } from '../../../tests/mocks/mockPosts';
 // import { IUserDao } from '../../user/daos/IUserDao';
 
-// // TODO: Check if delete method should in fact return a boolean for the object itself.
-// // ask to validate this term as best practices.
-// // Then move on to a react components test.
-// // Check how to develop the entire project offline.
-// // Check code coverage table.
-// // Ask if mocking the classes as object literals is ok instead of creating the classes themselves
-// // check if having unit tests along side files and having integration tests separate is good
-// // zip each feature, upload to chatGPT, and ask it to create an integration test
+// TODO: Check if delete method should in fact return a boolean for the object itself.
+// ask to validate this term as best practices.
+// Then move on to a react components test.
+// Check how to develop the entire project offline.
+// Check code coverage table.
+// Ask if mocking the classes as object literals is ok instead of creating the classes themselves
+// check if having unit tests along side files and having integration tests separate is good
+// zip each feature, upload to chatGPT, and ask it to create an integration test
 
-// // Mock dependencies for the PostService
+// Mock dependencies for the PostService
 // const userDao: IUserDao = {
 //   findById: jest.fn(),
 //   findOne: jest.fn(),

@@ -2,6 +2,11 @@ import { DatabaseError } from '../../errors/DatabaseError';
 import UserModel from '../../../features/user/models/UserModel';
 import { IUser } from '../../../features/user/models/IUser';
 
+/**
+ * Get a user by their Firebase UID. Takes a Firebase UID and returns a user object.
+ * @param firebaseUID the Firebase UID of the user to find
+ * @returns the Firebase user or null if not found
+ */
 export const getUserByFirebaseUID = async (
   firebaseUID: string
 ): Promise<IUser | null> => {

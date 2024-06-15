@@ -8,10 +8,10 @@ import { INotification } from '../models/INotification';
 import { INotificationDao } from '../daos/NotificationDao';
 import { INotificationController } from './INotificationController';
 import { ILogger } from '../../../common/logger/ILogger';
-import { ok } from 'assert';
+
 /**
- * Represents the implementation for handling the notifications resource api.
- * @class
+ * Controller for the notification feature. Handles the request data and sends it to the notification dao to process the request.
+ * Uses the logger to log the request data and NotificationDao to process the request.
  */
 export default class NotificationController implements INotificationController {
   private readonly notificationDao: INotificationDao;

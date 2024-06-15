@@ -1,7 +1,9 @@
 import { Logger } from 'winston';
 import { ILogger } from './ILogger';
-import BaseError from '../errors/BaseError';
 
+/**
+ * Custom logger class that implements ILogger interface. It contains methods that log debug, info, warn, and error messages.
+ */
 export class CustomLogger implements ILogger {
   private logger: Logger;
 

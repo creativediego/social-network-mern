@@ -5,6 +5,9 @@ import { adaptRequest } from '../../../common/middleware/adaptRequest';
 import { isAuthenticated } from '../../../common/auth/util/isAuthenticated';
 import { ILikeController } from '../controllers/ILikeController';
 
+/**
+ * Configures the express routes like related requests. Defines the routes for the like feature, including finding all posts liked by a user, liking a post, and unliking a post.
+ */
 export function configLikeRoutes(
   dependencyContainer: IDependencyContainer
 ): Router {

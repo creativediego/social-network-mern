@@ -9,6 +9,9 @@ import { IUserDao } from '../../user/daos/IUserDao';
 
 dotenv.config();
 
+/**
+ * Service for handling socket connections and events. Uses Socket.IO to manage socket connections.
+ */
 export class SocketService implements ISocketService {
   private readonly io: ioServer; // Instance of the Socket.IO server
   private readonly userDao: IUserDao; // User data access object

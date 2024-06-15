@@ -1,4 +1,3 @@
-import e from 'express';
 import { ServiceError } from '../../../common/errors/ServiceError';
 import { IHashtagDao } from '../../hashtag/daos/IHashTagDao';
 import { ILikeDao } from '../../like/daos/ILikeDao';
@@ -11,6 +10,9 @@ import { IPost } from '../models/IPost';
 import { IPostService } from './IPostService';
 import { FilterOptions } from '../../../common/interfaces/IBaseDao';
 
+/**
+ * Handles the business logic for the post feature. Takes the request data from the controller and sends it to the daos to process the request.
+ */
 export class PostService implements IPostService {
   private readonly userDao: IUserDao;
   private readonly postDao: IPostDao;

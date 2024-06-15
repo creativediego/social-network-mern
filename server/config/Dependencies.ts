@@ -1,5 +1,5 @@
 /**
- * Dep enum.
+ * Dependency enum.
  *
  * This enum represents the dependencies in the application.
  * Each dependency is represented by a string value.

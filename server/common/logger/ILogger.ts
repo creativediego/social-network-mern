@@ -1,5 +1,6 @@
-import BaseError from '../errors/BaseError';
-
+/**
+ * Generic logger interface that contains methods to log debug, info, warn, and error messages.
+ */
 export interface ILogger {
   info(message: string): void;
   warn(message: string): void;

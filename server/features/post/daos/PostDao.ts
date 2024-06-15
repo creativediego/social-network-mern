@@ -1,6 +1,5 @@
 import { Model } from 'mongoose';
 import { IPost } from '../models/IPost';
-import { AbstractMongoDAO } from '../../../common/interfaces/AbstractMongoDAO';
 import { DatabaseError } from '../../../common/errors/DatabaseError';
 import { IPostDao } from './IPostDao';
 import { FilterOptions } from '../../../common/interfaces/IBaseDao';

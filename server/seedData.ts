@@ -47,7 +47,7 @@ function newRandomDateWithinThisYear() {
 const profiles = [
   {
     uid: 'CwGYeQ5rVtU9SPa1LTTbaI34J3R2',
-    email: 'creativehtml5@gmail.com',
+    email: 'exampleemail@example.com',
     bio: 'life is a dream!',
     birthday: '1980-01-01',
     name: 'Creative Dev',
@@ -249,7 +249,7 @@ const profiles = [
   },
   {
     uid: 'wCqeUx0rj1SdtCedNL6aRNlDTev1',
-    email: 'bostonlife007@gmail.com',
+    email: 'exampleemail2@example.com',
     bio: 'life is a dream!',
     birthday: '1980-01-01',
     name: 'Boston Life',

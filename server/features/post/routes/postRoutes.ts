@@ -5,6 +5,9 @@ import { adaptRequest } from '../../../common/middleware/adaptRequest';
 import { isAuthenticated } from '../../../common/auth/util/isAuthenticated';
 import { IPostController } from '../controllers/IPostController';
 
+/**
+ * Configures the Express post routes for the application.
+ */
 export function configPostRoutes(
   dependencyContainer: IDependencyContainer
 ): Router {

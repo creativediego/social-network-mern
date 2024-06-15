@@ -3,12 +3,12 @@ import { IHttpResponse } from '../../../common/interfaces/IHttpResponse';
 import { ILikeController } from './ILikeController';
 import { okResponse } from '../../../common/util/httpResponses';
 import { IPost } from '../../post/models/IPost';
-import { IUser } from '../../user/models/IUser';
 import { ILikeService } from '../services/LikeService';
 import { ILogger } from '../../../common/logger/ILogger';
 
 /**
- * Represents the implementation of an ILikeController interface for handling the likes resource api.
+ * Controller for the like feature. Handles the request data and sends it to the like service to process the request.
+ * Uses the logger to log the request data and LikeService to process the request.
  */
 export class LikeController implements ILikeController {
   private readonly likeService: ILikeService;

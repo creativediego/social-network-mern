@@ -5,6 +5,9 @@ import { adaptRequest } from '../../../common/middleware/adaptRequest';
 import { isAuthenticated } from '../../../common/auth/util/isAuthenticated';
 import ISearchController from '../controllers/ISearchController';
 
+/**
+ * Configures the Express routes for searching for users, posts, and all.
+ */
 export function configSearchRoutes(
   dependencyContainer: IDependencyContainer
 ): Router {

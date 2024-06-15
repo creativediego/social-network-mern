@@ -1,8 +1,5 @@
 import { IFollow } from '../models/IFollow';
-import {
-  noContentResponse,
-  okResponse,
-} from '../../../common/util/httpResponses';
+import { okResponse } from '../../../common/util/httpResponses';
 import { IHttpRequest } from '../../../common/interfaces/IHttpRequest';
 import { IHttpResponse } from '../../../common/interfaces/IHttpResponse';
 import IFollowController from './IFollowController';

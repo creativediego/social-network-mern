@@ -5,8 +5,10 @@ import { IHttpResponse } from '../interfaces/IHttpResponse';
 import { ServiceError } from '../errors/ServiceError';
 import { DatabaseError } from '../errors/DatabaseError';
 import { AuthError } from '../errors/AuthError';
-import { error } from 'console';
 
+/**
+ * Middleware that handles errors thrown by the application. It logs the error and sends a user-friendly error message to the client. Meant to be used as the last error handling middleware in the Express middleware chain.
+ */
 export const handleCentralError =
   (logger: ILogger) =>
   (err: Error, req: Request, res: Response, next: NextFunction) => {

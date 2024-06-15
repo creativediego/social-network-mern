@@ -9,6 +9,9 @@ import { IUserDao } from '../../user/daos/IUserDao';
 import { ISearchResults } from '../models/ISearchResults';
 import { ILogger } from '../../../common/logger/ILogger';
 
+/**
+ * Controller for the search feature. Handles the request data and sends it to the search dao to process the request.
+ */
 export default class SearchController implements ISearchController {
   private readonly userDao: IUserDao;
   private readonly postDao: IPostDao;

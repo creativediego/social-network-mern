@@ -1,16 +1,8 @@
-import { Express } from 'express';
 import { LikeController } from '../features/like/controllers/LikeController';
 import { PostController } from '../features/post/controllers/PostController';
 import { UserController } from '../features/user/controllers/UserController';
 import { IDependencyContainer } from '../common/interfaces/IDependencyContainer';
 import { Dep } from './Dependencies';
-import { IBaseDao } from '../common/interfaces/IBaseDao';
-import { IUser } from '../features/user/models/IUser';
-import { IJWTService } from '../common/auth/services/IJWTService';
-import { IPost } from '../features/post/models/IPost';
-import { ISocketService } from '../features/socket/services/ISocketService';
-import { ILikeDao } from '../features/like/daos/ILikeDao';
-import { SocketService } from '../features/socket/services/SocketService';
 import { AuthController } from '../common/auth/controllers/AuthController';
 import { ILogger } from '../common/logger/ILogger';
 import { IUserDao } from '../features/user/daos/IUserDao';
@@ -90,58 +82,4 @@ export const registerControllers = (container: IDependencyContainer): void => {
     (notificationDao, logger) =>
       new NotificationController(notificationDao, logger)
   );
-
-  // container.register(
-  //   Dep.BookmarkController,
-  //   [Dep.App, Dep.BookmarkDao],
-  //   (app: Express, bookmarkDao: IBookMarkDao) =>
-  //     new BookMarkController('apiPath/users', app, bookmarkDao)
-  // );
-
-  // container.register(
-  //   Dep.FollowController,
-  //   [
-  //     Dep.App,
-  //     Dep.FollowDao,
-  //     Dep.UserDao,
-  //     Dep.NotificationDao,
-  //     Dep.SocketService,
-  //   ],
-  //   (
-  //     app: Express,
-  //     followDao: IFollowDao,
-  //     userDao: IBaseDao<IUser>,
-  //     notificationDao,
-  //     socketService: ISocketService
-  //   ) =>
-  //     new FollowController(
-  //       'apiPath/users/',
-  //       app,
-  //       followDao,
-  //       userDao,
-  //       notificationDao,
-  //       socketService
-  //     )
-  // );
-
-  // container.register(
-  //   Dep.MessageController,
-  //   [Dep.App, Dep.MessageDao, Dep.SocketService],
-  //   (app: Express, messageDao: IMessageDao, socketService: ISocketService) =>
-  //     new MessageController('apiPath/chat', app, messageDao, socketService)
-  // );
-
-  // container.register(
-  //   Dep.NotificationController,
-  //   [Dep.App, Dep.NotificationDao, Dep.SocketService],
-  //   (app: Express, notificationDao, socketService: ISocketService) =>
-  //     new NotificationController('apiPath', app, notificationDao, socketService)
-  // );
-
-  // container.register(
-  //   Dep.SearchController,
-  //   [Dep.App, Dep.UserDao, Dep.PostDao],
-  //   (app: Express, userDao: IBaseDao<IUser>, postDao: IBaseDao<IPost>) =>
-  //     new SearchController('apiPath', app, userDao, postDao)
-  // );
 };

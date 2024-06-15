@@ -17,8 +17,6 @@ import FollowDao from '../features/follow/daos/FollowDao';
 import FollowModel from '../features/follow/models/FollowModel';
 
 /**
- * registerDAOs function.
- *
  * This function registers all Data Access Objects (DAOs) and their model dependencies in the dependency container.
  * Each DAO is registered with its name, a list of its dependencies, and a factory function that creates an instance of the DAO.
  *
@@ -43,22 +41,4 @@ export const registerDAOs = (container: IDependencyContainer): void => {
     [],
     () => new NotificationDao(NotificationModel)
   );
-
-  // container.register(
-  //   Dep.MessageDao,
-  //   [Dep.DaoErrorHandler],
-  //   (daoErrorHandler: IErrorHandler) =>
-  //     new MessageDao(MessageModel, ConversationModel, daoErrorHandler)
-  // );
-
-  // container.register(
-  //   Dep.FollowDao,
-  //   [Dep.DaoErrorHandler],
-  //   (daoErrorHandler: IErrorHandler) =>
-  //     new FollowDao(FollowModel, daoErrorHandler)
-  // );
-
-  // container.register(Dep.NotificationDao, [], () =>
-  //   NotificationDao.getInstance()
-  // );
 };

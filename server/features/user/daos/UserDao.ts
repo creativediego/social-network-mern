@@ -1,12 +1,12 @@
-/**
- * A class representing a data access object (DAO) for user-related operations in a MongoDB database.
- */
 import { Model } from 'mongoose';
 import { IUser } from '../models/IUser';
 import { AbstractMongoDAO } from '../../../common/interfaces/AbstractMongoDAO';
 import { IUserDao } from './IUserDao';
 import { DatabaseError } from '../../../common/errors/DatabaseError';
 
+/**
+ * A class representing a data access object (DAO) for user-related operations in a MongoDB database.
+ */
 export class UserDao extends AbstractMongoDAO<IUser> implements IUserDao {
   /**
    * Creates an instance of UserDao.

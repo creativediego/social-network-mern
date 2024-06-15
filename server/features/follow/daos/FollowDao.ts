@@ -4,7 +4,7 @@ import { IFollowDao } from './IFollowDao';
 import { DatabaseError } from '../../../common/errors/DatabaseError';
 
 /**
- * Database operations for the follows resource. Takes a mongoose follow model and error handler as a dependency.
+ * Database operations for the follow feature between users. Takes a mongoose follow model and error handler as a dependency.
  */
 export default class FollowDao implements IFollowDao {
   private readonly followModel: Model<IFollow>;

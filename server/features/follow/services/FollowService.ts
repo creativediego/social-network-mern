@@ -1,4 +1,3 @@
-import { Socket } from 'socket.io';
 import { ServiceError } from '../../../common/errors/ServiceError';
 import { ISocketService } from '../../socket/services/ISocketService';
 import { IUserDao } from '../../user/daos/IUserDao';
@@ -9,6 +8,9 @@ import { SocketEvents } from '../../socket/services/SocketEvents';
 import { INotificationDao } from '../../notification/daos/NotificationDao';
 import { NotificationType } from '../../notification/models/NotificationType';
 
+/**
+ * Business logic operations for the follow feature between users. Takes a follow dao and notification dao as a dependency.
+ */
 export class FollowService implements IFollowService {
   private readonly userDao: IUserDao;
   private readonly followDao: IFollowDao;

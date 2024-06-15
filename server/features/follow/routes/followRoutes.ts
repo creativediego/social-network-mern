@@ -5,6 +5,11 @@ import { adaptRequest } from '../../../common/middleware/adaptRequest';
 import { isAuthenticated } from '../../../common/auth/util/isAuthenticated';
 import IFollowController from '../controllers/IFollowController';
 
+/**
+ * Configures the Express routes for the follow feature. It uses the follow controller to handle the business logic.
+ * @param dependencyContainer the dependency container
+ * @returns the configured router
+ */
 export function configFollowRoutes(
   dependencyContainer: IDependencyContainer
 ): Router {

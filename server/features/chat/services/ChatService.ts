@@ -6,6 +6,9 @@ import { IChat } from '../models/chat/IChat';
 import { IChatMessage } from '../models/message/IChatMessage';
 import { IChatService } from './IChatService';
 
+/**
+ * Service class for chat-related business logic operations. It implements the IChatService interface and interacts with the ChatDao and SocketService to perform the operations. It contains methods that find a chat by id, create a chat, get the number of unread messages, get the ids of unread messages, create a message, mark a message as read, find inbox messages, find messages by chat, delete a chat, and delete a message.
+ */
 export class ChatService implements IChatService {
   private readonly chatDao: IChatDao;
   private readonly socketService: ISocketService;

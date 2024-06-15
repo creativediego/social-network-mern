@@ -1,3 +1,6 @@
+/**
+ * This module contains utility functions for creating HTTP responses. They are used in the controllers to send responses to the client.
+ */
 import { IHttpResponse } from '../interfaces/IHttpResponse';
 import { Code } from '../enums/StatusCode';
 import { ControllerError } from '../errors/ControllerError';

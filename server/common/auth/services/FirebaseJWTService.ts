@@ -4,6 +4,9 @@ import { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier';
 import { Code } from '../../enums/StatusCode';
 import { ServiceError } from '../../errors/ServiceError';
 
+/**
+ * Class that implements the IJWTService interface. It contains methods that verify and sign JWT tokens using Firebase.
+ */
 export class FirebaseJWTService implements IJWTService {
   verifyToken = async (token: string): Promise<DecodedIdToken> => {
     const user = await admin.auth().verifyIdToken(token);

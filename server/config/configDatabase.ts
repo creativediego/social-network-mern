@@ -5,13 +5,11 @@ import { seedDb } from '../seedData';
 import { ILogger } from '../common/logger/ILogger';
 
 /**
- * Set up development or production MongoDB.
- * If in development, use an in-memory MongoDB server and seed the database. Otherwise, connect to the production MongoDB URI.
- *
- * @param {string} prodURI - The URI of the MongoDB database to connect to.
- * @param {ConnectionOptions} [options] - The optional connection options.
- * @returns {Promise<Connection>} The database connection object.
- * @throws {Error} If there is an error in establishing the connection.
+ * Configures the database connection based on the environment. If in development, it will use an in-memory MongoDB server. If in production, it will use the provided MongoDB URI. Also seeds the database with mock data both in development and production.
+ * @param prodURI the production MongoDB URI
+ * @param logger the logger instance
+ * @param options the connection options
+ * @returns the database connection
  */
 export async function configDatabase(
   prodURI: string,
@@ -22,7 +20,6 @@ export async function configDatabase(
     if (process.env.NODE_ENV === 'development') {
       const mongoServer = new InMemoryMongoServer();
       await mongoServer.connect();
-      const devURI = mongoServer.getUri();
       await seedDb(mongoose.connection); // Seed the database with mock data.
       logger.info('Development db connected and seeded.');
       return mongoose.connection;
@@ -31,6 +28,7 @@ export async function configDatabase(
       logger.info(
         `Connected to production db: ${mongoose.connection.db.databaseName}`
       );
+      await seedDb(mongoose.connection); // Seed the database with mock data.
       return mongoose.connection;
     } else {
       logger.error('No MongoDB URI provided.');

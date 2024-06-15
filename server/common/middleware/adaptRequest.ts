@@ -7,7 +7,7 @@ import { IHttpResponse } from '../interfaces/IHttpResponse';
  * and return a standardized HTTP response object.
  * Helps to decouple the Express controller from the HTTP request/response objects. Also helps to standardize the HTTP request/response objects.
  * Handles any errors thrown by the controller method and passes them to the Express error handling middleware.
- * @param controllerCall - The controller method to be adapted.
+ * @param controllerCall - The controller method to be decoupled.
  * @returns An Express middleware function that adapts the controller method.
  */
 const adaptRequest =

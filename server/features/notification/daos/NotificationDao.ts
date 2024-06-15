@@ -4,6 +4,9 @@ import NotificationModel from '../models/NotificationModel';
 import { NotificationType } from '../models/NotificationType';
 import { DatabaseError } from '../../../common/errors/DatabaseError';
 
+/**
+ * Interface for the Notification DAO. Contains methods for CRUD operations on the notifications resource.
+ */
 export interface INotificationDao {
   findNotification(
     type: NotificationType,

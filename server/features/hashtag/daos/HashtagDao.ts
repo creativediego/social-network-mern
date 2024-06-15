@@ -4,6 +4,9 @@ import { Model } from 'mongoose';
 import { IHashtagDao } from './IHashTagDao';
 import { DatabaseError } from '../../../common/errors/DatabaseError';
 
+/**
+ * Database operations for the hashtag feature. Takes a mongoose hashtag model as a dependency.
+ */
 export class HashTagDao
   extends AbstractMongoDAO<IHashtag>
   implements IHashtagDao
